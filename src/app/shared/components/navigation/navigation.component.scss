@@ -160,17 +160,3 @@ mat-nav-list {
   margin-left: 70px;
   transition: margin-left 0.3s ease;
 }
-
-@media (max-width: 768px) {
-  .sidenav.expanded {
-    width: 240px;
-  }
-  
-  .content-expanded {
-    margin-left: 0;
-  }
-  
-  .content-collapsed {
-    margin-left: 0;
-  }
-}
