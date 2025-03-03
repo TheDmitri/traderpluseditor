@@ -1,0 +1,11 @@
+{
+    "className": "sodacan_cola",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 157289252,
+    "buyPrice": 2,
+    "sellPrice": 1,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

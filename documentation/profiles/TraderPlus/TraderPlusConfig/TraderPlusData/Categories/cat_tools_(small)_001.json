@@ -1,0 +1,31 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Tools (small)",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_screwdriver_001",
+        "prod_wrench_001",
+        "prod_sewingkit_001",
+        "prod_pliers_001",
+        "prod_leathersewingkit_001",
+        "prod_whetstone_001",
+        "prod_hammer_001",
+        "prod_hacksaw_001",
+        "prod_handsaw_001",
+        "prod_weaponcleaningkit_001",
+        "prod_kitchenknife_001",
+        "prod_steakknife_001",
+        "prod_huntingknife_001",
+        "prod_canopener_001",
+        "prod_compass_001",
+        "prod_orienteeringcompass_001",
+        "prod_hatchet_001",
+        "prod_combatknife_001",
+        "prod_machete_001",
+        "prod_chernarusmap_001",
+        "prod_lockpick_001",
+        "prod_binoculars_001",
+        "prod_fishingrod_001"
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "className": "electronicrepairkit",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 52435236,
+    "buyPrice": 35,
+    "sellPrice": 17,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

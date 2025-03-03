@@ -1,0 +1,11 @@
+{
+    "className": "kazuaroptic",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 2200,
+    "sellPrice": 1400,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

@@ -1,0 +1,11 @@
+{
+    "className": "mosin9130",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 524388,
+    "buyPrice": 400,
+    "sellPrice": 200,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

@@ -1,0 +1,11 @@
+{
+    "className": "mag_cmag_10rnd",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 120,
+    "sellPrice": 60,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

@@ -1,0 +1,11 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Holster & Pouches",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_chestholster_001",
+        "prod_platecarrierholster_001",
+        "prod_platecarrierpouches_001"
+    ]
+}

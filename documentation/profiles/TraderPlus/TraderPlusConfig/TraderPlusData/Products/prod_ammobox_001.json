@@ -1,0 +1,11 @@
+{
+    "className": "ammobox",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 80,
+    "sellPrice": 35,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

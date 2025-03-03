@@ -1,0 +1,11 @@
+{
+    "className": "mediumgascanister",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 10487076,
+    "buyPrice": 100,
+    "sellPrice": 40,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

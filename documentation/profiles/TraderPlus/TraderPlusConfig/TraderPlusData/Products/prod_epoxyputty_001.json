@@ -1,0 +1,11 @@
+{
+    "className": "epoxyputty",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 52435236,
+    "buyPrice": 15,
+    "sellPrice": 6,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

@@ -1,0 +1,22 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Gloves",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_surgicalgloves_lightblue_001",
+        "prod_surgicalgloves_blue_001",
+        "prod_surgicalgloves_white_001",
+        "prod_surgicalgloves_green_001",
+        "prod_workinggloves_yellow_001",
+        "prod_workinggloves_beige_001",
+        "prod_workinggloves_brown_001",
+        "prod_workinggloves_black_001",
+        "prod_tacticalgloves_beige_001",
+        "prod_tacticalgloves_black_001",
+        "prod_tacticalgloves_green_001",
+        "prod_omnogloves_gray_001",
+        "prod_omnogloves_brown_001",
+        "prod_nbcglovesgray_001"
+    ]
+}

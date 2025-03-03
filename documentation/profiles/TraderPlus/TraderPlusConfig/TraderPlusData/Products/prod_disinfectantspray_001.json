@@ -1,0 +1,11 @@
+{
+    "className": "disinfectantspray",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 262151460,
+    "buyPrice": 8,
+    "sellPrice": 5,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

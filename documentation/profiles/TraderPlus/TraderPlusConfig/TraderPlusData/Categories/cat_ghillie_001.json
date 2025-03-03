@@ -1,0 +1,23 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Ghillie",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_ghillieatt_mossy_001",
+        "prod_ghillieatt_tan_001",
+        "prod_ghillieatt_woodland_001",
+        "prod_ghilliehood_mossy_001",
+        "prod_ghilliehood_tan_001",
+        "prod_ghilliehood_woodland_001",
+        "prod_ghilliebushrag_mossy_001",
+        "prod_ghilliebushrag_tan_001",
+        "prod_ghilliebushrag_woodland_001",
+        "prod_ghillietop_mossy_001",
+        "prod_ghillietop_tan_001",
+        "prod_ghillietop_woodland_001",
+        "prod_ghilliesuit_mossy_001",
+        "prod_ghilliesuit_tan_001",
+        "prod_ghilliesuit_woodland_001"
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "className": "mag_akm_30rnd",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 220,
+    "sellPrice": 110,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

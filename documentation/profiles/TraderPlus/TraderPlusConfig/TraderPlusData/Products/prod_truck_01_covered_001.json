@@ -1,0 +1,11 @@
+{
+    "className": "truck_01_covered",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 524388,
+    "buyPrice": 50000,
+    "sellPrice": 30000,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

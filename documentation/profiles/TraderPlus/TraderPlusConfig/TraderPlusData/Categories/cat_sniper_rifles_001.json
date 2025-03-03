@@ -1,0 +1,11 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Sniper Rifles",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_vss_001",
+        "prod_b95_001",
+        "prod_svd_001"
+    ]
+}

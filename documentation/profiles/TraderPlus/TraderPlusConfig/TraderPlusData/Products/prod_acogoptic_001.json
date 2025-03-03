@@ -1,0 +1,11 @@
+{
+    "className": "acogoptic",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 300,
+    "sellPrice": 120,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

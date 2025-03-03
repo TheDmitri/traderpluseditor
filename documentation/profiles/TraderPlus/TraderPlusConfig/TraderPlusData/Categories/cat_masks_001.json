@@ -1,0 +1,22 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Masks",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_surgicalmask_001",
+        "prod_bandanamask_polkapattern_001",
+        "prod_bandanamask_redpattern_001",
+        "prod_bandanamask_blackpattern_001",
+        "prod_bandanamask_greenpattern_001",
+        "prod_bandanamask_camopattern_001",
+        "prod_nioshfacemask_001",
+        "prod_hockeymask_001",
+        "prod_balaclava3holes_blue_001",
+        "prod_balaclava3holes_beige_001",
+        "prod_balaclava3holes_black_001",
+        "prod_balaclava3holes_green_001",
+        "prod_weldingmask_001",
+        "prod_gp5gasmask_001"
+    ]
+}

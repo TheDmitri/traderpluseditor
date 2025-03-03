@@ -1,0 +1,17 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Medical Supplies",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_bandagedressing_001",
+        "prod_bloodtestkit_001",
+        "prod_thermometer_001",
+        "prod_disinfectantspray_001",
+        "prod_heatpack_001",
+        "prod_startkitiv_001",
+        "prod_salinebag_001",
+        "prod_bloodbagempty_001",
+        "prod_firstaidkit_001"
+    ]
+}

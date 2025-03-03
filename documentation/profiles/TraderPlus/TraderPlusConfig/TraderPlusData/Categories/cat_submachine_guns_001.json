@@ -1,0 +1,12 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Submachine Guns",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_cz61_001",
+        "prod_ump45_001",
+        "prod_mp5k_001",
+        "prod_aks74u_001"
+    ]
+}

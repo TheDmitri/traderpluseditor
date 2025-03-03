@@ -1,0 +1,11 @@
+{
+    "className": "combinationlock4",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 900,
+    "sellPrice": 400,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

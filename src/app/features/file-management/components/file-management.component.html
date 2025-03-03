@@ -1,0 +1,172 @@
+<div class="file-management-container">
+  <div class="page-header">
+    <h1 class="page-title">File Management</h1>
+    <p class="page-subtitle">Import and export TraderPlus configuration files</p>
+  </div>
+  
+  <mat-card class="main-card">
+    <mat-card-content>
+      <mat-tab-group animationDuration="300ms" mat-stretch-tabs="false" mat-align-tabs="start">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <div class="tab-label">
+              <mat-icon>upload_file</mat-icon>
+              <span>Import</span>
+            </div>
+          </ng-template>
+          
+          <div class="tab-content">
+            <div class="section-header">
+              <h2>Import Configuration Files</h2>
+              <p>Upload JSON configuration files to import them into the editor.</p>
+            </div>
+            
+            <div class="file-sections-container">
+              <div class="import-section">
+                <div class="section-icon-container categories-icon">
+                  <mat-icon>category</mat-icon>
+                </div>
+                <div class="section-content">
+                  <h3>Categories</h3>
+                  <p>Import categories from a JSON file.</p>
+                  <div class="file-input-container">
+                    <button mat-flat-button color="primary" class="upload-button">
+                      <mat-icon>upload_file</mat-icon>
+                      Select Categories File
+                    </button>
+                    <input type="file" accept=".json" (change)="onFileSelected($event, 'categories')">
+                  </div>
+                </div>
+              </div>
+              
+              <div class="import-section">
+                <div class="section-icon-container products-icon">
+                  <mat-icon>inventory_2</mat-icon>
+                </div>
+                <div class="section-content">
+                  <h3>Products</h3>
+                  <p>Import products from a JSON file.</p>
+                  <div class="file-input-container">
+                    <button mat-flat-button color="primary" class="upload-button">
+                      <mat-icon>upload_file</mat-icon>
+                      Select Products File
+                    </button>
+                    <input type="file" accept=".json" (change)="onFileSelected($event, 'products')">
+                  </div>
+                </div>
+              </div>
+              
+              <div class="import-section">
+                <div class="section-icon-container currencies-icon">
+                  <mat-icon>payments</mat-icon>
+                </div>
+                <div class="section-content">
+                  <h3>Currency Settings</h3>
+                  <p>Import currency settings from a JSON file.</p>
+                  <div class="file-input-container">
+                    <button mat-flat-button color="primary" class="upload-button">
+                      <mat-icon>upload_file</mat-icon>
+                      Select Currency Settings File
+                    </button>
+                    <input type="file" accept=".json" (change)="onFileSelected($event, 'currencies')">
+                  </div>
+                </div>
+              </div>
+              
+              <div class="import-section">
+                <div class="section-icon-container settings-icon">
+                  <mat-icon>settings</mat-icon>
+                </div>
+                <div class="section-content">
+                  <h3>General Settings</h3>
+                  <p>Import general settings from a JSON file.</p>
+                  <div class="file-input-container">
+                    <button mat-flat-button color="primary" class="upload-button">
+                      <mat-icon>upload_file</mat-icon>
+                      Select General Settings File
+                    </button>
+                    <input type="file" accept=".json" (change)="onFileSelected($event, 'settings')">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <div class="tab-label">
+              <mat-icon>download</mat-icon>
+              <span>Export</span>
+            </div>
+          </ng-template>
+          
+          <div class="tab-content">
+            <div class="section-header">
+              <h2>Export Configuration Files</h2>
+              <p>Export your configurations as JSON files compatible with TraderPlus mod.</p>
+            </div>
+            
+            <div class="file-sections-container">
+              <div class="export-section">
+                <div class="section-icon-container categories-icon">
+                  <mat-icon>category</mat-icon>
+                </div>
+                <div class="section-content">
+                  <h3>Categories</h3>
+                  <p>Export all categories to a JSON file.</p>
+                  <button mat-flat-button color="primary" (click)="exportCategories()" class="export-button">
+                    <mat-icon>download</mat-icon>
+                    Export Categories
+                  </button>
+                </div>
+              </div>
+              
+              <div class="export-section">
+                <div class="section-icon-container products-icon">
+                  <mat-icon>inventory_2</mat-icon>
+                </div>
+                <div class="section-content">
+                  <h3>Products</h3>
+                  <p>Export all products to a JSON file.</p>
+                  <button mat-flat-button color="primary" (click)="exportProducts()" class="export-button">
+                    <mat-icon>download</mat-icon>
+                    Export Products
+                  </button>
+                </div>
+              </div>
+              
+              <div class="export-section">
+                <div class="section-icon-container currencies-icon">
+                  <mat-icon>payments</mat-icon>
+                </div>
+                <div class="section-content">
+                  <h3>Currency Settings</h3>
+                  <p>Export currency settings to a JSON file.</p>
+                  <button mat-flat-button color="primary" (click)="exportCurrencySettings()" class="export-button">
+                    <mat-icon>download</mat-icon>
+                    Export Currency Settings
+                  </button>
+                </div>
+              </div>
+              
+              <div class="export-section">
+                <div class="section-icon-container settings-icon">
+                  <mat-icon>settings</mat-icon>
+                </div>
+                <div class="section-content">
+                  <h3>General Settings</h3>
+                  <p>Export general settings to a JSON file.</p>
+                  <button mat-flat-button color="primary" (click)="exportGeneralSettings()" class="export-button">
+                    <mat-icon>download</mat-icon>
+                    Export General Settings
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>

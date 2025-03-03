@@ -1,0 +1,11 @@
+{
+    "className": "civsedanwheel",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 600,
+    "sellPrice": 120,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

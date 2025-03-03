@@ -1,0 +1,11 @@
+{
+    "className": "ghilliebushrag_tan",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 400,
+    "sellPrice": 130,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

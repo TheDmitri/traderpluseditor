@@ -1,0 +1,11 @@
+{
+    "className": "weaponcleaningkit",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 52435236,
+    "buyPrice": 8,
+    "sellPrice": 3,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

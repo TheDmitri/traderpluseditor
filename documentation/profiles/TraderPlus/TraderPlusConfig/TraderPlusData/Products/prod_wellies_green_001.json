@@ -1,0 +1,11 @@
+{
+    "className": "wellies_green",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 90,
+    "sellPrice": 28,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

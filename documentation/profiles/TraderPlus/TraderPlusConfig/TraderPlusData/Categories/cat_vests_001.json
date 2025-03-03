@@ -1,0 +1,21 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Vests",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_reflexvest_001",
+        "prod_policevest_001",
+        "prod_huntingvest_001",
+        "prod_pressvest_lightblue_001",
+        "prod_pressvest_blue_001",
+        "prod_ukassvest_black_001",
+        "prod_ukassvest_khaki_001",
+        "prod_ukassvest_olive_001",
+        "prod_ukassvest_camo_001",
+        "prod_smershvest_001",
+        "prod_highcapacityvest_black_001",
+        "prod_highcapacityvest_olive_001",
+        "prod_platecarriervest_001"
+    ]
+}

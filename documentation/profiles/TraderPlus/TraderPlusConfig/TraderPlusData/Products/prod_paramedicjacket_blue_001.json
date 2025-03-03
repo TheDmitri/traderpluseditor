@@ -1,0 +1,11 @@
+{
+    "className": "paramedicjacket_blue",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 36,
+    "sellPrice": 9,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

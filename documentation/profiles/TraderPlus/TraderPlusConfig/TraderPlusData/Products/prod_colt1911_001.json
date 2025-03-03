@@ -1,0 +1,11 @@
+{
+    "className": "colt1911",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 524388,
+    "buyPrice": 340,
+    "sellPrice": 180,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

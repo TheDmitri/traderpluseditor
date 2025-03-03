@@ -1,0 +1,11 @@
+{
+    "className": "ammo_9x39",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 524388,
+    "buyPrice": 4,
+    "sellPrice": 2,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

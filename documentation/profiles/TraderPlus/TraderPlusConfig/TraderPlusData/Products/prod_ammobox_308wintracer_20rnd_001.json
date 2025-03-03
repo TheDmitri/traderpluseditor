@@ -1,0 +1,11 @@
+{
+    "className": "ammobox_308wintracer_20rnd",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 160,
+    "sellPrice": 80,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

@@ -1,0 +1,11 @@
+{
+    "className": "hatchback_02_trunk_blackrust",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 380,
+    "sellPrice": 130,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

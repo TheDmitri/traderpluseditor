@@ -1,0 +1,11 @@
+{
+    "className": "smallgascanister",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 10487076,
+    "buyPrice": 80,
+    "sellPrice": 35,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

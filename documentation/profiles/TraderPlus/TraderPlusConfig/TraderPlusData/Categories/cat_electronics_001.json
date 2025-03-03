@@ -1,0 +1,17 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Electronics",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_battery9v_001",
+        "prod_personalradio_001",
+        "prod_megaphone_001",
+        "prod_electronicrepairkit_001",
+        "prod_cablereel_001",
+        "prod_batterycharger_001",
+        "prod_baseradio_001",
+        "prod_rangefinder_001",
+        "prod_nvgoggles_001"
+    ]
+}

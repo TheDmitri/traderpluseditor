@@ -1,0 +1,11 @@
+{
+    "className": "vodka",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 262151460,
+    "buyPrice": 12,
+    "sellPrice": 8,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

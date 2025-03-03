@@ -1,0 +1,15 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Medications",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_charcoaltablets_001",
+        "prod_disinfectantalcohol_001",
+        "prod_vitaminbottle_001",
+        "prod_tetracyclineantibiotics_001",
+        "prod_painkillertablets_001",
+        "prod_epinephrine_001",
+        "prod_morphine_001"
+    ]
+}

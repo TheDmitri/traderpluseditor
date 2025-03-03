@@ -1,0 +1,22 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Skirts & Dresses",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_skirt_yellow_001",
+        "prod_skirt_red_001",
+        "prod_skirt_blue_001",
+        "prod_skirt_white_001",
+        "prod_minidress_pink_001",
+        "prod_minidress_pinkchecker_001",
+        "prod_minidress_redchecker_001",
+        "prod_minidress_bluechecker_001",
+        "prod_minidress_bluewithdots_001",
+        "prod_minidress_whitechecker_001",
+        "prod_minidress_brownchecker_001",
+        "prod_minidress_greenchecker_001",
+        "prod_nursedress_blue_001",
+        "prod_nursedress_white_001"
+    ]
+}

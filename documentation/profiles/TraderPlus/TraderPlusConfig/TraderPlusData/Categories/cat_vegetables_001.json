@@ -1,0 +1,29 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Vegetables",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_caninaberry_001",
+        "prod_sambucusberry_001",
+        "prod_plum_001",
+        "prod_kiwi_001",
+        "prod_apple_001",
+        "prod_pear_001",
+        "prod_orange_001",
+        "prod_banana_001",
+        "prod_tomato_001",
+        "prod_potato_001",
+        "prod_greenbellpepper_001",
+        "prod_zucchini_001",
+        "prod_pumpkin_001",
+        "prod_agaricusmushroom_001",
+        "prod_amanitamushroom_001",
+        "prod_lactariusmushroom_001",
+        "prod_macrolepiotamushroom_001",
+        "prod_psilocybemushroom_001",
+        "prod_auriculariamushroom_001",
+        "prod_boletusmushroom_001",
+        "prod_pleurotusmushroom_001"
+    ]
+}

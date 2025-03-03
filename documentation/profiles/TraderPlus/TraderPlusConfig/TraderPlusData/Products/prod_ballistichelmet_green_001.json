@@ -1,0 +1,11 @@
+{
+    "className": "ballistichelmet_green",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 350,
+    "sellPrice": 110,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

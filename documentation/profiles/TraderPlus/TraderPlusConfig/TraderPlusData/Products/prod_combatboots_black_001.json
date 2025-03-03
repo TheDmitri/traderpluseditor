@@ -1,0 +1,11 @@
+{
+    "className": "combatboots_black",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 80,
+    "sellPrice": 22,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

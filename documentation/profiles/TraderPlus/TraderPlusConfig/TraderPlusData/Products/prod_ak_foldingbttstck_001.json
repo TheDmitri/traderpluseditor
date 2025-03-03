@@ -1,0 +1,11 @@
+{
+    "className": "ak_foldingbttstck",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 250,
+    "sellPrice": 125,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

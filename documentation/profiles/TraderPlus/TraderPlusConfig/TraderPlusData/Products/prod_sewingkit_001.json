@@ -1,0 +1,11 @@
+{
+    "className": "sewingkit",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 52435236,
+    "buyPrice": 4,
+    "sellPrice": 1,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

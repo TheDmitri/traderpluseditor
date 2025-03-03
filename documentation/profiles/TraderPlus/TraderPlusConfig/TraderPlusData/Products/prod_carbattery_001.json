@@ -1,0 +1,11 @@
+{
+    "className": "carbattery",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 26217636,
+    "buyPrice": 100,
+    "sellPrice": 50,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

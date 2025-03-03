@@ -1,0 +1,11 @@
+{
+    "className": "nvgheadstrap",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 200,
+    "sellPrice": 120,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

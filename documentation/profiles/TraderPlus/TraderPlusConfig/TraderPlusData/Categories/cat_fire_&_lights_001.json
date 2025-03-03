@@ -1,0 +1,21 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Fire & Lights",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_chemlight_blue_001",
+        "prod_chemlight_green_001",
+        "prod_chemlight_red_001",
+        "prod_chemlight_white_001",
+        "prod_chemlight_yellow_001",
+        "prod_roadflare_001",
+        "prod_matchbox_001",
+        "prod_flashlight_001",
+        "prod_portablegaslamp_001",
+        "prod_portablegasstove_001",
+        "prod_headtorch_black_001",
+        "prod_headtorch_grey_001",
+        "prod_spotlight_001"
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "className": "m4_carryhandleoptic",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 150,
+    "sellPrice": 60,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

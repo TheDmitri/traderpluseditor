@@ -1,0 +1,13 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Rifles",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_izh18_001",
+        "prod_mosin9130_001",
+        "prod_cz527_001",
+        "prod_winchester70_001",
+        "prod_sks_001"
+    ]
+}

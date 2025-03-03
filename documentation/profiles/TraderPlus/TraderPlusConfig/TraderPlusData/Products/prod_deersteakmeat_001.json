@@ -1,0 +1,11 @@
+{
+    "className": "deersteakmeat",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 5,
+    "sellPrice": 2,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

@@ -1,0 +1,11 @@
+{
+    "className": "ammobox_45acp_25rnd",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 20,
+    "sellPrice": -1,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

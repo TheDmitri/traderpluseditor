@@ -1,0 +1,18 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Hoodies & Sweater",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_sweater_red_001",
+        "prod_sweater_blue_001",
+        "prod_sweater_gray_001",
+        "prod_sweater_green_001",
+        "prod_hoodie_red_001",
+        "prod_hoodie_blue_001",
+        "prod_hoodie_grey_001",
+        "prod_hoodie_brown_001",
+        "prod_hoodie_black_001",
+        "prod_hoodie_green_001"
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "className": "batterycharger",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 40,
+    "sellPrice": 20,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

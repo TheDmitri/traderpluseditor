@@ -1,0 +1,11 @@
+{
+    "className": "barrel_green",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 1500,
+    "sellPrice": 350,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

@@ -1,0 +1,10 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Compensators",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_mosin_compensator_001",
+        "prod_mp5_compensator_001"
+    ]
+}

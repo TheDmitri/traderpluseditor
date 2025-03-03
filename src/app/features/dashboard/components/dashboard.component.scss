@@ -1,0 +1,207 @@
+.dashboard-container {
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.dashboard-title {
+  margin-bottom: 8px;
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+
+.dashboard-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
+  font-weight: 300;
+  margin: 0;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.stats-card {
+  height: 100%;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+  
+  &.category-card .card-icon-container {
+    background: linear-gradient(135deg, #3f51b5, #5c6bc0);
+  }
+  
+  &.product-card .card-icon-container {
+    background: linear-gradient(135deg, #009688, #4db6ac);
+  }
+  
+  &.currency-card .card-icon-container {
+    background: linear-gradient(135deg, #ff9800, #ffb74d);
+  }
+  
+  mat-card-content {
+    text-align: center;
+    width: 100%;
+  }
+  
+  mat-card-actions {
+    margin-top: auto;
+    padding: 16px 0 0;
+    width: 100%;
+    
+    button {
+      width: 100%;
+    }
+  }
+}
+
+.card-icon-container {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.card-icon {
+  font-size: 36px;
+  height: 36px;
+  width: 36px;
+  color: white;
+}
+
+.stats-label {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0 0 8px;
+  color: #fff;
+}
+
+.stats-value {
+  font-size: 3.5rem;
+  font-weight: 300;
+  line-height: 1.2;
+  padding: 16px 0;
+  color: #fff;
+}
+
+.stats-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.dashboard-actions {
+  margin-top: 32px;
+  
+  mat-card {
+    border-radius: 12px;
+    
+    mat-card-header {
+      padding-top: 16px;
+      margin-bottom: 8px;
+      
+      .mat-mdc-card-avatar {
+        background-color: rgba(63, 81, 181, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+      }
+    }
+  }
+  
+  .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px 0;
+    justify-content: center;
+    
+    .action-button {
+      padding: 12px 24px;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      min-width: 220px;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      
+      mat-icon {
+        margin-right: 8px;
+      }
+      
+      &.import-button {
+        background-color: #3f51b5;
+        color: white;
+      }
+      
+      &.export-button {
+        background-color: #ff4081;
+        color: white;
+      }
+      
+      &.settings-button {
+        background-color: #f44336;
+        color: white;
+      }
+    }
+  }
+}
+
+.dashboard-footer {
+  margin-top: 48px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  padding: 16px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+  
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-value {
+    font-size: 3rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    
+    .action-button {
+      width: 100%;
+    }
+  }
+}

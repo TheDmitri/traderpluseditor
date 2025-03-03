@@ -1,0 +1,11 @@
+{
+    "className": "skatehelmet_red",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 45,
+    "sellPrice": 12,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

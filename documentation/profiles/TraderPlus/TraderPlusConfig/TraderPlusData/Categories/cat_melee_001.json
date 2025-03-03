@@ -1,0 +1,14 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Melee",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_brassknuckles_shiny_001",
+        "prod_stunbaton_001",
+        "prod_pipe_001",
+        "prod_cattleprod_001",
+        "prod_baseballbat_001",
+        "prod_nailedbaseballbat_001"
+    ]
+}

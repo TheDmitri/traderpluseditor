@@ -1,0 +1,11 @@
+{
+    "className": "tracksuitjacket_red",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 15,
+    "sellPrice": 3,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

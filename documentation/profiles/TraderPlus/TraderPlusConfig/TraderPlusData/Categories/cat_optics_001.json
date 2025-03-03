@@ -1,0 +1,21 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Optics",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_m4_carryhandleoptic_001",
+        "prod_buisoptic_001",
+        "prod_fnp45_mrdsoptic_001",
+        "prod_acogoptic_001",
+        "prod_m68optic_001",
+        "prod_m4_t3nrdsoptic_001",
+        "prod_kobraoptic_001",
+        "prod_kashtanoptic_001",
+        "prod_puscopeoptic_001",
+        "prod_huntingoptic_001",
+        "prod_pso1optic_001",
+        "prod_pso11optic_001",
+        "prod_kazuaroptic_001"
+    ]
+}

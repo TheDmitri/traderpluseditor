@@ -1,0 +1,18 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Packaged Food",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_powderedmilk_001",
+        "prod_boxcerealcrunchin_001",
+        "prod_rice_001",
+        "prod_marmalade_001",
+        "prod_peachescan_001",
+        "prod_sardinescan_001",
+        "prod_tunacan_001",
+        "prod_spaghettican_001",
+        "prod_bakedbeanscan_001",
+        "prod_tacticalbaconcan_001"
+    ]
+}

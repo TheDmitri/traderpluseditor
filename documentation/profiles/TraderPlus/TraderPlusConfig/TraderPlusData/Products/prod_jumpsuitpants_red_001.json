@@ -1,0 +1,11 @@
+{
+    "className": "jumpsuitpants_red",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 28,
+    "sellPrice": 6,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

@@ -1,0 +1,11 @@
+{
+    "className": "civiliansedan_black",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 524388,
+    "buyPrice": 20000,
+    "sellPrice": 11000,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

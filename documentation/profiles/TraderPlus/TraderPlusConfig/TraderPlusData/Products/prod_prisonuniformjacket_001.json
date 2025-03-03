@@ -1,0 +1,11 @@
+{
+    "className": "prisonuniformjacket",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 28,
+    "sellPrice": 7,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

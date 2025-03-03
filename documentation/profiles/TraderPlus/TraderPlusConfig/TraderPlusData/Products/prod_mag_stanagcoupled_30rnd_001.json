@@ -1,0 +1,11 @@
+{
+    "className": "mag_stanagcoupled_30rnd",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 480,
+    "sellPrice": 220,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

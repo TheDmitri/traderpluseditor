@@ -1,0 +1,13 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Seeds & Lime",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_tomatoseedspack_001",
+        "prod_pepperseedspack_001",
+        "prod_zucchiniseedspack_001",
+        "prod_pumpkinseedspack_001",
+        "prod_gardenlime_001"
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Meat",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_chickenbreastmeat_001",
+        "prod_goatsteakmeat_001",
+        "prod_sheepsteakmeat_001",
+        "prod_pigsteakmeat_001",
+        "prod_boarsteakmeat_001",
+        "prod_wolfsteakmeat_001",
+        "prod_deersteakmeat_001",
+        "prod_cowsteakmeat_001",
+        "prod_sardines_001",
+        "prod_carp_001",
+        "prod_mackerel_001"
+    ]
+}

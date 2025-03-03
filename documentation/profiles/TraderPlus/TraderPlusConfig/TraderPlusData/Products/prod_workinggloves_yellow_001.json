@@ -1,0 +1,11 @@
+{
+    "className": "workinggloves_yellow",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 25,
+    "sellPrice": 6,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

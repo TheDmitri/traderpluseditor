@@ -1,0 +1,11 @@
+{
+    "className": "bandagedressing",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1048740,
+    "buyPrice": 3,
+    "sellPrice": 1,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

@@ -1,0 +1,11 @@
+{
+    "className": "nbcpantsgray",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 200,
+    "sellPrice": 65,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

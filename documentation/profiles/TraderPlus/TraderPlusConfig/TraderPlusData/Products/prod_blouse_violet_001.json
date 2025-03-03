@@ -1,0 +1,11 @@
+{
+    "className": "blouse_violet",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 16,
+    "sellPrice": 4,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

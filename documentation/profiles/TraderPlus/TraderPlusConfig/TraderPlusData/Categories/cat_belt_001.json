@@ -1,0 +1,10 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Belt",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_civilianbelt_001",
+        "prod_militarybelt_001"
+    ]
+}

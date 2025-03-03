@@ -1,0 +1,11 @@
+{
+    "className": "sks",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 524388,
+    "buyPrice": 600,
+    "sellPrice": 300,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

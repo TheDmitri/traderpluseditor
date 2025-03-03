@@ -1,0 +1,20 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Buttstocks",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_mp5k_stockbttstck_001",
+        "prod_fal_oebttstck_001",
+        "prod_fal_foldingbttstck_001",
+        "prod_saiga_bttstck_001",
+        "prod_aks74u_bttstck_001",
+        "prod_ak74_woodbttstck_001",
+        "prod_ak_plasticbttstck_001",
+        "prod_ak_woodbttstck_001",
+        "prod_ak_foldingbttstck_001",
+        "prod_m4_oebttstck_001",
+        "prod_m4_cqbbttstck_001",
+        "prod_m4_mpbttstck_001"
+    ]
+}

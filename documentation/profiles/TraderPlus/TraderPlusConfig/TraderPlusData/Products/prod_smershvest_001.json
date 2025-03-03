@@ -1,0 +1,11 @@
+{
+    "className": "smershvest",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 150,
+    "sellPrice": 50,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

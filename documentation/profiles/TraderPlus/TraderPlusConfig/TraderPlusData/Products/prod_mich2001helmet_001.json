@@ -1,0 +1,11 @@
+{
+    "className": "mich2001helmet",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 150,
+    "sellPrice": 40,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

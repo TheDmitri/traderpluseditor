@@ -1,0 +1,11 @@
+{
+    "className": "hatchback_02_door_1_1_blackrust",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 450,
+    "sellPrice": 160,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

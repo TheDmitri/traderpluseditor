@@ -1,0 +1,11 @@
+{
+    "className": "mountainbag_green",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 360,
+    "sellPrice": 100,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

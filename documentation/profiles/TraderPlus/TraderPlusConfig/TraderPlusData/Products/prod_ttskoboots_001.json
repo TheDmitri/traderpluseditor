@@ -1,0 +1,11 @@
+{
+    "className": "ttskoboots",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 100,
+    "sellPrice": 35,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

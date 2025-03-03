@@ -1,0 +1,11 @@
+{
+    "className": "largetent",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 7000,
+    "sellPrice": 1200,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

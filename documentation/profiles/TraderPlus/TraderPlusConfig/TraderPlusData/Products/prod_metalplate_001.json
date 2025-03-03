@@ -1,0 +1,11 @@
+{
+    "className": "metalplate",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 20974116,
+    "buyPrice": 60,
+    "sellPrice": 18,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

@@ -1,0 +1,71 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-toolbar {
+  background-color: #1e1e1e !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  
+  .menu-button {
+    margin-right: 16px;
+  }
+}
+
+.toolbar-title-container {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+}
+
+.app-title {
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  font-size: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.help-button {
+  margin-right: 8px;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.main-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.app-footer {
+  height: 50px;
+  background-color: #1e1e1e;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  z-index: 10;
+}
+
+.footer-content {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+}

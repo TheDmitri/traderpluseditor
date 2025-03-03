@@ -1,0 +1,89 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">TraderPlus Editor Dashboard</h1>
+    <p class="dashboard-subtitle">Manage your TraderPlus configuration with ease</p>
+  </div>
+  
+  <div class="dashboard-stats">
+    <mat-card class="stats-card category-card" appearance="outlined">
+      <div class="card-icon-container">
+        <mat-icon class="card-icon">category</mat-icon>
+      </div>
+      <mat-card-content>
+        <h2 class="stats-label">Categories</h2>
+        <div class="stats-value">{{ categoriesCount }}</div>
+        <p class="stats-description">Total Categories</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-flat-button color="primary" routerLink="/categories">
+          <mat-icon>edit</mat-icon>
+          MANAGE
+        </button>
+      </mat-card-actions>
+    </mat-card>
+    
+    <mat-card class="stats-card product-card" appearance="outlined">
+      <div class="card-icon-container">
+        <mat-icon class="card-icon">inventory_2</mat-icon>
+      </div>
+      <mat-card-content>
+        <h2 class="stats-label">Products</h2>
+        <div class="stats-value">{{ productsCount }}</div>
+        <p class="stats-description">Total Products</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-flat-button color="primary" routerLink="/products">
+          <mat-icon>edit</mat-icon>
+          MANAGE
+        </button>
+      </mat-card-actions>
+    </mat-card>
+    
+    <mat-card class="stats-card currency-card" appearance="outlined">
+      <div class="card-icon-container">
+        <mat-icon class="card-icon">attach_money</mat-icon>
+      </div>
+      <mat-card-content>
+        <h2 class="stats-label">Currencies</h2>
+        <div class="stats-value">{{ currenciesCount }}</div>
+        <p class="stats-description">Currency Types</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-flat-button color="primary" routerLink="/currencies">
+          <mat-icon>edit</mat-icon>
+          MANAGE
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  
+  <div class="dashboard-actions">
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>flash_on</mat-icon>
+        <mat-card-title>Quick Actions</mat-card-title>
+        <mat-card-subtitle>Import, export or configure your settings</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="action-buttons">
+          <button mat-flat-button class="action-button import-button" routerLink="/file-management">
+            <mat-icon>upload_file</mat-icon>
+            Import Configuration
+          </button>
+          <button mat-flat-button class="action-button export-button" routerLink="/file-management">
+            <mat-icon>download</mat-icon>
+            Export Configuration
+          </button>
+          <button mat-flat-button class="action-button settings-button" routerLink="/settings">
+            <mat-icon>settings</mat-icon>
+            General Settings
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="dashboard-footer">
+    <p>TraderPlus Editor v1.0 - Designed for DayZ Server Administrators</p>
+  </div>
+</div>

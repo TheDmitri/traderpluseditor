@@ -1,0 +1,11 @@
+{
+    "className": "bandana_camopattern",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 10,
+    "sellPrice": 3,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

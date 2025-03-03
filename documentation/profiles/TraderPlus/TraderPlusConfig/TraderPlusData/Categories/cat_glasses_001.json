@@ -1,0 +1,18 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Glasses",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_sportglasses_orange_001",
+        "prod_sportglasses_blue_001",
+        "prod_sportglasses_black_001",
+        "prod_sportglasses_green_001",
+        "prod_thinframesglasses_001",
+        "prod_thickframesglasses_001",
+        "prod_designerglasses_001",
+        "prod_aviatorglasses_001",
+        "prod_tacticalgoggles_001",
+        "prod_nvgheadstrap_001"
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Shotguns",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_mp133shotgun_001",
+        "prod_izh43shotgun_001",
+        "prod_saiga_001"
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "className": "gp5gasmask",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 120,
+    "sellPrice": 40,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

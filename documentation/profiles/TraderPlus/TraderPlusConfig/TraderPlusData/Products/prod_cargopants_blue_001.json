@@ -1,0 +1,11 @@
+{
+    "className": "cargopants_blue",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 35,
+    "sellPrice": 8,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

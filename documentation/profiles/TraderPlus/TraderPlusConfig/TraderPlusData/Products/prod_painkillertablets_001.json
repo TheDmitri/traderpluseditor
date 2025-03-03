@@ -1,0 +1,11 @@
+{
+    "className": "painkillertablets",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 6292260,
+    "buyPrice": 10,
+    "sellPrice": 6,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

@@ -1,0 +1,11 @@
+{
+    "className": "ammobox_762x54tracer_20rnd",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 400,
+    "sellPrice": 200,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

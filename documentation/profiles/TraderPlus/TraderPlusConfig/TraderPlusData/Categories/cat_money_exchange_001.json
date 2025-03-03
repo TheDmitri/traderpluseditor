@@ -1,0 +1,19 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Money Exchange",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_traderplus_money_ruble1_coin_001",
+        "prod_traderplus_money_ruble2_coin_001",
+        "prod_traderplus_money_ruble5_001",
+        "prod_traderplus_money_ruble10_001",
+        "prod_traderplus_money_ruble50_001",
+        "prod_traderplus_money_ruble100_001",
+        "prod_traderplus_money_ruble200_001",
+        "prod_traderplus_money_ruble500_001",
+        "prod_traderplus_money_ruble1000_001",
+        "prod_traderplus_money_ruble2000_001",
+        "prod_traderplus_money_ruble5000_001"
+    ]
+}

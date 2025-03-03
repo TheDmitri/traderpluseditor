@@ -1,0 +1,11 @@
+{
+    "className": "fishingrod",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 60,
+    "sellPrice": 25,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

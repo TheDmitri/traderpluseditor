@@ -1,0 +1,11 @@
+{
+    "className": "bone",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 5243556,
+    "buyPrice": 2,
+    "sellPrice": 1,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

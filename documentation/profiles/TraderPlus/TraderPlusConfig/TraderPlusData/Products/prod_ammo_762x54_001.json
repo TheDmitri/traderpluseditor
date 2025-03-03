@@ -1,0 +1,11 @@
+{
+    "className": "ammo_762x54",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 524388,
+    "buyPrice": 10,
+    "sellPrice": 6,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

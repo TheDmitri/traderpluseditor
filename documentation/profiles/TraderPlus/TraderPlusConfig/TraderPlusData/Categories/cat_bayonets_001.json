@@ -1,0 +1,12 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Bayonets",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_mosin_bayonet_001",
+        "prod_m9a1_bayonet_001",
+        "prod_ak_bayonet_001",
+        "prod_sks_bayonet_001"
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "className": "jungleboots_brown",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 85,
+    "sellPrice": 24,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

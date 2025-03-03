@@ -1,0 +1,11 @@
+{
+    "className": "smallprotectorcase",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 70,
+    "sellPrice": 30,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

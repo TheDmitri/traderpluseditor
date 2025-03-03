@@ -1,0 +1,16 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Sidearms",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_flaregun_001",
+        "prod_makarovij70_001",
+        "prod_cz75_001",
+        "prod_fnx45_001",
+        "prod_glock19_001",
+        "prod_mkii_001",
+        "prod_colt1911_001",
+        "prod_engraved1911_001"
+    ]
+}

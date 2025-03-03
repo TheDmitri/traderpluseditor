@@ -1,0 +1,17 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Handguards",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_mp5_plastichndgrd_001",
+        "prod_mp5_railhndgrd_001",
+        "prod_ak74_hndgrd_001",
+        "prod_ak_woodhndgrd_001",
+        "prod_ak_railhndgrd_001",
+        "prod_ak_plastichndgrd_001",
+        "prod_m4_plastichndgrd_001",
+        "prod_m4_rishndgrd_001",
+        "prod_m4_mphndgrd_001"
+    ]
+}

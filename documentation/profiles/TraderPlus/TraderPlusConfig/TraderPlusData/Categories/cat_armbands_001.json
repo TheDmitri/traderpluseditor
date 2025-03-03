@@ -1,0 +1,16 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Armbands",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_armband_pink_001",
+        "prod_armband_yellow_001",
+        "prod_armband_orange_001",
+        "prod_armband_red_001",
+        "prod_armband_blue_001",
+        "prod_armband_white_001",
+        "prod_armband_black_001",
+        "prod_armband_green_001"
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "className": "camonet",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 600,
+    "sellPrice": 250,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

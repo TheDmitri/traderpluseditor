@@ -1,0 +1,11 @@
+{
+    "className": "pressvest_lightblue",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 85,
+    "sellPrice": 28,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

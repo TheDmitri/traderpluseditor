@@ -1,0 +1,23 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Vehicles",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_offroadhatchback_001",
+        "prod_offroadhatchback_blue_001",
+        "prod_offroadhatchback_white_001",
+        "prod_hatchback_02_001",
+        "prod_hatchback_02_blue_001",
+        "prod_hatchback_02_black_001",
+        "prod_sedan_02_001",
+        "prod_sedan_02_red_001",
+        "prod_sedan_02_grey_001",
+        "prod_civiliansedan_001",
+        "prod_civiliansedan_wine_001",
+        "prod_civiliansedan_black_001",
+        "prod_truck_01_covered_001",
+        "prod_truck_01_covered_blue_001",
+        "prod_truck_01_covered_orange_001"
+    ]
+}

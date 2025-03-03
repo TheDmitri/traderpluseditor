@@ -1,0 +1,16 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Tools (big)",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_lugwrench_001",
+        "prod_crowbar_001",
+        "prod_shovel_001",
+        "prod_pickaxe_001",
+        "prod_sledgehammer_001",
+        "prod_pipewrench_001",
+        "prod_woodaxe_001",
+        "prod_firefighteraxe_001"
+    ]
+}

@@ -1,0 +1,18 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Grenades",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_rgd5grenade_001",
+        "prod_m67grenade_001",
+        "prod_m18smokegrenade_red_001",
+        "prod_m18smokegrenade_green_001",
+        "prod_m18smokegrenade_yellow_001",
+        "prod_m18smokegrenade_purple_001",
+        "prod_m18smokegrenade_white_001",
+        "prod_rdg2smokegrenade_black_001",
+        "prod_rdg2smokegrenade_white_001",
+        "prod_flashgrenade_001"
+    ]
+}

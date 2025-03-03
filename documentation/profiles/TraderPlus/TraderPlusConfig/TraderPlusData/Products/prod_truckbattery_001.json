@@ -1,0 +1,11 @@
+{
+    "className": "truckbattery",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 26217636,
+    "buyPrice": 180,
+    "sellPrice": 100,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

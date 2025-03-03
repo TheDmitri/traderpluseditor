@@ -1,0 +1,11 @@
+{
+    "className": "ushanka_green",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 55,
+    "sellPrice": 18,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

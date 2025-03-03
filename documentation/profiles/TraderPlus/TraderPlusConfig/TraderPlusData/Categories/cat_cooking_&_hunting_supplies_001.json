@@ -1,0 +1,12 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Cooking & Hunting Supplies",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_purificationtablets_001",
+        "prod_pot_001",
+        "prod_tripod_001",
+        "prod_beartrap_001"
+    ]
+}

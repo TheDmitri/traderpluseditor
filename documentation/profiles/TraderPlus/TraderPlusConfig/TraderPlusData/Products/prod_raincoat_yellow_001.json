@@ -1,0 +1,11 @@
+{
+    "className": "raincoat_yellow",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 70,
+    "sellPrice": 15,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

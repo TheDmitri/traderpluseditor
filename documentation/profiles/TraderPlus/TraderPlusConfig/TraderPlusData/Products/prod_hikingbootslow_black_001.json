@@ -1,0 +1,11 @@
+{
+    "className": "hikingbootslow_black",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 50,
+    "sellPrice": 14,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

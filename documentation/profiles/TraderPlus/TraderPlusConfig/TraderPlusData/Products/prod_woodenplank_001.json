@@ -1,0 +1,11 @@
+{
+    "className": "woodenplank",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 5243556,
+    "buyPrice": 50,
+    "sellPrice": 15,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

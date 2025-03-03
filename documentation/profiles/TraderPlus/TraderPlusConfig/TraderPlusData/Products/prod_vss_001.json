@@ -1,0 +1,11 @@
+{
+    "className": "vss",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 524388,
+    "buyPrice": 1600,
+    "sellPrice": 960,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

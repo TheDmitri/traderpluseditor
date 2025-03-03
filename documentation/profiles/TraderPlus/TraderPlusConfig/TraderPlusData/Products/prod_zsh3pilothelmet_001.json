@@ -1,0 +1,11 @@
+{
+    "className": "zsh3pilothelmet",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 130,
+    "sellPrice": 35,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

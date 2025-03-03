@@ -1,0 +1,12 @@
+{
+    "isVisible": 1,
+    "icon": "",
+    "categoryName": "Animal Parts",
+    "licensesRequired": [],
+    "productIds": [
+        "prod_bone_001",
+        "prod_lard_001",
+        "prod_guts_001",
+        "prod_smallguts_001"
+    ]
+}

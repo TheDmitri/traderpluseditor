@@ -1,0 +1,11 @@
+{
+    "className": "ak_woodhndgrd",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 1,
+    "buyPrice": 200,
+    "sellPrice": 100,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

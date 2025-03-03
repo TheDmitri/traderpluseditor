@@ -1,0 +1,11 @@
+{
+    "className": "mp5k",
+    "coefficient": 1.0,
+    "maxStock": -1,
+    "tradeQuantity": 524388,
+    "buyPrice": 1000,
+    "sellPrice": 450,
+    "stockSettings": 0,
+    "attachments": [],
+    "variants": []
+}

@@ -1,6 +1,6 @@
-# Traderpluseditor
+# TraderPlus Editor
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.0.
+A web-based editor for DayZ TraderPlus mod configuration.
 
 ## Development server
 
@@ -14,13 +14,35 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
+## Linting
+
+Run `npm run lint` to execute the linting checks on the project.
+
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
+## CI/CD Pipeline
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+This project includes a Continuous Integration and Continuous Deployment (CI/CD) pipeline using GitHub Actions. The pipeline:
+
+1. Runs linting checks on the codebase
+2. Builds the Angular application for production
+3. Deploys the built application to a VPS via SSH (only on main/master branch)
+
+For detailed setup instructions, see the [CI-CD-SETUP.md](./CI-CD-SETUP.md) file.
+
+### Manual Deployment
+
+You can manually deploy the application using the provided scripts:
+
+- On Linux/macOS: `./deploy.sh <ssh_user> <ssh_host> <deploy_path>`
+- On Windows: `deploy.bat <ssh_user> <ssh_host> <deploy_path>`
+
+Example:
+```bash
+./deploy.sh user example.com /var/www/traderpluseditor
+```
 
 ## Further help
 
