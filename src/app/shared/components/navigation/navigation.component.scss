@@ -8,7 +8,7 @@
 }
 
 .sidenav {
-  width: 260px;
+  width: 250px;
   background-color: #1e1e1e;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   transition: width 0.3s ease;
@@ -16,7 +16,7 @@
   flex-direction: column;
   
   &.collapsed {
-    width: 70px;
+    width: 75px;
     
     .nav-icon-wrapper {
       margin: 0 auto;
@@ -60,6 +60,7 @@
   flex: 1;
   overflow-y: auto;
   padding-top: 8px;
+  padding-left: 5px;
   
   /* Hide scrollbar for Chrome, Safari and Opera */
   &::-webkit-scrollbar {
@@ -73,6 +74,10 @@
 
 mat-nav-list {
   padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   
   a {
     height: 56px;
@@ -87,7 +92,7 @@ mat-nav-list {
     
     &.active-link {
       background-color: rgba(121, 134, 203, 0.15) !important;
-      border-left: 4px solid #7986cb;
+      border-left: 3px solid #7986cb;
       
       .nav-icon-wrapper {
         background: linear-gradient(135deg, #3f51b5, #7986cb);
@@ -108,12 +113,13 @@ mat-nav-list {
 .nav-item-content {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   height: 100%;
-  padding: 0 16px;
+  padding: 0;
   
   .sidenav.collapsed & {
     padding: 0;
-    justify-content: center;
+    justify-content: flex-start;
   }
 }
 
@@ -149,14 +155,4 @@ mat-nav-list {
   padding: 0;
   height: 100%;
   overflow: auto;
-}
-
-.content-expanded {
-  margin-left: 260px;
-  transition: margin-left 0.3s ease;
-}
-
-.content-collapsed {
-  margin-left: 70px;
-  transition: margin-left 0.3s ease;
 }
