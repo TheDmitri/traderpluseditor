@@ -34,8 +34,8 @@ export class NavigationComponent {
   
   navItems: NavItem[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
-    { label: 'Categories', icon: 'category', route: '/categories' },
-    { label: 'Products', icon: 'inventory_2', route: '/products' },
+    { label: 'Categories', icon: 'my_library_books', route: '/categories' },
+    { label: 'Products', icon: 'shopping_cart', route: '/products' },
     { label: 'Currencies', icon: 'attach_money', route: '/currencies' },
     { label: 'Settings', icon: 'settings', route: '/settings' },
     { label: 'Import/Export', icon: 'import_export', route: '/file-management' }
