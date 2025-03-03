@@ -1,8 +1,9 @@
 <div class="app-container">
-  <mat-toolbar color="primary" class="app-toolbar">
-    <button *ngIf="!isNavExpanded()" mat-icon-button class="menu-button" (click)="toggleNav()" matTooltip="Expand menu">
-      <mat-icon>menu</mat-icon>
-    </button>
+ <mat-toolbar color="primary" class="app-toolbar">
+  <button mat-icon-button class="menu-button" (click)="toggleNav()" 
+          [matTooltip]="isNavExpanded() ? 'Collapse menu' : 'Expand menu'">
+    <mat-icon>{{ isNavExpanded() ? 'chevron_left' : 'menu' }}</mat-icon>
+  </button>
     <div class="toolbar-title-container">
       <span class="app-title">TraderPlus Editor</span>
     </div>
