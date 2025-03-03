@@ -1,0 +1,38 @@
+<div class="category-editor-container">
+  <h2>Category Editor</h2>
+  <button mat-raised-button color="primary" (click)="addCategory()">Add Category</button>
+  <div class="category-grid">
+    <div *ngFor="let categoryControl of categoriesControls; let i = index" [formGroup]="categoryControl">
+      <mat-card>
+        <!-- Visible Toggle oben rechts -->
+        <div class="toggle-container">
+          <mat-slide-toggle formControlName="isVisible">Visible</mat-slide-toggle>
+        </div>
+        <mat-card-title>
+          Category:
+          <input matInput formControlName="categoryName" placeholder="Category Name">
+        </mat-card-title>
+        <mat-card-content>
+          <div>
+            <mat-label>Icon</mat-label>
+            <input matInput formControlName="icon" placeholder="Icon name">
+          </div>
+          <div>
+            <mat-label>Products (comma separated IDs)</mat-label>
+            <!-- Geändert zu textarea -->
+            <textarea matInput formControlName="productIds" placeholder="e.g., prod_m4a1_001, prod_pistol_002"></textarea>
+          </div>
+          <div>
+            <mat-label>Licenses Required (comma separated)</mat-label>
+            <input matInput formControlName="licensesRequired" placeholder="e.g., license_A, license_B">
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button color="warn" (click)="removeCategory(i)">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

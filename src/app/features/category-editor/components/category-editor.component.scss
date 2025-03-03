@@ -1,0 +1,155 @@
+.category-editor-container {
+  padding: 24px;
+  margin: 0 auto;
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 24px;
+    color: #ffffff;
+    font-weight: 400;
+  }
+
+  button {
+    margin-bottom: 16px;
+    text-transform: none;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  // Responsive Grid-Container
+  .category-grid {
+    display: grid;
+    grid-gap: 32px;
+    grid-template-columns: 1fr; // Standard: 1 Spalte
+
+    @media (min-width: 1000px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 1600px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (min-width: 2200px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  mat-card {
+    position: relative;
+    background-color: #444444;
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+    border: rgba(90, 90, 90, 0.5) 1px solid;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    // Toggle-Container oben rechts
+    .toggle-container {
+      position: absolute;
+      margin-top: 10px;
+      right: 10px;
+      background: transparent;
+      mat-slide-toggle {
+        background: transparent;
+      }
+    }
+
+    mat-card-title {
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: baseline;
+
+      input {
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid #ffffff;
+        color: #ffffff;
+        outline: none;
+        padding: 4px 8px;
+        font-size: 1.5rem;
+
+        &:focus {
+          border-bottom-color: #90caf9;
+        }
+      }
+    }
+
+    mat-card-content {
+      div {
+        margin: 12px 0;
+
+        mat-label {
+          display: block;
+          margin-bottom: 4px;
+          font-size: 0.9rem;
+          color: #cccccc;
+        }
+
+        input,
+        mat-slide-toggle {
+          width: 100%;
+          border-radius: 4px;
+          background: #616161;
+          color: #ffffff;
+          border: none;
+          font-size: 1rem;
+          transition: box-shadow 0.2s ease-in-out;
+
+          &:focus {
+            outline: none;
+            box-shadow: 0 0 3px 2px #90caf9;
+          }
+        }
+
+        // Spezieller Style für textarea im Products-Feld
+        textarea[matInput] {
+          width: 100%;
+          min-width: 100%;
+          max-width: 460px;
+          padding: 8px;
+          border-radius: 4px;
+          background: #616161;
+          color: #ffffff;
+          border: none;
+          font-size: 1rem;
+          transition: box-shadow 0.2s ease-in-out;
+          min-height: 50px;
+          max-height: 100px;
+          overflow-y: auto;
+
+          &:focus {
+            outline: none;
+            box-shadow: 0 0 3px 2px #90caf9;
+          }
+        }
+      }
+    }
+
+    mat-card-actions {
+      display: flex;
+      justify-content: flex-end;
+      padding: 8px;
+
+      button {
+        margin: 0 4px;
+        text-transform: none;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+  }
+}
