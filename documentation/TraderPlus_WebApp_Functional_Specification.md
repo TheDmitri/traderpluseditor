@@ -398,9 +398,9 @@ The web application must:
 - [x] Develop file import/export functionality
 
 ### 10.2 Phase 2: Category and Product Management
-- Implement category editor component
-- Develop product editor component
-- Create relationship management between categories and products
+- [x] Implement category editor component
+- [x] Develop product editor component
+- [x] Create relationship management between categories and products
 - Add validation and error handling
 
 ### 10.3 Phase 3: Currency and Settings
