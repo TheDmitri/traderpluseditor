@@ -1,7 +1,16 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+} from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +20,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { Category, Product } from '../../../../core/models';
 import { StorageService } from '../../../../core/services/storage.service';
+import { ProductListComponent } from '../../../../shared/components/product-list/product-list.component';
 
 @Component({
   selector: 'app-category-modal',
@@ -26,12 +36,14 @@ import { StorageService } from '../../../../core/services/storage.service';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
+    ProductListComponent,
   ],
   templateUrl: './category-modal.component.html',
-  styleUrls: ['./category-modal.component.scss']
+  styleUrls: ['./category-modal.component.scss'],
 })
 export class CategoryModalComponent implements OnInit {
   categoryForm: FormGroup;
+  categoryProducts: Product[] = [];
   isEditMode: boolean;
 
   constructor(
@@ -40,24 +52,63 @@ export class CategoryModalComponent implements OnInit {
     private storageService: StorageService,
     @Inject(MAT_DIALOG_DATA) public data: { category?: Category }
   ) {
+    this.dialogRef.disableClose = true;
+    // Prevent dialog from closing on escape key
+    this.dialogRef.keydownEvents().subscribe((event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    });
     this.isEditMode = !!data.category;
     this.categoryForm = this.fb.group({
       categoryName: ['', Validators.required],
       icon: [''],
       licensesRequired: [''],
-      isVisible: [true]
+      isVisible: [data.category?.isVisible ?? true],
     });
   }
 
   ngOnInit(): void {
     if (this.isEditMode && this.data.category) {
+      this.loadCategoryProducts();
+
       this.categoryForm.patchValue({
         categoryName: this.data.category.categoryName,
         icon: this.data.category.icon,
         licensesRequired: this.data.category.licensesRequired.join(', '),
-        isVisible: this.data.category.isVisible
+        isVisible: this.data.category.isVisible,
       });
     }
+  }
+
+  loadCategoryProducts(): void {
+    if (this.data.category) {
+      const allProducts = this.storageService.products();
+      this.categoryProducts = allProducts.filter((product) =>
+        this.data.category!.productIds.includes(product.productId)
+      );
+    }
+  }
+
+  onProductRemoved(productId: string): void {
+    if (this.data.category) {
+      // Use setTimeout to ensure event propagation is complete
+      setTimeout(() => {
+        const updatedProductIds = this.data.category!.productIds.filter(
+          (id) => id !== productId
+        );
+        this.data.category!.productIds = updatedProductIds;
+        this.loadCategoryProducts();
+      });
+    }
+  }
+
+  onProductEdited(product: Product): void {
+    // Use setTimeout to ensure event propagation is complete
+    setTimeout(() => {
+      console.log('Edit product:', product);
+    });
   }
 
   onSubmit(): void {
@@ -70,7 +121,7 @@ export class CategoryModalComponent implements OnInit {
         licensesRequired: formValue.licensesRequired
           ? formValue.licensesRequired.split(',').map((s: string) => s.trim())
           : [],
-        productIds: this.isEditMode ? this.data.category?.productIds : []
+        productIds: this.isEditMode ? this.data.category?.productIds : [],
       };
       this.dialogRef.close(category);
     }
