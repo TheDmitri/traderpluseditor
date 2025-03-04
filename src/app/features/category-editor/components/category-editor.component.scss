@@ -1,5 +1,8 @@
 .category-editor-container {
   padding: 24px;
+  @media screen and (max-width: 600px) {
+    padding: 16px;
+  }
 
   .header {
     display: flex;
@@ -31,60 +34,86 @@
   .table-container {
     position: relative;
     min-height: 200px;
-    overflow: auto;
+    overflow-x: auto;
+    margin: 0 -8px; // Kompensiert das Padding für volle Breite auf kleinen Bildschirmen
 
     table {
       width: 100%;
       background: transparent;
 
-      // Spaltenbreiten und Ausrichtung
+      // Responsive Spaltenbreiten
       .mat-column-icon {
-        width: 5%;
-        text-align: start;
+        min-width: 48px;
+        flex: 0.3;
       }
 
       .mat-column-categoryName {
-        width: 25%;
+        min-width: 180px;
+        flex: 2;
       }
 
       .mat-column-categoryId {
-        width: 20%;
+        min-width: 150px;
+        flex: 1.5;
+        @media screen and (max-width: 768px) {
+          display: none; // Hide on smaller screens
+        }
       }
 
       .mat-column-isVisible {
-        width: 10%;
-        text-align: start;
+        min-width: 80px;
+        flex: 0.5;
       }
 
       .mat-column-productCount {
-        width: 15%;
+        min-width: 100px;
+        flex: 0.8;
         text-align: center;
       }
 
       .mat-column-actions {
-        width: 15%;
+        min-width: 120px;
+        flex: 0.5;
         text-align: right;
         padding-right: 16px;
       }
 
-      // Header Styling
-      .mat-header-cell {
+      // Verbesserte Zellen-Styles
+      .mat-header-cell,
+      .mat-cell {
+        padding: 12px 8px;
         font-size: 14px;
-        font-weight: 500;
         color: rgba(255, 255, 255, 0.87);
-        padding: 0 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
-      // Zellen Styling
+      .mat-header-cell {
+        font-weight: 500;
+      }
+    }
+
+    // Responsive Anpassungen
+    @media screen and (max-width: 960px) {
+      .mat-header-cell,
       .mat-cell {
-        font-size: 14px;
-        color: rgba(255, 255, 255, 0.87);
-        padding: 0 8px;
+        padding: 8px 4px;
+        font-size: 13px;
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      .mat-header-cell,
+      .mat-cell {
+        padding: 6px 4px;
+        font-size: 12px;
       }
     }
   }
 }
 
+// Gemeinsame Tabellenformatierung
 :host ::ng-deep {
   .mat-mdc-table {
     background: transparent;
@@ -92,5 +121,24 @@
 
   .mat-mdc-row:hover {
     background: rgba(255, 255, 255, 0.04);
+  }
+
+  // Verbesserte Scrollbar-Styles
+  ::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
   }
 }

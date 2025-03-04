@@ -7,13 +7,17 @@
   .products-table {
     width: 100%;
     background: transparent;
+    overflow-x: auto;
 
+    // Responsive Spaltenbreiten mit min-width
     .mat-column-className {
-      width: 25%;
+      min-width: 200px;
+      flex: 2;
     }
 
     .mat-column-categories {
-      width: 15%;
+      min-width: 150px;
+      flex: 1.5;
       padding: 0 8px;
 
       .category-list {
@@ -22,49 +26,60 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        @media screen and (max-width: 600px) {
+          max-width: 120px;
+        }
       }
     }
 
     .mat-column-maxStock {
-      width: 5%;
-      text-align: start;
+      min-width: 80px;
+      flex: 0.5;
     }
 
     .mat-column-buyPrice,
     .mat-column-sellPrice {
-      width: 10%;
-      text-align: start;
+      min-width: 100px;
+      flex: 0.8;
     }
 
     .mat-column-actions {
-      width: 15%;
+      min-width: 120px;
+      flex: 0.5;
       text-align: end;
       padding-right: 16px;
     }
 
-    // Header Styling
-    .mat-header-cell {
-      font-size: 14px;
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.87);
-      padding: 0 8px;
-    }
-
-    // Cell Styling
+    // Verbesserte Zellen-Styles
+    .mat-header-cell,
     .mat-cell {
+      padding: 12px 8px;
       font-size: 14px;
       color: rgba(255, 255, 255, 0.87);
-      padding: 0 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-  }
-}
 
-:host ::ng-deep {
-  .mat-mdc-table {
-    background: transparent;
-  }
+    .mat-header-cell {
+      font-weight: 500;
+    }
 
-  .mat-mdc-row:hover {
-    background: rgba(255, 255, 255, 0.04);
+    // Media Queries für verschiedene Bildschirmgrößen
+    @media screen and (max-width: 960px) {
+      .mat-header-cell,
+      .mat-cell {
+        padding: 8px 4px;
+        font-size: 13px;
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      .mat-header-cell,
+      .mat-cell {
+        padding: 6px 4px;
+        font-size: 12px;
+      }
+    }
   }
 }
