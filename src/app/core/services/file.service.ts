@@ -157,17 +157,17 @@ export class FileService {
       let products: Product[] = [];
       if (Array.isArray(data)) {
         products = data
-          .map((item) => this.convertToProduct(item))
+          .map((item) => this.convertToProduct(item, file.name))
           .filter((p): p is Product => p !== null);
       } else if (data && typeof data === 'object') {
-        const product = this.convertToProduct(data);
+        const product = this.convertToProduct(data, file.name);
         if (product) {
           products = [product];
         }
       } else {
         throw new Error('Invalid product data format');
       }
-      // Merge with existing products and ensure unique IDs
+
       const existing = this.storageService.products();
       const merged = this.mergeProducts(existing, products);
       this.storageService.saveProducts(merged);
@@ -181,65 +181,61 @@ export class FileService {
    */
   importMultipleProducts(files: FileList): Promise<void> {
     const filesArray = Array.from(files);
-    return Promise.all(filesArray.map((file) => this.importFile(file))).then(
-      (results) => {
-        let importedProducts: Product[] = [];
-        for (const result of results) {
-          if (Array.isArray(result)) {
-            importedProducts = importedProducts.concat(result as Product[]);
-          } else if (result && typeof result === 'object') {
-            // Single product in file
-            const product = this.convertToProduct(result);
-            if (product) {
-              importedProducts.push(product);
-            }
+    return Promise.all(
+      filesArray.map((file) =>
+        this.importFile(file).then((data) => {
+          if (Array.isArray(data)) {
+            return data
+              .map((item) => this.convertToProduct(item, file.name))
+              .filter((p): p is Product => p !== null);
+          } else if (data && typeof data === 'object') {
+            const product = this.convertToProduct(data, file.name);
+            return product ? [product] : [];
           }
-        }
-        // Merge with existing products and ensure unique IDs
-        const existing = this.storageService.products();
-        const merged = this.mergeProducts(existing, importedProducts);
-        this.storageService.saveProducts(merged);
-      }
-    );
+          return [];
+        })
+      )
+    ).then((results) => {
+      const importedProducts = results.flat();
+      const existing = this.storageService.products();
+      const merged = this.mergeProducts(existing, importedProducts);
+      this.storageService.saveProducts(merged);
+    });
   }
 
   /**
    * Helper to merge products and generate new productIds if needed
    */
+
   private mergeProducts(existing: Product[], imported: Product[]): Product[] {
-    const nextId = this.getNextProductId(existing);
     const merged = [...existing];
 
     imported.forEach((product) => {
-      // Prüfe ob das Produkt bereits existiert (über className)
-      const existingIndex = merged.findIndex(
-        (p) => p.className === product.className
+      const baseId = product.productId.replace(/\_\d+$/, ''); // Remove number suffix
+      const existingProduct = merged.find(
+        (p) => p.productId === product.productId
       );
 
-      if (existingIndex === -1) {
-        // Neues Produkt - generiere neue ID
-        const newProduct = {
-          ...product,
-          productId: this.generateProductId(nextId + merged.length),
-        };
-        merged.push(newProduct);
-
-        // Aktualisiere die Kategorien mit der neuen productId
-        const categories = this.storageService.categories();
-        categories.forEach((category) => {
-          if (category.className?.includes(product.className)) {
-            if (!category.productIds) {
-              category.productIds = [];
-            }
-            category.productIds.push(newProduct.productId);
-          }
-        });
-        this.storageService.saveCategories(categories);
+      if (!existingProduct) {
+        // Check if we need to increment the counter
+        const similarProducts = merged.filter((p) =>
+          p.productId.startsWith(baseId)
+        );
+        if (similarProducts.length > 0) {
+          const nextNumber = similarProducts.length + 1;
+          product.productId = `${baseId}_${nextNumber
+            .toString()
+            .padStart(3, '0')}`;
+        }
+        merged.push(product);
       } else {
-        // Aktualisiere bestehendes Produkt aber behalte die ID
-        merged[existingIndex] = {
+        // Update existing product but keep the ID
+        const index = merged.findIndex(
+          (p) => p.productId === product.productId
+        );
+        merged[index] = {
           ...product,
-          productId: merged[existingIndex].productId,
+          productId: existingProduct.productId,
         };
       }
     });
@@ -271,11 +267,14 @@ export class FileService {
   /**
    * Convert raw JSON data to Product type
    */
-  private convertToProduct(data: any): Product | null {
+  private convertToProduct(data: any, filename: string): Product | null {
     if (!data.className) return null;
 
+    // Extract productId from filename (without .json extension)
+    const productId = filename.replace('.json', '');
+
     return {
-      productId: '', // Will be generated during merge
+      productId: productId,
       className: data.className,
       coefficient: data.coefficient || 1.0,
       maxStock: data.maxStock || -1,

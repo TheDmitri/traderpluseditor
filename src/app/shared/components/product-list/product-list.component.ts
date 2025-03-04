@@ -1,13 +1,26 @@
-import { CommonModule } from "@angular/common";
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, SimpleChanges } from "@angular/core";
-import { MatButtonModule } from "@angular/material/button";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatIconModule } from "@angular/material/icon";
-import { MatInputModule } from "@angular/material/input";
-import { MatPaginatorModule, MatPaginator } from "@angular/material/paginator";
-import { MatSortModule, MatSort } from "@angular/material/sort";
-import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { Product } from "../../../core/models";
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  SimpleChanges,
+} from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { Product } from '../../../core/models';
+import { StorageService } from '../../../core/services/storage.service';
+
+export interface ProductWithCategories extends Product {
+  categories?: string[];
+}
 
 @Component({
   selector: 'app-product-list',
@@ -23,7 +36,7 @@ import { Product } from "../../../core/models";
     MatButtonModule,
   ],
   templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.scss']
+  styleUrls: ['./product-list.component.scss'],
 })
 export class ProductListComponent implements OnInit {
   @Input() products: Product[] = [];
@@ -31,9 +44,10 @@ export class ProductListComponent implements OnInit {
   @Output() productRemoved = new EventEmitter<string>();
   @Output() productEdited = new EventEmitter<Product>();
 
-  dataSource: MatTableDataSource<Product>;
+  dataSource: MatTableDataSource<ProductWithCategories>;
   displayedColumns: string[] = [
     'className',
+    'categories',
     'maxStock',
     'buyPrice',
     'sellPrice',
@@ -42,8 +56,8 @@ export class ProductListComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor() {
-    this.dataSource = new MatTableDataSource<Product>([]);
+  constructor(private storageService: StorageService) {
+    this.dataSource = new MatTableDataSource<ProductWithCategories>([]);
   }
 
   ngOnInit(): void {
@@ -54,8 +68,24 @@ export class ProductListComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['products']) {
-      this.dataSource.data = this.products;
+      const productsWithCategories = this.addCategoryInfo(this.products);
+      this.dataSource.data = productsWithCategories;
     }
+  }
+
+  private addCategoryInfo(products: Product[]): ProductWithCategories[] {
+    const categories = this.storageService.categories();
+
+    return products.map((product) => {
+      const productCategories = categories
+        .filter((category) => category.productIds.includes(product.productId))
+        .map((category) => category.categoryName);
+
+      return {
+        ...product,
+        categories: productCategories,
+      };
+    });
   }
 
   ngAfterViewInit(): void {
