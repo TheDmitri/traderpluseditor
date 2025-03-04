@@ -1,6 +1,6 @@
 .file-management-container {
   padding: 24px;
-  max-width: 1200px;
+  max-width: 2200px;
   margin: 0 auto;
 }
 
@@ -166,7 +166,7 @@
 
 @media (max-width: 768px) {
   .file-sections-container {
-    grid-template-columns: 1fr;
+    grid-template-columns: 2fr;
   }
   
   .import-section, .export-section {
