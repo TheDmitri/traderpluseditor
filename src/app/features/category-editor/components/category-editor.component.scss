@@ -1,21 +1,66 @@
 .category-editor-container {
   padding: 24px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 
-  h2 {
-    font-size: 2rem;
-    margin-bottom: 24px;
-    color: #ffffff;
-    font-weight: 400;
+  .header {
+    display: flex;
+    justify-content: space-between; /* Split header into two columns */
+    align-items: flex-start;
+    margin-bottom: 50px;
+
+    .header-left {
+      display: flex;
+      flex-direction: column; /* Stack header text and buttons vertically */
+      align-items: flex-start;
+
+      h2 {
+        font-size: 2rem;
+        color: #ffffff;
+        font-weight: 400;
+        margin-bottom: 16px;
+      }
+
+      .header-buttons {
+        display: flex;
+        gap: 8px;
+
+        button,
+        a[mat-raised-button] {
+          text-transform: none;
+          display: flex;
+          align-items: center;
+          gap: 4px; /* Space between icon and text */
+        }
+      }
+    }
+
+    .header-right {
+      display: flex;
+      align-items: flex-start;
+    }
   }
 
-  button {
-    margin-bottom: 16px;
-    text-transform: none;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  .danger-zone-container {
+    width: 350px; /* Set a fixed width for the Danger Zone */
+  }
+
+  /* Danger Zone styles applied to the mat-expansion-panel */
+  .danger-zone-panel {
+    border: 1px solid #f44336;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: #2a1a1a; // toned down background
+    mat-expansion-panel-header {
+      color: #f44336;
+      font-weight: bold;
+    }
+    .danger-zone-content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column; /* Stack buttons vertically */
+      gap: 8px;
     }
   }
 

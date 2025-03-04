@@ -1,6 +1,43 @@
 <div class="category-editor-container">
-  <h2>Category Editor</h2>
-  <button mat-raised-button color="primary" (click)="addCategory()">Add Category</button>
+  <div class="header">
+    <div class="header-left">
+      <h2>Category Editor</h2>
+      <div class="header-buttons">
+        <button mat-raised-button color="primary" (click)="addCategory()">
+          <mat-icon>add</mat-icon>
+          Add Category
+        </button>
+        <a mat-raised-button color="primary" routerLink="/file-management">
+          <mat-icon>upload_file</mat-icon>
+          Import Categories
+        </a>
+      </div>
+    </div>
+    <div class="header-right">
+      <!-- Collapsible Danger Zone (default collapsed) -->
+      <div class="danger-zone-container">
+        <mat-expansion-panel class="danger-zone-panel" [expanded]="false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Danger Zone
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="danger-zone-content">
+            <button mat-raised-button color="warn" (click)="removeAllCategories()">
+              <mat-icon>delete_forever</mat-icon>
+              Remove All Categories
+            </button>
+            <button mat-raised-button color="warn" (click)="toggleAllCategoriesVisibility()">
+              <mat-icon>visibility</mat-icon>
+              Toggle All Visibility
+            </button>
+          </div>
+        </mat-expansion-panel>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid container for category cards -->
   <div class="category-grid">
     <div *ngFor="let categoryControl of categoriesControls; let i = index" [formGroup]="categoryControl">
       <mat-card>
@@ -20,7 +57,8 @@
           <div>
             <mat-label>Products (comma separated IDs)</mat-label>
             <!-- Changed to textarea -->
-            <textarea matInput formControlName="productIds" placeholder="e.g., prod_m4a1_001, prod_pistol_002"></textarea>
+            <textarea matInput formControlName="productIds"
+              placeholder="e.g., prod_m4a1_001, prod_pistol_002"></textarea>
           </div>
           <div>
             <mat-label>Licenses Required (comma separated)</mat-label>

@@ -6,6 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+// Import expansion module for the collapsible Danger Zone panel
+import { MatExpansionModule } from '@angular/material/expansion';
 import { StorageService } from '../../../core/services/storage.service';
 import { Category } from '../../../core/models';
 
@@ -19,16 +21,16 @@ import { Category } from '../../../core/models';
     MatInputModule,
     MatSlideToggleModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatExpansionModule // added for Danger Zone
   ],
   templateUrl: './category-editor.component.html',
   styleUrls: ['./category-editor.component.scss']
 })
 export class CategoryEditorComponent implements OnInit {
-
   categoriesFormArray: FormArray = this.fb.array([]);
 
-  // Getter, der die Controls als FormGroup[] castet
+  // Getter that casts the controls as FormGroup[]
   get categoriesControls(): FormGroup[] {
     return this.categoriesFormArray.controls as FormGroup[];
   }
@@ -41,7 +43,7 @@ export class CategoryEditorComponent implements OnInit {
       this.categoriesFormArray.push(this.createCategoryForm(category));
     });
 
-    // Auto-save: sobald sich ein Feld ändert, werden die aktualisierten Kategorien im LocalStorage gespeichert.
+    // Auto-save on changes: update LocalStorage immediately when form values change.
     this.categoriesFormArray.valueChanges.subscribe((values) => {
       const updatedCategories: Category[] = values.map((v: any) => ({
         categoryId: v.categoryId,
@@ -54,6 +56,34 @@ export class CategoryEditorComponent implements OnInit {
       }));
       this.storageService.saveCategories(updatedCategories);
     });
+  }
+
+  // Method to remove all categories
+  removeAllCategories(): void {
+    // Clear form array
+    this.categoriesFormArray.clear();
+    // Save the empty list to LocalStorage
+    this.storageService.saveCategories([]);
+  }
+
+  // Method to toggle visibility for all categories
+  toggleAllCategoriesVisibility(): void {
+    // Determine the current collective state:
+    const allVisible = this.categoriesControls.every(group => group.get('isVisible')?.value === true);
+    const newVisibility = !allVisible;
+    // Set the new visibility for every category
+    this.categoriesControls.forEach(group => group.get('isVisible')?.setValue(newVisibility));
+    // Update LocalStorage with the modified values
+    const updatedCategories: Category[] = this.categoriesFormArray.value.map((v: any) => ({
+      categoryId: v.categoryId,
+      categoryName: v.categoryName,
+      icon: v.icon,
+      isVisible: newVisibility,
+      licensesRequired: this.parseCommaSeparated(v.licensesRequired),
+      productIds: this.parseCommaSeparated(v.productIds),
+      categoryType: v.categoryType
+    }));
+    this.storageService.saveCategories(updatedCategories);
   }
 
   createCategoryForm(category: Category): FormGroup {
@@ -96,8 +126,8 @@ export class CategoryEditorComponent implements OnInit {
   }
 
   generateCategoryId(): string {
-    // Einfache Implementierung: "cat_new_001".
-    // Prüfe in einer realen Anwendung die Eindeutigkeit anhand existierender IDs.
+    // Simple implementation: "cat_new_001".
+    // In a real application, ensure uniqueness based on existing IDs.
     return 'cat_new_' + (this.categoriesFormArray.length + 1).toString().padStart(3, '0');
   }
 }
