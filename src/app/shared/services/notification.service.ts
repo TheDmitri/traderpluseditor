@@ -1,30 +1,38 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NotificationService {
+  private defaultConfig: MatSnackBarConfig = {
+    duration: 3000,
+    horizontalPosition: 'right',
+    verticalPosition: 'top',
+    panelClass: ['custom-snackbar'],
+  };
+
   constructor(private snackBar: MatSnackBar) {}
 
   success(message: string): void {
     this.snackBar.open(message, 'Close', {
-      duration: 3000,
-      panelClass: 'success-snackbar'
+      ...this.defaultConfig,
+      panelClass: ['custom-snackbar', 'success-snackbar'],
     });
   }
 
   warning(message: string): void {
     this.snackBar.open(message, 'Close', {
-      duration: 3000,
-      panelClass: 'warning-snackbar'
+      ...this.defaultConfig,
+      panelClass: ['custom-snackbar', 'warning-snackbar'],
     });
   }
 
   error(message: string): void {
     this.snackBar.open(message, 'Close', {
+      ...this.defaultConfig,
       duration: 5000,
-      panelClass: 'error-snackbar'
+      panelClass: ['custom-snackbar', 'error-snackbar'],
     });
   }
 }

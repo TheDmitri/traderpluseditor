@@ -68,3 +68,37 @@ html, body {
 .mat-icon {
   color: inherit;
 }
+
+// Snackbar Styles
+.mat-mdc-snack-bar-container {
+  &.success-snackbar, &.warning-snackbar, &.error-snackbar {
+    --mdc-snackbar-container-color: #2d2d2d;
+    --mdc-snackbar-supporting-text-color: white;
+
+    .mat-mdc-button {
+      color: white;
+    }
+  }
+
+  &.success-snackbar {
+    --mdc-snackbar-container-color: #43a047;
+  }
+
+  &.warning-snackbar {
+    --mdc-snackbar-container-color: #fb8c00;
+  }
+
+  &.error-snackbar {
+    --mdc-snackbar-container-color: #d32f2f;
+  }
+}
+
+// Globale Snackbar-Position
+.custom-snackbar {
+  position: fixed !important;
+  top: 80px !important; // Abstand zur Toolbar
+  right: 16px !important;
+  left: unset !important;
+  bottom: unset !important;
+  margin: 0 !important;
+}
