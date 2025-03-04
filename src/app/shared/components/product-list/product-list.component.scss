@@ -8,24 +8,36 @@
     width: 100%;
     background: transparent;
 
-    // Spaltenbreiten und Ausrichtung
     .mat-column-className {
-      width: 40%;
+      width: 25%;
+    }
+
+    .mat-column-categories {
+      width: 15%;
+      padding: 0 8px;
+
+      .category-list {
+        display: inline-block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
 
     .mat-column-maxStock {
-      width: 15%;
+      width: 5%;
       text-align: start;
     }
 
     .mat-column-buyPrice,
     .mat-column-sellPrice {
-      width: 15%;
+      width: 10%;
       text-align: start;
     }
 
     .mat-column-actions {
-      width: 100px;
+      width: 15%;
       text-align: end;
       padding-right: 16px;
     }
@@ -38,7 +50,7 @@
       padding: 0 8px;
     }
 
-    // Zellen Styling
+    // Cell Styling
     .mat-cell {
       font-size: 14px;
       color: rgba(255, 255, 255, 0.87);

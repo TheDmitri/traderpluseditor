@@ -39,12 +39,12 @@
 
       // Spaltenbreiten und Ausrichtung
       .mat-column-icon {
-        width: 48px;
-        text-align: center;
+        width: 5%;
+        text-align: start;
       }
 
       .mat-column-categoryName {
-        width: 30%;
+        width: 25%;
       }
 
       .mat-column-categoryId {
@@ -52,7 +52,7 @@
       }
 
       .mat-column-isVisible {
-        width: 100px;
+        width: 10%;
         text-align: start;
       }
 
@@ -62,7 +62,7 @@
       }
 
       .mat-column-actions {
-        width: 100px;
+        width: 15%;
         text-align: right;
         padding-right: 16px;
       }
