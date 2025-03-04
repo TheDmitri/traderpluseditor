@@ -4,7 +4,7 @@
   <div class="category-grid">
     <div *ngFor="let categoryControl of categoriesControls; let i = index" [formGroup]="categoryControl">
       <mat-card>
-        <!-- Visible Toggle oben rechts -->
+        <!-- Toggle container in the top right corner -->
         <div class="toggle-container">
           <mat-slide-toggle formControlName="isVisible">Visible</mat-slide-toggle>
         </div>
@@ -19,7 +19,7 @@
           </div>
           <div>
             <mat-label>Products (comma separated IDs)</mat-label>
-            <!-- Geändert zu textarea -->
+            <!-- Changed to textarea -->
             <textarea matInput formControlName="productIds" placeholder="e.g., prod_m4a1_001, prod_pistol_002"></textarea>
           </div>
           <div>

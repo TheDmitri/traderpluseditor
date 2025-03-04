@@ -19,11 +19,11 @@
     }
   }
 
-  // Responsive Grid-Container
+  // Responsive Grid Container for category cards
   .category-grid {
     display: grid;
     grid-gap: 32px;
-    grid-template-columns: 1fr; // Standard: 1 Spalte
+    grid-template-columns: 1fr; // Default: 1 column
 
     @media (min-width: 1000px) {
       grid-template-columns: repeat(2, 1fr);
@@ -53,11 +53,11 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
 
-    // Toggle-Container oben rechts
+    // Toggle container at the top right corner without background
     .toggle-container {
       position: absolute;
-      margin-top: 10px;
-      right: 10px;
+      top: 8px;
+      right: 8px;
       background: transparent;
       mat-slide-toggle {
         background: transparent;
@@ -99,6 +99,7 @@
         input,
         mat-slide-toggle {
           width: 100%;
+          padding: 8px;
           border-radius: 4px;
           background: #616161;
           color: #ffffff;
@@ -112,7 +113,7 @@
           }
         }
 
-        // Spezieller Style für textarea im Products-Feld
+        // Specific style for textarea in the products field:
         textarea[matInput] {
           width: 100%;
           min-width: 100%;
