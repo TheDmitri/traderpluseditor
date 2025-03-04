@@ -15,6 +15,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-product-editor',
@@ -38,7 +39,8 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
 
   constructor(
     private storageService: StorageService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +62,7 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
         const updatedProducts = [...this.products, result.product];
         this.storageService.saveProducts(updatedProducts);
         this.loadProducts();
+        this.notificationService.success('Product created successfully');
       }
     });
   }
@@ -80,6 +83,7 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
       if (result) {
         this.storageService.saveProducts([]);
         this.loadProducts();
+        this.notificationService.success('All products deleted successfully');
       }
     });
   }
@@ -103,6 +107,7 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
         );
         this.storageService.saveProducts(updatedProducts);
         this.loadProducts();
+        this.notificationService.success('Product deleted successfully');
       }
     });
   }
@@ -120,6 +125,7 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
         );
         this.storageService.saveProducts(updatedProducts);
         this.loadProducts();
+        this.notificationService.success('Product updated successfully');
       }
     });
   }

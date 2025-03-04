@@ -1,11 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  FormArray,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
   MatTableModule,
   MatTable,
@@ -23,10 +18,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { StorageService } from '../../../core/services/storage.service';
 import { Category } from '../../../core/models';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { CategoryModalComponent } from './category-modal/category-modal.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-category-editor',
@@ -67,7 +63,8 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
 
   constructor(
     private storageService: StorageService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private notificationService: NotificationService
   ) {
     this.dataSource = new MatTableDataSource<Category>([]);
   }
@@ -154,6 +151,7 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
         );
         this.storageService.saveCategories(categories);
         this.loadCategories();
+        this.notificationService.success('Category deleted successfully');
       }
     });
   }
@@ -177,6 +175,7 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
         const categories = [...this.dataSource.data, newCategory];
         this.storageService.saveCategories(categories);
         this.loadCategories();
+        this.notificationService.success('Category created successfully');
       }
     });
   }
@@ -197,6 +196,7 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
         );
         this.storageService.saveCategories(categories);
         this.loadCategories();
+        this.notificationService.success('Category updated successfully');
       }
     });
   }

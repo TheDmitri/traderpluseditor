@@ -17,6 +17,7 @@ import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Product } from '../../../core/models';
 import { StorageService } from '../../../core/services/storage.service';
+import { NotificationService } from '../../services/notification.service';
 
 export interface ProductWithCategories extends Product {
   categories?: string[];
@@ -64,27 +65,43 @@ export class ProductListComponent implements OnInit {
     'stockSettings',
     'attachments',
     'variants',
-    'actions'
+    'actions',
   ];
 
   // Add helper method to format stock settings
   formatStockSettings(value: number): string {
-    const destockCoefficient = (value & 0x7F) * 0.01;
-    const behaviorAtRestart = (value >> 7) & 0x03;
-    const behaviors = ['No Change', 'Reset Max', 'Random', 'Reserved'];
-    
-    return `${destockCoefficient.toFixed(2)}% / ${behaviors[behaviorAtRestart]}`;
+    try {
+      const destockCoefficient = (value & 0x7f) * 0.01;
+      const behaviorAtRestart = (value >> 7) & 0x03;
+      const behaviors = ['No Change', 'Reset Max', 'Random', 'Reserved'];
+
+      return `${destockCoefficient.toFixed(2)}% / ${
+        behaviors[behaviorAtRestart]
+      }`;
+    } catch (error) {
+      this.notificationService.error('Error formatting stock settings');
+      return 'Invalid';
+    }
   }
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private storageService: StorageService) {
+  constructor(
+    private storageService: StorageService,
+    private notificationService: NotificationService
+  ) {
     this.dataSource = new MatTableDataSource<ProductWithCategories>([]);
   }
 
   ngOnInit(): void {
     if (this.showActions) {
+      // Initialize with data
+      const productsWithCategories = this.addCategoryInfo(this.products);
+      if (productsWithCategories.length === 0) {
+        this.notificationService.error('No products available');
+      }
+      this.dataSource.data = productsWithCategories;
     }
   }
 
@@ -92,22 +109,32 @@ export class ProductListComponent implements OnInit {
     if (changes['products']) {
       const productsWithCategories = this.addCategoryInfo(this.products);
       this.dataSource.data = productsWithCategories;
+
+      // Notify if filtered products are empty
+      if (changes['products'].currentValue?.length === 0) {
+        this.notificationService.error('No products match the current filter');
+      }
     }
   }
 
   private addCategoryInfo(products: Product[]): ProductWithCategories[] {
-    const categories = this.storageService.categories();
+    try {
+      const categories = this.storageService.categories();
 
-    return products.map((product) => {
-      const productCategories = categories
-        .filter((category) => category.productIds.includes(product.productId))
-        .map((category) => category.categoryName);
+      return products.map((product) => {
+        const productCategories = categories
+          .filter((category) => category.productIds.includes(product.productId))
+          .map((category) => category.categoryName);
 
-      return {
-        ...product,
-        categories: productCategories,
-      };
-    });
+        return {
+          ...product,
+          categories: productCategories,
+        };
+      });
+    } catch (error) {
+      this.notificationService.error('Error loading product categories');
+      return [];
+    }
   }
 
   ngAfterViewInit(): void {
@@ -118,5 +145,14 @@ export class ProductListComponent implements OnInit {
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+
+    // Notify if no results found
+    if (this.dataSource.filteredData.length === 0) {
+      this.notificationService.error('No products match the search criteria');
+    }
   }
 }

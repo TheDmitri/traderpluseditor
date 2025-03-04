@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -15,15 +15,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { Category, Product } from '../../../../core/models';
 import { StorageService } from '../../../../core/services/storage.service';
 import { ProductListComponent } from '../../../../shared/components/product-list/product-list.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ProductModalComponent } from '../../../../shared/components/product-modal/product-modal.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { NotificationService } from '../../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-category-modal',
@@ -54,6 +55,7 @@ export class CategoryModalComponent implements OnInit {
     private dialogRef: MatDialogRef<CategoryModalComponent>,
     private storageService: StorageService,
     private dialog: MatDialog,
+    private notificationService: NotificationService,
     @Inject(MAT_DIALOG_DATA) public data: { category?: Category }
   ) {
     this.dialogRef.disableClose = true;
@@ -114,6 +116,7 @@ export class CategoryModalComponent implements OnInit {
         );
         this.data.category.productIds = updatedProductIds;
         this.loadCategoryProducts();
+        this.notificationService.success('Product removed from category');
       }
     });
   }
@@ -170,6 +173,7 @@ export class CategoryModalComponent implements OnInit {
 
           if (this.data.category) {
             this.data.category.productIds.push(result.product.productId);
+            this.notificationService.success('Product added to category successfully');
           }
 
           this.loadCategoryProducts();
