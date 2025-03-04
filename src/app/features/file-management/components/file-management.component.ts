@@ -38,79 +38,61 @@ export class FileManagementComponent {
       return;
     }
     
-    const file = input.files[0];
+    const files = input.files;
     
     switch (type) {
       case 'categories':
-        this.importCategories(file);
+        if (files.length > 1) {
+          this.fileService.importMultipleCategories(files)
+            .then(() => {
+              this.showSuccess('Categories imported successfully');
+            })
+            .catch(error => {
+              this.showError(`Failed to import categories: ${error.message}`);
+            });
+        } else {
+          this.fileService.importCategories(files[0])
+            .then(() => {
+              this.showSuccess('Categories imported successfully');
+            })
+            .catch(error => {
+              this.showError(`Failed to import categories: ${error.message}`);
+            });
+        }
         break;
       case 'products':
-        this.importProducts(file);
+        this.fileService.importProducts(files[0])
+          .then(() => {
+            this.showSuccess('Products imported successfully');
+          })
+          .catch(error => {
+            this.showError(`Failed to import products: ${error.message}`);
+          });
         break;
       case 'currencies':
-        this.importCurrencySettings(file);
+        this.fileService.importCurrencySettings(files[0])
+          .then(() => {
+            this.showSuccess('Currency settings imported successfully');
+          })
+          .catch(error => {
+            this.showError(`Failed to import currency settings: ${error.message}`);
+          });
         break;
       case 'settings':
-        this.importGeneralSettings(file);
+        this.fileService.importGeneralSettings(files[0])
+          .then(() => {
+            this.showSuccess('General settings imported successfully');
+          })
+          .catch(error => {
+            this.showError(`Failed to import general settings: ${error.message}`);
+          });
         break;
       default:
         this.showError('Unknown import type');
     }
     
-    // Reset the input
+    // Reset the input so that selecting the same file again will trigger the event.
     input.value = '';
-  }
-  
-  /**
-   * Import categories from file
-   */
-  private importCategories(file: File): void {
-    this.fileService.importCategories(file)
-      .then(() => {
-        this.showSuccess('Categories imported successfully');
-      })
-      .catch(error => {
-        this.showError(`Failed to import categories: ${error.message}`);
-      });
-  }
-  
-  /**
-   * Import products from file
-   */
-  private importProducts(file: File): void {
-    this.fileService.importProducts(file)
-      .then(() => {
-        this.showSuccess('Products imported successfully');
-      })
-      .catch(error => {
-        this.showError(`Failed to import products: ${error.message}`);
-      });
-  }
-  
-  /**
-   * Import currency settings from file
-   */
-  private importCurrencySettings(file: File): void {
-    this.fileService.importCurrencySettings(file)
-      .then(() => {
-        this.showSuccess('Currency settings imported successfully');
-      })
-      .catch(error => {
-        this.showError(`Failed to import currency settings: ${error.message}`);
-      });
-  }
-  
-  /**
-   * Import general settings from file
-   */
-  private importGeneralSettings(file: File): void {
-    this.fileService.importGeneralSettings(file)
-      .then(() => {
-        this.showSuccess('General settings imported successfully');
-      })
-      .catch(error => {
-        this.showError(`Failed to import general settings: ${error.message}`);
-      });
   }
   
   /**

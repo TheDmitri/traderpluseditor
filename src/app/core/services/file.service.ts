@@ -46,11 +46,42 @@ export class FileService {
   importCategories(file: File): Promise<void> {
     return this.importFile(file)
       .then((data) => {
+        let categories: Category[] = [];
         if (Array.isArray(data)) {
-          this.storageService.saveCategories(data as Category[]);
+          categories = data as Category[];
+        } else if (data && typeof data === 'object') {
+          categories = [data];
         } else {
           throw new Error('Invalid category data format');
         }
+        // Merge with existing categories
+        const existing = this.storageService.categories();
+        this.storageService.saveCategories([...existing, ...categories]);
+      });
+  }
+  
+  /**
+   * Import multiple category files simultaneously and merge the results.
+   * @param files A FileList of category files
+   * @returns Promise that resolves when import is complete
+   */
+  importMultipleCategories(files: FileList): Promise<void> {
+    const filesArray = Array.from(files);
+    return Promise.all(filesArray.map(file => this.importFile(file)))
+      .then(results => {
+        let importedCategories: Category[] = [];
+        for (const result of results) {
+          if (Array.isArray(result)) {
+            importedCategories = importedCategories.concat(result as Category[]);
+          } else if (result && typeof result === 'object') {
+            importedCategories.push(result);
+          } else {
+            throw new Error('Invalid category data format in one of the files');
+          }
+        }
+        // Merge with existing categories
+        const existing = this.storageService.categories();
+        this.storageService.saveCategories([...existing, ...importedCategories]);
       });
   }
   

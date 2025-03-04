@@ -28,13 +28,14 @@
                 </div>
                 <div class="section-content">
                   <h3>Categories</h3>
-                  <p>Import categories from a JSON file.</p>
+                  <p>Import categories from JSON file(s).</p>
                   <div class="file-input-container">
                     <button mat-flat-button color="primary" class="upload-button">
                       <mat-icon>upload_file</mat-icon>
-                      Select Categories File
+                      Select Categories File(s)
                     </button>
-                    <input type="file" accept=".json" (change)="onFileSelected($event, 'categories')">
+                    <!-- Hinzufügen des multiple-Attributs -->
+                    <input type="file" accept=".json" multiple (change)="onFileSelected($event, 'categories')">
                   </div>
                 </div>
               </div>
