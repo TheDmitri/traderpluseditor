@@ -7,10 +7,10 @@
           <mat-icon>add</mat-icon>
           Add Category
         </button>
-        <a mat-raised-button color="primary" routerLink="/file-management">
+        <button mat-flat-button color="primary" routerLink="/file-management">
           <mat-icon>upload_file</mat-icon>
           Import Categories
-        </a>
+        </button>
       </div>
     </div>
     <div class="header-right">
@@ -23,11 +23,11 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="danger-zone-content">
-            <button mat-raised-button color="warn" (click)="removeAllCategories()">
+            <button mat-flat-button color="warn" (click)="removeAllCategories()">
               <mat-icon>delete_forever</mat-icon>
               Remove All Categories
             </button>
-            <button mat-raised-button color="warn" (click)="toggleAllCategoriesVisibility()">
+            <button mat-flat-button color="warn" (click)="toggleAllCategoriesVisibility()">
               <mat-icon>visibility</mat-icon>
               Toggle All Visibility
             </button>
