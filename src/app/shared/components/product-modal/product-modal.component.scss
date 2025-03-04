@@ -1,0 +1,60 @@
+.product-modal {
+  padding: 24px;
+
+  h2 {
+    margin: 0 0 24px 0;
+    color: rgba(255, 255, 255, 0.87);
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .form-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    min-width: 400px;
+    padding: 8px;
+
+    // Full width fields
+    .mat-form-field.full-width {
+      grid-column: 1 / -1;
+    }
+
+    // Specific fields that should be full width
+    [formControlName="className"],
+    [formControlName="attachments"],
+    [formControlName="variants"] {
+      grid-column: 1 / -1;
+    }
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  mat-dialog-content {
+    max-height: 70vh;
+    padding: 0;
+  }
+
+  mat-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 0 0 0;
+    margin: 24px 0 0 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    gap: 8px;
+  }
+}
+
+:host ::ng-deep {
+  .mat-mdc-form-field {
+    .mat-mdc-text-field-wrapper {
+      background: rgba(255, 255, 255, 0.04);
+    }
+  }
+
+  .mat-mdc-dialog-content {
+    max-height: 70vh;
+  }
+}

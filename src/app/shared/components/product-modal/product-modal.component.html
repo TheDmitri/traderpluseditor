@@ -1,0 +1,84 @@
+<div class="product-modal">
+  <h2 mat-dialog-title>{{ isEditMode ? "Edit" : "Create" }} Product</h2>
+
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <mat-dialog-content>
+      <div class="form-container">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Class Name</mat-label>
+          <input matInput formControlName="className" required />
+          <mat-error *ngIf="productForm.get('className')?.hasError('required')">
+            Class name is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Coefficient</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="coefficient"
+            required
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Max Stock</mat-label>
+          <input matInput type="number" formControlName="maxStock" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Trade Quantity</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="tradeQuantity"
+            required
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Buy Price</mat-label>
+          <input matInput type="number" formControlName="buyPrice" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Sell Price</mat-label>
+          <input matInput type="number" formControlName="sellPrice" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Stock Settings</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="stockSettings"
+            required
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Attachments (comma separated)</mat-label>
+          <input matInput formControlName="attachments" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Variants (comma separated)</mat-label>
+          <input matInput formControlName="variants" />
+        </mat-form-field>
+      </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+      <button mat-button type="button" (click)="onCancel()">Cancel</button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="productForm.invalid"
+      >
+        {{ isEditMode ? "Save" : "Create" }}
+      </button>
+    </mat-dialog-actions>
+  </form>
+</div>
