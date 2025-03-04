@@ -1,6 +1,6 @@
 .category-editor-container {
   padding: 24px;
-  
+
   .header {
     display: flex;
     justify-content: space-between;
@@ -37,34 +37,54 @@
       width: 100%;
       background: transparent;
 
-      th.mat-header-cell {
-        color: rgba(255, 255, 255, 0.87);
-        font-weight: 500;
-      }
-
-      td.mat-cell {
-        color: rgba(255, 255, 255, 0.87);
-      }
-
+      // Spaltenbreiten und Ausrichtung
       .mat-column-icon {
         width: 48px;
         text-align: center;
       }
 
+      .mat-column-categoryName {
+        width: 30%;
+      }
+
+      .mat-column-categoryId {
+        width: 20%;
+      }
+
       .mat-column-isVisible {
-        width: 80px;
+        width: 100px;
+        text-align: start;
+      }
+
+      .mat-column-productCount {
+        width: 15%;
         text-align: center;
       }
 
       .mat-column-actions {
         width: 100px;
         text-align: right;
+        padding-right: 16px;
+      }
+
+      // Header Styling
+      .mat-header-cell {
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.87);
+        padding: 0 8px;
+      }
+
+      // Zellen Styling
+      .mat-cell {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.87);
+        padding: 0 8px;
       }
     }
   }
 }
 
-// Dark theme overrides
 :host ::ng-deep {
   .mat-mdc-table {
     background: transparent;
