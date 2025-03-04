@@ -6,7 +6,7 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 })
 export class NotificationService {
   private defaultConfig: MatSnackBarConfig = {
-    duration: 3000,
+    duration: 5000,
     horizontalPosition: 'right',
     verticalPosition: 'top',
     panelClass: ['custom-snackbar'],

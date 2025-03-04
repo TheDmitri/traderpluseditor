@@ -105,6 +105,7 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
       if (result) {
         this.storageService.saveCategories([]);
         this.loadCategories();
+        this.notificationService.success('All Categories deleted successfully');
       }
     });
   }
