@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { StorageService } from '../../../core/services/storage.service';
+import { RouterModule } from '@angular/router';
 import { Category } from '../../../core/models';
 import { Subject, takeUntil } from 'rxjs'; // Add Subject and takeUntil
 
@@ -22,7 +23,8 @@ import { Subject, takeUntil } from 'rxjs'; // Add Subject and takeUntil
     MatSlideToggleModule,
     MatIconModule,
     MatButtonModule,
-    MatExpansionModule
+    MatExpansionModule,
+    RouterModule
   ],
   templateUrl: './category-editor.component.html',
   styleUrls: ['./category-editor.component.scss']
