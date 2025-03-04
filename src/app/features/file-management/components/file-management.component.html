@@ -3,7 +3,7 @@
     <h1 class="page-title">File Management</h1>
     <p class="page-subtitle">Import and export TraderPlus configuration files</p>
   </div>
-  
+
   <mat-card class="main-card">
     <mat-card-content>
       <mat-tab-group animationDuration="300ms" mat-stretch-tabs="false" mat-align-tabs="start">
@@ -14,13 +14,13 @@
               <span>Import</span>
             </div>
           </ng-template>
-          
+
           <div class="tab-content">
             <div class="section-header">
               <h2>Import Configuration Files</h2>
               <p>Upload JSON configuration files to import them into the editor.</p>
             </div>
-            
+
             <div class="file-sections-container">
               <div class="import-section">
                 <div class="section-icon-container categories-icon">
@@ -39,7 +39,7 @@
                   </div>
                 </div>
               </div>
-              
+
               <div class="import-section">
                 <div class="section-icon-container products-icon">
                   <mat-icon>inventory_2</mat-icon>
@@ -52,11 +52,11 @@
                       <mat-icon>upload_file</mat-icon>
                       Select Products File
                     </button>
-                    <input type="file" accept=".json" (change)="onFileSelected($event, 'products')">
+                    <input type="file" accept=".json" multiple (change)="onFileSelected($event, 'products')">
                   </div>
                 </div>
               </div>
-              
+
               <div class="import-section">
                 <div class="section-icon-container currencies-icon">
                   <mat-icon>payments</mat-icon>
@@ -73,7 +73,7 @@
                   </div>
                 </div>
               </div>
-              
+
               <div class="import-section">
                 <div class="section-icon-container settings-icon">
                   <mat-icon>settings</mat-icon>
@@ -93,7 +93,7 @@
             </div>
           </div>
         </mat-tab>
-        
+
         <mat-tab>
           <ng-template mat-tab-label>
             <div class="tab-label">
@@ -101,13 +101,13 @@
               <span>Export</span>
             </div>
           </ng-template>
-          
+
           <div class="tab-content">
             <div class="section-header">
               <h2>Export Configuration Files</h2>
               <p>Export your configurations as JSON files compatible with TraderPlus mod.</p>
             </div>
-            
+
             <div class="file-sections-container">
               <div class="export-section">
                 <div class="section-icon-container categories-icon">
@@ -122,7 +122,7 @@
                   </button>
                 </div>
               </div>
-              
+
               <div class="export-section">
                 <div class="section-icon-container products-icon">
                   <mat-icon>inventory_2</mat-icon>
@@ -136,7 +136,7 @@
                   </button>
                 </div>
               </div>
-              
+
               <div class="export-section">
                 <div class="section-icon-container currencies-icon">
                   <mat-icon>payments</mat-icon>
@@ -150,7 +150,7 @@
                   </button>
                 </div>
               </div>
-              
+
               <div class="export-section">
                 <div class="section-icon-container settings-icon">
                   <mat-icon>settings</mat-icon>

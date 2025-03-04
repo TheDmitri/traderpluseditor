@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from './storage.service';
-import { Category, Product, CurrencySettings, GeneralSettings } from '../models';
+import {
+  Category,
+  Product,
+  CurrencySettings,
+  GeneralSettings,
+} from '../models';
 
 /**
  * Service for handling file import/export operations
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FileService {
-
-  constructor(private storageService: StorageService) { }
+  constructor(private storageService: StorageService) {}
 
   /**
    * Import a JSON file and parse its contents
@@ -44,21 +48,20 @@ export class FileService {
    * @returns Promise that resolves when import is complete
    */
   importCategories(file: File): Promise<void> {
-    return this.importFile(file)
-      .then((data) => {
-        let categories: Category[] = [];
-        if (Array.isArray(data)) {
-          categories = data as Category[];
-        } else if (data && typeof data === 'object') {
-          categories = [data];
-        } else {
-          throw new Error('Invalid category data format');
-        }
-        // Merge with existing categories and ensure unique IDs
-        const existing = this.storageService.categories();
-        const merged = this.mergeCategories(existing, categories);
-        this.storageService.saveCategories(merged);
-      });
+    return this.importFile(file).then((data) => {
+      let categories: Category[] = [];
+      if (Array.isArray(data)) {
+        categories = data as Category[];
+      } else if (data && typeof data === 'object') {
+        categories = [data];
+      } else {
+        throw new Error('Invalid category data format');
+      }
+      // Merge with existing categories and ensure unique IDs
+      const existing = this.storageService.categories();
+      const merged = this.mergeCategories(existing, categories);
+      this.storageService.saveCategories(merged);
+    });
   }
 
   /**
@@ -68,12 +71,14 @@ export class FileService {
    */
   importMultipleCategories(files: FileList): Promise<void> {
     const filesArray = Array.from(files);
-    return Promise.all(filesArray.map(file => this.importFile(file)))
-      .then(results => {
+    return Promise.all(filesArray.map((file) => this.importFile(file))).then(
+      (results) => {
         let importedCategories: Category[] = [];
         for (const result of results) {
           if (Array.isArray(result)) {
-            importedCategories = importedCategories.concat(result as Category[]);
+            importedCategories = importedCategories.concat(
+              result as Category[]
+            );
           } else if (result && typeof result === 'object') {
             importedCategories.push(result);
           } else {
@@ -84,7 +89,8 @@ export class FileService {
         const existing = this.storageService.categories();
         const merged = this.mergeCategories(existing, importedCategories);
         this.storageService.saveCategories(merged);
-      });
+      }
+    );
   }
 
   /**
@@ -92,17 +98,22 @@ export class FileService {
    * @param existing The existing list of categories
    * @param imported The list of categories to be imported
    */
-  private mergeCategories(existing: Category[], imported: Category[]): Category[] {
+  private mergeCategories(
+    existing: Category[],
+    imported: Category[]
+  ): Category[] {
     const allCategories: Category[] = [...existing];
     let nextIdNumber = this.getNextCategoryId(allCategories);
 
-    imported.forEach(category => {
+    imported.forEach((category) => {
       if (!category.categoryId) {
         category.categoryId = this.generateCategoryId(nextIdNumber++);
       }
 
       // Add category, if it not already exists
-      if(!allCategories.some((cat) => cat.categoryId === category.categoryId)){
+      if (
+        !allCategories.some((cat) => cat.categoryId === category.categoryId)
+      ) {
         allCategories.push(category);
       }
     });
@@ -118,9 +129,9 @@ export class FileService {
   private getNextCategoryId(categories: Category[]): number {
     let highestNumber = 0;
     categories.forEach((cat) => {
-      const idNumber = parseInt(cat.categoryId.split("_").pop() ?? "0");
-      if(idNumber >= highestNumber) {
-        highestNumber = idNumber+1;
+      const idNumber = parseInt(cat.categoryId.split('_').pop() ?? '0');
+      if (idNumber >= highestNumber) {
+        highestNumber = idNumber + 1;
       }
     });
 
@@ -137,19 +148,144 @@ export class FileService {
   }
 
   /**
-   * Import products from a JSON file
+   * Import a single product file
    * @param file The file containing product data
    * @returns Promise that resolves when import is complete
    */
   importProducts(file: File): Promise<void> {
-    return this.importFile(file)
-      .then((data) => {
-        if (Array.isArray(data)) {
-          this.storageService.saveProducts(data as Product[]);
-        } else {
-          throw new Error('Invalid product data format');
+    return this.importFile(file).then((data) => {
+      let products: Product[] = [];
+      if (Array.isArray(data)) {
+        products = data
+          .map((item) => this.convertToProduct(item))
+          .filter((p): p is Product => p !== null);
+      } else if (data && typeof data === 'object') {
+        const product = this.convertToProduct(data);
+        if (product) {
+          products = [product];
         }
-      });
+      } else {
+        throw new Error('Invalid product data format');
+      }
+      // Merge with existing products and ensure unique IDs
+      const existing = this.storageService.products();
+      const merged = this.mergeProducts(existing, products);
+      this.storageService.saveProducts(merged);
+    });
+  }
+
+  /**
+   * Import multiple product files simultaneously and merge the results
+   * @param files A FileList of product files
+   * @returns Promise that resolves when import is complete
+   */
+  importMultipleProducts(files: FileList): Promise<void> {
+    const filesArray = Array.from(files);
+    return Promise.all(filesArray.map((file) => this.importFile(file))).then(
+      (results) => {
+        let importedProducts: Product[] = [];
+        for (const result of results) {
+          if (Array.isArray(result)) {
+            importedProducts = importedProducts.concat(result as Product[]);
+          } else if (result && typeof result === 'object') {
+            // Single product in file
+            const product = this.convertToProduct(result);
+            if (product) {
+              importedProducts.push(product);
+            }
+          }
+        }
+        // Merge with existing products and ensure unique IDs
+        const existing = this.storageService.products();
+        const merged = this.mergeProducts(existing, importedProducts);
+        this.storageService.saveProducts(merged);
+      }
+    );
+  }
+
+  /**
+   * Helper to merge products and generate new productIds if needed
+   */
+  private mergeProducts(existing: Product[], imported: Product[]): Product[] {
+    const nextId = this.getNextProductId(existing);
+    const merged = [...existing];
+
+    imported.forEach((product) => {
+      // Prüfe ob das Produkt bereits existiert (über className)
+      const existingIndex = merged.findIndex(
+        (p) => p.className === product.className
+      );
+
+      if (existingIndex === -1) {
+        // Neues Produkt - generiere neue ID
+        const newProduct = {
+          ...product,
+          productId: this.generateProductId(nextId + merged.length),
+        };
+        merged.push(newProduct);
+
+        // Aktualisiere die Kategorien mit der neuen productId
+        const categories = this.storageService.categories();
+        categories.forEach((category) => {
+          if (category.className?.includes(product.className)) {
+            if (!category.productIds) {
+              category.productIds = [];
+            }
+            category.productIds.push(newProduct.productId);
+          }
+        });
+        this.storageService.saveCategories(categories);
+      } else {
+        // Aktualisiere bestehendes Produkt aber behalte die ID
+        merged[existingIndex] = {
+          ...product,
+          productId: merged[existingIndex].productId,
+        };
+      }
+    });
+
+    return merged;
+  }
+
+  /**
+   * Helper to get the next product Id
+   */
+  private getNextProductId(products: Product[]): number {
+    let highestNumber = 0;
+    products.forEach((prod) => {
+      const idNumber = parseInt(prod.productId.split('_').pop() ?? '0');
+      if (idNumber >= highestNumber) {
+        highestNumber = idNumber + 1;
+      }
+    });
+    return highestNumber;
+  }
+
+  /**
+   * Helper to generate a unique ID for a product
+   */
+  private generateProductId(nextIdNumber: number): string {
+    return `prod_${nextIdNumber.toString().padStart(3, '0')}`;
+  }
+
+  /**
+   * Convert raw JSON data to Product type
+   */
+  private convertToProduct(data: any): Product | null {
+    if (!data.className) return null;
+
+    return {
+      productId: '', // Will be generated during merge
+      className: data.className,
+      coefficient: data.coefficient || 1.0,
+      maxStock: data.maxStock || -1,
+      tradeQuantity: data.tradeQuantity || 1,
+      buyPrice: data.buyPrice || 0,
+      sellPrice: data.sellPrice || 0,
+      stockSettings: data.stockSettings || 0,
+      attachments: data.attachments || [],
+      variants: data.variants || [],
+    };
   }
 
   /**
@@ -158,14 +294,13 @@ export class FileService {
    * @returns Promise that resolves when import is complete
    */
   importCurrencySettings(file: File): Promise<void> {
-    return this.importFile(file)
-      .then((data) => {
-        if (data && typeof data === 'object' && 'currencyTypes' in data) {
-          this.storageService.saveCurrencySettings(data as CurrencySettings);
-        } else {
-          throw new Error('Invalid currency settings format');
-        }
-      });
+    return this.importFile(file).then((data) => {
+      if (data && typeof data === 'object' && 'currencyTypes' in data) {
+        this.storageService.saveCurrencySettings(data as CurrencySettings);
+      } else {
+        throw new Error('Invalid currency settings format');
+      }
+    });
   }
 
   /**
@@ -174,14 +309,13 @@ export class FileService {
    * @returns Promise that resolves when import is complete
    */
   importGeneralSettings(file: File): Promise<void> {
-    return this.importFile(file)
-      .then((data) => {
-        if (data && typeof data === 'object' && 'version' in data) {
-          this.storageService.saveGeneralSettings(data as GeneralSettings);
-        } else {
-          throw new Error('Invalid general settings format');
-        }
-      });
+    return this.importFile(file).then((data) => {
+      if (data && typeof data === 'object' && 'version' in data) {
+        this.storageService.saveGeneralSettings(data as GeneralSettings);
+      } else {
+        throw new Error('Invalid general settings format');
+      }
+    });
   }
 
   /**
@@ -211,27 +345,39 @@ export class FileService {
    * Export categories to a JSON file
    */
   exportCategories(): void {
-    this.exportAsJson(this.storageService.categories(), 'TraderPlusCategories.json');
+    this.exportAsJson(
+      this.storageService.categories(),
+      'TraderPlusCategories.json'
+    );
   }
 
   /**
    * Export products to a JSON file
    */
   exportProducts(): void {
-    this.exportAsJson(this.storageService.products(), 'TraderPlusProducts.json');
+    this.exportAsJson(
+      this.storageService.products(),
+      'TraderPlusProducts.json'
+    );
   }
 
   /**
    * Export currency settings to a JSON file
    */
   exportCurrencySettings(): void {
-    this.exportAsJson(this.storageService.currencySettings(), 'TraderPlusCurrencySettings.json');
+    this.exportAsJson(
+      this.storageService.currencySettings(),
+      'TraderPlusCurrencySettings.json'
+    );
   }
 
   /**
    * Export general settings to a JSON file
    */
   exportGeneralSettings(): void {
-    this.exportAsJson(this.storageService.generalSettings(), 'TraderPlusGeneralSettings.json');
+    this.exportAsJson(
+      this.storageService.generalSettings(),
+      'TraderPlusGeneralSettings.json'
+    );
   }
 }

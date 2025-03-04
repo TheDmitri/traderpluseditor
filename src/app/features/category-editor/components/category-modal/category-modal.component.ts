@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -6,7 +6,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { Category } from '../../../../core/models';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { Category, Product } from '../../../../core/models';
+import { StorageService } from '../../../../core/services/storage.service';
 
 @Component({
   selector: 'app-category-modal',
@@ -18,60 +22,13 @@ import { Category } from '../../../../core/models';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
   ],
-  template: `
-    <h2 mat-dialog-title>{{ isEditMode ? 'Edit' : 'Create' }} Category</h2>
-    <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
-      <mat-dialog-content>
-        <div class="form-container">
-          <mat-form-field appearance="fill">
-            <mat-label>Category Name</mat-label>
-            <input matInput formControlName="categoryName" required>
-            <mat-error *ngIf="categoryForm.get('categoryName')?.hasError('required')">
-              Category name is required
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="fill">
-            <mat-label>Icon</mat-label>
-            <input matInput formControlName="icon" placeholder="e.g., shopping_cart">
-            <mat-icon matSuffix>{{categoryForm.get('icon')?.value || 'category'}}</mat-icon>
-          </mat-form-field>
-
-          <mat-form-field appearance="fill">
-            <mat-label>Required Licenses (comma separated)</mat-label>
-            <input matInput formControlName="licensesRequired" 
-                   placeholder="e.g., license_weapons, license_trade">
-          </mat-form-field>
-
-          <mat-slide-toggle formControlName="isVisible">
-            Visible
-          </mat-slide-toggle>
-        </div>
-      </mat-dialog-content>
-      
-      <mat-dialog-actions align="end">
-        <button mat-button type="button" (click)="onCancel()">Cancel</button>
-        <button mat-raised-button color="primary" type="submit" 
-                [disabled]="categoryForm.invalid">
-          {{isEditMode ? 'Save' : 'Create'}}
-        </button>
-      </mat-dialog-actions>
-    </form>
-  `,
-  styles: [`
-    .form-container {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      min-width: 400px;
-      padding: 8px;
-    }
-    mat-form-field {
-      width: 100%;
-    }
-  `]
+  templateUrl: './category-modal.component.html',
+  styleUrls: ['./category-modal.component.scss']
 })
 export class CategoryModalComponent implements OnInit {
   categoryForm: FormGroup;
@@ -80,6 +37,7 @@ export class CategoryModalComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CategoryModalComponent>,
+    private storageService: StorageService,
     @Inject(MAT_DIALOG_DATA) public data: { category?: Category }
   ) {
     this.isEditMode = !!data.category;

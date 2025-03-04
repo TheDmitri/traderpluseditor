@@ -60,14 +60,24 @@ export class FileManagementComponent {
             });
         }
         break;
-      case 'products':
-        this.fileService.importProducts(files[0])
-          .then(() => {
-            this.showSuccess('Products imported successfully');
-          })
-          .catch(error => {
-            this.showError(`Failed to import products: ${error.message}`);
-          });
+        case 'products':
+          if (files.length > 1) {
+            this.fileService.importMultipleProducts(files)
+              .then(() => {
+                this.showSuccess('Products imported successfully');
+              })
+              .catch(error => {
+                this.showError(`Failed to import products: ${error.message}`);
+              });
+          } else {
+            this.fileService.importProducts(files[0])
+              .then(() => {
+                this.showSuccess('Products imported successfully');
+              })
+              .catch(error => {
+                this.showError(`Failed to import products: ${error.message}`);
+              });
+          }
         break;
       case 'currencies':
         this.fileService.importCurrencySettings(files[0])
