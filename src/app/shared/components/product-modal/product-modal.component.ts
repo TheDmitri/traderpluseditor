@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Product } from '../../../core/models';
 import { StorageService } from '../../../core/services/storage.service';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 @Component({
   selector: 'app-product-modal',
@@ -20,7 +21,8 @@ import { StorageService } from '../../../core/services/storage.service';
     MatButtonModule,
     MatIconModule,
     MatSlideToggleModule,
-  ],
+    TextFieldModule,
+],
   templateUrl: './product-modal.component.html',
   styleUrls: ['./product-modal.component.scss']
 })

@@ -10,31 +10,46 @@
 
   .form-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
     min-width: 400px;
     padding: 8px;
 
-    // Full width fields
-    .mat-form-field.full-width {
-      grid-column: 1 / -1;
-    }
-
-    // Specific fields that should be full width
+    // Single row items
     [formControlName="className"],
     [formControlName="attachments"],
     [formControlName="variants"] {
       grid-column: 1 / -1;
+      width: 100%;
     }
-  }
 
-  mat-form-field {
-    width: 100%;
+    // Three columns row layout
+    .number-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      width: 100%;
+
+      mat-form-field {
+        width: 100%;
+      }
+    }
+
+    // Textareas
+    [formControlName="attachments"],
+    [formControlName="variants"] {
+      textarea {
+        min-height: 60px;
+        max-height: 120px;
+        resize: vertical;
+        padding: 4px 8px;
+      }
+    }
   }
 
   mat-dialog-content {
     max-height: 70vh;
     padding: 0;
+    overflow-x: hidden;
   }
 
   mat-dialog-actions {
@@ -56,5 +71,24 @@
 
   .mat-mdc-dialog-content {
     max-height: 70vh;
+  }
+
+  // Customize scrollbar for textareas
+  textarea::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  textarea::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  textarea::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+
+    &:hover {
+        cursor: default;
+      background: rgba(255, 255, 255, 0.3);
+    }
   }
 }
