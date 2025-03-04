@@ -1,7 +1,16 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
-import { MatTableModule, MatTable, MatTableDataSource } from '@angular/material/table';
+import {
+  FormBuilder,
+  FormGroup,
+  FormArray,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import {
+  MatTableModule,
+  MatTable,
+  MatTableDataSource,
+} from '@angular/material/table';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatCardModule } from '@angular/material/card';
@@ -17,6 +26,7 @@ import { Category } from '../../../core/models';
 import { Subject, takeUntil } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { CategoryModalComponent } from './category-modal/category-modal.component';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-category-editor',
@@ -34,16 +44,23 @@ import { CategoryModalComponent } from './category-modal/category-modal.componen
     MatButtonModule,
     MatMenuModule,
     MatDialogModule,
-    RouterModule
+    RouterModule,
   ],
   templateUrl: './category-editor.component.html',
-  styleUrls: ['./category-editor.component.scss']
+  styleUrls: ['./category-editor.component.scss'],
 })
 export class CategoryEditorComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   dataSource: MatTableDataSource<Category>;
-  displayedColumns: string[] = ['icon', 'categoryName', 'categoryId', 'isVisible', 'productCount', 'actions'];
-  
+  displayedColumns: string[] = [
+    'icon',
+    'categoryName',
+    'categoryId',
+    'isVisible',
+    'productCount',
+    'actions',
+  ];
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<Category>;
@@ -76,17 +93,32 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
 
   // Method to remove all categories
   removeAllCategories(): void {
-    this.storageService.saveCategories([]);
-    this.loadCategories();
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete All Categories',
+        message:
+          'Are you sure you want to delete all categories? This action cannot be undone.',
+        confirmText: 'Delete All',
+        cancelText: 'Cancel',
+        type: 'danger',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.storageService.saveCategories([]);
+        this.loadCategories();
+      }
+    });
   }
 
   // Method to toggle visibility for all categories
   toggleAllCategoriesVisibility(): void {
     const categories = this.dataSource.data;
-    const allVisible = categories.every(cat => cat.isVisible);
-    const updatedCategories = categories.map(cat => ({
+    const allVisible = categories.every((cat) => cat.isVisible);
+    const updatedCategories = categories.map((cat) => ({
       ...cat,
-      isVisible: !allVisible
+      isVisible: !allVisible,
     }));
     this.storageService.saveCategories(updatedCategories);
     this.loadCategories();
@@ -94,8 +126,8 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
 
   toggleCategoryVisibility(category: Category): void {
     const categories = this.dataSource.data;
-    const updatedCategories = categories.map(cat => 
-      cat.categoryId === category.categoryId 
+    const updatedCategories = categories.map((cat) =>
+      cat.categoryId === category.categoryId
         ? { ...cat, isVisible: !cat.isVisible }
         : cat
     );
@@ -104,27 +136,43 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
   }
 
   removeCategory(categoryId: string): void {
-    const categories = this.dataSource.data;
-    const updatedCategories = categories.filter(cat => cat.categoryId !== categoryId);
-    this.storageService.saveCategories(updatedCategories);
-    this.loadCategories();
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete Category',
+        message:
+          'Are you sure you want to delete this category? This action cannot be undone.',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        type: 'danger',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const categories = this.dataSource.data.filter(
+          (cat) => cat.categoryId !== categoryId
+        );
+        this.storageService.saveCategories(categories);
+        this.loadCategories();
+      }
+    });
   }
 
   getProductCount(category: Category): number {
     return category.productIds.length;
   }
-  
+
   addCategory(): void {
     const dialogRef = this.dialog.open(CategoryModalComponent, {
-      data: { category: undefined }
+      data: { category: undefined },
     });
-  
-    dialogRef.afterClosed().subscribe(result => {
+
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         const newCategory: Category = {
           ...result,
           categoryId: this.generateCategoryId(),
-          productIds: []
+          productIds: [],
         };
         const categories = [...this.dataSource.data, newCategory];
         this.storageService.saveCategories(categories);
@@ -132,19 +180,19 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
+
   editCategory(category: Category): void {
     const dialogRef = this.dialog.open(CategoryModalComponent, {
-      data: { category }
+      data: { category },
     });
-  
-    dialogRef.afterClosed().subscribe(result => {
+
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         const updatedCategory: Category = {
           ...category,
-          ...result
+          ...result,
         };
-        const categories = this.dataSource.data.map(cat => 
+        const categories = this.dataSource.data.map((cat) =>
           cat.categoryId === category.categoryId ? updatedCategory : cat
         );
         this.storageService.saveCategories(categories);
@@ -152,9 +200,9 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
+
   private generateCategoryId(): string {
-    const existingIds = this.dataSource.data.map(cat => {
+    const existingIds = this.dataSource.data.map((cat) => {
       const match = cat.categoryId.match(/\d+$/);
       return match ? parseInt(match[0], 10) : 0;
     });

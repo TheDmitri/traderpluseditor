@@ -23,6 +23,7 @@ import { StorageService } from '../../../../core/services/storage.service';
 import { ProductListComponent } from '../../../../shared/components/product-list/product-list.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ProductModalComponent } from '../../../../shared/components/product-modal/product-modal.component';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-category-modal',
@@ -95,16 +96,26 @@ export class CategoryModalComponent implements OnInit {
   }
 
   onProductRemoved(productId: string): void {
-    if (this.data.category) {
-      // Use setTimeout to ensure event propagation is complete
-      setTimeout(() => {
-        const updatedProductIds = this.data.category!.productIds.filter(
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Remove Product from Category',
+        message:
+          'Are you sure you want to remove this product from the category?',
+        confirmText: 'Remove',
+        cancelText: 'Cancel',
+        type: 'warning',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && this.data.category) {
+        const updatedProductIds = this.data.category.productIds.filter(
           (id) => id !== productId
         );
-        this.data.category!.productIds = updatedProductIds;
+        this.data.category.productIds = updatedProductIds;
         this.loadCategoryProducts();
-      });
-    }
+      }
+    });
   }
 
   onProductEdited(product: Product): void {

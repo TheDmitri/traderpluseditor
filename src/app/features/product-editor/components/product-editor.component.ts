@@ -14,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-product-editor',
@@ -26,10 +27,10 @@ import { MatDialog } from '@angular/material/dialog';
     MatMenuModule,
     MatDialogModule,
     RouterModule,
-    ProductListComponent
+    ProductListComponent,
   ],
   templateUrl: './product-editor.component.html',
-  styleUrls: ['./product-editor.component.scss']
+  styleUrls: ['./product-editor.component.scss'],
 })
 export class ProductEditorComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
@@ -51,10 +52,10 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
   addProduct(): void {
     const dialogRef = this.dialog.open(ProductModalComponent, {
       width: '600px',
-      data: {}
+      data: {},
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result?.product) {
         const updatedProducts = [...this.products, result.product];
         this.storageService.saveProducts(updatedProducts);
@@ -64,25 +65,57 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
   }
 
   removeAllProducts(): void {
-    this.storageService.saveProducts([]);
-    this.loadProducts();
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete All Products',
+        message:
+          'Are you sure you want to delete all products? This action cannot be undone.',
+        confirmText: 'Delete All',
+        cancelText: 'Cancel',
+        type: 'danger',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.storageService.saveProducts([]);
+        this.loadProducts();
+      }
+    });
   }
 
   onProductRemoved(productId: string): void {
-    const updatedProducts = this.products.filter(p => p.productId !== productId);
-    this.storageService.saveProducts(updatedProducts);
-    this.loadProducts();
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete Product',
+        message:
+          'Are you sure you want to delete this product? This action cannot be undone.',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        type: 'danger',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const updatedProducts = this.products.filter(
+          (p) => p.productId !== productId
+        );
+        this.storageService.saveProducts(updatedProducts);
+        this.loadProducts();
+      }
+    });
   }
 
   onProductEdited(product: Product): void {
     const dialogRef = this.dialog.open(ProductModalComponent, {
       width: '600px',
-      data: { product }
+      data: { product },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result?.product) {
-        const updatedProducts = this.products.map(p => 
+        const updatedProducts = this.products.map((p) =>
           p.productId === result.product.productId ? result.product : p
         );
         this.storageService.saveProducts(updatedProducts);
