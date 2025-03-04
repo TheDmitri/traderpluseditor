@@ -2,9 +2,7 @@
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #sidenav mode="side" [opened]="true" class="sidenav"
       [ngClass]="isExpanded() ? 'expanded' : 'collapsed'">
-      <!-- <div class="sidenav-header">
-      </div> -->
-
+      
       <div class="sidenav-content">
         <mat-nav-list>
           @for (item of navItems; track item.route) {
@@ -30,7 +28,7 @@
       </div>
     </mat-sidenav>
 
-    <mat-sidenav-content [ngClass]="isExpanded() ? 'content-expanded' : 'content-collapsed'">
+    <mat-sidenav-content [ngClass]="getContentClass()">
       <div class="content">
         <router-outlet></router-outlet>
       </div>

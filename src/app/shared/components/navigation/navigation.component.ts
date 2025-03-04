@@ -40,6 +40,10 @@ export class NavigationComponent {
     { label: 'Settings', icon: 'settings', route: '/settings' },
     { label: 'Import/Export', icon: 'import_export', route: '/file-management' }
   ];
+  
+  getContentClass(): string {
+    return this.isExpanded() ? 'content-expanded' : 'content-collapsed';
+  }
 
   isExpanded(): boolean {
     return this.navigationService.isExpanded();
