@@ -21,6 +21,8 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { Category, Product } from '../../../../core/models';
 import { StorageService } from '../../../../core/services/storage.service';
 import { ProductListComponent } from '../../../../shared/components/product-list/product-list.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ProductModalComponent } from '../../../../shared/components/product-modal/product-modal.component';
 
 @Component({
   selector: 'app-category-modal',
@@ -50,6 +52,7 @@ export class CategoryModalComponent implements OnInit {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CategoryModalComponent>,
     private storageService: StorageService,
+    private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: { category?: Category }
   ) {
     this.dialogRef.disableClose = true;
@@ -105,9 +108,62 @@ export class CategoryModalComponent implements OnInit {
   }
 
   onProductEdited(product: Product): void {
-    // Use setTimeout to ensure event propagation is complete
+    // Prevent event propagation
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    const dialogRef = this.dialog.open(ProductModalComponent, {
+      width: '600px',
+      disableClose: true, // Prevent closing on backdrop click
+      data: {
+        product,
+        categoryId: this.data.category?.categoryId,
+      },
+    });
+
+    // Use setTimeout to ensure event handling is complete
     setTimeout(() => {
-      console.log('Edit product:', product);
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result?.product) {
+          const allProducts = this.storageService.products();
+          const updatedProducts = allProducts.map((p) =>
+            p.productId === result.product.productId ? result.product : p
+          );
+          this.storageService.saveProducts(updatedProducts);
+          this.loadCategoryProducts();
+        }
+      });
+    });
+  }
+
+  addProductToCategory(): void {
+    // Prevent event propagation
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    const dialogRef = this.dialog.open(ProductModalComponent, {
+      width: '600px',
+      disableClose: true, // Prevent closing on backdrop click
+      data: {
+        categoryId: this.data.category?.categoryId,
+      },
+    });
+
+    // Use setTimeout to ensure event handling is complete
+    setTimeout(() => {
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result?.product) {
+          const allProducts = this.storageService.products();
+          const updatedProducts = [...allProducts, result.product];
+          this.storageService.saveProducts(updatedProducts);
+
+          if (this.data.category) {
+            this.data.category.productIds.push(result.product.productId);
+          }
+
+          this.loadCategoryProducts();
+        }
+      });
     });
   }
 

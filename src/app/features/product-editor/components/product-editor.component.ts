@@ -6,12 +6,14 @@ import { StorageService } from '../../../core/services/storage.service';
 import { Product } from '../../../core/models';
 import { Subject } from 'rxjs';
 import { ProductListComponent } from '../../../shared/components/product-list/product-list.component';
+import { ProductModalComponent } from '../../../shared/components/product-modal/product-modal.component';
 
 // Material Imports
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-product-editor',
@@ -33,7 +35,10 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   products: Product[] = [];
 
-  constructor(private storageService: StorageService) {}
+  constructor(
+    private storageService: StorageService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.loadProducts();
@@ -44,8 +49,18 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
   }
 
   addProduct(): void {
-    // This will be implemented later with the product modal
-    console.log('Add product clicked');
+    const dialogRef = this.dialog.open(ProductModalComponent, {
+      width: '600px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.product) {
+        const updatedProducts = [...this.products, result.product];
+        this.storageService.saveProducts(updatedProducts);
+        this.loadProducts();
+      }
+    });
   }
 
   removeAllProducts(): void {
@@ -60,8 +75,20 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
   }
 
   onProductEdited(product: Product): void {
-    // Will be implemented with product edit modal
-    console.log('Edit product:', product);
+    const dialogRef = this.dialog.open(ProductModalComponent, {
+      width: '600px',
+      data: { product }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.product) {
+        const updatedProducts = this.products.map(p => 
+          p.productId === result.product.productId ? result.product : p
+        );
+        this.storageService.saveProducts(updatedProducts);
+        this.loadProducts();
+      }
+    });
   }
 
   ngOnDestroy(): void {

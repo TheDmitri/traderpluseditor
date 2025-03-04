@@ -14,11 +14,18 @@
   .product-list-section {
     margin-top: 24px;
 
-    h3 {
+    .product-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 16px;
-      color: rgba(255, 255, 255, 0.87);
-      font-size: 1.1rem;
-      font-weight: 500;
+  
+      h3 {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.87);
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
     }
   }
 

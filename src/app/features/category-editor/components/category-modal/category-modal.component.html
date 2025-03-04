@@ -1,26 +1,38 @@
 <div class="category-modal">
-  <h2 mat-dialog-title>{{ isEditMode ? 'Edit' : 'Create' }} Category</h2>
+  <h2 mat-dialog-title>{{ isEditMode ? "Edit" : "Create" }} Category</h2>
 
   <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
     <mat-dialog-content>
       <div class="form-container">
         <mat-form-field appearance="fill">
           <mat-label>Category Name</mat-label>
-          <input matInput formControlName="categoryName" required>
-          <mat-error *ngIf="categoryForm.get('categoryName')?.hasError('required')">
+          <input matInput formControlName="categoryName" required />
+          <mat-error
+            *ngIf="categoryForm.get('categoryName')?.hasError('required')"
+          >
             Category name is required
           </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
           <mat-label>Icon</mat-label>
-          <input matInput formControlName="icon" placeholder="e.g., shopping_cart">
-          <mat-icon matSuffix>{{categoryForm.get('icon')?.value || 'category'}}</mat-icon>
+          <input
+            matInput
+            formControlName="icon"
+            placeholder="e.g., shopping_cart"
+          />
+          <mat-icon matSuffix>{{
+            categoryForm.get("icon")?.value || "category"
+          }}</mat-icon>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
           <mat-label>Required Licenses (comma separated)</mat-label>
-          <input matInput formControlName="licensesRequired" placeholder="e.g., license_weapons, license_trade">
+          <input
+            matInput
+            formControlName="licensesRequired"
+            placeholder="e.g., license_weapons, license_trade"
+          />
         </mat-form-field>
 
         <mat-slide-toggle formControlName="isVisible">
@@ -29,9 +41,24 @@
 
         <!-- Add product list here -->
         <div class="product-list-section" (click)="$event.stopPropagation()">
-          <h3>Products in Category</h3>
-          <app-product-list [products]="categoryProducts" [showActions]="true"
-            (productRemoved)="onProductRemoved($event)" (productEdited)="onProductEdited($event)">
+          <div class="product-list-header">
+            <h3>Products in Category</h3>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="$event.stopPropagation(); addProductToCategory()"
+              (mousedown)="$event.stopPropagation()"
+            >
+              <mat-icon>add</mat-icon>
+              Add Product
+            </button>
+          </div>
+          <app-product-list
+            [products]="categoryProducts"
+            [showActions]="true"
+            (productRemoved)="onProductRemoved($event)"
+            (productEdited)="onProductEdited($event)"
+          >
           </app-product-list>
         </div>
       </div>
@@ -39,8 +66,13 @@
 
     <mat-dialog-actions>
       <button mat-button type="button" (click)="onCancel()">Cancel</button>
-      <button mat-raised-button color="primary" type="submit" [disabled]="categoryForm.invalid">
-        {{isEditMode ? 'Save' : 'Create'}}
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="categoryForm.invalid"
+      >
+        {{ isEditMode ? "Save" : "Create" }}
       </button>
     </mat-dialog-actions>
   </form>
