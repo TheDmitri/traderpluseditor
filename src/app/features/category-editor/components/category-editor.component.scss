@@ -1,188 +1,77 @@
 .category-editor-container {
   padding: 24px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-
+  
   .header {
     display: flex;
-    justify-content: space-between; /* Split header into two columns */
+    justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 50px; // Increased padding to prevent content shift
-    padding-bottom: 16px; // Added padding for dropdown space
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 
     .header-left {
-      display: flex;
-      flex-direction: column; /* Stack header text and buttons vertically */
-      align-items: flex-start;
-
       h2 {
-        font-size: 2rem;
-        color: #ffffff;
-        font-weight: 400;
         margin-bottom: 16px;
+        font-size: 2rem;
+        font-weight: 400;
       }
 
       .header-buttons {
         display: flex;
         gap: 8px;
-
-        button,
-        a[mat-raised-button] {
-          text-transform: none;
-          display: flex;
-          align-items: center;
-          gap: 4px; /* Space between icon and text */
-        }
-
-        // Style for the danger zone button
-        button[color="warn"] {
-          background-color: rgba(244, 67, 54, 0.61); // Subtle warning color
-          &:hover {
-            background-color: rgb(244, 67, 54);
-          }
-        }
       }
     }
 
-    .header-right {
-      display: flex;
-      align-items: flex-start;
+    .search-container {
+      mat-form-field {
+        width: 300px;
+      }
     }
   }
 
-  // Responsive Grid Container for category cards
-  .category-grid {
-    display: grid;
-    grid-gap: 32px;
-    grid-template-columns: 1fr; // Default: 1 column
-
-    @media (min-width: 1000px) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    @media (min-width: 1600px) {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    @media (min-width: 2200px) {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
-  mat-card {
+  .table-container {
     position: relative;
-    background-color: #444444;
-    color: #ffffff;
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
-    border: rgba(90, 90, 90, 0.5) 1px solid;
+    min-height: 200px;
+    overflow: auto;
 
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    }
-
-    // Toggle container at the top right corner without background
-    .toggle-container {
-      position: absolute;
-      top: 8px;
-      right: 8px;
+    table {
+      width: 100%;
       background: transparent;
-      mat-slide-toggle {
-        background: transparent;
+
+      th.mat-header-cell {
+        color: rgba(255, 255, 255, 0.87);
+        font-weight: 500;
+      }
+
+      td.mat-cell {
+        color: rgba(255, 255, 255, 0.87);
+      }
+
+      .mat-column-icon {
+        width: 48px;
+        text-align: center;
+      }
+
+      .mat-column-isVisible {
+        width: 80px;
+        text-align: center;
+      }
+
+      .mat-column-actions {
+        width: 100px;
+        text-align: right;
       }
     }
+  }
+}
 
-    mat-card-title {
-      font-size: 1.5rem;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: baseline;
+// Dark theme overrides
+:host ::ng-deep {
+  .mat-mdc-table {
+    background: transparent;
+  }
 
-      input {
-        background: transparent;
-        border: none;
-        border-bottom: 1px solid #ffffff;
-        color: #ffffff;
-        outline: none;
-        padding: 4px 8px;
-        font-size: 1.5rem;
-
-        &:focus {
-          border-bottom-color: #90caf9;
-        }
-      }
-    }
-
-    mat-card-content {
-      div {
-        margin: 12px 0;
-
-        mat-label {
-          display: block;
-          margin-bottom: 4px;
-          font-size: 0.9rem;
-          color: #cccccc;
-        }
-
-        input,
-        mat-slide-toggle {
-          width: 100%;
-          padding: 8px;
-          border-radius: 4px;
-          background: #616161;
-          color: #ffffff;
-          border: none;
-          font-size: 1rem;
-          transition: box-shadow 0.2s ease-in-out;
-
-          &:focus {
-            outline: none;
-            box-shadow: 0 0 3px 2px #90caf9;
-          }
-        }
-
-        // Specific style for textarea in the products field:
-        textarea[matInput] {
-          width: 100%;
-          min-width: 100%;
-          max-width: 460px;
-          padding: 8px;
-          border-radius: 4px;
-          background: #616161;
-          color: #ffffff;
-          border: none;
-          font-size: 1rem;
-          transition: box-shadow 0.2s ease-in-out;
-          min-height: 50px;
-          max-height: 100px;
-          overflow-y: auto;
-
-          &:focus {
-            outline: none;
-            box-shadow: 0 0 3px 2px #90caf9;
-          }
-        }
-      }
-    }
-
-    mat-card-actions {
-      display: flex;
-      justify-content: flex-end;
-      padding: 8px;
-
-      button {
-        margin: 0 4px;
-        text-transform: none;
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-      }
-    }
+  .mat-mdc-row:hover {
+    background: rgba(255, 255, 255, 0.04);
   }
 }

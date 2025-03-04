@@ -1,17 +1,20 @@
-import { Component, OnInit, OnDestroy } from '@angular/core'; // Add OnDestroy
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
+import { MatTableModule, MatTable, MatTableDataSource } from '@angular/material/table';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { StorageService } from '../../../core/services/storage.service';
+import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
+import { StorageService } from '../../../core/services/storage.service';
 import { Category } from '../../../core/models';
-import { Subject, takeUntil } from 'rxjs'; // Add Subject and takeUntil
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-category-editor',
@@ -19,139 +22,95 @@ import { Subject, takeUntil } from 'rxjs'; // Add Subject and takeUntil
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
     MatCardModule,
     MatInputModule,
     MatSlideToggleModule,
     MatIconModule,
-    MatMenuModule,
     MatButtonModule,
-    MatExpansionModule,
+    MatMenuModule,
+    MatDialogModule,
     RouterModule
   ],
   templateUrl: './category-editor.component.html',
   styleUrls: ['./category-editor.component.scss']
 })
-export class CategoryEditorComponent implements OnInit, OnDestroy { // Implement OnDestroy
-  categoriesFormArray: FormArray = this.fb.array([]);
-  private destroy$ = new Subject<void>(); // Add a Subject to manage subscriptions
+export class CategoryEditorComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+  dataSource: MatTableDataSource<Category>;
+  displayedColumns: string[] = ['icon', 'categoryName', 'categoryId', 'isVisible', 'productCount', 'actions'];
+  
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatTable) table!: MatTable<Category>;
 
-  // Getter that casts the controls as FormGroup[]
-  get categoriesControls(): FormGroup[] {
-    return this.categoriesFormArray.controls as FormGroup[];
+  constructor(private storageService: StorageService) {
+    this.dataSource = new MatTableDataSource<Category>([]);
   }
-
-  constructor(private fb: FormBuilder, private storageService: StorageService) {}
 
   ngOnInit(): void {
-    const categories: Category[] = this.storageService.categories();
-    categories.forEach(category => {
-      this.categoriesFormArray.push(this.createCategoryForm(category));
-    });
-
-    // Listen to changes on every category and save the changes to the storage
-    this.categoriesFormArray.controls.forEach((control, index) => {
-      control.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value)=>{
-        this.updateCategoryStorage(index, value);
-      })
-    });
+    this.loadCategories();
   }
 
-  ngOnDestroy(): void { // Implement OnDestroy method
-    this.destroy$.next();
-    this.destroy$.complete();
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
+  loadCategories(): void {
+    const categories = this.storageService.categories();
+    this.dataSource.data = categories;
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   // Method to remove all categories
   removeAllCategories(): void {
-    // Clear form array
-    this.categoriesFormArray.clear();
-    // Save the empty list to LocalStorage
     this.storageService.saveCategories([]);
+    this.loadCategories();
   }
 
   // Method to toggle visibility for all categories
   toggleAllCategoriesVisibility(): void {
-    // Determine the current collective state:
-    const allVisible = this.categoriesControls.every(group => group.get('isVisible')?.value === true);
-    const newVisibility = !allVisible;
-    // Set the new visibility for every category
-    this.categoriesControls.forEach((group, index) => {
-      group.get('isVisible')?.setValue(newVisibility);
-      const formValues = group.value;
-      this.updateCategoryStorage(index, formValues);
-    });
-  }
-
-  createCategoryForm(category: Category): FormGroup {
-    return this.fb.group({
-      categoryId: [category.categoryId],
-      categoryName: [category.categoryName],
-      icon: [category.icon],
-      isVisible: [category.isVisible],
-      licensesRequired: [category.licensesRequired.join(', ')],
-      productIds: [category.productIds.join(', ')],
-      categoryType: [category.categoryType]
-    });
-  }
-
-  parseCommaSeparated(value: string): string[] {
-    return value.split(',').map(v => v.trim()).filter(v => v);
-  }
-
-  addCategory(): void {
-    const newCategory: Category = {
-      categoryId: this.generateCategoryId(),
-      categoryName: '',
-      icon: '',
-      isVisible: true,
-      licensesRequired: [],
-      productIds: []
-    };
-    const formGroup = this.createCategoryForm(newCategory);
-    this.categoriesFormArray.push(formGroup);
-    this.storageService.saveCategories([...this.storageService.categories(), newCategory]);
-
-    // Subscribe to the changes of the new created entry
-    formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value)=>{
-      this.updateCategoryStorage(this.categoriesFormArray.length-1, value);
-    })
-  }
-
-  removeCategory(index: number): void {
-    const formGroup = this.categoriesFormArray.at(index);
-    const categoryIdToRemove = formGroup.get('categoryId')?.value;
-
-    // Remove from form array
-    this.categoriesFormArray.removeAt(index);
-
-    // Get current categories from storage and remove the specific one
-    const currentCategories = this.storageService.categories();
-    const updatedCategories = currentCategories.filter(category => category.categoryId !== categoryIdToRemove);
-
-    // Save filtered categories back to storage
+    const categories = this.dataSource.data;
+    const allVisible = categories.every(cat => cat.isVisible);
+    const updatedCategories = categories.map(cat => ({
+      ...cat,
+      isVisible: !allVisible
+    }));
     this.storageService.saveCategories(updatedCategories);
+    this.loadCategories();
   }
 
-  generateCategoryId(): string {
-    // Simple implementation: "cat_new_001".
-    // In a real application, ensure uniqueness based on existing IDs.
-    return 'cat_new_' + (this.categoriesFormArray.length + 1).toString().padStart(3, '0');
+  toggleCategoryVisibility(category: Category): void {
+    const categories = this.dataSource.data;
+    const updatedCategories = categories.map(cat => 
+      cat.categoryId === category.categoryId 
+        ? { ...cat, isVisible: !cat.isVisible }
+        : cat
+    );
+    this.storageService.saveCategories(updatedCategories);
+    this.loadCategories();
   }
 
-  // Method to update the storage with the new data
-  private updateCategoryStorage(index: number, value: any): void {
-    const currentCategories = this.storageService.categories();
-    const updatedCategory: Category = {
-        categoryId: value.categoryId,
-        categoryName: value.categoryName,
-        icon: value.icon,
-        isVisible: value.isVisible,
-        licensesRequired: this.parseCommaSeparated(value.licensesRequired),
-        productIds: this.parseCommaSeparated(value.productIds),
-        categoryType: value.categoryType
-      };
+  removeCategory(categoryId: string): void {
+    const categories = this.dataSource.data;
+    const updatedCategories = categories.filter(cat => cat.categoryId !== categoryId);
+    this.storageService.saveCategories(updatedCategories);
+    this.loadCategories();
+  }
 
-    currentCategories[index] = updatedCategory;
-    this.storageService.saveCategories([...currentCategories]);
+  getProductCount(category: Category): number {
+    return category.productIds.length;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
