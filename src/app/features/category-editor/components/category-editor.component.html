@@ -11,28 +11,22 @@
           <mat-icon>upload_file</mat-icon>
           Import Categories
         </button>
-      </div>
-    </div>
-    <div class="header-right">
-      <!-- Collapsible Danger Zone (default collapsed) -->
-      <div class="danger-zone-container">
-        <mat-expansion-panel class="danger-zone-panel" [expanded]="false">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Danger Zone
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="danger-zone-content">
-            <button mat-flat-button color="warn" (click)="removeAllCategories()">
-              <mat-icon>delete_forever</mat-icon>
-              Remove All Categories
-            </button>
-            <button mat-flat-button color="warn" (click)="toggleAllCategoriesVisibility()">
-              <mat-icon>visibility</mat-icon>
-              Toggle All Visibility
-            </button>
-          </div>
-        </mat-expansion-panel>
+        <!-- New Danger Zone Dropdown Button -->
+        <button mat-flat-button color="warn" [matMenuTriggerFor]="dangerMenu">
+          <mat-icon>warning</mat-icon>
+          Danger Zone
+        </button>
+        <!-- Danger Zone Menu -->
+        <mat-menu #dangerMenu="matMenu" class="danger-zone-menu">
+          <button mat-menu-item color="warn" (click)="removeAllCategories()">
+            <mat-icon>delete_forever</mat-icon>
+            <span>Remove All Categories</span>
+          </button>
+          <button mat-menu-item color="warn" (click)="toggleAllCategoriesVisibility()">
+            <mat-icon>visibility</mat-icon>
+            <span>Toggle All Visibility</span>
+          </button>
+        </mat-menu>
       </div>
     </div>
   </div>

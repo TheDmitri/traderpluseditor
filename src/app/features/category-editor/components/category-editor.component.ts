@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { StorageService } from '../../../core/services/storage.service';
 import { RouterModule } from '@angular/router';
@@ -22,6 +23,7 @@ import { Subject, takeUntil } from 'rxjs'; // Add Subject and takeUntil
     MatInputModule,
     MatSlideToggleModule,
     MatIconModule,
+    MatMenuModule,
     MatButtonModule,
     MatExpansionModule,
     RouterModule
