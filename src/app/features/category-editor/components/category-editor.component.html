@@ -27,13 +27,13 @@
         </mat-menu>
       </div>
     </div>
-    <div class="search-container">
-      <mat-form-field>
-        <mat-label>Filter</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Search categories..." #input>
-      </mat-form-field>
-    </div>
   </div>
+
+  <mat-form-field class="filter-field">
+    <mat-label>Filter Categories</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Search categories..." #input>
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
 
   <div class="table-container">
     <table mat-table [dataSource]="dataSource" matSort>
