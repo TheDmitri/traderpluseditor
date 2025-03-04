@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core'; // Add OnDestroy
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -6,10 +6,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-// Import expansion module for the collapsible Danger Zone panel
 import { MatExpansionModule } from '@angular/material/expansion';
 import { StorageService } from '../../../core/services/storage.service';
 import { Category } from '../../../core/models';
+import { Subject, takeUntil } from 'rxjs'; // Add Subject and takeUntil
 
 @Component({
   selector: 'app-category-editor',
@@ -22,13 +22,14 @@ import { Category } from '../../../core/models';
     MatSlideToggleModule,
     MatIconModule,
     MatButtonModule,
-    MatExpansionModule // added for Danger Zone
+    MatExpansionModule
   ],
   templateUrl: './category-editor.component.html',
   styleUrls: ['./category-editor.component.scss']
 })
-export class CategoryEditorComponent implements OnInit {
+export class CategoryEditorComponent implements OnInit, OnDestroy { // Implement OnDestroy
   categoriesFormArray: FormArray = this.fb.array([]);
+  private destroy$ = new Subject<void>(); // Add a Subject to manage subscriptions
 
   // Getter that casts the controls as FormGroup[]
   get categoriesControls(): FormGroup[] {
@@ -43,19 +44,17 @@ export class CategoryEditorComponent implements OnInit {
       this.categoriesFormArray.push(this.createCategoryForm(category));
     });
 
-    // Auto-save on changes: update LocalStorage immediately when form values change.
-    this.categoriesFormArray.valueChanges.subscribe((values) => {
-      const updatedCategories: Category[] = values.map((v: any) => ({
-        categoryId: v.categoryId,
-        categoryName: v.categoryName,
-        icon: v.icon,
-        isVisible: v.isVisible,
-        licensesRequired: this.parseCommaSeparated(v.licensesRequired),
-        productIds: this.parseCommaSeparated(v.productIds),
-        categoryType: v.categoryType
-      }));
-      this.storageService.saveCategories(updatedCategories);
+    // Listen to changes on every category and save the changes to the storage
+    this.categoriesFormArray.controls.forEach((control, index) => {
+      control.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value)=>{
+        this.updateCategoryStorage(index, value);
+      })
     });
+  }
+
+  ngOnDestroy(): void { // Implement OnDestroy method
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // Method to remove all categories
@@ -72,18 +71,11 @@ export class CategoryEditorComponent implements OnInit {
     const allVisible = this.categoriesControls.every(group => group.get('isVisible')?.value === true);
     const newVisibility = !allVisible;
     // Set the new visibility for every category
-    this.categoriesControls.forEach(group => group.get('isVisible')?.setValue(newVisibility));
-    // Update LocalStorage with the modified values
-    const updatedCategories: Category[] = this.categoriesFormArray.value.map((v: any) => ({
-      categoryId: v.categoryId,
-      categoryName: v.categoryName,
-      icon: v.icon,
-      isVisible: newVisibility,
-      licensesRequired: this.parseCommaSeparated(v.licensesRequired),
-      productIds: this.parseCommaSeparated(v.productIds),
-      categoryType: v.categoryType
-    }));
-    this.storageService.saveCategories(updatedCategories);
+    this.categoriesControls.forEach((group, index) => {
+      group.get('isVisible')?.setValue(newVisibility);
+      const formValues = group.value;
+      this.updateCategoryStorage(index, formValues);
+    });
   }
 
   createCategoryForm(category: Category): FormGroup {
@@ -111,17 +103,28 @@ export class CategoryEditorComponent implements OnInit {
       licensesRequired: [],
       productIds: []
     };
-    this.categoriesFormArray.push(this.createCategoryForm(newCategory));
-    const currentCategories: Category[] = this.storageService.categories();
-    this.storageService.saveCategories([...currentCategories, newCategory]);
+    const formGroup = this.createCategoryForm(newCategory);
+    this.categoriesFormArray.push(formGroup);
+    this.storageService.saveCategories([...this.storageService.categories(), newCategory]);
+
+    // Subscribe to the changes of the new created entry
+    formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value)=>{
+      this.updateCategoryStorage(this.categoriesFormArray.length-1, value);
+    })
   }
-  
+
   removeCategory(index: number): void {
     const formGroup = this.categoriesFormArray.at(index);
-    const categoryId = formGroup.get('categoryId')?.value;
+    const categoryIdToRemove = formGroup.get('categoryId')?.value;
+
+    // Remove from form array
     this.categoriesFormArray.removeAt(index);
-    const currentCategories: Category[] = this.storageService.categories();
-    const updatedCategories = currentCategories.filter(cat => cat.categoryId !== categoryId);
+
+    // Get current categories from storage and remove the specific one
+    const currentCategories = this.storageService.categories();
+    const updatedCategories = currentCategories.filter(category => category.categoryId !== categoryIdToRemove);
+
+    // Save filtered categories back to storage
     this.storageService.saveCategories(updatedCategories);
   }
 
@@ -129,5 +132,22 @@ export class CategoryEditorComponent implements OnInit {
     // Simple implementation: "cat_new_001".
     // In a real application, ensure uniqueness based on existing IDs.
     return 'cat_new_' + (this.categoriesFormArray.length + 1).toString().padStart(3, '0');
+  }
+
+  // Method to update the storage with the new data
+  private updateCategoryStorage(index: number, value: any): void {
+    const currentCategories = this.storageService.categories();
+    const updatedCategory: Category = {
+        categoryId: value.categoryId,
+        categoryName: value.categoryName,
+        icon: value.icon,
+        isVisible: value.isVisible,
+        licensesRequired: this.parseCommaSeparated(value.licensesRequired),
+        productIds: this.parseCommaSeparated(value.productIds),
+        categoryType: value.categoryType
+      };
+
+    currentCategories[index] = updatedCategory;
+    this.storageService.saveCategories([...currentCategories]);
   }
 }

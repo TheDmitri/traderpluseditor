@@ -9,9 +9,9 @@ import { Category, Product, CurrencySettings, GeneralSettings } from '../models'
   providedIn: 'root'
 })
 export class FileService {
-  
+
   constructor(private storageService: StorageService) { }
-  
+
   /**
    * Import a JSON file and parse its contents
    * @param file The file to import
@@ -20,7 +20,7 @@ export class FileService {
   importFile(file: File): Promise<any> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      
+
       reader.onload = (event) => {
         try {
           const jsonData = JSON.parse(event.target?.result as string);
@@ -29,15 +29,15 @@ export class FileService {
           reject(new Error('Invalid JSON file'));
         }
       };
-      
+
       reader.onerror = () => {
         reject(new Error('Error reading file'));
       };
-      
+
       reader.readAsText(file);
     });
   }
-  
+
   /**
    * Import categories from a JSON file
    * @param file The file containing category data
@@ -54,12 +54,13 @@ export class FileService {
         } else {
           throw new Error('Invalid category data format');
         }
-        // Merge with existing categories
+        // Merge with existing categories and ensure unique IDs
         const existing = this.storageService.categories();
-        this.storageService.saveCategories([...existing, ...categories]);
+        const merged = this.mergeCategories(existing, categories);
+        this.storageService.saveCategories(merged);
       });
   }
-  
+
   /**
    * Import multiple category files simultaneously and merge the results.
    * @param files A FileList of category files
@@ -79,12 +80,62 @@ export class FileService {
             throw new Error('Invalid category data format in one of the files');
           }
         }
-        // Merge with existing categories
+        // Merge with existing categories and ensure unique IDs
         const existing = this.storageService.categories();
-        this.storageService.saveCategories([...existing, ...importedCategories]);
+        const merged = this.mergeCategories(existing, importedCategories);
+        this.storageService.saveCategories(merged);
       });
   }
-  
+
+  /**
+   * Helper to merge categories and generate new categoryIds if needed
+   * @param existing The existing list of categories
+   * @param imported The list of categories to be imported
+   */
+  private mergeCategories(existing: Category[], imported: Category[]): Category[] {
+    const allCategories: Category[] = [...existing];
+    let nextIdNumber = this.getNextCategoryId(allCategories);
+
+    imported.forEach(category => {
+      if (!category.categoryId) {
+        category.categoryId = this.generateCategoryId(nextIdNumber++);
+      }
+
+      // Add category, if it not already exists
+      if(!allCategories.some((cat) => cat.categoryId === category.categoryId)){
+        allCategories.push(category);
+      }
+    });
+
+    return allCategories;
+  }
+
+  /**
+   * Helper to get the next category Id
+   * @param categories The existing list of categories
+   * @returns The next Id
+   */
+  private getNextCategoryId(categories: Category[]): number {
+    let highestNumber = 0;
+    categories.forEach((cat) => {
+      const idNumber = parseInt(cat.categoryId.split("_").pop() ?? "0");
+      if(idNumber >= highestNumber) {
+        highestNumber = idNumber+1;
+      }
+    });
+
+    return highestNumber;
+  }
+
+  /**
+   * Helper to generate a unique ID for a category
+   * @param nextIdNumber
+   * @returns
+   */
+  private generateCategoryId(nextIdNumber: number): string {
+    return `cat_imported_${nextIdNumber.toString().padStart(3, '0')}`;
+  }
+
   /**
    * Import products from a JSON file
    * @param file The file containing product data
@@ -100,7 +151,7 @@ export class FileService {
         }
       });
   }
-  
+
   /**
    * Import currency settings from a JSON file
    * @param file The file containing currency settings
@@ -116,7 +167,7 @@ export class FileService {
         }
       });
   }
-  
+
   /**
    * Import general settings from a JSON file
    * @param file The file containing general settings
@@ -132,7 +183,7 @@ export class FileService {
         }
       });
   }
-  
+
   /**
    * Export data as a JSON file
    * @param data The data to export
@@ -142,41 +193,41 @@ export class FileService {
     const jsonString = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
     a.click();
-    
+
     // Clean up
     setTimeout(() => {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }, 0);
   }
-  
+
   /**
    * Export categories to a JSON file
    */
   exportCategories(): void {
     this.exportAsJson(this.storageService.categories(), 'TraderPlusCategories.json');
   }
-  
+
   /**
    * Export products to a JSON file
    */
   exportProducts(): void {
     this.exportAsJson(this.storageService.products(), 'TraderPlusProducts.json');
   }
-  
+
   /**
    * Export currency settings to a JSON file
    */
   exportCurrencySettings(): void {
     this.exportAsJson(this.storageService.currencySettings(), 'TraderPlusCurrencySettings.json');
   }
-  
+
   /**
    * Export general settings to a JSON file
    */
