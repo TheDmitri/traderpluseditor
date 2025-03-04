@@ -59,7 +59,7 @@
 
       <!-- Visibility Column -->
       <ng-container matColumnDef="isVisible">
-        <th mat-header-cell *matHeaderCellDef> Visible </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Visible </th>
         <td mat-cell *matCellDef="let category">
           <mat-slide-toggle [checked]="category.isVisible" (change)="toggleCategoryVisibility(category)">
           </mat-slide-toggle>
@@ -68,7 +68,7 @@
 
       <!-- Product Count Column -->
       <ng-container matColumnDef="productCount">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Products </th>
+        <th mat-header-cell *matHeaderCellDef> Products </th>
         <td mat-cell *matCellDef="let category"> {{getProductCount(category)}} </td>
       </ng-container>
 
@@ -76,7 +76,7 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef> Actions </th>
         <td mat-cell *matCellDef="let category">
-          <button mat-icon-button color="primary" [routerLink]="['/category', category.categoryId]">
+          <button mat-icon-button color="primary" (click)="editCategory(category)">
             <mat-icon>edit</mat-icon>
           </button>
           <button mat-icon-button color="warn" (click)="removeCategory(category.categoryId)">

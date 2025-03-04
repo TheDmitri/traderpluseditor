@@ -15,6 +15,8 @@ import { RouterModule } from '@angular/router';
 import { StorageService } from '../../../core/services/storage.service';
 import { Category } from '../../../core/models';
 import { Subject, takeUntil } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { CategoryModalComponent } from './category-modal/category-modal.component';
 
 @Component({
   selector: 'app-category-editor',
@@ -46,7 +48,10 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<Category>;
 
-  constructor(private storageService: StorageService) {
+  constructor(
+    private storageService: StorageService,
+    private dialog: MatDialog
+  ) {
     this.dataSource = new MatTableDataSource<Category>([]);
   }
 
@@ -107,6 +112,54 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
 
   getProductCount(category: Category): number {
     return category.productIds.length;
+  }
+  
+  addCategory(): void {
+    const dialogRef = this.dialog.open(CategoryModalComponent, {
+      data: { category: undefined }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const newCategory: Category = {
+          ...result,
+          categoryId: this.generateCategoryId(),
+          productIds: []
+        };
+        const categories = [...this.dataSource.data, newCategory];
+        this.storageService.saveCategories(categories);
+        this.loadCategories();
+      }
+    });
+  }
+  
+  editCategory(category: Category): void {
+    const dialogRef = this.dialog.open(CategoryModalComponent, {
+      data: { category }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const updatedCategory: Category = {
+          ...category,
+          ...result
+        };
+        const categories = this.dataSource.data.map(cat => 
+          cat.categoryId === category.categoryId ? updatedCategory : cat
+        );
+        this.storageService.saveCategories(categories);
+        this.loadCategories();
+      }
+    });
+  }
+  
+  private generateCategoryId(): string {
+    const existingIds = this.dataSource.data.map(cat => {
+      const match = cat.categoryId.match(/\d+$/);
+      return match ? parseInt(match[0], 10) : 0;
+    });
+    const nextId = Math.max(0, ...existingIds) + 1;
+    return `cat_${nextId.toString().padStart(3, '0')}`;
   }
 
   ngOnDestroy(): void {
