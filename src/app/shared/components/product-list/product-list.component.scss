@@ -1,85 +1,96 @@
 .product-list-container {
+
   .filter-field {
     width: 100%;
     margin-bottom: 16px;
   }
 
-  .products-table {
-    width: 100%;
-    background: transparent;
+  .table-container {
+    position: relative;
+    min-height: 200px;
     overflow-x: auto;
 
-    // Responsive Spaltenbreiten mit min-width
-    .mat-column-className {
-      min-width: 200px;
-      flex: 2;
-    }
+    table {
+      width: 100%;
+      background: transparent;
 
-    .mat-column-categories {
-      min-width: 150px;
-      flex: 1.5;
-      padding: 0 8px;
+      // Column styles
+      .mat-mdc-column-actions,
+      .mat-column-actions {
+        min-width: 120px;
+        width: 120px;
+        flex: 0 0 120px;
+        text-align: center;
+        padding-right: 16px;
 
-      .category-list {
-        display: inline-block;
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        @media screen and (max-width: 600px) {
-          max-width: 120px;
+        .actions-header,
+        .actions-cell {
+          text-align: right;
+          justify-content: center;
         }
       }
-    }
 
-    .mat-column-maxStock {
-      min-width: 80px;
-      flex: 0.5;
-    }
+      // Other columns remain flexible
+      [class*="mat-column-"]:not([class*="mat-column-actions"]) {
+        flex: 1;
+        min-width: 100px;
+      }
 
-    .mat-column-buyPrice,
-    .mat-column-sellPrice {
-      min-width: 100px;
-      flex: 0.8;
-    }
+      // Specific column adjustments
+      .mat-column-className {
+        min-width: 180px;
+        flex: 2;
+      }
 
-    .mat-column-actions {
-      min-width: 120px;
-      flex: 0.5;
-      text-align: end;
-      padding-right: 16px;
-    }
+      .mat-column-categories {
+        min-width: 150px;
+        flex: 1.5;
+      }
 
-    // Verbesserte Zellen-Styles
-    .mat-header-cell,
-    .mat-cell {
-      padding: 12px 8px;
-      font-size: 14px;
-      color: rgba(255, 255, 255, 0.87);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+      // Cell styles
+      .mat-mdc-header-cell,
+      .mat-mdc-cell {
+        padding: 12px 8px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.87);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-    .mat-header-cell {
-      font-weight: 500;
-    }
-
-    // Media Queries für verschiedene Bildschirmgrößen
-    @media screen and (max-width: 960px) {
-      .mat-header-cell,
-      .mat-cell {
-        padding: 8px 4px;
-        font-size: 13px;
+      .mat-mdc-header-cell {
+        font-weight: 500;
       }
     }
+  }
+}
 
-    @media screen and (max-width: 600px) {
-      .mat-header-cell,
-      .mat-cell {
-        padding: 6px 4px;
-        font-size: 12px;
-      }
+// Common table formatting
+:host ::ng-deep {
+  .mat-mdc-table {
+    background: transparent;
+  }
+
+  .mat-mdc-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  // Scrollbar styles
+  ::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
     }
   }
 }

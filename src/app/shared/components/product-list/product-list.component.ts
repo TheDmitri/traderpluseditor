@@ -20,6 +20,14 @@ import { StorageService } from '../../../core/services/storage.service';
 
 export interface ProductWithCategories extends Product {
   categories?: string[];
+  coefficient: number;
+  maxStock: number;
+  tradeQuantity: number;
+  buyPrice: number;
+  sellPrice: number;
+  stockSettings: number;
+  attachments: string[];
+  variants: string[];
 }
 
 @Component({
@@ -48,10 +56,25 @@ export class ProductListComponent implements OnInit {
   displayedColumns: string[] = [
     'className',
     'categories',
+    'coefficient',
     'maxStock',
+    'tradeQuantity',
     'buyPrice',
     'sellPrice',
+    'stockSettings',
+    'attachments',
+    'variants',
+    'actions'
   ];
+
+  // Add helper method to format stock settings
+  formatStockSettings(value: number): string {
+    const destockCoefficient = (value & 0x7F) * 0.01;
+    const behaviorAtRestart = (value >> 7) & 0x03;
+    const behaviors = ['No Change', 'Reset Max', 'Random', 'Reserved'];
+    
+    return `${destockCoefficient.toFixed(2)}% / ${behaviors[behaviorAtRestart]}`;
+  }
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -62,7 +85,6 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.showActions) {
-      this.displayedColumns.push('actions');
     }
   }
 
