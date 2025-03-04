@@ -1,0 +1,33 @@
+.product-list-container {
+  .filter-field {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .products-table {
+    width: 100%;
+    background: transparent;
+
+    .mat-column-actions {
+      width: 100px;
+      text-align: right;
+    }
+
+    .mat-column-maxStock,
+    .mat-column-buyPrice,
+    .mat-column-sellPrice {
+      text-align: right;
+      padding-right: 24px;
+    }
+  }
+}
+
+:host ::ng-deep {
+  .mat-mdc-table {
+    background: transparent;
+  }
+
+  .mat-mdc-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+}

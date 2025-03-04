@@ -1,0 +1,34 @@
+<div class="product-editor-container">
+  <div class="header">
+    <div class="header-left">
+      <h2>Product Editor</h2>
+      <div class="header-buttons">
+        <button mat-raised-button color="primary" (click)="addProduct()">
+          <mat-icon>add</mat-icon>
+          Add Product
+        </button>
+        <button mat-flat-button color="primary" routerLink="/file-management">
+          <mat-icon>upload_file</mat-icon>
+          Import Products
+        </button>
+        <button mat-flat-button color="warn" [matMenuTriggerFor]="dangerMenu">
+          <mat-icon>warning</mat-icon>
+          Danger Zone
+        </button>
+        <mat-menu #dangerMenu="matMenu">
+          <button mat-menu-item (click)="removeAllProducts()">
+            <mat-icon>delete_forever</mat-icon>
+            <span>Remove All Products</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  </div>
+
+  <app-product-list
+    [products]="products"
+    [showActions]="true"
+    (productRemoved)="onProductRemoved($event)"
+    (productEdited)="onProductEdited($event)">
+  </app-product-list>
+</div>
