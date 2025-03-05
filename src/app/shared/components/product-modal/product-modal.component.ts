@@ -118,11 +118,6 @@ export class ProductModalComponent implements OnInit {
       },
     });
 
-    // Prevent dialog close propagation
-    dialogRef.backdropClick().subscribe(() => {
-      return false; // Prevent closing on backdrop click
-    });
-
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.attachmentProducts = this.storageService
@@ -139,11 +134,6 @@ export class ProductModalComponent implements OnInit {
         allProducts: this.storageService.products(),
         currentProductIds: this.variantProducts.map((p) => p.productId),
       },
-    });
-
-    // Prevent dialog close propagation
-    dialogRef.backdropClick().subscribe(() => {
-      return false; // Prevent closing on backdrop click
     });
 
     dialogRef.afterClosed().subscribe((result) => {
