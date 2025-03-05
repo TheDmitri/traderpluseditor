@@ -1,11 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 @include mat.core();
 
 // Global styles
-html, body { 
-  height: 100%; 
+html,
+body {
+  height: 100%;
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: #1a1a1a;
@@ -71,9 +72,11 @@ html, body {
 
 // Snackbar Styles
 .mat-mdc-snack-bar-container {
-  &.success-snackbar, &.warning-snackbar, &.error-snackbar {
+  &.success-snackbar,
+  &.warning-snackbar,
+  &.error-snackbar {
     --mdc-snackbar-container-color: #2d2d2d;
-    --mdc-snackbar-supporting-text-color: white;
+    --mdc-snackbar-supporting-text-color: rgb(0, 0, 0);
 
     .mat-mdc-button {
       color: white;
@@ -93,12 +96,49 @@ html, body {
   }
 }
 
-// Globale Snackbar-Position
+// Global Snackbar-Position
 .custom-snackbar {
   position: fixed !important;
-  top: 80px !important; // Abstand zur Toolbar
+  top: 80px !important; // Distance to Toolbar
   right: 16px !important;
   left: unset !important;
   bottom: unset !important;
   margin: 0 !important;
+}
+
+// Prevent text selection
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+.stats-value,
+button,
+mat-label,
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-menu-item,
+.mat-mdc-list-item,
+.mat-mdc-tab-label,
+.mat-mdc-select-value-text,
+.mat-mdc-card-title,
+.mat-mdc-card-subtitle,
+.dialog-header,
+.modal-header {
+  user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+}
+
+// Allow text selection in input fields and textareas
+input,
+textarea {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
 }
