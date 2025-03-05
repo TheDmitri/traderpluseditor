@@ -1,6 +1,7 @@
 .product-modal {
   display: flex;
   flex-direction: column;
+  max-height: 85vh;
 
   .modal-header {
     position: sticky;
@@ -33,9 +34,7 @@
       padding: 8px;
 
       // Single row items
-      [formControlName="className"],
-      [formControlName="attachments"],
-      [formControlName="variants"] {
+      [formControlName="className"] {
         grid-column: 1 / -1;
         width: 100%;
       }
@@ -51,15 +50,94 @@
           width: 100%;
         }
       }
+    }
+  }
 
-      // Textareas
-      [formControlName="attachments"],
-      [formControlName="variants"] {
-        textarea {
-          min-height: 60px;
-          max-height: 120px;
-          resize: vertical;
-          padding: 4px 8px;
+  .mat-expansion-panel {
+    background: rgba(255, 255, 255, 0.04);
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .mat-expansion-panel-header {
+      .mat-expansion-panel-header-title {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-right: 0;
+
+        button {
+          min-width: 32px;
+          width: 32px;
+          height: 32px;
+          line-height: 32px;
+          padding: 0;
+          margin: 0;
+          border-radius: 50%;
+
+          mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+            line-height: 18px;
+          }
+        }
+      }
+    }
+  }
+
+  .product-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 8px 0;
+
+    .product-list {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.04);
+
+      .product-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.08);
+
+          .remove-button {
+            opacity: 1;
+          }
+        }
+
+        .product-info {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+
+          .product-id {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8em;
+          }
+
+          .product-name {
+            color: rgba(255, 255, 255, 0.87);
+          }
+        }
+
+        .remove-button {
+          opacity: 0;
+          transition: opacity 0.2s ease;
         }
       }
     }

@@ -53,8 +53,6 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
 
   addProduct(): void {
     const dialogRef = this.dialog.open(ProductModalComponent, {
-      width: '800px',
-      maxHeight: '65vh',
       data: {},
     });
 
@@ -115,8 +113,6 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
 
   onProductEdited(product: Product): void {
     const dialogRef = this.dialog.open(ProductModalComponent, {
-      width: '800px',
-      maxHeight: '65vh',
       data: { product },
     });
 

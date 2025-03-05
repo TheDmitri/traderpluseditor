@@ -186,8 +186,6 @@ export class CategoryModalComponent implements OnInit {
     event?.stopPropagation();
   
     const dialogRef = this.dialog.open(AssignProductsDialogComponent, {
-      width: '800px',
-      maxHeight: '65vh',
       disableClose: true,
       autoFocus: false, // Verhindert Auto-Fokus auf das erste Element
       data: {
