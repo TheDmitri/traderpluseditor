@@ -22,6 +22,7 @@ import { NotificationService } from '../../services/notification.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AssignProductsDialogComponent } from '../assign-products-dialog/assign-products-dialog.component';
 import { StorageService } from '../../../core/services/storage.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-product-modal',
@@ -34,6 +35,7 @@ import { StorageService } from '../../../core/services/storage.service';
     MatButtonModule,
     MatIconModule,
     MatSlideToggleModule,
+    MatTooltipModule,
     TextFieldModule,
     MatExpansionModule,
   ],
