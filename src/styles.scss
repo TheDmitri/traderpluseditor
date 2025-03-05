@@ -125,6 +125,17 @@
   --brush-pressed-overlay-light: rgba(0, 0, 0, 0.16);
 }
 
+/* Responsive Typography
+========================================================================== */
+:root {
+  --font-size-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  --font-size-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+  --font-size-base: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  --font-size-lg: clamp(1.125rem, 1rem + 0.625vw, 1.25rem);
+  --font-size-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+  --font-size-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+}
+
 /* Animation Configurations
 ========================================================================== */
 :root {
@@ -161,6 +172,26 @@
 // List Items
 .mat-mdc-list-item {
   transition: background-color var(--transition-quick) var(--transition-timing) !important;
+}
+
+/* Loading States
+========================================================================== */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--brush-background-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.loading-spinner {
+  color: var(--color-accent-light) !important;
 }
 
 /* Base Styles
@@ -267,6 +298,25 @@ textarea {
     .mat-mdc-card-subtitle {
       color: var(--brush-text-secondary-on-light) !important;
     }
+  }
+  
+  &.hoverable {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    &:active {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2) !important;
+    }
+  }
+
+  &.bordered {
+    border: 1px solid var(--brush-border-light);
   }
 }
 
@@ -591,6 +641,25 @@ textarea {
   }
 }
 
+/* Form States */
+.mat-mdc-form-field {
+  &.ng-invalid.ng-touched {
+    .mat-mdc-form-field-outline {
+      color: var(--color-error-light) !important;
+    }
+    
+    .mat-mdc-form-field-label {
+      color: var(--color-error-light) !important;
+    }
+  }
+
+  .mat-mdc-form-field-hint,
+  .mat-mdc-form-field-error {
+    font-size: 0.75rem;
+    letter-spacing: 0.025em;
+  }
+}
+
 // Dialogs and modals
 .mat-mdc-dialog-container {
   .mdc-dialog__title {
@@ -652,6 +721,22 @@ textarea {
 
   .mat-mdc-cell {
     color: var(--brush-text-primary) !important;
+  }
+  
+  .mat-mdc-row {
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background-color: var(--brush-hover-overlay);
+    }
+    
+    &.selected {
+      background-color: var(--brush-selected-overlay);
+    }
+  }
+
+  .clickable-row {
+    cursor: pointer;
   }
 
   // Light table variant
