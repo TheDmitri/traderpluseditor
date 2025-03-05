@@ -73,7 +73,7 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
       data: {
         title: 'Delete All Products',
         message:
-          'Are you sure you want to delete all products? This action cannot be undone.',
+          'Are you sure you want to delete all products? \nThis action cannot be undone.',
         confirmText: 'Delete All',
         cancelText: 'Cancel',
         type: 'danger',
@@ -94,7 +94,7 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
       data: {
         title: 'Delete Product',
         message:
-          'Are you sure you want to delete this product? This action cannot be undone.',
+          'Are you sure you want to delete this product? \nThis action cannot be undone.',
         confirmText: 'Delete',
         cancelText: 'Cancel',
         type: 'danger',

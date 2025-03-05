@@ -1,8 +1,13 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { 
+  MatDialogRef, 
+  MAT_DIALOG_DATA, 
+  MatDialogModule 
+} from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { A11yModule } from '@angular/cdk/a11y';
 
 interface ConfirmDialogData {
   title: string;
@@ -19,7 +24,8 @@ interface ConfirmDialogData {
     CommonModule,
     MatDialogModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    A11yModule
   ],
   templateUrl:
     '../../../shared/components/confirm-dialog/confirm-dialog.component.html',
@@ -33,6 +39,13 @@ export class ConfirmDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogData
   ) {
     this.dialogRef.disableClose = true;
+    
+    // Handle escape key
+    this.dialogRef.keydownEvents().subscribe(event => {
+      if (event.key === 'Escape') {
+        this.onCancel();
+      }
+    });
   }
 
   getIcon(): string {

@@ -103,10 +103,10 @@ export class CategoryModalComponent implements OnInit {
       data: {
         title: 'Remove Product from Category',
         message:
-          'Are you sure you want to remove this product from the category?',
+          'Are you sure you want to remove this product from the category?\nThis action cannot be undone.',
         confirmText: 'Remove',
         cancelText: 'Cancel',
-        type: 'warning',
+        type: 'danger',
       },
     });
 

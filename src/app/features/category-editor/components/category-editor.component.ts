@@ -94,7 +94,7 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
       data: {
         title: 'Delete All Categories',
         message:
-          'Are you sure you want to delete all categories? This action cannot be undone.',
+          'Are you sure you want to delete all categories? \nThis action cannot be undone.',
         confirmText: 'Delete All',
         cancelText: 'Cancel',
         type: 'danger',
@@ -138,7 +138,7 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
       data: {
         title: 'Delete Category',
         message:
-          'Are you sure you want to delete this category? This action cannot be undone.',
+          'Are you sure you want to delete this category? \nThis action cannot be undone.',
         confirmText: 'Delete',
         cancelText: 'Cancel',
         type: 'danger',
