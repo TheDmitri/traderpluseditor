@@ -128,7 +128,6 @@ export class CategoryModalComponent implements OnInit {
     event?.stopPropagation();
 
     const dialogRef = this.dialog.open(ProductModalComponent, {
-      width: '600px',
       disableClose: true, // Prevent closing on backdrop click
       data: {
         product,
