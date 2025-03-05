@@ -1,64 +1,83 @@
 .product-modal {
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
 
-  h2 {
-    margin: 0 0 24px 0;
-    color: rgba(255, 255, 255, 0.87);
-    font-size: 1.5rem;
-    font-weight: 500;
+  .modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    flex: 0 0 64px;
+    height: 64px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    background: #424242;
+
+    h2 {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.87);
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
   }
 
-  .form-container {
-    display: grid;
-    gap: 16px;
-    min-width: 400px;
-    padding: 8px;
+  .modal-content {
+    flex: 1 1 auto;
+    overflow: hidden;
+    padding: 24px;
 
-    // Single row items
-    [formControlName="className"],
-    [formControlName="attachments"],
-    [formControlName="variants"] {
-      grid-column: 1 / -1;
-      width: 100%;
-    }
-
-    // Three columns row layout
-    .number-row {
+    .form-container {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
-      width: 100%;
+      padding: 8px;
 
-      mat-form-field {
+      // Single row items
+      [formControlName="className"],
+      [formControlName="attachments"],
+      [formControlName="variants"] {
+        grid-column: 1 / -1;
         width: 100%;
       }
-    }
 
-    // Textareas
-    [formControlName="attachments"],
-    [formControlName="variants"] {
-      textarea {
-        min-height: 60px;
-        max-height: 120px;
-        resize: vertical;
-        padding: 4px 8px;
+      // Three columns row layout
+      .number-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        width: 100%;
+
+        mat-form-field {
+          width: 100%;
+        }
+      }
+
+      // Textareas
+      [formControlName="attachments"],
+      [formControlName="variants"] {
+        textarea {
+          min-height: 60px;
+          max-height: 120px;
+          resize: vertical;
+          padding: 4px 8px;
+        }
       }
     }
   }
 
-  mat-dialog-content {
-    max-height: 70vh;
-    padding: 0;
-    overflow-x: hidden;
-  }
-
-  mat-dialog-actions {
+  .modal-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    flex: 0 0 64px;
+    height: 64px;
+    padding: 0 24px;
     display: flex;
+    align-items: center;
     justify-content: flex-end;
-    padding: 16px 0 0 0;
-    margin: 24px 0 0 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
     gap: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    background: #424242;
   }
 }
 
@@ -87,7 +106,7 @@
     border-radius: 4px;
 
     &:hover {
-        cursor: default;
+      cursor: default;
       background: rgba(255, 255, 255, 0.3);
     }
   }

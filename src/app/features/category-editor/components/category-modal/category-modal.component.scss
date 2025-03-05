@@ -1,48 +1,93 @@
 .category-modal {
   display: flex;
   flex-direction: column;
+  height: 65vh;
 
-  .form-container {
+  .modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    flex: 0 0 64px;
+    height: 64px;
+    padding: 0 24px;
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 400px;
-    padding: 8px;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    background: #424242;
+
+    h2 {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.87);
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
   }
 
-  mat-form-field {
-    width: 100%;
-  }
-
-  .product-list-section {
-    margin-top: 24px;
-
-    .product-list-header {
+  .modal-content {
+    flex: 1 1 auto;
+    overflow: hidden;
+    padding: 24px;
+    
+    .form-container {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      
-      .header-buttons {
+      flex-direction: column;
+      gap: 16px;
+      height: 100%;
+
+      .basic-settings {
         display: flex;
-        gap: 8px;
+        flex-direction: column;
+        gap: 16px;
       }
-  
-      h3 {
-        margin: 0;
-        color: rgba(255, 255, 255, 0.87);
-        font-size: 1.1rem;
-        font-weight: 500;
+
+      .product-list-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0; // Important for scrolling
+        margin-top: 24px;
+
+        .product-list-header {
+          flex: 0 0 auto;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 16px;
+          
+          .header-buttons {
+            display: flex;
+            gap: 8px;
+          }
+      
+          h3 {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.87);
+            font-size: 1.1rem;
+            font-weight: 500;
+          }
+        }
+
+        app-product-list {
+          flex: 1;
+          overflow: auto;
+        }
       }
     }
   }
 
-  mat-dialog-actions {
+  .modal-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    flex: 0 0 64px;
+    height: 64px;
+    padding: 0 24px;
     display: flex;
+    align-items: center;
     justify-content: flex-end;
-    margin: 24px;
-    padding: 8px 0;
     gap: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    background: #424242;
   }
 }
 

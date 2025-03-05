@@ -2,18 +2,39 @@
   display: flex;
   flex-direction: column;
   height: 50vh;
-  padding: 24px;
   box-sizing: border-box;
 
-  h2 {
-    margin: 0;
-    padding: 0;
+  .modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: 64px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    background: #424242;
+
+    h2 {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.87);
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
   }
 
   .dialog-description {
     color: rgba(255, 255, 255, 0.7);
-    margin: 16px;
-    margin-bottom: 48px;
+    text-align: center;
+    margin: 8px;
+  }
+
+  .filter-field {
+    width: 100%;
+    padding-left: 24px;
+    padding-right: 24px;
+    margin-bottom: 0;
+    margin-top: 16px;
   }
 
   mat-dialog-content {
@@ -28,6 +49,7 @@
     display: flex;
     gap: 24px;
     height: 95%;
+    padding: 24px;
     min-height: 0; // Important for flex container
 
     .products-list {
@@ -84,7 +106,7 @@
         }
       }
     }
-    
+
     .action-buttons {
       display: flex;
       flex-direction: column;
@@ -106,7 +128,7 @@
 
         &:not(:disabled):hover {
           background-color: rgba(255, 255, 255, 0.04);
-          
+
           mat-icon {
             color: rgba(255, 255, 255, 0.9);
           }
@@ -115,17 +137,18 @@
     }
   }
 
-  mat-dialog-actions {
-    flex-shrink: 0; // Prevent action buttons from shrinking
-    margin-top: 24px;
-    padding: 16px 0 0 0;
-    justify-content: end;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  .modal-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    flex: 0 0 64px;
+    height: 64px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     gap: 8px;
-  }
-
-  .filter-field {
-    width: 100%;
-    margin: 16px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    background: #424242;
   }
 }

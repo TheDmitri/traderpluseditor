@@ -1,8 +1,13 @@
 <div class="assign-products-dialog">
-  <h2 mat-dialog-title>Assign Products to Category</h2>
-  <p class="dialog-description">
-    Click on products to move them between lists.
-  </p>
+  <div class="modal-header">
+    <h2>Assign Products to Category</h2>
+  </div>
+
+  <div class="modal-description">
+    <p class="dialog-description">
+      Click on products to move them between lists.
+    </p>
+  </div>
 
   <mat-form-field class="filter-field" appearance="fill">
     <mat-label>Filter Products</mat-label>
@@ -67,8 +72,8 @@
     </div>
   </mat-dialog-content>
 
-  <mat-dialog-actions>
+  <div class="modal-footer">
     <button mat-button (click)="onCancel()">Cancel</button>
     <button mat-raised-button color="primary" (click)="onSave()">Save</button>
-  </mat-dialog-actions>
+  </div>
 </div>
