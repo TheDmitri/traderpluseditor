@@ -344,11 +344,6 @@ textarea {
     background-color: var(--brush-active-overlay) !important;
   }
 
-  &:focus:not(:active) {
-    outline: 2px solid var(--brush-focus-outline) !important;
-    outline-offset: 2px;
-  }
-
   &:disabled {
     color: var(--brush-button-disabled-text) !important;
     background-color: transparent !important;
