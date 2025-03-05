@@ -3,54 +3,22 @@
   flex-direction: column;
   height: 100vh;
 
+  // Toolbar styling
   .app-toolbar {
-    flex: 0 0 auto;
-    z-index: 2;
-    background-color: var(--brush-background-default) !important;
+    flex: 0 0 64px; // Fixed height
+    background-color: var(--brush-background-default);
     border-bottom: 1px solid var(--brush-border-light);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    position: relative;
     padding: 0 16px;
     display: flex;
     align-items: center;
-    height: 64px;
+    position: relative;
+    z-index: 2;
 
-    .toolbar-spacer {
-      flex: 1 1 auto;
-    }
-
-    .menu-button,
-    .help-button {
-      --mdc-icon-button-state-layer-shape: 4px;
-      width: 40px;
-      height: 40px;
-      padding: 8px;
-      border-radius: 4px;
-      color: var(--color-accent-light);
-      transition: all 0.2s ease;
-
-      .mat-icon {
-        width: 24px;
-        height: 24px;
-        font-size: 24px;
-        line-height: 24px;
-      }
-
-      &:hover {
-        background-color: var(--brush-hover-overlay);
-        color: var(--color-accent-lightest);
-      }
-
-      &:active {
-        background-color: var(--brush-active-overlay);
-        color: var(--color-accent-lightest);
-      }
-
-      &:focus-visible {
-        outline: 2px solid var(--brush-focus-outline);
-        outline-offset: 2px;
-      }
-    }
+    // Enhanced box shadow for depth
+    box-shadow: 
+      0 2px 4px -1px rgba(0, 0, 0, 0.1),
+      0 4px 5px 0 rgba(0, 0, 0, 0.07),
+      0 1px 10px 0 rgba(0, 0, 0, 0.06);
 
     .toolbar-title-container {
       margin-left: 16px;
@@ -58,31 +26,65 @@
       align-items: center;
 
       .app-title {
-        color: var(--brush-text-primary);
-        font-weight: 400;
+        color: var(--color-accent-light);
+        font-size: var(--font-size-xl);
+        font-weight: 500;
         letter-spacing: 0.25rem;
-        font-size: 1.5rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        transition: opacity 0.2s ease;
+        transition: color var(--transition-normal) var(--transition-timing);
 
         &:hover {
-          opacity: 0.9;
+          color: var(--color-accent-lightest);
         }
+      }
+    }
+
+    .toolbar-spacer {
+      flex: 1 1 auto;
+    }
+
+    // Buttons in toolbar
+    .menu-button,
+    .help-button {
+      margin: 0 4px;
+      transition: all var(--transition-normal) var(--transition-timing);
+
+      .mat-icon {
+        transition: transform var(--transition-normal) var(--transition-timing);
+      }
+
+      &:hover .mat-icon {
+        transform: scale(1.1);
+      }
+
+      &:active .mat-icon {
+        transform: scale(0.95);
+      }
+    }
+
+    // Special animation for menu button when nav is expanded
+    .menu-button .mat-icon {
+      transition: transform var(--transition-normal) var(--transition-timing);
+      
+      &.expanded {
+        transform: rotate(-180deg);
       }
     }
   }
 
+  // Main content area
   .main-content {
     flex: 1;
     overflow: hidden;
+    position: relative;
     background-color: var(--brush-background-default);
   }
 
+  // Footer styling
   .app-footer {
-    flex: 0 0 auto;
-    height: 48px;
+    flex: 0 0 48px; // Fixed height
     background-color: var(--brush-background-default);
     border-top: 1px solid var(--brush-border-light);
     z-index: 1;
@@ -93,17 +95,15 @@
       align-items: center;
       justify-content: center;
       padding: 0 24px;
-      user-select: none;
       color: var(--brush-text-secondary);
-      font-size: 0.875rem;
-      text-align: center;
+      font-size: var(--font-size-sm);
       letter-spacing: 0.0625rem;
 
       span {
-        transition: color 0.2s ease;
+        transition: color var(--transition-normal) var(--transition-timing);
 
         &:hover {
-          color: var(--brush-text-primary);
+          color: var(--color-accent-light);
         }
       }
     }
