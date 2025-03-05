@@ -334,6 +334,7 @@ textarea {
 ========================================================================== */
 .mat-mdc-icon-button {
   // Default (Dark Theme)
+  --mdc-icon-button-state-layer-shape: 4px !important;
   color: var(--brush-text-primary) !important;
 
   &:hover {
