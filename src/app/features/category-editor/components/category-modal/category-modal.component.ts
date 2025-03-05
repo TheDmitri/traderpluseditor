@@ -25,6 +25,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ProductModalComponent } from '../../../../shared/components/product-modal/product-modal.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { NotificationService } from '../../../../shared/services/notification.service';
+import { AssignProductsDialogComponent } from '../../../../shared/components/assign-products-dialog/assign-products-dialog.component';
 
 @Component({
   selector: 'app-category-modal',
@@ -177,6 +178,32 @@ export class CategoryModalComponent implements OnInit {
           }
 
           this.loadCategoryProducts();
+        }
+      });
+    });
+  }
+
+  assignExistingProducts(): void {
+    event?.preventDefault();
+    event?.stopPropagation();
+  
+    const dialogRef = this.dialog.open(AssignProductsDialogComponent, {
+      width: '800px',
+      maxHeight: '65vh',
+      disableClose: true,
+      autoFocus: false, // Verhindert Auto-Fokus auf das erste Element
+      data: {
+        allProducts: this.storageService.products(),
+        currentProductIds: this.data.category?.productIds || []
+      }
+    });
+  
+    setTimeout(() => {
+      dialogRef.afterClosed().subscribe(result => {
+        if (result && this.data.category) {
+          this.data.category.productIds = result;
+          this.loadCategoryProducts();
+          this.notificationService.success('Products assigned successfully');
         }
       });
     });

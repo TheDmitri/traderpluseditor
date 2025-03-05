@@ -43,15 +43,26 @@
         <div class="product-list-section" (click)="$event.stopPropagation()">
           <div class="product-list-header">
             <h3>Products in Category</h3>
-            <button
-              mat-raised-button
-              color="primary"
-              (click)="$event.stopPropagation(); addProductToCategory()"
-              (mousedown)="$event.stopPropagation()"
-            >
-              <mat-icon>add</mat-icon>
-              Add Product
-            </button>
+            <div class="header-buttons">
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="$event.stopPropagation(); assignExistingProducts()"
+                (mousedown)="$event.stopPropagation()"
+              >
+                <mat-icon>playlist_add</mat-icon>
+                Assign Products
+              </button>
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="$event.stopPropagation(); addProductToCategory()"
+                (mousedown)="$event.stopPropagation()"
+              >
+                <mat-icon>add</mat-icon>
+                Add Product
+              </button>
+            </div>
           </div>
           <app-product-list
             [products]="categoryProducts"

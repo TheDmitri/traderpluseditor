@@ -1,0 +1,131 @@
+.assign-products-dialog {
+  display: flex;
+  flex-direction: column;
+  height: 50vh;
+  padding: 24px;
+  box-sizing: border-box;
+
+  h2 {
+    margin: 0;
+    padding: 0;
+  }
+
+  .dialog-description {
+    color: rgba(255, 255, 255, 0.7);
+    margin: 16px;
+    margin-bottom: 48px;
+  }
+
+  mat-dialog-content {
+    flex: 1;
+    margin: 0;
+    padding: 0;
+    max-height: unset !important;
+    overflow: hidden;
+  }
+
+  .lists-container {
+    display: flex;
+    gap: 24px;
+    height: 95%;
+    min-height: 0; // Important for flex container
+
+    .products-list {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 250px;
+      overflow: hidden; // Important for child scrolling
+
+      h3 {
+        margin: 0 0 16px 0;
+        color: rgba(255, 255, 255, 0.87);
+        font-size: 1rem;
+        font-weight: 500;
+      }
+
+      mat-list {
+        flex: 1;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 4px;
+        overflow-y: auto;
+        min-height: 0; // Important for scrolling
+
+        .clickable {
+          cursor: pointer;
+          height: 40px !important;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.04);
+          }
+        }
+
+        mat-list-item {
+          height: 40px;
+          font-size: 14px;
+        }
+
+        &::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 4px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 4px;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.3);
+          }
+        }
+      }
+    }
+    
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      padding: 0 16px;
+
+      button {
+        mat-icon {
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        &:disabled {
+          mat-icon {
+            color: rgba(255, 255, 255, 0.3);
+          }
+        }
+
+        &:not(:disabled):hover {
+          background-color: rgba(255, 255, 255, 0.04);
+          
+          mat-icon {
+            color: rgba(255, 255, 255, 0.9);
+          }
+        }
+      }
+    }
+  }
+
+  mat-dialog-actions {
+    flex-shrink: 0; // Prevent action buttons from shrinking
+    margin-top: 24px;
+    padding: 16px 0 0 0;
+    justify-content: end;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    gap: 8px;
+  }
+
+  .filter-field {
+    width: 100%;
+    margin: 16px 0;
+  }
+}

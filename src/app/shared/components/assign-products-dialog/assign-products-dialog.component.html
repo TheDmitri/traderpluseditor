@@ -1,0 +1,74 @@
+<div class="assign-products-dialog">
+  <h2 mat-dialog-title>Assign Products to Category</h2>
+  <p class="dialog-description">
+    Click on products to move them between lists.
+  </p>
+
+  <mat-form-field class="filter-field" appearance="fill">
+    <mat-label>Filter Products</mat-label>
+    <input
+      matInput
+      [(ngModel)]="filterValue"
+      (ngModelChange)="applyFilter($event)"
+      placeholder="Enter product name..."
+    />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <mat-dialog-content>
+    <div class="lists-container">
+      <!-- Available Products -->
+      <div class="products-list">
+        <h3>Available Products</h3>
+        <mat-list>
+          <mat-list-item
+            *ngFor="let product of availableProducts"
+            (click)="moveToSelected(product)"
+            class="clickable"
+          >
+            {{ product.className }}
+          </mat-list-item>
+        </mat-list>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button
+          mat-icon-button
+          (click)="moveAllVisibleToSelected()"
+          [disabled]="availableProducts.length === 0"
+          matTooltip="Move all visible products to selected"
+        >
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          (click)="moveAllVisibleToAvailable()"
+          [disabled]="selectedProducts.length === 0"
+          matTooltip="Move all visible products to available"
+        >
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+      </div>
+
+      <!-- Selected Products -->
+      <div class="products-list">
+        <h3>Selected Products</h3>
+        <mat-list>
+          <mat-list-item
+            *ngFor="let product of selectedProducts"
+            (click)="moveToAvailable(product)"
+            class="clickable"
+          >
+            {{ product.className }}
+          </mat-list-item>
+        </mat-list>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+  </mat-dialog-actions>
+</div>
