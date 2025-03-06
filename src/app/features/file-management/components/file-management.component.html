@@ -13,15 +13,15 @@
         </button>
         <mat-menu #importMenu="matMenu" class="import-menu">
           <button mat-menu-item (click)="triggerFileInput('categories')">
-            <mat-icon class="menu-icon categories-color">category</mat-icon>
+            <mat-icon class="menu-icon categories-color">my_library_books</mat-icon>
             <span>Categories</span>
           </button>
           <button mat-menu-item (click)="triggerFileInput('products')">
-            <mat-icon class="menu-icon products-color">inventory_2</mat-icon>
+            <mat-icon class="menu-icon products-color">shopping_cart</mat-icon>
             <span>Products</span>
           </button>
           <button mat-menu-item (click)="triggerFileInput('currencies')">
-            <mat-icon class="menu-icon currencies-color">payments</mat-icon>
+            <mat-icon class="menu-icon currencies-color">attach_money</mat-icon>
             <span>Currency Settings</span>
           </button>
           <button mat-menu-item (click)="triggerFileInput('settings')">
@@ -36,15 +36,15 @@
         </button>
         <mat-menu #exportMenu="matMenu" class="export-menu">
           <button mat-menu-item (click)="exportCategories()" [disabled]="!hasCategories">
-            <mat-icon class="menu-icon categories-color">category</mat-icon>
+            <mat-icon class="menu-icon categories-color">my_library_books</mat-icon>
             <span>Categories</span>
           </button>
           <button mat-menu-item (click)="exportProducts()" [disabled]="!hasProducts">
-            <mat-icon class="menu-icon products-color">inventory_2</mat-icon>
+            <mat-icon class="menu-icon products-color">shopping_cart</mat-icon>
             <span>Products</span>
           </button>
           <button mat-menu-item (click)="exportCurrencySettings()" [disabled]="!hasCurrencies">
-            <mat-icon class="menu-icon currencies-color">payments</mat-icon>
+            <mat-icon class="menu-icon currencies-color">attach_money</mat-icon>
             <span>Currency Settings</span>
           </button>
           <button mat-menu-item (click)="exportGeneralSettings()" [disabled]="!hasSettings">
@@ -104,7 +104,7 @@
         <!-- Categories Status -->
         <mat-card class="status-card" [class.has-data]="hasCategories">
           <div class="status-icon categories-bg">
-            <mat-icon>category</mat-icon>
+            <mat-icon>my_library_books</mat-icon>
           </div>
           <div class="status-content">
             <h3>Categories</h3>
@@ -133,7 +133,7 @@
         <!-- Products Status -->
         <mat-card class="status-card" [class.has-data]="hasProducts">
           <div class="status-icon products-bg">
-            <mat-icon>inventory_2</mat-icon>
+            <mat-icon>shopping_cart</mat-icon>
           </div>
           <div class="status-content">
             <h3>Products</h3>
@@ -162,7 +162,7 @@
         <!-- Currency Status -->
         <mat-card class="status-card" [class.has-data]="hasCurrencies">
           <div class="status-icon currencies-bg">
-            <mat-icon>payments</mat-icon>
+            <mat-icon>attach_money</mat-icon>
           </div>
           <div class="status-content">
             <h3>Currency Settings</h3>
