@@ -141,22 +141,22 @@
             </th>
             <td mat-cell *matCellDef="let category" class="actions-cell">
               <button
-                mat-icon-button
-                color="primary"
+                class="custom-icon-btn icon-btn-primary"
                 (click)="editCategory(category)"
                 aria-label="Edit category"
                 matTooltip="Edit this category"
               >
                 <mat-icon>edit</mat-icon>
+                <div class="icon-btn-ripple"></div>
               </button>
               <button
-                mat-icon-button
-                color="warn"
+                class="custom-icon-btn icon-btn-warn"
                 (click)="removeCategory(category.categoryId)"
                 aria-label="Delete category"
                 matTooltip="Delete this category"
               >
                 <mat-icon>delete_forever</mat-icon>
+                <div class="icon-btn-ripple"></div>
               </button>
             </td>
           </ng-container>
