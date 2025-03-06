@@ -760,6 +760,12 @@ textarea {
 // Snackbars
 .mat-mdc-snack-bar-container {
   &.success-snackbar {
+    --mdc-snackbar-container-color: var(--brush-info) !important;
+    --mdc-snackbar-supporting-text-color: var(
+      --brush-text-primary
+    ) !important;
+  }
+  &.success-snackbar {
     --mdc-snackbar-container-color: var(--brush-success) !important;
     --mdc-snackbar-supporting-text-color: var(
       --brush-text-primary-on-light

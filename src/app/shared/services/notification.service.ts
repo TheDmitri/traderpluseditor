@@ -14,6 +14,13 @@ export class NotificationService {
 
   constructor(private snackBar: MatSnackBar) {}
 
+  info(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      ...this.defaultConfig,
+      panelClass: ['custom-snackbar', 'info-snackbar'],
+    });
+  }
+
   success(message: string): void {
     this.snackBar.open(message, 'Close', {
       ...this.defaultConfig,
