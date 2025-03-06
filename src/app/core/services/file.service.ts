@@ -119,9 +119,6 @@ export class FileService {
     return this.importFile(file).then((data) => {
       let categories: Category[] = [];
 
-      // Extrahiere den Dateinamen ohne Erweiterung für die ID
-      const filenameWithoutExtension = file.name.replace(/\.json$/i, '');
-
       if (Array.isArray(data)) {
         // Multiple categories in a single file
         const validCategories = data.filter((item) =>
@@ -131,36 +128,11 @@ export class FileService {
           throw new Error('No valid TraderPlus category data found in file');
         }
 
-        // Wenn es mehrere Kategorien in einer Datei gibt, verwenden wir den Dateinamen
-        // als Prefix und fügen einen Index hinzu
-        if (validCategories.length > 1) {
-          categories = validCategories.map((cat, index) => ({
-            ...cat,
-            categoryId:
-              cat.categoryId ||
-              `${filenameWithoutExtension}_${(index + 1)
-                .toString()
-                .padStart(3, '0')}`,
-          }));
-        } else {
-          // Bei einer einzelnen Kategorie verwenden wir einfach den Dateinamen
-          categories = [
-            {
-              ...validCategories[0],
-              categoryId:
-                validCategories[0].categoryId || filenameWithoutExtension,
-            },
-          ];
-        }
+        // All valid categories
+        categories = validCategories as Category[];
       } else if (this.isCategoryData(data)) {
-        // Single category - use filename as ID if missing
-        categories = [
-          {
-            ...(data as Category),
-            categoryId:
-              (data as Category).categoryId || filenameWithoutExtension,
-          },
-        ];
+        // Single category
+        categories = [data as Category];
       } else {
         throw new Error('Invalid TraderPlus category format');
       }
@@ -179,64 +151,41 @@ export class FileService {
    */
   importMultipleCategories(files: FileList): Promise<void> {
     const filesArray = Array.from(files);
-
-    // Wir müssen für jede Datei die importFile-Methode aufrufen und
-    // dabei den Dateinamen erhalten
-    const importPromises = filesArray.map((file) =>
-      this.importFile(file).then((data) => {
-        const filenameWithoutExtension = file.name.replace(/\.json$/i, '');
-
-        if (Array.isArray(data)) {
-          // Filter for valid category data
-          const validItems = data.filter((item) => this.isCategoryData(item));
-
-          // Wenn mehrere Kategorien in einer Datei, nummerieren wir sie
-          if (validItems.length > 1) {
-            return validItems.map((cat, index) => ({
-              ...cat,
-              categoryId:
-                cat.categoryId ||
-                `${filenameWithoutExtension}_${(index + 1)
-                  .toString()
-                  .padStart(3, '0')}`,
-            }));
-          } else if (validItems.length === 1) {
-            // Bei einer einzelnen Kategorie, Dateinamen als ID verwenden
-            return [
-              {
-                ...validItems[0],
-                categoryId:
-                  validItems[0].categoryId || filenameWithoutExtension,
-              },
-            ];
+    return Promise.all(
+      filesArray.map((file) =>
+        this.importFile(file).then((data) => {
+          if (Array.isArray(data)) {
+            return data.filter((item) => this.isCategoryData(item));
+          } else if (this.isCategoryData(data)) {
+            return [data];
           }
           return [];
-        } else if (this.isCategoryData(data)) {
-          // Einzelne Kategorie
-          return [
-            {
-              ...(data as Category),
-              categoryId:
-                (data as Category).categoryId || filenameWithoutExtension,
-            },
-          ];
-        }
-        return [];
-      })
-    );
-
-    return Promise.all(importPromises).then((results) => {
+        })
+      )
+    ).then((results) => {
       let importedCategories: Category[] = results.flat();
 
       if (importedCategories.length === 0) {
         throw new Error('No valid TraderPlus category data found in files');
       }
 
-      // Merge with existing categories and ensure unique IDs
+      // Merge with existing categories
       const existing = this.storageService.categories();
       const merged = this.mergeCategories(existing, importedCategories);
       this.storageService.saveCategories(merged);
     });
+  }
+
+  /**
+   * Generate a safe base ID from a name (removes spaces, special chars, makes lowercase)
+   */
+  private createSafeIdBase(name: string | undefined, fallback: string): string {
+    if (!name) return fallback;
+
+    return name
+      .toLowerCase()
+      .replace(/\s+/g, '')
+      .replace(/[^a-z0-9_]/g, '');
   }
 
   /**
@@ -250,35 +199,66 @@ export class FileService {
   ): Category[] {
     const allCategories: Category[] = [...existing];
 
-    imported.forEach((category) => {
-      // Stelle sicher, dass eine ID vorhanden ist (sollte durch die Import-Methode
-      // bereits gesetzt sein, aber für den Fall der Fälle)
-      if (!category.categoryId) {
-        // Fallback, wenn keine ID vorhanden ist
-        const safeName =
-          category.categoryName
-            ?.toLowerCase()
-            .replace(/\s+/g, '_')
-            .replace(/[^a-z0-9_]/g, '') || 'unknown';
+    // Group categories by categoryName to generate correct suffixes
+    const categoryGroups: { [key: string]: number } = {};
 
-        category.categoryId = `cat_${safeName}_001`;
+    // Count existing categories by categoryName
+    allCategories.forEach((cat) => {
+      const baseName = this.createSafeIdBase(cat.categoryName, 'unknown');
+
+      // Check if this category already has a suffix in the ID
+      if (cat.categoryId && cat.categoryId.startsWith(`cat_${baseName}_`)) {
+        const suffixMatch = cat.categoryId.match(/_(\d{3})$/);
+        if (suffixMatch) {
+          const suffix = parseInt(suffixMatch[1], 10);
+          categoryGroups[baseName] = Math.max(
+            categoryGroups[baseName] || 0,
+            suffix
+          );
+        }
+      } else if (!categoryGroups[baseName]) {
+        categoryGroups[baseName] = 0;
+      }
+    });
+
+    // Process imported categories
+    imported.forEach((category) => {
+      // Generates a safe base ID from the category categoryName
+      const baseName = this.createSafeIdBase(category.categoryName, 'unknown');
+
+      // Wenn die Kategorie noch keine ID hat, generiere eine
+      if (!category.categoryId) {
+        // Increase the suffix for this categoryName
+        categoryGroups[baseName] = (categoryGroups[baseName] || 0) + 1;
+        const suffix = categoryGroups[baseName].toString().padStart(3, '0');
+        category.categoryId = `cat_${baseName}_${suffix}`;
       }
 
-      // Füge die Kategorie nur hinzu, wenn sie nicht bereits existiert
+      // Add new Category if it doesn't already exist
       if (
         !allCategories.some((cat) => cat.categoryId === category.categoryId)
       ) {
-        // Stelle sicher, dass wir alle erforderlichen Felder haben
+        // Ensure a default name if missing
         const normalizedCategory: Category = {
           categoryId: category.categoryId,
           categoryName: category.categoryName || 'Unnamed Category',
           productIds: category.productIds || [],
-          isVisible: category.isVisible ?? true, // Standard: sichtbar
+          isVisible: category.isVisible ?? true,
           icon: category.icon || '',
           licensesRequired: category.licensesRequired || [],
         };
 
         allCategories.push(normalizedCategory);
+
+        // Update the group counter if the ID has a higher suffix
+        const suffixMatch = category.categoryId.match(/_(\d{3})$/);
+        if (suffixMatch && baseName) {
+          const suffix = parseInt(suffixMatch[1], 10);
+          categoryGroups[baseName] = Math.max(
+            categoryGroups[baseName] || 0,
+            suffix
+          );
+        }
       }
     });
 
@@ -385,25 +365,44 @@ export class FileService {
   }
 
   /**
-   * Helper to merge products and generate new productIds if needed
+   * Helper to merge products and ensure proper ID generation
    */
   private mergeProducts(existing: Product[], imported: Product[]): Product[] {
     const merged = [...existing];
-    let nextIdNumber = this.getNextProductId(merged);
 
+    // Group products by className to generate correct suffixes
+    const productGroups: { [key: string]: number } = {};
+
+    // Count existing products by className
+    merged.forEach((prod) => {
+      const baseName = this.createSafeIdBase(prod.className, 'unknown');
+
+      // Check if this product already has a suffix in the ID
+      if (prod.productId && prod.productId.startsWith(`prod_${baseName}_`)) {
+        const suffixMatch = prod.productId.match(/_(\d{3})$/);
+        if (suffixMatch) {
+          const suffix = parseInt(suffixMatch[1], 10);
+          productGroups[baseName] = Math.max(
+            productGroups[baseName] || 0,
+            suffix
+          );
+        }
+      } else if (!productGroups[baseName]) {
+        productGroups[baseName] = 0;
+      }
+    });
+
+    // Process imported products
     imported.forEach((product) => {
-      // Generate ID if missing
-      if (!product.productId) {
-        const safeName =
-          product.className
-            ?.toLowerCase()
-            .replace(/\s+/g, '_')
-            .replace(/[^a-z0-9_]/g, '') || 'unknown';
+      // Generates a safe base ID from the product className
+      const baseName = this.createSafeIdBase(product.className, 'unknown');
 
-        product.productId = `prod_${safeName}_${nextIdNumber
-          .toString()
-          .padStart(3, '0')}`;
-        nextIdNumber++;
+      // If the product doesn't have an ID, generate one
+      if (!product.productId) {
+        // Increase the suffix for this className
+        productGroups[baseName] = (productGroups[baseName] || 0) + 1;
+        const suffix = productGroups[baseName].toString().padStart(3, '0');
+        product.productId = `prod_${baseName}_${suffix}`;
       }
 
       const existingIndex = merged.findIndex(
@@ -411,13 +410,23 @@ export class FileService {
       );
 
       if (existingIndex === -1) {
-        // Add new product
+        // Adds new Product if it doesn't already exist
         merged.push(product);
+
+        // Update the group counter if the ID has a higher suffix
+        const suffixMatch = product.productId.match(/_(\d{3})$/);
+        if (suffixMatch && baseName) {
+          const suffix = parseInt(suffixMatch[1], 10);
+          productGroups[baseName] = Math.max(
+            productGroups[baseName] || 0,
+            suffix
+          );
+        }
       } else {
-        // Update existing product
+        // Update existing Product but keeps the original id
         merged[existingIndex] = {
           ...product,
-          productId: merged[existingIndex].productId, // Keep original ID
+          productId: merged[existingIndex].productId,
         };
       }
     });
@@ -450,14 +459,8 @@ export class FileService {
    * Normalize product data to ensure all required fields
    */
   private normalizeProduct(data: any, filename: string): Product {
-    // Extract base name from filename without extension
-    const baseFilename =
-      filename && typeof filename === 'string'
-        ? filename.replace(/\.json$/i, '')
-        : 'unknown_product';
-
     return {
-      productId: data.productId || baseFilename, // Use filename as ID if not present
+      productId: data.productId || '', // Leave productId empty, gets generated in mergeProducts
       className: data.className,
       coefficient: data.coefficient ?? 1.0,
       maxStock: data.maxStock ?? -1,
