@@ -4,7 +4,12 @@
       <div class="header-left">
         <h2>Category Editor</h2>
         <div class="action-buttons">
-          <button mat-raised-button color="primary" (click)="addCategory()">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="addCategory()"
+            matTooltip="Create a new category"
+          >
             <mat-icon>add</mat-icon>
             Add Category
           </button>
@@ -12,6 +17,7 @@
             mat-raised-button
             color="primary"
             routerLink="/file-management"
+            matTooltip="Import categories from file"
           >
             <mat-icon>upload_file</mat-icon>
             Import Categories
@@ -19,16 +25,29 @@
         </div>
       </div>
       <div class="header-right">
-        <button mat-raised-button color="warn" [matMenuTriggerFor]="dangerMenu">
+        <button
+          mat-raised-button
+          color="warn"
+          [matMenuTriggerFor]="dangerMenu"
+          matTooltip="Dangerous operations"
+        >
           <mat-icon>warning</mat-icon>
           Danger Zone
         </button>
         <mat-menu #dangerMenu="matMenu">
-          <button mat-menu-item (click)="removeAllCategories()">
+          <button
+            mat-menu-item
+            (click)="removeAllCategories()"
+            matTooltip="Remove all categories permanently"
+          >
             <mat-icon>delete_forever</mat-icon>
             <span>Remove All Categories</span>
           </button>
-          <button mat-menu-item (click)="toggleAllCategoriesVisibility()">
+          <button
+            mat-menu-item
+            (click)="toggleAllCategoriesVisibility()"
+            matTooltip="Toggle visibility for all categories"
+          >
             <mat-icon>visibility</mat-icon>
             <span>Toggle All Visibility</span>
           </button>
@@ -46,6 +65,7 @@
           (keyup)="applyFilter($event)"
           placeholder="Search categories..."
           #input
+          matTooltip="Filter categories by any field"
         />
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
@@ -56,7 +76,12 @@
           <ng-container matColumnDef="icon">
             <th mat-header-cell *matHeaderCellDef>Icon</th>
             <td mat-cell *matCellDef="let category">
-              <mat-icon>{{ category.icon || "category" }}</mat-icon>
+              <mat-icon
+                [matTooltip]="
+                  category.icon ? 'Icon: ' + category.icon : 'Default icon'
+                "
+                >{{ category.icon || "category" }}</mat-icon
+              >
             </td>
           </ng-container>
 
@@ -80,9 +105,15 @@
           <ng-container matColumnDef="isVisible">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Visible</th>
             <td mat-cell *matCellDef="let category">
-              <mat-slide-toggle color="primary"
+              <mat-slide-toggle
+                color="primary"
                 [checked]="category.isVisible"
                 (change)="toggleCategoryVisibility(category)"
+                [matTooltip]="
+                  category.isVisible
+                    ? 'Category is visible'
+                    : 'Category is hidden'
+                "
               >
               </mat-slide-toggle>
             </td>
@@ -91,7 +122,14 @@
           <!-- Product Count Column -->
           <ng-container matColumnDef="productCount">
             <th mat-header-cell *matHeaderCellDef>Products</th>
-            <td mat-cell *matCellDef="let category" class="product-count">
+            <td
+              mat-cell
+              *matCellDef="let category"
+              class="product-count"
+              [matTooltip]="
+                getProductCount(category) + ' products in this category'
+              "
+            >
               {{ getProductCount(category) }}
             </td>
           </ng-container>
@@ -107,6 +145,7 @@
                 color="primary"
                 (click)="editCategory(category)"
                 aria-label="Edit category"
+                matTooltip="Edit this category"
               >
                 <mat-icon>edit</mat-icon>
               </button>
@@ -115,6 +154,7 @@
                 color="warn"
                 (click)="removeCategory(category.categoryId)"
                 aria-label="Delete category"
+                matTooltip="Delete this category"
               >
                 <mat-icon>delete_forever</mat-icon>
               </button>

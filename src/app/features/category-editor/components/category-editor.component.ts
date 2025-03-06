@@ -23,6 +23,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CategoryModalComponent } from './category-modal/category-modal.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-category-editor',
@@ -39,6 +40,7 @@ import { NotificationService } from '../../../shared/services/notification.servi
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
+    MatTooltipModule,
     MatDialogModule,
     RouterModule,
   ],

@@ -112,7 +112,8 @@
       }
 
       .product-count {
-        text-align: center;
+        min-width: 100px;
+        text-align: start;
       }
 
       // Cell styles
@@ -167,65 +168,6 @@
       .header-right {
         align-self: flex-end;
       }
-    }
-  }
-}
-
-// Common table formatting
-:host ::ng-deep {
-  .mat-mdc-table {
-    background: transparent;
-  }
-
-  .mat-mdc-row:hover {
-    background: var(--brush-hover-overlay);
-  }
-
-  .mat-mdc-card {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  .mat-mdc-form-field-appearance-outline .mat-mdc-form-field-outline {
-    color: var(--brush-border-light);
-  }
-
-  .mat-mdc-form-field-appearance-outline.mat-focused .mat-mdc-form-field-outline {
-    color: var(--brush-primary-action);
-  }
-
-  // Scrollbar styles
-  ::-webkit-scrollbar {
-    height: 8px;
-    width: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-  }
-
-  // Media queries
-  @media screen and (max-width: 960px) {
-    .mat-mdc-header-cell,
-    .mat-mdc-cell {
-      padding: 8px 4px;
-      font-size: 13px;
-    }
-  }
-
-  @media screen and (max-width: 600px) {
-    .mat-mdc-header-cell,
-    .mat-mdc-cell {
-      padding: 6px 4px;
-      font-size: 12px;
     }
   }
 }
