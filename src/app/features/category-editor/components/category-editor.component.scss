@@ -2,27 +2,53 @@
   padding: 24px;
   max-width: 2200px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  h2 {
+    margin-bottom: 16px;
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--brush-text-primary);
+  }
 
-    .header-left {
-      h2 {
-        margin-bottom: 16px;
-        font-size: 2rem;
-        font-weight: 400;
+  .header-card {
+    background-color: var(--brush-card-background);
+    border-radius: 8px;
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 16px;
+
+      .header-left {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
       }
 
-      .header-buttons {
+      .action-buttons {
         display: flex;
-        gap: 8px;
+        gap: 16px;
+        flex-wrap: wrap;
+
+        button {
+          margin-bottom: 8px;
+        }
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
       }
     }
+  }
+
+  .data-card {
+    background-color: var(--brush-card-background);
+    border-radius: 8px;
   }
 
   .filter-field {
@@ -44,8 +70,6 @@
         min-width: 120px;
         width: 120px;
         flex: 0 0 120px;
-        text-align: center;
-        padding-right: 16px;
 
         .actions-header,
         .actions-cell {
@@ -74,9 +98,6 @@
       .mat-column-categoryId {
         min-width: 150px;
         flex: 1.5;
-        @media screen and (max-width: 768px) {
-          display: none;
-        }
       }
 
       .mat-column-isVisible {
@@ -87,6 +108,9 @@
       .mat-column-productCount {
         min-width: 100px;
         flex: 0.8;
+      }
+
+      .product-count {
         text-align: center;
       }
 
@@ -95,7 +119,7 @@
       .mat-mdc-cell {
         padding: 12px 8px;
         font-size: 14px;
-        color: rgba(255, 255, 255, 0.87);
+        color: var(--brush-text-primary);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -103,6 +127,44 @@
 
       .mat-mdc-header-cell {
         font-weight: 500;
+        color: var(--brush-text-secondary);
+      }
+    }
+  }
+
+  // Progressive responsive column hiding
+  // First breakpoint - hide categoryId
+  @media screen and (max-width: 960px) {
+    .table-container table {
+      .mat-column-categoryId {
+        display: none;
+      }
+    }
+  }
+
+  // Second breakpoint - hide productCount, isVisible and icon
+  @media screen and (max-width: 768px) {
+    .table-container table {
+      .mat-column-productCount {
+        display: none;
+      }
+      .mat-column-isVisible {
+        display: none;
+      }
+      .mat-column-icon {
+        display: none;
+      }
+    }
+  }
+
+  // Media queries for responsive layout
+  @media screen and (max-width: 768px) {
+    .header-content {
+      flex-direction: column;
+      gap: 16px;
+
+      .header-right {
+        align-self: flex-end;
       }
     }
   }
@@ -115,7 +177,19 @@
   }
 
   .mat-mdc-row:hover {
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--brush-hover-overlay);
+  }
+
+  .mat-mdc-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .mat-mdc-form-field-appearance-outline .mat-mdc-form-field-outline {
+    color: var(--brush-border-light);
+  }
+
+  .mat-mdc-form-field-appearance-outline.mat-focused .mat-mdc-form-field-outline {
+    color: var(--brush-primary-action);
   }
 
   // Scrollbar styles
