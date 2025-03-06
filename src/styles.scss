@@ -721,7 +721,7 @@ textarea {
 
 // Tables
 .mat-mdc-table {
-  background-color: var(--brush-background-elevated) !important;
+  background-color: transparent !important;
 
   .mat-mdc-header-cell {
     color: var(--brush-text-secondary) !important;
@@ -757,6 +757,231 @@ textarea {
 
     .mat-mdc-cell {
       color: var(--brush-text-primary-on-light) !important;
+    }
+  }
+}
+
+/* Material Paginator Customization - Complete Override
+========================================================================== */
+
+// Entfernen vorhandener Paginator-Stile (falls vorhanden)
+.mat-mdc-paginator {
+  background: transparent !important;
+  color: var(--brush-text-primary) !important;
+}
+
+// Tiefer Override mit hoher Spezifität für alle Paginator-Elemente
+// Hauptcontainer
+.mat-mdc-paginator {
+  background: transparent !important;
+
+  // Text-Elemente
+  .mat-mdc-paginator-page-size-label,
+  .mat-mdc-paginator-range-label {
+    color: var(--brush-text-secondary) !important;
+    font-size: var(--font-size-sm);
+  }
+
+  // Navigation buttons - correct shape override
+  .mat-mdc-icon-button.mat-mdc-paginator-navigation-first,
+  .mat-mdc-icon-button.mat-mdc-paginator-navigation-previous,
+  .mat-mdc-icon-button.mat-mdc-paginator-navigation-next,
+  .mat-mdc-icon-button.mat-mdc-paginator-navigation-last {
+    border-radius: 4px !important;
+    width: 40px !important;
+    height: 40px !important;
+    padding: 8px !important;
+    background-color: transparent !important;
+
+    &:hover {
+      background-color: var(--brush-hover-overlay) !important;
+    }
+  
+    &:active {
+      background-color: var(--brush-active-overlay) !important;
+    }
+  
+    &:disabled {
+      color: var(--brush-button-disabled-text) !important;
+      background-color: transparent !important;
+    }
+
+    // Icon color
+    .mat-mdc-paginator-icon {
+      fill: var(--brush-primary-action) !important;
+    }
+
+    &:disabled .mat-mdc-paginator-icon {
+      fill: var(--brush-button-disabled-text) !important;
+      opacity: 0.5;
+    }
+  }
+
+  // Dropdown container
+  .mat-mdc-paginator-page-size-select {
+    .mdc-text-field {
+      background-color: transparent !important;
+
+      // Remove field decoration
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: var(--brush-border-light) !important;
+      }
+
+      // Focused state
+      &.mdc-text-field--focused {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-color: var(--brush-primary-action) !important;
+          border-width: 2px;
+        }
+
+        .mdc-floating-label {
+          color: var(--brush-primary-action) !important;
+        }
+      }
+
+      // Arrow color
+      .mat-mdc-select-arrow {
+        color: var(--brush-primary-action) !important;
+      }
+
+      // Text color
+      .mat-mdc-select-value-text {
+        color: var(--brush-text-primary) !important;
+      }
+    }
+  }
+
+  // Align content
+  .mat-mdc-paginator-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+
+    .mat-mdc-paginator-range-actions {
+      gap: 4px;
+    }
+  }
+}
+
+// Dropdown panel and options
+.mat-mdc-select-panel {
+  background-color: var(--brush-card-background) !important;
+}
+
+.cdk-overlay-pane {
+  .mat-mdc-option {
+    color: var(--brush-text-primary) !important;
+
+    // Hover state
+    &:hover:not(.mat-mdc-option-disabled) {
+      background-color: var(--brush-hover-overlay) !important;
+    }
+
+    // Active/focused state
+    &.mat-mdc-option-active {
+      background-color: var(--brush-active-overlay) !important;
+    }
+
+    // Selected state
+    &.mat-mdc-selected:not(.mat-mdc-option-disabled) {
+      background-color: var(--brush-selected-overlay) !important;
+
+      .mdc-list-item__primary-text {
+        color: var(--brush-primary-action) !important;
+      }
+
+      // Checkmark color
+      .mat-pseudo-checkbox {
+        color: var(--brush-primary-action) !important;
+
+        &::after {
+          color: var(--brush-primary-action) !important;
+          border-color: var(--brush-primary-action) !important;
+        }
+      }
+    }
+
+    // Option text
+    .mdc-list-item__primary-text {
+      color: var(--brush-text-primary) !important;
+    }
+  }
+}
+
+// Force override for outline colors when mat-select is clicked/focused
+.mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
+  color: var(--brush-primary-action) !important;
+}
+
+.mdc-text-field--focused:not(.mdc-text-field--disabled)
+  .mdc-notched-outline__leading,
+.mdc-text-field--focused:not(.mdc-text-field--disabled)
+  .mdc-notched-outline__notch,
+.mdc-text-field--focused:not(.mdc-text-field--disabled)
+  .mdc-notched-outline__trailing {
+  border-color: var(--brush-primary-action) !important;
+}
+
+// Important overrides for MDC-specific styling
+.mat-mdc-paginator {
+  // Fix icon buttons within paginator that use MDC styling
+  .mdc-icon-button {
+    border-radius: 4px !important;
+    color: var(--brush-primary-action) !important;
+
+    &:disabled {
+      color: var(--brush-button-disabled-text) !important;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: var(--brush-hover-overlay) !important;
+    }
+  }
+}
+
+// Fix for ripple effects in paginator elements
+.mat-mdc-paginator .mat-ripple-element {
+  background-color: var(--brush-ripple-color) !important;
+}
+
+// Fix for dropdown option ripples
+.mat-mdc-option .mat-ripple-element {
+  background-color: var(--brush-ripple-color) !important;
+}
+
+// Fix for general MDC form issues
+.mdc-line-ripple,
+.mdc-line-ripple::before,
+.mdc-line-ripple::after {
+  border-bottom-color: var(--brush-border-light) !important;
+}
+
+.mdc-line-ripple--active::after,
+.mdc-line-ripple--active::before {
+  border-bottom-color: var(--brush-primary-action) !important;
+}
+
+// Custom selector for light theme variant
+.light-theme .mat-mdc-paginator {
+  color: var(--brush-text-primary-on-light) !important;
+
+  ::ng-deep {
+    .mat-mdc-paginator-page-size-label,
+    .mat-mdc-paginator-range-label {
+      color: var(--brush-text-secondary-on-light) !important;
+    }
+
+    .mat-mdc-icon-button:hover:not(:disabled) {
+      background-color: var(--brush-hover-overlay-light) !important;
+    }
+
+    .mat-mdc-icon-button:active:not(:disabled) {
+      background-color: var(--brush-active-overlay-light) !important;
     }
   }
 }

@@ -47,7 +47,9 @@
   }
 
   .data-card {
-    background-color: var(--brush-card-background);
+    background: linear-gradient(135deg, 
+      var(--brush-background-elevated),
+      var(--brush-background-default));
     border-radius: 8px;
   }
 
@@ -63,7 +65,6 @@
 
     table {
       width: 100%;
-      background: transparent;
 
       .mat-mdc-column-actions,
       .mat-column-actions {
