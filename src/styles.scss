@@ -423,86 +423,176 @@ textarea {
   }
 }
 
-/* Material Icon Button Styles
+/* Custom Icon Button Styles
 ========================================================================== */
-.mat-mdc-icon-button {
-  // Default (Dark Theme)
-  color: var(--brush-text-primary) !important;
-  width: 40px !important;
-  height: 40px !important;
-  padding: 8px !important;
-  border-radius: 4px !important;
-
-  &:hover {
-    background-color: var(--brush-hover-overlay) !important;
+.custom-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  border: none;
+  background-color: transparent;
+  position: relative;
+  cursor: pointer;
+  transition: all var(--transition-normal) var(--transition-timing);
+  padding: 0;
+  
+  &:focus {
+    outline: none;
   }
-
-  &:active {
-    background-color: var(--brush-active-overlay) !important;
+  
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--brush-focus-outline);
   }
-
-  &:disabled {
-    color: var(--brush-button-disabled-text) !important;
-    background-color: transparent !important;
+  
+  .mat-icon {
+    color: inherit;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    transition: transform var(--transition-normal) var(--transition-timing);
   }
-
-  // Color variants
-  &.mat-primary {
-    color: var(--color-accent-light) !important;
-
+  
+  /* Button Variants */
+  &.icon-btn-primary {
+    color: var(--brush-primary-action);
+    
     &:hover {
-      color: var(--color-accent-lightest) !important;
+      background-color: var(--brush-hover-overlay);
+      color: var(--color-accent-light);
     }
-
-    &:disabled {
-      color: var(--brush-button-disabled-text) !important;
-    }
-  }
-
-  &.mat-accent {
-    color: var(--color-accent-medium) !important;
-
-    &:hover {
-      color: var(--color-accent-light) !important;
-    }
-
-    &:disabled {
-      color: var(--brush-button-disabled-text) !important;
-    }
-  }
-
-  &.mat-warn {
-    color: var(--color-error-light) !important;
-
-    &:hover {
-      color: var(--color-error-lightest) !important;
-    }
-
-    &:disabled {
-      color: var(--brush-button-disabled-text) !important;
-    }
-  }
-
-  // Light variant
-  &.light-icon-button {
-    color: var(--brush-text-primary-on-light) !important;
-
-    &:hover {
-      background-color: var(--brush-hover-overlay-light) !important;
-    }
-
+    
     &:active {
-      background-color: var(--brush-active-overlay-light) !important;
+      background-color: var(--brush-active-overlay);
+      transform: scale(0.95);
+      
+      .mat-icon {
+        transform: scale(0.95);
+      }
     }
-
-    &:focus:not(:active) {
-      outline: 2px solid var(--brush-focus-outline-light) !important;
-    }
-
+    
     &:disabled {
-      color: var(--brush-button-disabled-text) !important;
+      color: var(--brush-button-disabled-text);
+      cursor: not-allowed;
+      background-color: transparent;
     }
   }
+  
+  &.icon-btn-warn {
+    color: var(--brush-destructive-action);
+    
+    &:hover {
+      background-color: rgba(211, 47, 47, 0.08);
+      color: var(--color-error-light);
+    }
+    
+    &:active {
+      background-color: rgba(211, 47, 47, 0.15);
+      transform: scale(0.95);
+      
+      .mat-icon {
+        transform: scale(0.95);
+      }
+    }
+    
+    &:disabled {
+      color: var(--brush-button-disabled-text);
+      cursor: not-allowed;
+      background-color: transparent;
+    }
+  }
+  
+  &.icon-btn-light {
+    color: var(--brush-text-primary-on-light);
+    
+    &:hover {
+      background-color: var(--brush-hover-overlay-light);
+    }
+    
+    &:active {
+      background-color: var(--brush-active-overlay-light);
+      transform: scale(0.95);
+      
+      .mat-icon {
+        transform: scale(0.95);
+      }
+    }
+    
+    &:disabled {
+      color: var(--brush-button-disabled-text);
+      cursor: not-allowed;
+      background-color: transparent;
+    }
+  }
+  
+  /* Size variants */
+  &.icon-btn-sm {
+    width: 32px;
+    height: 32px;
+    
+    .mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+  
+  &.icon-btn-lg {
+    width: 48px;
+    height: 48px;
+    
+    .mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+  
+  /* With text label variant */
+  &.icon-btn-with-text {
+    width: auto;
+    padding: 0 16px;
+    gap: 8px;
+    
+    .btn-label {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+  }
+  
+  /* Ripple effect container */
+  .icon-btn-ripple {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    overflow: hidden;
+  }
+}
+
+/* Custom ripple animation for icon buttons */
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.icon-btn-ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  background: var(--brush-ripple-color);
+  opacity: 0.4;
+  animation: ripple 0.5s linear;
+  pointer-events: none;
 }
 
 /* Material Slide Toggle Styles
