@@ -706,31 +706,6 @@ textarea {
   }
 }
 
-/* Interactive Element States */
-.mat-mdc-option {
-  &:hover:not(.mat-mdc-option-disabled) {
-    background-color: var(--brush-hover-overlay) !important;
-  }
-
-  &.mat-mdc-option-active {
-    background-color: var(--brush-active-overlay) !important;
-  }
-
-  &.mat-mdc-option-disabled {
-    color: var(--brush-button-disabled-text) !important;
-  }
-}
-
-.mat-mdc-menu-item {
-  &:hover:not([disabled]) {
-    background-color: var(--brush-hover-overlay) !important;
-  }
-
-  &[disabled] {
-    color: var(--brush-button-disabled-text) !important;
-  }
-}
-
 /* Focus Indicators */
 .mat-mdc-focus-indicator {
   &:focus-visible {
