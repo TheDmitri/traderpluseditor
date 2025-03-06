@@ -152,7 +152,7 @@
 .mat-mdc-raised-button,
 .mat-mdc-icon-button {
   transition: all var(--transition-normal) var(--transition-timing) !important;
-  
+
   &:active {
     transform: scale(0.96);
   }
@@ -161,8 +161,8 @@
 // Cards
 .mat-mdc-card {
   transition: transform var(--transition-normal) var(--transition-timing),
-              box-shadow var(--transition-normal) var(--transition-timing) !important;
-  
+    box-shadow var(--transition-normal) var(--transition-timing) !important;
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3) !important;
@@ -299,16 +299,16 @@ textarea {
       color: var(--brush-text-secondary-on-light) !important;
     }
   }
-  
+
   &.hoverable {
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    
+
     &:hover {
       transform: translateY(-4px);
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3) !important;
     }
-    
+
     &:active {
       transform: translateY(-2px);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2) !important;
@@ -422,8 +422,11 @@ textarea {
 ========================================================================== */
 .mat-mdc-icon-button {
   // Default (Dark Theme)
-  --mdc-icon-button-state-layer-shape: 4px !important;
   color: var(--brush-text-primary) !important;
+  width: 40px !important;
+  height: 40px !important;
+  padding: 8px !important;
+  border-radius: 4px !important;
 
   &:hover {
     background-color: var(--brush-hover-overlay) !important;
@@ -647,7 +650,7 @@ textarea {
     .mat-mdc-form-field-outline {
       color: var(--color-error-light) !important;
     }
-    
+
     .mat-mdc-form-field-label {
       color: var(--color-error-light) !important;
     }
@@ -722,14 +725,14 @@ textarea {
   .mat-mdc-cell {
     color: var(--brush-text-primary) !important;
   }
-  
+
   .mat-mdc-row {
     transition: background-color 0.2s ease;
-    
+
     &:hover {
       background-color: var(--brush-hover-overlay);
     }
-    
+
     &.selected {
       background-color: var(--brush-selected-overlay);
     }
