@@ -1,68 +1,88 @@
 <div class="dashboard-container">
-  <div class="dashboard-header">
-    <h1 class="dashboard-title">TraderPlus Editor Dashboard</h1>
-    <p class="dashboard-subtitle">Manage your TraderPlus configuration with ease</p>
-  </div>
+  <!-- Header Section -->
+  <header class="dashboard-header">
+    <h1 class="dashboard-title">Welcome to TraderPlus Editor</h1>
+    <p class="dashboard-subtitle">Manage your trading system with ease</p>
+  </header>
 
-  <div class="dashboard-stats">
+  <!-- Statistics Cards -->
+  <section class="dashboard-stats">
     <mat-card class="stats-card category-card" appearance="outlined">
-      <div class="card-icon-container">
-        <mat-icon class="card-icon">my_library_books</mat-icon>
+      <div class="stats-content">
+        <div class="stats-info">
+          <span class="stats-label">Categories</span>
+          <span class="stats-value">{{ categoriesCount }}</span>
+          <span class="stats-trend positive">
+            <mat-icon>trending_up</mat-icon>
+            Active
+          </span>
+        </div>
+        <div class="stats-icon">
+          <mat-icon>category</mat-icon>
+        </div>
       </div>
-      <mat-card-content>
-        <h2 class="stats-label">Categories</h2>
-        <div class="stats-value">{{ categoriesCount }}</div>
-        <p class="stats-description">Total Categories</p>
-      </mat-card-content>
       <mat-card-actions>
-        <button mat-flat-button color="primary" routerLink="/categories">
+        <button mat-flat-button routerLink="/categories">
           <mat-icon>edit</mat-icon>
-          MANAGE
+          Manage Categories
         </button>
       </mat-card-actions>
     </mat-card>
 
     <mat-card class="stats-card product-card" appearance="outlined">
-      <div class="card-icon-container">
-        <mat-icon class="card-icon">shopping_cart</mat-icon>
+      <div class="stats-content">
+        <div class="stats-info">
+          <span class="stats-label">Products</span>
+          <span class="stats-value">{{ productsCount }}</span>
+          <span class="stats-trend positive">
+            <mat-icon>trending_up</mat-icon>
+            Active
+          </span>
+        </div>
+        <div class="stats-icon">
+          <mat-icon>inventory_2</mat-icon>
+        </div>
       </div>
-      <mat-card-content>
-        <h2 class="stats-label">Products</h2>
-        <div class="stats-value">{{ productsCount }}</div>
-        <p class="stats-description">Total Products</p>
-      </mat-card-content>
       <mat-card-actions>
-        <button mat-flat-button color="primary" routerLink="/products">
+        <button mat-flat-button routerLink="/products">
           <mat-icon>edit</mat-icon>
-          MANAGE
+          Manage Products
         </button>
       </mat-card-actions>
     </mat-card>
 
     <mat-card class="stats-card currency-card" appearance="outlined">
-      <div class="card-icon-container">
-        <mat-icon class="card-icon">attach_money</mat-icon>
+      <div class="stats-content">
+        <div class="stats-info">
+          <span class="stats-label">Currencies</span>
+          <span class="stats-value">{{ currenciesCount }}</span>
+          <span class="stats-trend positive">
+            <mat-icon>trending_up</mat-icon>
+            Active
+          </span>
+        </div>
+        <div class="stats-icon">
+          <mat-icon>payments</mat-icon>
+        </div>
       </div>
-      <mat-card-content>
-        <h2 class="stats-label">Currencies</h2>
-        <div class="stats-value">{{ currenciesCount }}</div>
-        <p class="stats-description">Currency Types</p>
-      </mat-card-content>
       <mat-card-actions>
-        <button mat-flat-button color="primary" routerLink="/currencies">
+        <button mat-flat-button routerLink="/currencies">
           <mat-icon>edit</mat-icon>
-          MANAGE
+          Manage Currencies
         </button>
       </mat-card-actions>
     </mat-card>
-  </div>
+  </section>
 
-  <div class="dashboard-actions">
+  <!-- Quick Actions Section -->
+  <section class="quick-actions">
     <mat-card appearance="outlined">
       <mat-card-header>
-        <mat-icon mat-card-avatar>flash_on</mat-icon>
+        <div mat-card-avatar class="quick-actions-icon">
+          <mat-icon>flash_on</mat-icon>
+        </div>
         <mat-card-title>Quick Actions</mat-card-title>
-        <mat-card-subtitle>Import, export or configure your settings</mat-card-subtitle>
+        <mat-card-subtitle>Common tasks and operations</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
         <div class="action-buttons">
@@ -76,14 +96,43 @@
           </button>
           <button mat-flat-button class="action-button settings-button" routerLink="/settings">
             <mat-icon>settings</mat-icon>
-            General Settings
+            Settings
           </button>
         </div>
       </mat-card-content>
     </mat-card>
-  </div>
+  </section>
 
-  <div class="dashboard-footer">
-    <p>TraderPlus Editor - Designed for DayZ Server Administrators</p>
-  </div>
+  <!-- Info Section -->
+  <section class="info-section">
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <div mat-card-avatar class="info-icon">
+          <mat-icon>info</mat-icon>
+        </div>
+        <mat-card-title>System Information</mat-card-title>
+        <mat-card-subtitle>Current configuration status</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Last Import</span>
+            <span class="info-value">2 hours ago</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Last Export</span>
+            <span class="info-value">1 hour ago</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Storage Usage</span>
+            <span class="info-value">45%</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Version</span>
+            <span class="info-value">1.0.0</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </section>
 </div>
