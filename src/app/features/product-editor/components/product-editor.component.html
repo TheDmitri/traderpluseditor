@@ -1,34 +1,61 @@
 <div class="product-editor-container">
-  <div class="header">
-    <div class="header-left">
-      <h2>Product Editor</h2>
-      <div class="header-buttons">
-        <button mat-raised-button color="primary" (click)="addProduct()">
-          <mat-icon>add</mat-icon>
-          Add Product
-        </button>
-        <button mat-raised-button color="primary" routerLink="/file-management">
-          <mat-icon>upload_file</mat-icon>
-          Import Products
-        </button>
-        <button mat-raised-button color="warn" [matMenuTriggerFor]="dangerMenu">
+  <mat-card class="header-card">
+    <div class="header-content">
+      <div class="header-left">
+        <h2>Product Editor</h2>
+        <div class="action-buttons">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="addProduct()"
+            matTooltip="Create a new product"
+          >
+            <mat-icon>add</mat-icon>
+            Add Product
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            routerLink="/file-management"
+            matTooltip="Import products from file"
+          >
+            <mat-icon>upload_file</mat-icon>
+            Import Products
+          </button>
+        </div>
+      </div>
+      <div class="header-right">
+        <button
+          mat-raised-button
+          color="warn"
+          [matMenuTriggerFor]="dangerMenu"
+          matTooltip="Dangerous operations"
+        >
           <mat-icon>warning</mat-icon>
           Danger Zone
         </button>
         <mat-menu #dangerMenu="matMenu">
-          <button mat-menu-item (click)="removeAllProducts()">
+          <button
+            mat-menu-item
+            (click)="removeAllProducts()"
+            matTooltip="Remove all products permanently"
+          >
             <mat-icon>delete_forever</mat-icon>
             <span>Remove All Products</span>
           </button>
         </mat-menu>
       </div>
     </div>
-  </div>
+  </mat-card>
 
-  <app-product-list
-    [products]="products"
-    [showActions]="true"
-    (productRemoved)="onProductRemoved($event)"
-    (productEdited)="onProductEdited($event)">
-  </app-product-list>
+  <mat-card class="data-card">
+    <mat-card-content>
+      <app-product-list
+        [products]="products"
+        [showActions]="true"
+        (productRemoved)="onProductRemoved($event)"
+        (productEdited)="onProductEdited($event)">
+      </app-product-list>
+    </mat-card-content>
+  </mat-card>
 </div>

@@ -16,18 +16,22 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-product-editor',
   standalone: true,
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-    MatDialogModule,
-    RouterModule,
+      CommonModule,
+      ReactiveFormsModule,
+      MatCardModule,
+      MatTooltipModule,
+      MatIconModule,
+      MatButtonModule,
+      MatMenuModule,
+      MatDialogModule,
+      RouterModule,
     ProductListComponent,
   ],
   templateUrl: './product-editor.component.html',
