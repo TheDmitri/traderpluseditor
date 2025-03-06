@@ -1,8 +1,14 @@
 <div class="product-list-container">
-    <mat-form-field class="filter-field">
-        <mat-label>Filter Products</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Search products..." #input>
-        <mat-icon matSuffix>search</mat-icon>
+    <mat-form-field class="filter-field" appearance="outline">
+      <mat-label>Filter Products</mat-label>
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        placeholder="Search Products..."
+        #input
+        matTooltip="Filter Products by any field"
+      />
+      <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
 
     <div class="table-container">
