@@ -1,322 +1,260 @@
 <div class="file-management-container">
-  <mat-card class="header-card">
+  <!-- Header Section -->
+  <div class="page-header">
     <div class="header-content">
-      <div class="header-left">
-        <h2>File Management</h2>
-        <p class="header-subtitle">
-          Import and export TraderPlus configuration files
-        </p>
+      <div class="title-section">
+        <h1>File Management</h1>
+        <p class="subtitle">Import and configure your TraderPlus setup</p>
+      </div>
+      <div class="header-actions">
+        <button mat-raised-button color="primary" class="action-button" [matMenuTriggerFor]="importMenu" matTooltip="Import files">
+          <mat-icon>file_upload</mat-icon>
+          Import
+        </button>
+        <mat-menu #importMenu="matMenu" class="import-menu">
+          <button mat-menu-item (click)="triggerFileInput('categories')">
+            <mat-icon class="menu-icon categories-color">category</mat-icon>
+            <span>Categories</span>
+          </button>
+          <button mat-menu-item (click)="triggerFileInput('products')">
+            <mat-icon class="menu-icon products-color">inventory_2</mat-icon>
+            <span>Products</span>
+          </button>
+          <button mat-menu-item (click)="triggerFileInput('currencies')">
+            <mat-icon class="menu-icon currencies-color">payments</mat-icon>
+            <span>Currency Settings</span>
+          </button>
+          <button mat-menu-item (click)="triggerFileInput('settings')">
+            <mat-icon class="menu-icon settings-color">settings</mat-icon>
+            <span>General Settings</span>
+          </button>
+        </mat-menu>
+        
+        <button mat-raised-button color="accent" class="action-button" [matMenuTriggerFor]="exportMenu" matTooltip="Export files">
+          <mat-icon>file_download</mat-icon>
+          Export
+        </button>
+        <mat-menu #exportMenu="matMenu" class="export-menu">
+          <button mat-menu-item (click)="exportCategories()" [disabled]="!hasCategories">
+            <mat-icon class="menu-icon categories-color">category</mat-icon>
+            <span>Categories</span>
+          </button>
+          <button mat-menu-item (click)="exportProducts()" [disabled]="!hasProducts">
+            <mat-icon class="menu-icon products-color">inventory_2</mat-icon>
+            <span>Products</span>
+          </button>
+          <button mat-menu-item (click)="exportCurrencySettings()" [disabled]="!hasCurrencies">
+            <mat-icon class="menu-icon currencies-color">payments</mat-icon>
+            <span>Currency Settings</span>
+          </button>
+          <button mat-menu-item (click)="exportGeneralSettings()" [disabled]="!hasSettings">
+            <mat-icon class="menu-icon settings-color">settings</mat-icon>
+            <span>General Settings</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="exportAllConfigs()" [disabled]="!hasAnyData()">
+            <mat-icon class="menu-icon">inventory_2</mat-icon>
+            <span>Export All as ZIP</span>
+          </button>
+        </mat-menu>
       </div>
     </div>
-  </mat-card>
+  </div>
 
-  <mat-card class="data-card">
-    <mat-card-content>
-      <mat-tab-group
-        class="custom-tabs"
-        animationDuration="300ms"
-        mat-stretch-tabs="false"
-        mat-align-tabs="start"
-      >
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <div class="tab-label">
-              <mat-icon>upload_file</mat-icon>
-              <span>Import</span>
-            </div>
-          </ng-template>
+  <!-- Hidden file inputs -->
+  <input #categoriesInput type="file" hidden accept=".json" multiple (change)="onFileSelected($event, 'categories')" />
+  <input #productsInput type="file" hidden accept=".json" multiple (change)="onFileSelected($event, 'products')" />
+  <input #currenciesInput type="file" hidden accept=".json" (change)="onFileSelected($event, 'currencies')" />
+  <input #settingsInput type="file" hidden accept=".json" (change)="onFileSelected($event, 'settings')" />
 
-          <div class="tab-content">
-            <div class="section-header">
-              <h3>Import Configuration Files</h3>
-              <p>
-                Upload JSON configuration files to import them into the editor.
-              </p>
-            </div>
-
-            <div class="file-sections-container">
-              <!-- Categories Section -->
-              <div class="file-section-card">
-                <div class="section-icon-container categories-icon">
-                  <mat-icon>category</mat-icon>
-                </div>
-                <div class="section-content">
-                  <h4>Categories</h4>
-                  <p>
-                    Import trader categories from single or multiple JSON files.
-                  </p>
-                  <div class="file-input-container">
-                    <button
-                      mat-raised-button
-                      color="primary"
-                      class="upload-button"
-                      matTooltip="Select one or more TraderPlus category JSON files to import"
-                      matTooltipPosition="above"
-                    >
-                      <mat-icon>upload_file</mat-icon>
-                      Select Categories File(s)
-                    </button>
-                    <input
-                      type="file"
-                      accept=".json"
-                      multiple
-                      (change)="onFileSelected($event, 'categories')"
-                    />
-                  </div>
-                  <div class="upload-hint">
-                    <mat-icon>info</mat-icon>
-                    <span>Multiple files allowed</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Products Section -->
-              <div class="file-section-card">
-                <div class="section-icon-container products-icon">
-                  <mat-icon>inventory_2</mat-icon>
-                </div>
-                <div class="section-content">
-                  <h4>Products</h4>
-                  <p>
-                    Import trader products from single or multiple JSON files.
-                  </p>
-                  <div class="file-input-container">
-                    <button
-                      mat-raised-button
-                      color="primary"
-                      class="upload-button"
-                      matTooltip="Select one or more TraderPlus product JSON files to import"
-                      matTooltipPosition="above"
-                    >
-                      <mat-icon>upload_file</mat-icon>
-                      Select Products File(s)
-                    </button>
-                    <input
-                      type="file"
-                      accept=".json"
-                      multiple
-                      (change)="onFileSelected($event, 'products')"
-                    />
-                  </div>
-                  <div class="upload-hint">
-                    <mat-icon>info</mat-icon>
-                    <span>Multiple files allowed</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Currency Settings Section -->
-              <div class="file-section-card">
-                <div class="section-icon-container currencies-icon">
-                  <mat-icon>payments</mat-icon>
-                </div>
-                <div class="section-content">
-                  <h4>Currency Settings</h4>
-                  <p>Import currency settings from a JSON file.</p>
-                  <div class="file-input-container">
-                    <button
-                      mat-raised-button
-                      color="primary"
-                      class="upload-button"
-                      matTooltip="Import TraderPlus currency settings"
-                      matTooltipPosition="above"
-                    >
-                      <mat-icon>upload_file</mat-icon>
-                      Select Currency Settings File
-                    </button>
-                    <input
-                      type="file"
-                      accept=".json"
-                      (change)="onFileSelected($event, 'currencies')"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <!-- General Settings Section -->
-              <div class="file-section-card">
-                <div class="section-icon-container settings-icon">
-                  <mat-icon>settings</mat-icon>
-                </div>
-                <div class="section-content">
-                  <h4>General Settings</h4>
-                  <p>Import general trader settings from a JSON file.</p>
-                  <div class="file-input-container">
-                    <button
-                      mat-raised-button
-                      color="primary"
-                      class="upload-button"
-                      matTooltip="Import TraderPlus general configuration settings"
-                      matTooltipPosition="above"
-                    >
-                      <mat-icon>upload_file</mat-icon>
-                      Select General Settings File
-                    </button>
-                    <input
-                      type="file"
-                      accept=".json"
-                      (change)="onFileSelected($event, 'settings')"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div
-              class="drag-drop-area"
-              [class.active-drop]="isDragging"
-              (dragover)="onDragOver($event)"
-              (dragleave)="onDragLeave($event)"
-              (drop)="onDrop($event)"
-            >
-              <div class="drag-drop-container">
-                <mat-icon class="drag-drop-icon">cloud_upload</mat-icon>
-                <h4>Drag & Drop Files Here</h4>
-                <p>Drop any TraderPlus JSON configuration files to import</p>
-                <mat-progress-bar
-                  *ngIf="isUploading"
-                  mode="indeterminate"
-                  color="accent"
-                ></mat-progress-bar>
-              </div>
+  <!-- Main Content Area -->
+  <div class="content-area">
+    <!-- Drag & Drop Zone -->
+    <div 
+      class="drag-drop-zone" 
+      [class.active-drop]="isDragging"
+      [class.uploading]="isUploading"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)">
+      <div class="drop-container">
+        <div class="drop-icon-container">
+          <mat-icon class="cloud-icon">cloud_upload</mat-icon>
+          <mat-icon class="arrow-icon">arrow_downward</mat-icon>
+        </div>
+        <h2>Drag & Drop Files Here</h2>
+        <p>Upload JSON configuration files for TraderPlus</p>
+        <div class="format-hint">
+          <mat-chip-set>
+            <mat-chip class="format-chip categories-chip" matTooltip="Category files format">cat_*.json</mat-chip>
+            <mat-chip class="format-chip products-chip" matTooltip="Product files format">prod_*.json</mat-chip>
+            <mat-chip class="format-chip currencies-chip" matTooltip="Currency files format">*currency*.json</mat-chip>
+            <mat-chip class="format-chip settings-chip" matTooltip="Settings files format">*settings*.json</mat-chip>
+          </mat-chip-set>
+        </div>
+        <mat-progress-bar *ngIf="isUploading" mode="indeterminate" color="accent" class="upload-progress"></mat-progress-bar>
+      </div>
+    </div>
+    
+    <!-- Status Dashboard -->
+    <div class="status-dashboard">
+      <h2 class="section-title">Configuration Status</h2>
+      
+      <div class="status-grid">
+        <!-- Categories Status -->
+        <mat-card class="status-card" [class.has-data]="hasCategories">
+          <div class="status-icon categories-bg">
+            <mat-icon>category</mat-icon>
+          </div>
+          <div class="status-content">
+            <h3>Categories</h3>
+            <p *ngIf="hasCategories">{{getCategoriesCount()}} categories loaded</p>
+            <p *ngIf="!hasCategories">No categories imported</p>
+            <div class="status-actions">
+              <button 
+                mat-button 
+                color="primary" 
+                (click)="triggerFileInput('categories')" 
+                matTooltip="Import category files">
+                <mat-icon>upload_file</mat-icon> Import
+              </button>
+              <button 
+                mat-button 
+                color="accent" 
+                [disabled]="!hasCategories" 
+                (click)="exportCategories()" 
+                matTooltip="Export categories as JSON">
+                <mat-icon>download</mat-icon> Export
+              </button>
             </div>
           </div>
-        </mat-tab>
-
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <div class="tab-label">
+        </mat-card>
+        
+        <!-- Products Status -->
+        <mat-card class="status-card" [class.has-data]="hasProducts">
+          <div class="status-icon products-bg">
+            <mat-icon>inventory_2</mat-icon>
+          </div>
+          <div class="status-content">
+            <h3>Products</h3>
+            <p *ngIf="hasProducts">{{getProductsCount()}} products loaded</p>
+            <p *ngIf="!hasProducts">No products imported</p>
+            <div class="status-actions">
+              <button 
+                mat-button 
+                color="primary" 
+                (click)="triggerFileInput('products')" 
+                matTooltip="Import product files">
+                <mat-icon>upload_file</mat-icon> Import
+              </button>
+              <button 
+                mat-button 
+                color="accent" 
+                [disabled]="!hasProducts" 
+                (click)="exportProducts()" 
+                matTooltip="Export products as JSON">
+                <mat-icon>download</mat-icon> Export
+              </button>
+            </div>
+          </div>
+        </mat-card>
+        
+        <!-- Currency Status -->
+        <mat-card class="status-card" [class.has-data]="hasCurrencies">
+          <div class="status-icon currencies-bg">
+            <mat-icon>payments</mat-icon>
+          </div>
+          <div class="status-content">
+            <h3>Currency Settings</h3>
+            <p *ngIf="hasCurrencies">{{getCurrencyTypesCount()}} currency types defined</p>
+            <p *ngIf="!hasCurrencies">No currency settings imported</p>
+            <div class="status-actions">
+              <button 
+                mat-button 
+                color="primary" 
+                (click)="triggerFileInput('currencies')" 
+                matTooltip="Import currency settings">
+                <mat-icon>upload_file</mat-icon> Import
+              </button>
+              <button 
+                mat-button 
+                color="accent" 
+                [disabled]="!hasCurrencies" 
+                (click)="exportCurrencySettings()" 
+                matTooltip="Export currency settings as JSON">
+                <mat-icon>download</mat-icon> Export
+              </button>
+            </div>
+          </div>
+        </mat-card>
+        
+        <!-- General Settings Status -->
+        <mat-card class="status-card" [class.has-data]="hasSettings">
+          <div class="status-icon settings-bg">
+            <mat-icon>settings</mat-icon>
+          </div>
+          <div class="status-content">
+            <h3>General Settings</h3>
+            <p *ngIf="hasSettings">General configuration loaded</p>
+            <p *ngIf="!hasSettings">No general settings imported</p>
+            <div class="status-actions">
+              <button 
+                mat-button 
+                color="primary" 
+                (click)="triggerFileInput('settings')" 
+                matTooltip="Import general settings">
+                <mat-icon>upload_file</mat-icon> Import
+              </button>
+              <button 
+                mat-button 
+                color="accent" 
+                [disabled]="!hasSettings" 
+                (click)="exportGeneralSettings()" 
+                matTooltip="Export general settings as JSON">
+                <mat-icon>download</mat-icon> Export
+              </button>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+      
+      <!-- Export All Option -->
+      <div class="export-all-container">
+        <mat-card class="export-all-card">
+          <div class="export-all-content">
+            <div class="export-icon-container">
+              <mat-icon>inventory_2</mat-icon>
+            </div>
+            <div class="export-text">
+              <h3>Export Complete Configuration</h3>
+              <p>Export all configuration files in a single ZIP archive</p>
+            </div>
+            <button 
+              mat-raised-button 
+              color="primary"
+              [disabled]="!hasAnyData()"
+              (click)="exportAllConfigs()"
+              matTooltip="Export all configurations as a ZIP archive">
               <mat-icon>download</mat-icon>
-              <span>Export</span>
-            </div>
-          </ng-template>
-
-          <div class="tab-content">
-            <div class="section-header">
-              <h3>Export Configuration Files</h3>
-              <p>
-                Export your configurations as JSON files compatible with
-                TraderPlus mod.
-              </p>
-            </div>
-
-            <div class="file-sections-container">
-              <!-- Export Categories -->
-              <div class="file-section-card">
-                <div class="section-icon-container categories-icon">
-                  <mat-icon>category</mat-icon>
-                </div>
-                <div class="section-content">
-                  <h4>Categories</h4>
-                  <p>Export all categories to a JSON file.</p>
-                  <button
-                    mat-raised-button
-                    color="primary"
-                    (click)="exportCategories()"
-                    class="export-button"
-                    matTooltip="Export all categories to a TraderPlus compatible JSON file"
-                    matTooltipPosition="above"
-                  >
-                    <mat-icon>download</mat-icon>
-                    Export Categories
-                  </button>
-                </div>
-              </div>
-
-              <!-- Export Products -->
-              <div class="file-section-card">
-                <div class="section-icon-container products-icon">
-                  <mat-icon>inventory_2</mat-icon>
-                </div>
-                <div class="section-content">
-                  <h4>Products</h4>
-                  <p>Export all products to a JSON file.</p>
-                  <button
-                    mat-raised-button
-                    color="primary"
-                    (click)="exportProducts()"
-                    class="export-button"
-                    matTooltip="Export all products to a TraderPlus compatible JSON file"
-                    matTooltipPosition="above"
-                  >
-                    <mat-icon>download</mat-icon>
-                    Export Products
-                  </button>
-                </div>
-              </div>
-
-              <!-- Export Currency Settings -->
-              <div class="file-section-card">
-                <div class="section-icon-container currencies-icon">
-                  <mat-icon>payments</mat-icon>
-                </div>
-                <div class="section-content">
-                  <h4>Currency Settings</h4>
-                  <p>Export currency settings to a JSON file.</p>
-                  <button
-                    mat-raised-button
-                    color="primary"
-                    (click)="exportCurrencySettings()"
-                    class="export-button"
-                    matTooltip="Export currency configuration to a TraderPlus compatible JSON file"
-                    matTooltipPosition="above"
-                  >
-                    <mat-icon>download</mat-icon>
-                    Export Currency Settings
-                  </button>
-                </div>
-              </div>
-
-              <!-- Export General Settings -->
-              <div class="file-section-card">
-                <div class="section-icon-container settings-icon">
-                  <mat-icon>settings</mat-icon>
-                </div>
-                <div class="section-content">
-                  <h4>General Settings</h4>
-                  <p>Export general settings to a JSON file.</p>
-                  <button
-                    mat-raised-button
-                    color="primary"
-                    (click)="exportGeneralSettings()"
-                    class="export-button"
-                    matTooltip="Export general settings to a TraderPlus compatible JSON file"
-                    matTooltipPosition="above"
-                  >
-                    <mat-icon>download</mat-icon>
-                    Export General Settings
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="export-all-section">
-              <mat-card class="export-all-card">
-                <div class="export-all-content">
-                  <div class="export-all-icon">
-                    <mat-icon>archive</mat-icon>
-                  </div>
-                  <div class="export-all-text">
-                    <h4>Export All Configurations</h4>
-                    <p>Export all configurations as a single ZIP archive</p>
-                  </div>
-                  <button
-                    mat-raised-button
-                    color="primary"
-                    class="export-all-button"
-                    matTooltip="Export all configuration files in a ZIP archive"
-                    matTooltipPosition="above"
-                    (click)="exportAllConfigs()"
-                  >
-                    <mat-icon>inventory_2</mat-icon>
-                    Export All Files
-                  </button>
-                </div>
-              </mat-card>
-            </div>
+              Export All Files
+            </button>
           </div>
-        </mat-tab>
-      </mat-tab-group>
-    </mat-card-content>
-  </mat-card>
+        </mat-card>
+      </div>
+    </div>
+    
+    <!-- Recent Activity Section -->
+    <div class="recent-activity" *ngIf="recentActivity.length > 0">
+      <h2 class="section-title">Recent Activity</h2>
+      <mat-card class="activity-card">
+        <mat-list role="list">
+          <mat-list-item *ngFor="let activity of recentActivity" role="listitem" class="activity-item">
+            <mat-icon matListItemIcon [ngClass]="activity.type + '-color'">{{getActivityIcon(activity.type)}}</mat-icon>
+            <div matListItemTitle>{{activity.message}}</div>
+            <div matListItemLine class="activity-time">{{activity.timestamp | date:'short'}}</div>
+          </mat-list-item>
+        </mat-list>
+      </mat-card>
+    </div>
+  </div>
 </div>
