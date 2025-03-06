@@ -24,6 +24,7 @@ import { NavigationService } from './core/services/navigation.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  title = 'traderpluseditor';
   
   constructor(
     private navigationService: NavigationService,
