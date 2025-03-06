@@ -1,26 +1,33 @@
+/* Navigation Container
+========================================================================== */
 .navigation-container {
   height: 100%;
 
+  // Main sidenav container
   .sidenav-container {
     height: 100%;
 
+    // Sidenav panel styling
     .sidenav {
       width: 250px;
-      background: #1e1e1e;
-      border-right: 1px solid rgba(255, 255, 255, 0.12);
-      transition: width 0.3s ease;
+      background-color: var(--brush-sidebar-background);
+      border-right: 1px solid var(--brush-border-light);
+      transition: width var(--transition-normal) var(--transition-timing);
 
+      // Collapsed state
       &.collapsed {
-        width: 75px;
+        width: 85px;
       }
     }
   }
 
+  // Main content area
   .mat-sidenav-content {
     display: flex;
     flex-direction: column;
-    background: #303030;
+    background-color: var(--brush-background-default);
 
+    // Content positioning based on sidenav state
     &.content-default {
       margin-left: 250px;
     }
@@ -29,46 +36,17 @@
       margin-left: 64px;
     }
 
+    // Content scrolling container
     .content {
       flex: 1;
       overflow: auto;
+      padding: 24px;
     }
   }
 }
 
-.toggle-button {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  position: absolute;
-  top: 16px;
-  right: -12px;
-  z-index: 100;
-  background-color: #1e1e1e;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-}
-
-.sidenav-content {
-  flex: 1;
-  overflow-y: auto;
-  padding-top: 8px;
-  padding-left: 5px;
-  
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  
-  /* Hide scrollbar for IE, Edge and Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
-
+/* Navigation Items
+========================================================================== */
 mat-nav-list {
   padding-top: 8px;
   display: flex;
@@ -76,86 +54,145 @@ mat-nav-list {
   align-items: center;
   justify-content: flex-start;
   
+  // Navigation item styling
   a {
     height: 56px;
     margin: 4px 8px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    border-radius: 4px;
+    transition: all var(--transition-quick) var(--transition-timing);
     overflow: hidden;
+    position: relative; // For ripple effect
     
+    // Interactive states
     &:hover {
-      background-color: rgba(255, 255, 255, 0.05) !important;
+      background-color: var(--brush-hover-overlay) !important;
+
+      .nav-icon-wrapper {
+        transform: scale(1.1);
+        background-color: var(--brush-active-overlay);
+
+        mat-icon {
+          color: var(--color-accent-lightest);
+        }
+      }
+
+      .nav-item-label {
+        color: var(--brush-text-primary);
+      }
     }
     
+    &:active {
+      .nav-icon-wrapper {
+        transform: scale(0.95);
+        background-color: var(--brush-pressed-overlay);
+      }
+    }
+    
+    // Route active state (current page)
     &.active-link {
-      background-color: rgba(121, 134, 203, 0.15) !important;
-      border-left: 3px solid #7986cb;
+      background-color: transparent !important; // Remove background
+      border-left: 3px solid var(--color-accent-medium);
       
       .nav-icon-wrapper {
-        background: linear-gradient(135deg, #3f51b5, #7986cb);
+        background: linear-gradient(135deg, 
+          var(--color-accent-dark),
+          var(--color-accent-medium));
+        transform: scale(1); // Reset scale for active item
         
         mat-icon {
-          color: white !important;
+          color: var(--brush-text-primary) !important;
         }
       }
       
       .nav-item-label {
-        color: white;
+        color: var(--color-accent-light);
         font-weight: 500;
+      }
+
+      // Active hover state
+      &:hover {
+        .nav-icon-wrapper {
+          transform: scale(1.05);
+        }
       }
     }
   }
 }
 
+/* Navigation Item Content
+========================================================================== */
 .nav-item-content {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   height: 100%;
-  padding: 0;
   
   .sidenav.collapsed & {
-    padding: 0;
-    justify-content: flex-start;
+    justify-content: center;
   }
 }
 
+// Icon wrapper styling
 .nav-icon-wrapper {
   width: 36px;
   height: 36px;
-  border-radius: 8px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.05);
-  transition: all 0.2s ease;
+  background-color: var(--brush-hover-overlay);
+  transition: all var(--transition-normal) var(--transition-timing);
+  will-change: transform, background-color; // Optimize animations
+
+  mat-icon {
+    color: var(--color-accent-light);
+    transition: color var(--transition-normal) var(--transition-timing);
+  }
 }
 
+// Navigation item label
 .nav-item-label {
   margin-left: 16px;
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.87);
+  font-size: var(--font-size-sm);
+  color: var(--brush-text-secondary);
+  transition: color var(--transition-normal) var(--transition-timing);
+  white-space: nowrap;
 }
 
+/* Sidenav Footer
+========================================================================== */
 .sidenav-footer {
   padding: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--brush-border-light);
   text-align: center;
 }
 
 .version-text {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: var(--font-size-xs);
+  color: var(--brush-text-secondary);
 }
 
-.content {
-  padding: 0;
-  height: 100%;
-  overflow: auto;
+/* Scrollbar Customization
+========================================================================== */
+.sidenav-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 8px;
+  padding-left: 8px;
+  
+  // Hide scrollbar while maintaining functionality
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 }
 
+/* Content Transition Improvements
+========================================================================== */
 mat-sidenav-content {
-  transition: margin-left 0.3s ease;
+  transition: margin-left var(--transition-normal) var(--transition-timing);
+  will-change: margin-left; // Optimize animations
   
   &.content-expanded {
     margin-left: 250px !important;
