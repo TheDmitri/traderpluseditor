@@ -6,6 +6,7 @@ import {
   CurrencySettings,
   GeneralSettings,
 } from '../models';
+import JSZip from 'jszip';
 
 /**
  * Service for handling file import/export operations
@@ -43,6 +44,71 @@ export class FileService {
   }
 
   /**
+   * Validates if the data is a valid TraderPlus category
+   * @param data Any data to validate
+   * @returns True if data has valid category format
+   */
+  private isCategoryData(data: any): boolean {
+    return (
+      data &&
+      typeof data === 'object' &&
+      'categoryName' in data &&
+      'productIds' in data &&
+      Array.isArray(data.productIds)
+    );
+  }
+
+  /**
+   * Validates if the data is a valid TraderPlus product
+   * @param data Any data to validate
+   * @returns True if data has valid product format
+   */
+  private isProductData(data: any): boolean {
+    return (
+      data &&
+      typeof data === 'object' &&
+      'className' in data &&
+      typeof data.className === 'string'
+    );
+  }
+
+  /**
+   * Validates if data is valid currency settings
+   * @param data Any data to validate
+   * @returns True if data has valid currency settings format
+   */
+  private isCurrencySettings(data: any): boolean {
+    return (
+      data &&
+      typeof data === 'object' &&
+      'currencyTypes' in data &&
+      Array.isArray(data.currencyTypes)
+    );
+  }
+
+  /**
+   * Validates if data is valid general settings
+   * @param data Any data to validate
+   * @returns True if data has valid general settings format
+   */
+  private isGeneralSettings(data: any): boolean {
+    return data && typeof data === 'object' && 'version' in data;
+  }
+
+  /**
+   * Auto-detect the type of TraderPlus data
+   * @param data The JSON data
+   * @returns The detected type or null if not recognized
+   */
+  detectDataType(data: any): 'category' | 'product' | 'currency' | 'general' | null {
+    if (this.isCategoryData(data)) return 'category';
+    if (this.isProductData(data)) return 'product';
+    if (this.isCurrencySettings(data)) return 'currency';
+    if (this.isGeneralSettings(data)) return 'general';
+    return null;
+  }
+
+  /**
    * Import categories from a JSON file
    * @param file The file containing category data
    * @returns Promise that resolves when import is complete
@@ -50,13 +116,23 @@ export class FileService {
   importCategories(file: File): Promise<void> {
     return this.importFile(file).then((data) => {
       let categories: Category[] = [];
+      
       if (Array.isArray(data)) {
-        categories = data as Category[];
-      } else if (data && typeof data === 'object') {
-        categories = [data];
-      } else {
-        throw new Error('Invalid category data format');
+        // Multiple categories in a single file
+        const validCategories = data.filter(item => this.isCategoryData(item));
+        if (validCategories.length === 0) {
+          throw new Error('No valid TraderPlus category data found in file');
+        }
+        categories = validCategories as Category[];
+      } 
+      else if (this.isCategoryData(data)) {
+        // Single category
+        categories = [data as Category];
+      } 
+      else {
+        throw new Error('Invalid TraderPlus category format');
       }
+      
       // Merge with existing categories and ensure unique IDs
       const existing = this.storageService.categories();
       const merged = this.mergeCategories(existing, categories);
@@ -74,17 +150,22 @@ export class FileService {
     return Promise.all(filesArray.map((file) => this.importFile(file))).then(
       (results) => {
         let importedCategories: Category[] = [];
+        
         for (const result of results) {
           if (Array.isArray(result)) {
-            importedCategories = importedCategories.concat(
-              result as Category[]
-            );
-          } else if (result && typeof result === 'object') {
-            importedCategories.push(result);
-          } else {
-            throw new Error('Invalid category data format in one of the files');
+            // Filter for valid category data
+            const validItems = result.filter(item => this.isCategoryData(item));
+            importedCategories = importedCategories.concat(validItems as Category[]);
+          } 
+          else if (this.isCategoryData(result)) {
+            importedCategories.push(result as Category);
           }
         }
+        
+        if (importedCategories.length === 0) {
+          throw new Error('No valid TraderPlus category data found in files');
+        }
+        
         // Merge with existing categories and ensure unique IDs
         const existing = this.storageService.categories();
         const merged = this.mergeCategories(existing, importedCategories);
@@ -106,15 +187,32 @@ export class FileService {
     let nextIdNumber = this.getNextCategoryId(allCategories);
 
     imported.forEach((category) => {
+      // Generate category ID if missing
       if (!category.categoryId) {
-        category.categoryId = this.generateCategoryId(nextIdNumber++);
+        // Try to generate from category name if possible
+        const safeName = category.categoryName?.toLowerCase()
+          .replace(/\s+/g, '_')
+          .replace(/[^a-z0-9_]/g, '') || 'unknown';
+          
+        category.categoryId = `cat_${safeName}_${nextIdNumber.toString().padStart(3, '0')}`;
+        nextIdNumber++;
       }
 
       // Add category, if it not already exists
       if (
         !allCategories.some((cat) => cat.categoryId === category.categoryId)
       ) {
-        allCategories.push(category);
+        // Ensure we have all required fields
+        const normalizedCategory: Category = {
+          categoryId: category.categoryId,
+          categoryName: category.categoryName || 'Unnamed Category',
+          productIds: category.productIds || [],
+          isVisible: category.isVisible ?? true, // Default to visible
+          icon: category.icon || '',
+          licensesRequired: category.licensesRequired || [],
+        };
+
+        allCategories.push(normalizedCategory);
       }
     });
 
@@ -129,22 +227,19 @@ export class FileService {
   private getNextCategoryId(categories: Category[]): number {
     let highestNumber = 0;
     categories.forEach((cat) => {
-      const idNumber = parseInt(cat.categoryId.split('_').pop() ?? '0');
-      if (idNumber >= highestNumber) {
-        highestNumber = idNumber + 1;
+      if (!cat.categoryId) return;
+      
+      const parts = cat.categoryId.split('_');
+      if (parts.length >= 3) {
+        const lastPart = parts[parts.length - 1];
+        const idNumber = parseInt(lastPart, 10);
+        if (!isNaN(idNumber) && idNumber >= highestNumber) {
+          highestNumber = idNumber + 1;
+        }
       }
     });
 
-    return highestNumber;
-  }
-
-  /**
-   * Helper to generate a unique ID for a category
-   * @param nextIdNumber
-   * @returns
-   */
-  private generateCategoryId(nextIdNumber: number): string {
-    return `cat_imported_${nextIdNumber.toString().padStart(3, '0')}`;
+    return Math.max(1, highestNumber); // Ensure at least 1
   }
 
   /**
@@ -155,17 +250,25 @@ export class FileService {
   importProducts(file: File): Promise<void> {
     return this.importFile(file).then((data) => {
       let products: Product[] = [];
+      
       if (Array.isArray(data)) {
-        products = data
-          .map((item) => this.convertToProduct(item, file.name))
-          .filter((p): p is Product => p !== null);
-      } else if (data && typeof data === 'object') {
-        const product = this.convertToProduct(data, file.name);
-        if (product) {
-          products = [product];
+        // Filter for valid products
+        const validProducts = data
+          .filter(item => this.isProductData(item))
+          .map(item => this.normalizeProduct(item, file.name));
+          
+        if (validProducts.length === 0) {
+          throw new Error('No valid TraderPlus product data found in file');
         }
-      } else {
-        throw new Error('Invalid product data format');
+        
+        products = validProducts;
+      } 
+      else if (this.isProductData(data)) {
+        // Single product
+        products = [this.normalizeProduct(data, file.name)];
+      } 
+      else {
+        throw new Error('Invalid TraderPlus product format');
       }
 
       const existing = this.storageService.products();
@@ -185,18 +288,24 @@ export class FileService {
       filesArray.map((file) =>
         this.importFile(file).then((data) => {
           if (Array.isArray(data)) {
+            // Filter for valid products
             return data
-              .map((item) => this.convertToProduct(item, file.name))
-              .filter((p): p is Product => p !== null);
-          } else if (data && typeof data === 'object') {
-            const product = this.convertToProduct(data, file.name);
-            return product ? [product] : [];
+              .filter(item => this.isProductData(item))
+              .map(item => this.normalizeProduct(item, file.name));
+          } 
+          else if (this.isProductData(data)) {
+            return [this.normalizeProduct(data, file.name)];
           }
           return [];
         })
       )
     ).then((results) => {
       const importedProducts = results.flat();
+      
+      if (importedProducts.length === 0) {
+        throw new Error('No valid TraderPlus product data found in files');
+      }
+      
       const existing = this.storageService.products();
       const merged = this.mergeProducts(existing, importedProducts);
       this.storageService.saveProducts(merged);
@@ -206,36 +315,31 @@ export class FileService {
   /**
    * Helper to merge products and generate new productIds if needed
    */
-
   private mergeProducts(existing: Product[], imported: Product[]): Product[] {
     const merged = [...existing];
+    let nextIdNumber = this.getNextProductId(merged);
 
     imported.forEach((product) => {
-      const baseId = product.productId.replace(/\_\d+$/, ''); // Remove number suffix
-      const existingProduct = merged.find(
-        (p) => p.productId === product.productId
-      );
+      // Generate ID if missing
+      if (!product.productId) {
+        const safeName = product.className?.toLowerCase()
+          .replace(/\s+/g, '_')
+          .replace(/[^a-z0-9_]/g, '') || 'unknown';
+          
+        product.productId = `prod_${safeName}_${nextIdNumber.toString().padStart(3, '0')}`;
+        nextIdNumber++;
+      }
 
-      if (!existingProduct) {
-        // Check if we need to increment the counter
-        const similarProducts = merged.filter((p) =>
-          p.productId.startsWith(baseId)
-        );
-        if (similarProducts.length > 0) {
-          const nextNumber = similarProducts.length + 1;
-          product.productId = `${baseId}_${nextNumber
-            .toString()
-            .padStart(3, '0')}`;
-        }
+      const existingIndex = merged.findIndex(p => p.productId === product.productId);
+      
+      if (existingIndex === -1) {
+        // Add new product
         merged.push(product);
       } else {
-        // Update existing product but keep the ID
-        const index = merged.findIndex(
-          (p) => p.productId === product.productId
-        );
-        merged[index] = {
+        // Update existing product
+        merged[existingIndex] = {
           ...product,
-          productId: existingProduct.productId,
+          productId: merged[existingIndex].productId // Keep original ID
         };
       }
     });
@@ -249,41 +353,39 @@ export class FileService {
   private getNextProductId(products: Product[]): number {
     let highestNumber = 0;
     products.forEach((prod) => {
-      const idNumber = parseInt(prod.productId.split('_').pop() ?? '0');
-      if (idNumber >= highestNumber) {
-        highestNumber = idNumber + 1;
+      if (!prod.productId) return;
+      
+      const parts = prod.productId.split('_');
+      if (parts.length >= 3) {
+        const lastPart = parts[parts.length - 1];
+        const idNumber = parseInt(lastPart, 10);
+        if (!isNaN(idNumber) && idNumber >= highestNumber) {
+          highestNumber = idNumber + 1;
+        }
       }
     });
-    return highestNumber;
+
+    return Math.max(1, highestNumber); // Ensure at least 1
   }
 
   /**
-   * Helper to generate a unique ID for a product
+   * Normalize product data to ensure all required fields
    */
-  private generateProductId(nextIdNumber: number): string {
-    return `prod_${nextIdNumber.toString().padStart(3, '0')}`;
-  }
-
-  /**
-   * Convert raw JSON data to Product type
-   */
-  private convertToProduct(data: any, filename: string): Product | null {
-    if (!data.className) return null;
-
-    // Extract productId from filename (without .json extension)
-    const productId = filename.replace('.json', '');
+  private normalizeProduct(data: any, filename: string): Product {
+    // Extract base name from filename without extension
+    const baseFilename = filename.replace(/\.json$/i, '');
 
     return {
-      productId: productId,
+      productId: data.productId || baseFilename, // Use filename as ID if not present
       className: data.className,
-      coefficient: data.coefficient || 1.0,
-      maxStock: data.maxStock || -1,
-      tradeQuantity: data.tradeQuantity || 1,
-      buyPrice: data.buyPrice || 0,
-      sellPrice: data.sellPrice || 0,
-      stockSettings: data.stockSettings || 0,
-      attachments: data.attachments || [],
-      variants: data.variants || [],
+      coefficient: data.coefficient ?? 1.0,
+      maxStock: data.maxStock ?? -1,
+      tradeQuantity: data.tradeQuantity ?? 1,
+      buyPrice: data.buyPrice ?? 0,
+      sellPrice: data.sellPrice ?? 0,
+      stockSettings: data.stockSettings ?? 0,
+      attachments: data.attachments ?? [],
+      variants: data.variants ?? [],
     };
   }
 
@@ -294,10 +396,10 @@ export class FileService {
    */
   importCurrencySettings(file: File): Promise<void> {
     return this.importFile(file).then((data) => {
-      if (data && typeof data === 'object' && 'currencyTypes' in data) {
+      if (this.isCurrencySettings(data)) {
         this.storageService.saveCurrencySettings(data as CurrencySettings);
       } else {
-        throw new Error('Invalid currency settings format');
+        throw new Error('Invalid TraderPlus currency settings format');
       }
     });
   }
@@ -309,10 +411,10 @@ export class FileService {
    */
   importGeneralSettings(file: File): Promise<void> {
     return this.importFile(file).then((data) => {
-      if (data && typeof data === 'object' && 'version' in data) {
+      if (this.isGeneralSettings(data)) {
         this.storageService.saveGeneralSettings(data as GeneralSettings);
       } else {
-        throw new Error('Invalid general settings format');
+        throw new Error('Invalid TraderPlus general settings format');
       }
     });
   }
@@ -378,5 +480,51 @@ export class FileService {
       this.storageService.generalSettings(),
       'TraderPlusGeneralSettings.json'
     );
+  }
+
+  /**
+   * Export all configurations as a ZIP archive
+   */
+  exportAllAsZip(): void {
+    const zip = new JSZip();
+    
+    // Get all configurations
+    const categories = this.storageService.categories();
+    const products = this.storageService.products();
+    const currencySettings = this.storageService.currencySettings();
+    const generalSettings = this.storageService.generalSettings();
+    
+    // Add each configuration to the ZIP if it exists
+    if (categories && categories.length > 0) {
+      zip.file("TraderPlusCategories.json", JSON.stringify(categories, null, 2));
+    }
+    
+    if (products && products.length > 0) {
+      zip.file("TraderPlusProducts.json", JSON.stringify(products, null, 2));
+    }
+    
+    if (currencySettings) {
+      zip.file("TraderPlusCurrencySettings.json", JSON.stringify(currencySettings, null, 2));
+    }
+    
+    if (generalSettings) {
+      zip.file("TraderPlusGeneralSettings.json", JSON.stringify(generalSettings, null, 2));
+    }
+    
+    // Generate the ZIP file and download it
+    zip.generateAsync({type:"blob"}).then((content) => {
+      const url = URL.createObjectURL(content);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'TraderPlusConfigs.zip';
+      document.body.appendChild(a);
+      a.click();
+      
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 0);
+    });
   }
 }
