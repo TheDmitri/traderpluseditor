@@ -1,5 +1,4 @@
 .product-list-container {
-
   .filter-field {
     width: 100%;
     margin-bottom: 16px;
@@ -12,9 +11,7 @@
 
     table {
       width: 100%;
-      background: transparent;
 
-      // Column styles
       .mat-mdc-column-actions,
       .mat-column-actions {
         min-width: 120px;
@@ -25,8 +22,8 @@
 
         .actions-header,
         .actions-cell {
-          text-align: right;
-          justify-content: center;
+          text-align: center;
+          justify-content: flex-end;
         }
       }
 
@@ -47,12 +44,29 @@
         flex: 1.5;
       }
 
+      .mat-column-coefficient,
+      .mat-column-maxStock,
+      .mat-column-tradeQuantity,
+      .mat-column-buyPrice,
+      .mat-column-sellPrice {
+        min-width: 100px;
+        flex: 0.8;
+        text-align: start;
+      }
+
+      .mat-column-attachments,
+      .mat-column-variants {
+        min-width: 110px;
+        flex: 0.7;
+        text-align: center;
+      }
+
       // Cell styles
       .mat-mdc-header-cell,
       .mat-mdc-cell {
         padding: 12px 8px;
         font-size: 14px;
-        color: rgba(255, 255, 255, 0.87);
+        color: var(--brush-text-primary);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -60,37 +74,56 @@
 
       .mat-mdc-header-cell {
         font-weight: 500;
+        color: var(--brush-text-secondary);
       }
     }
   }
-}
 
-// Common table formatting
-:host ::ng-deep {
-  .mat-mdc-table {
-    background: transparent;
+  // Progressive responsive column hiding
+  // First breakpoint - hide variants and attachments
+  @media screen and (max-width: 1590px) {
+    .table-container table {
+      .mat-column-variants,
+      .mat-column-attachments {
+        display: none;
+      }
+    }
   }
 
-  .mat-mdc-row:hover {
-    background: rgba(255, 255, 255, 0.04);
+  // Second breakpoint - hide stock settings
+  @media screen and (max-width: 1400px) {
+    .table-container table {
+      .mat-column-stockSettings {
+        display: none;
+      }
+    }
   }
 
-  // Scrollbar styles
-  ::-webkit-scrollbar {
-    height: 8px;
-    width: 8px;
+  // Third breakpoint - hide more columns
+  @media screen and (max-width: 1245px) {
+    .table-container table {
+      .mat-column-coefficient,
+      .mat-column-maxStock ,
+      .mat-column-tradeQuantity {
+        display: none;
+      }
+    }
+  }
+  @media screen and (max-width: 1000px) {
+    .table-container table {
+      .mat-column-categories {
+        display: none;
+      }
+    }
   }
 
-  ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.3);
+  // Fourth breakpoint - hide coefficient and maxStock
+  @media screen and (max-width: 845px) {
+    .table-container table {
+      .mat-column-sellPrice,
+      .mat-column-buyPrice {
+        display: none;
+      }
     }
   }
 }

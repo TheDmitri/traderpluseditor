@@ -1,100 +1,173 @@
 <div class="product-list-container">
-    <mat-form-field class="filter-field" appearance="outline">
-      <mat-label>Filter Products</mat-label>
-      <input
-        matInput
-        (keyup)="applyFilter($event)"
-        placeholder="Search Products..."
-        #input
-        matTooltip="Filter Products by any field"
-      />
-      <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+  <mat-form-field class="filter-field" appearance="outline">
+    <mat-label>Filter Products</mat-label>
+    <input
+      matInput
+      (keyup)="applyFilter($event)"
+      placeholder="Search products..."
+      #input
+      matTooltip="Filter products by any field"
+    />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
 
-    <div class="table-container">
-        <table mat-table [dataSource]="dataSource" matSort>
-            <!-- ClassName Column -->
-            <ng-container matColumnDef="className">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-                <td mat-cell *matCellDef="let row"> {{row.className}} </td>
-            </ng-container>
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" matSort>
+      <!-- ClassName Column -->
+      <ng-container matColumnDef="className">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.className }}
+        </td>
+      </ng-container>
 
-            <!-- Categories Column -->
-            <ng-container matColumnDef="categories">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Categories </th>
-                <td mat-cell *matCellDef="let row"> {{row.categories?.join(', ')}} </td>
-            </ng-container>
+      <!-- Categories Column -->
+      <ng-container matColumnDef="categories">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Categories</th>
+        <td
+          mat-cell
+          *matCellDef="let row"
+        >
+          {{ row.categories?.join(", ") }}
+        </td>
+      </ng-container>
 
-            <!-- Coefficient Column -->
-            <ng-container matColumnDef="coefficient">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Coefficient </th>
-                <td mat-cell *matCellDef="let row"> {{row.coefficient}} </td>
-            </ng-container>
+      <!-- Coefficient Column -->
+      <ng-container matColumnDef="coefficient">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Coefficient</th>
+        <td
+          mat-cell
+          *matCellDef="let row"
+        >
+          {{ row.coefficient }}
+        </td>
+      </ng-container>
 
-            <!-- MaxStock Column -->
-            <ng-container matColumnDef="maxStock">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Max Stock </th>
-                <td mat-cell *matCellDef="let row"> {{row.maxStock}} </td>
-            </ng-container>
+      <!-- MaxStock Column -->
+      <ng-container matColumnDef="maxStock">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Max Stock</th>
+        <td
+          mat-cell
+          *matCellDef="let row"
+        >
+          {{ row.maxStock }}
+        </td>
+      </ng-container>
 
-            <!-- TradeQuantity Column -->
-            <ng-container matColumnDef="tradeQuantity">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Trade Qty </th>
-                <td mat-cell *matCellDef="let row"> {{row.tradeQuantity}} </td>
-            </ng-container>
+      <!-- TradeQuantity Column -->
+      <ng-container matColumnDef="tradeQuantity">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Trade Qty</th>
+        <td
+          mat-cell
+          *matCellDef="let row"
+        >
+          {{ row.tradeQuantity }}
+        </td>
+      </ng-container>
 
-            <!-- BuyPrice Column -->
-            <ng-container matColumnDef="buyPrice">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Buy Price </th>
-                <td mat-cell *matCellDef="let row"> {{row.buyPrice}} </td>
-            </ng-container>
+      <!-- BuyPrice Column -->
+      <ng-container matColumnDef="buyPrice">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Buy Price</th>
+        <td
+          mat-cell
+          *matCellDef="let row"
+        >
+          {{ row.buyPrice }}
+        </td>
+      </ng-container>
 
-            <!-- SellPrice Column -->
-            <ng-container matColumnDef="sellPrice">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Sell Price </th>
-                <td mat-cell *matCellDef="let row"> {{row.sellPrice}} </td>
-            </ng-container>
+      <!-- SellPrice Column -->
+      <ng-container matColumnDef="sellPrice">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Sell Price</th>
+        <td
+          mat-cell
+          *matCellDef="let row"
+        >
+          {{ row.sellPrice }}
+        </td>
+      </ng-container>
 
-            <!-- StockSettings Column -->
-            <ng-container matColumnDef="stockSettings">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Stock Settings </th>
-                <td mat-cell *matCellDef="let row"> {{formatStockSettings(row.stockSettings)}} </td>
-            </ng-container>
+      <!-- StockSettings Column -->
+      <ng-container matColumnDef="stockSettings">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Stock</th>
+        <td
+          mat-cell
+          *matCellDef="let row"
+        >
+          {{ formatStockSettings(row.stockSettings) }}
+        </td>
+      </ng-container>
 
-            <!-- Attachments Column -->
-            <ng-container matColumnDef="attachments">
-                <th mat-header-cell *matHeaderCellDef> Attachments </th>
-                <td mat-cell *matCellDef="let row"> {{row.attachments?.join(', ')}} </td>
-            </ng-container>
+      <!-- Attachments Column -->
+      <ng-container matColumnDef="attachments">
+        <th mat-header-cell *matHeaderCellDef>Attachments</th>
+        <td
+          mat-cell
+          *matCellDef="let row"
+          [matTooltip]="row.attachments?.join(', ') || 'No attachments'"
+        >
+          {{ row.attachments?.length || 0 }}
+        </td>
+      </ng-container>
 
-            <!-- Variants Column -->
-            <ng-container matColumnDef="variants">
-                <th mat-header-cell *matHeaderCellDef> Variants </th>
-                <td mat-cell *matCellDef="let row"> {{row.variants?.join(', ')}} </td>
-            </ng-container>
+      <!-- Variants Column -->
+      <ng-container matColumnDef="variants">
+        <th mat-header-cell *matHeaderCellDef>Variants</th>
+        <td
+          mat-cell
+          *matCellDef="let row"
+          [matTooltip]="row.variants?.join(', ') || 'No variants'"
+        >
+          {{ row.variants?.length || 0 }}
+        </td>
+      </ng-container>
 
-            <!-- Actions Column -->
-            <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef> Actions </th>
-                <td mat-cell *matCellDef="let product">
-                    <button mat-icon-button color="primary"
-                        (click)="$event.preventDefault(); $event.stopPropagation(); productEdited.emit(product)"
-                        (mousedown)="$event.stopPropagation()" aria-label="Edit product">
-                        <mat-icon>edit</mat-icon>
-                    </button>
-                    <button mat-icon-button color="warn"
-                        (click)="$event.preventDefault(); $event.stopPropagation(); productRemoved.emit(product.productId)"
-                        (mousedown)="$event.stopPropagation()" aria-label="Remove product">
-                        <mat-icon>delete_forever</mat-icon>
-                    </button>
-                </td>
-            </ng-container>
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="actions-header">
+          Actions
+        </th>
+        <td mat-cell *matCellDef="let product" class="actions-cell">
+          <button
+            class="custom-icon-btn icon-btn-primary"
+            (click)="
+              $event.preventDefault();
+              $event.stopPropagation();
+              productEdited.emit(product)
+            "
+            (mousedown)="$event.stopPropagation()"
+            aria-label="Edit product"
+            matTooltip="Edit this product"
+          >
+            <mat-icon>edit</mat-icon>
+            <div class="icon-btn-ripple"></div>
+          </button>
+          <button
+            class="custom-icon-btn icon-btn-warn"
+            (click)="
+              $event.preventDefault();
+              $event.stopPropagation();
+              productRemoved.emit(product.productId)
+            "
+            (mousedown)="$event.stopPropagation()"
+            aria-label="Delete product"
+            matTooltip="Delete this product"
+          >
+            <mat-icon>delete_forever</mat-icon>
+            <div class="icon-btn-ripple"></div>
+          </button>
+        </td>
+      </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
 
-        <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons aria-label="Select page of products">
-        </mat-paginator>
-    </div>
+    <mat-paginator
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      showFirstLastButtons
+      aria-label="Select page of products"
+    >
+    </mat-paginator>
+  </div>
 </div>

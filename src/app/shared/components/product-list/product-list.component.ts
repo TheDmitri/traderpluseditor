@@ -18,6 +18,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Product } from '../../../core/models';
 import { StorageService } from '../../../core/services/storage.service';
 import { NotificationService } from '../../services/notification.service';
+import { MatTooltip } from '@angular/material/tooltip';
 
 export interface ProductWithCategories extends Product {
   categories?: string[];
@@ -42,6 +43,7 @@ export interface ProductWithCategories extends Product {
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
+    MatTooltip,
     MatButtonModule,
   ],
   templateUrl: './product-list.component.html',
