@@ -25,6 +25,17 @@ import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialo
 import { NotificationService } from '../../../shared/services/notification.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+/**
+ * CategoryEditorComponent handles the management of TraderPlus categories.
+ *
+ * This component allows users to:
+ * - View all categories in a paginated, sortable table
+ * - Filter categories by name or ID
+ * - Add new categories
+ * - Edit existing categories
+ * - Toggle category visibility
+ * - Delete categories
+ */
 @Component({
   selector: 'app-category-editor',
   standalone: true,
@@ -48,8 +59,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   styleUrls: ['./category-editor.component.scss'],
 })
 export class CategoryEditorComponent implements OnInit, OnDestroy {
+  /** Subject for handling component destruction and preventing memory leaks */
   private destroy$ = new Subject<void>();
+
+  /** Data source for the Material table with category data */
   dataSource: MatTableDataSource<Category>;
+
+  /** Columns to display in the category table */
   displayedColumns: string[] = [
     'icon',
     'categoryName',
@@ -59,10 +75,22 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
     'actions',
   ];
 
+  /** Reference to the Material paginator for table pagination */
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  /** Reference to the Material sort directive for table sorting */
   @ViewChild(MatSort) sort!: MatSort;
+
+  /** Reference to the Material table component */
   @ViewChild(MatTable) table!: MatTable<Category>;
 
+  /**
+   * Constructor initializes services and the data source
+   *
+   * @param storageService - Service for persisting and retrieving category data
+   * @param dialog - Material dialog service for modal dialogs
+   * @param notificationService - Service for displaying user notifications
+   */
   constructor(
     private storageService: StorageService,
     private dialog: MatDialog,
@@ -71,10 +99,17 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
     this.dataSource = new MatTableDataSource<Category>([]);
   }
 
+  /**
+   * OnInit lifecycle hook - Loads initial categories from storage
+   */
   ngOnInit(): void {
     this.loadCategories();
   }
 
+  /**
+   * AfterViewInit lifecycle hook - Sets up table pagination and sorting
+   * Also initializes custom ripple effects for enhanced UI interaction
+   */
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -85,6 +120,12 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Initialize custom ripple effects for icon buttons
+   *
+   * Creates an interactive ripple animation when buttons are clicked,
+   * enhancing the user experience with visual feedback
+   */
   private initializeCustomRipples() {
     const buttons = document.querySelectorAll('.custom-icon-btn');
 
@@ -129,17 +170,35 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Load categories from storage service and update data source
+   *
+   * This method retrieves the latest category data and refreshes the table display.
+   * Called on component initialization and after any data modification.
+   */
   loadCategories(): void {
     const categories = this.storageService.categories();
     this.dataSource.data = categories;
   }
 
+  /**
+   * Apply filtering to the data table
+   *
+   * Filters categories based on user input, enabling quick search across all displayed fields
+   *
+   * @param event - Input event containing the filter text
+   */
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  // Method to remove all categories
+  /**
+   * Remove all categories after confirmation
+   *
+   * Displays a confirmation dialog and clears all categories from storage if confirmed.
+   * This is a destructive operation that cannot be undone.
+   */
   removeAllCategories(): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
@@ -161,7 +220,12 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Method to toggle visibility for all categories
+  /**
+   * Toggle visibility for all categories at once
+   *
+   * If all categories are currently visible, makes them all invisible.
+   * Otherwise, makes all categories visible.
+   */
   toggleAllCategoriesVisibility(): void {
     const categories = this.dataSource.data;
     const allVisible = categories.every((cat) => cat.isVisible);
@@ -173,6 +237,11 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
     this.loadCategories();
   }
 
+  /**
+   * Toggle visibility for a specific category
+   *
+   * @param category - The category for which to toggle visibility
+   */
   toggleCategoryVisibility(category: Category): void {
     const categories = this.dataSource.data;
     const updatedCategories = categories.map((cat) =>
@@ -184,6 +253,11 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
     this.loadCategories();
   }
 
+  /**
+   * Remove a specific category after confirmation
+   *
+   * @param categoryId - ID of the category to remove
+   */
   removeCategory(categoryId: string): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
@@ -208,10 +282,22 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Get the count of products associated with a category
+   *
+   * @param category - The category for which to count products
+   * @returns The number of products in the category
+   */
   getProductCount(category: Category): number {
     return category.productIds.length;
   }
 
+  /**
+   * Add a new category
+   *
+   * Opens a dialog for entering category details, generates a unique ID
+   * based on the name, and saves the new category to storage.
+   */
   addCategory(): void {
     const dialogRef = this.dialog.open(CategoryModalComponent, {
       data: { category: undefined },
@@ -219,9 +305,12 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        // Use the category name to generate a unique category ID
+        const categoryId = this.generateCategoryId(result.categoryName);
+
         const newCategory: Category = {
           ...result,
-          categoryId: this.generateCategoryId(),
+          categoryId: categoryId,
           productIds: [],
         };
         const categories = [...this.dataSource.data, newCategory];
@@ -232,6 +321,15 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Edit an existing category
+   *
+   * Opens a dialog pre-filled with the category's current details,
+   * and updates the category in storage if changes are made.
+   * Maintains the original categoryId even if the name changes.
+   *
+   * @param category - The category to edit
+   */
   editCategory(category: Category): void {
     const dialogRef = this.dialog.open(CategoryModalComponent, {
       data: { category },
@@ -242,7 +340,7 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
         const updatedCategory: Category = {
           ...category,
           ...result,
-        };
+        }; // Keep existing properties including categoryId and update with new values
         const categories = this.dataSource.data.map((cat) =>
           cat.categoryId === category.categoryId ? updatedCategory : cat
         );
@@ -253,15 +351,68 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  private generateCategoryId(): string {
-    const existingIds = this.dataSource.data.map((cat) => {
-      const match = cat.categoryId.match(/\d+$/);
-      return match ? parseInt(match[0], 10) : 0;
-    });
-    const nextId = Math.max(0, ...existingIds) + 1;
-    return `cat_${nextId.toString().padStart(3, '0')}`;
+  /**
+   * Creates a safe ID base from a category name
+   *
+   * Transforms a category name into a string suitable for use in an ID by:
+   * - Converting to lowercase
+   * - Removing spaces
+   * - Removing special characters
+   *
+   * @param name - The original category name
+   * @returns A sanitized string safe for use in IDs
+   */
+  private createSafeIdBase(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/\s+/g, '')
+      .replace(/[^a-z0-9_]/g, '');
   }
 
+  /**
+   * Generates a unique category ID based on the category name
+   *
+   * Format: cat_categoryname_001
+   *
+   * The method ensures uniqueness by:
+   * 1. Creating a base ID from the sanitized category name
+   * 2. Finding any existing categories with the same base name
+   * 3. Determining the highest existing suffix number
+   * 4. Generating a new ID with an incremented suffix
+   *
+   * @param categoryName - The name of the category
+   * @returns A unique ID in the format cat_categoryname_XXX
+   */
+  private generateCategoryId(categoryName: string): string {
+    // Create safe base ID from category name
+    const baseName = this.createSafeIdBase(categoryName);
+
+    // Find existing categories with the same base name and determine highest suffix
+    const categories = this.dataSource.data;
+    let highestSuffix = 0;
+
+    categories.forEach((cat) => {
+      // Check if this category has the same base name in its ID
+      if (cat.categoryId && cat.categoryId.startsWith(`cat_${baseName}_`)) {
+        const suffixMatch = cat.categoryId.match(/_(\d{3})$/);
+        if (suffixMatch) {
+          const suffix = parseInt(suffixMatch[1], 10);
+          highestSuffix = Math.max(highestSuffix, suffix);
+        }
+      }
+    });
+
+    // Generate new ID with incremented suffix
+    const nextSuffix = (highestSuffix + 1).toString().padStart(3, '0');
+    return `cat_${baseName}_${nextSuffix}`;
+  }
+
+  /**
+   * OnDestroy lifecycle hook - Clean up subscriptions and resources
+   *
+   * Completes the destroy$ subject to prevent memory leaks from any
+   * subscriptions that may be using it as a takeUntil condition
+   */
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
