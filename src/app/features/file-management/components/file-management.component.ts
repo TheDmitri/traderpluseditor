@@ -280,6 +280,13 @@ export class FileManagementComponent implements OnInit {
       return;
     }
 
+    // Reset statistics for each new import session
+    this.resetImportStats();
+    this.isUploading = true;
+    
+    // Log the number of files being processed
+    this.logActivity('import', `Processing ${input.files.length} selected files`);
+
     // Process files with automatic type detection
     this.processFiles(input.files);
 
