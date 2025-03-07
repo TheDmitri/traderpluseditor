@@ -1,0 +1,252 @@
+/* Material Button Customization
+========================================================================== */
+.mat-mdc-raised-button {
+  &.mat-primary {
+    background-color: var(--brush-primary-action) !important;
+    color: var(--brush-text-primary) !important;
+
+    &:hover {
+      background-color: var(--brush-primary-action-hover) !important;
+    }
+
+    &:active {
+      background-color: var(--brush-button-active) !important;
+    }
+
+    &:focus:not(:active) {
+      outline: 2px solid var(--brush-button-focus-ring) !important;
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      background-color: var(--brush-button-disabled-background) !important;
+      color: var(--brush-button-disabled-text) !important;
+    }
+  }
+
+  &.mat-accent {
+    background-color: var(--color-accent-medium) !important;
+    color: var(--brush-text-primary-on-light) !important;
+
+    &:hover {
+      background-color: var(--color-accent-light) !important;
+    }
+
+    &:active {
+      background-color: var(--color-accent-darkest) !important;
+    }
+
+    &:focus:not(:active) {
+      outline: 2px solid var(--brush-button-focus-ring) !important;
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      background-color: var(--brush-button-disabled-background) !important;
+      color: var(--brush-button-disabled-text) !important;
+    }
+  }
+
+  &.mat-warn {
+    background-color: var(--brush-destructive-action) !important;
+    color: var(--brush-text-primary) !important;
+
+    &:hover {
+      background-color: var(--brush-destructive-action-hover) !important;
+    }
+
+    &:active {
+      background-color: var(--color-error-darkest) !important;
+    }
+
+    &:focus:not(:active) {
+      outline: 2px solid var(--color-error-light) !important;
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      background-color: var(--brush-button-disabled-background) !important;
+      color: var(--brush-button-disabled-text) !important;
+    }
+  }
+
+  // Light button variant
+  &.light-button {
+    background-color: var(--color-neutral-lightest) !important;
+    color: var(--brush-text-primary-on-light) !important;
+
+    &:hover {
+      background-color: var(--brush-hover-overlay-light) !important;
+    }
+
+    &:active {
+      background-color: var(--color-neutral-light) !important;
+    }
+
+    &:focus:not(:active) {
+      outline: 2px solid var(--brush-focus-outline-light) !important;
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      background-color: var(
+        --brush-button-disabled-background-light
+      ) !important;
+      color: var(--brush-button-disabled-text) !important;
+    }
+  }
+}
+
+/* Custom Icon Button Styles
+========================================================================== */
+.custom-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  border: none;
+  background-color: transparent;
+  position: relative;
+  cursor: pointer;
+  transition: all var(--transition-normal) var(--transition-timing);
+  padding: 0;
+  
+  &:focus {
+    outline: none;
+  }
+  
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--brush-focus-outline);
+  }
+  
+  .mat-icon {
+    color: inherit;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    transition: transform var(--transition-normal) var(--transition-timing);
+  }
+  
+  /* Button Variants */
+  &.icon-btn-primary {
+    color: var(--color-accent-medium);
+    
+    &:hover {
+      background-color: var(--brush-hover-overlay);
+      color: var(--color-accent-light);
+    }
+    
+    &:active {
+      background-color: var(--brush-active-overlay);
+      transform: scale(0.95);
+      
+      .mat-icon {
+        transform: scale(0.95);
+      }
+    }
+    
+    &:disabled {
+      color: var(--brush-button-disabled-text);
+      cursor: not-allowed;
+      background-color: transparent;
+    }
+  }
+  
+  &.icon-btn-warn {
+    color: var(--brush-destructive-action);
+    
+    &:hover {
+      background-color: rgba(211, 47, 47, 0.08);
+      color: var(--color-error-light);
+    }
+    
+    &:active {
+      background-color: rgba(211, 47, 47, 0.15);
+      transform: scale(0.95);
+      
+      .mat-icon {
+        transform: scale(0.95);
+      }
+    }
+    
+    &:disabled {
+      color: var(--brush-button-disabled-text);
+      cursor: not-allowed;
+      background-color: transparent;
+    }
+  }
+  
+  &.icon-btn-light {
+    color: var(--brush-text-primary-on-light);
+    
+    &:hover {
+      background-color: var(--brush-hover-overlay-light);
+    }
+    
+    &:active {
+      background-color: var(--brush-active-overlay-light);
+      transform: scale(0.95);
+      
+      .mat-icon {
+        transform: scale(0.95);
+      }
+    }
+    
+    &:disabled {
+      color: var(--brush-button-disabled-text);
+      cursor: not-allowed;
+      background-color: transparent;
+    }
+  }
+  
+  /* Size variants */
+  &.icon-btn-sm {
+    width: 32px;
+    height: 32px;
+    
+    .mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+  
+  &.icon-btn-lg {
+    width: 48px;
+    height: 48px;
+    
+    .mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+  
+  /* With text label variant */
+  &.icon-btn-with-text {
+    width: auto;
+    padding: 0 16px;
+    gap: 8px;
+    
+    .btn-label {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+  }
+  
+  /* Ripple effect container */
+  .icon-btn-ripple {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    overflow: hidden;
+  }
+}

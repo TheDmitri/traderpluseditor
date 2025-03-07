@@ -1,0 +1,68 @@
+/* Material Dialogs and modals
+========================================================================== */
+.mat-mdc-dialog-container {
+  .mdc-dialog__title {
+    color: var(--brush-text-primary) !important;
+  }
+
+  .mdc-dialog__content {
+    color: var(--brush-text-secondary) !important;
+  }
+
+  // Light dialog variant
+  &.light-dialog {
+    background-color: var(--color-neutral-lightest) !important;
+
+    .mdc-dialog__title {
+      color: var(--brush-text-primary-on-light) !important;
+    }
+
+    .mdc-dialog__content {
+      color: var(--brush-text-secondary-on-light) !important;
+    }
+  }
+}
+
+/* Material Snackbars
+========================================================================== */
+// Global Snackbar Positioning
+.custom-snackbar {
+  position: fixed !important;
+  top: 80px !important;
+  right: 16px !important;
+  left: unset !important;
+  bottom: unset !important;
+  margin: 0 !important;
+}
+
+.mat-mdc-snack-bar-container {
+  &.success-snackbar {
+    --mdc-snackbar-container-color: var(--brush-info) !important;
+    --mdc-snackbar-supporting-text-color: var(
+      --brush-text-primary
+    ) !important;
+  }
+  &.success-snackbar {
+    --mdc-snackbar-container-color: var(--brush-success) !important;
+    --mdc-snackbar-supporting-text-color: var(
+      --brush-text-primary-on-light
+    ) !important;
+  }
+
+  &.warning-snackbar {
+    --mdc-snackbar-container-color: var(--brush-warning) !important;
+    --mdc-snackbar-supporting-text-color: var(
+      --brush-text-primary-on-light
+    ) !important;
+  }
+
+  &.error-snackbar {
+    --mdc-snackbar-container-color: var(--brush-error) !important;
+    --mdc-snackbar-supporting-text-color: var(--brush-text-primary) !important;
+  }
+
+  &.info-snackbar {
+    --mdc-snackbar-container-color: var(--brush-info) !important;
+    --mdc-snackbar-supporting-text-color: var(--brush-text-primary) !important;
+  }
+}

@@ -1,0 +1,19 @@
+/* Material Form Field Customization
+========================================================================== */
+.mat-mdc-form-field {
+  &.ng-invalid.ng-touched {
+    .mat-mdc-form-field-outline {
+      color: var(--color-error-light) !important;
+    }
+
+    .mat-mdc-form-field-label {
+      color: var(--color-error-light) !important;
+    }
+  }
+
+  .mat-mdc-form-field-hint,
+  .mat-mdc-form-field-error {
+    font-size: 0.75rem;
+    letter-spacing: 0.025em;
+  }
+}

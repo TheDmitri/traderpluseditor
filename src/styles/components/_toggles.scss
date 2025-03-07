@@ -1,0 +1,98 @@
+/* Material Slide Toggle Styles
+========================================================================== */
+.mat-mdc-slide-toggle {
+  // Handle (Schieber) - konsistent weiß
+  .mdc-switch:enabled .mdc-switch__handle::after {
+    background-color: var(--color-neutral-lightest) !important;
+  }
+
+  // Track - Unchecked State
+  .mdc-switch:enabled .mdc-switch__track,
+  .mdc-switch:enabled .mdc-switch__track::before,
+  .mdc-switch:enabled .mdc-switch__track::after {
+    background-color: var(--color-neutral-medium) !important;
+    border: none !important;
+    opacity: 0.3;
+  }
+
+  // Track - Checked State
+  &.mat-primary {
+    .mdc-switch.mdc-switch--selected:enabled {
+      .mdc-switch__track,
+      .mdc-switch__track::before,
+      .mdc-switch__track::after {
+        background-color: var(--color-accent-medium) !important;
+        border: none !important;
+        opacity: 1;
+      }
+
+      .mdc-switch__handle::after {
+        background-color: #ffffff !important;
+      }
+
+      .mdc-switch__icon {
+        fill: var(--color-accent-medium) !important;
+      }
+    }
+  }
+
+  // Hover States
+  &:hover {
+    .mdc-switch:enabled .mdc-switch__track {
+      opacity: 0.4; // Leicht hervorgehoben im Hover
+    }
+
+    &.mat-primary .mdc-switch.mdc-switch--selected:enabled .mdc-switch__track {
+      opacity: 0.8;
+    }
+  }
+
+  // Disabled States
+  .mdc-switch:disabled {
+    .mdc-switch__handle::after {
+      background-color: var(--color-neutral-light) !important; // Gedimmtes Weiß
+    }
+
+    .mdc-switch__track {
+      background-color: var(--color-neutral-dark) !important;
+      opacity: 0.2;
+    }
+  }
+
+  // Focus State
+  .mdc-switch:focus-within {
+    outline: 2px solid var(--brush-focus-outline) !important;
+    outline-offset: 2px;
+  }
+
+  // Light Variant
+  &.light-toggle {
+    .mdc-switch:enabled .mdc-switch__handle::after {
+      background-color: #ffffff !important; // Bleibt weiß
+    }
+
+    .mdc-switch:enabled .mdc-switch__track {
+      background-color: var(--color-neutral-medium) !important;
+      opacity: 0.3;
+    }
+
+    &:hover .mdc-switch:enabled .mdc-switch__track {
+      opacity: 0.4;
+    }
+
+    .mdc-switch:disabled {
+      .mdc-switch__handle::after {
+        background-color: var(--color-neutral-light) !important;
+      }
+
+      .mdc-switch__track {
+        background-color: var(--color-neutral-lightest) !important;
+        opacity: 0.2;
+      }
+    }
+
+    .mdc-switch:focus-within {
+      outline-color: var(--brush-focus-outline-light) !important;
+    }
+  }
+}

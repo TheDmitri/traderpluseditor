@@ -1,0 +1,15 @@
+/* Responsive Typography
+========================================================================== */
+:root {
+  // Base text sizes
+  --font-size-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  --font-size-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+  --font-size-base: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  --font-size-lg: clamp(1.125rem, 1rem + 0.625vw, 1.25rem);
+  --font-size-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+  --font-size-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+  --font-size-3xl: clamp(2rem, 1.8rem + 1.25vw, 2.5rem);
+  --font-size-4xl: clamp(2.5rem, 2.15rem + 1.75vw, 3.25rem);
+  --font-size-5xl: clamp(3rem, 2.5rem + 2.25vw, 4rem);
+  --font-size-6xl: clamp(3.5rem, 3rem + 2.75vw, 5rem);
+}

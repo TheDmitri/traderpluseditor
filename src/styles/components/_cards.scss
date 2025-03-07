@@ -1,0 +1,40 @@
+/* Material Card Customization
+========================================================================== */
+.mat-mdc-card {
+  background-color: var(--brush-card-background) !important;
+  color: var(--brush-text-primary) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+
+  // Light card variant
+  &.light-card {
+    background-color: var(--color-neutral-lightest) !important;
+    color: var(--brush-text-primary-on-light) !important;
+
+    .mat-mdc-card-title {
+      color: var(--brush-text-primary-on-light) !important;
+    }
+
+    .mat-mdc-card-subtitle {
+      color: var(--brush-text-secondary-on-light) !important;
+    }
+  }
+
+  &.hoverable {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    &:active {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2) !important;
+    }
+  }
+
+  &.bordered {
+    border: 1px solid var(--brush-border-light);
+  }
+}

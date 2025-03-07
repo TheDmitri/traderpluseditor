@@ -1,0 +1,53 @@
+/* Base Styles
+========================================================================== */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: var(--brush-background-default);
+  color: var(--brush-text-primary);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Text Selection Control
+========================================================================== */
+// Prevent text selection for UI elements
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+.stats-value,
+button,
+mat-label,
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-menu-item,
+.mat-mdc-list-item,
+.mat-mdc-tab-label,
+.mat-mdc-select-value-text,
+.mat-mdc-card-title,
+.mat-mdc-card-subtitle,
+.dialog-header,
+.modal-header {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+// Enable text selection for input fields
+input,
+textarea {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}

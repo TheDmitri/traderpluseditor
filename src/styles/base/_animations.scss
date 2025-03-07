@@ -1,0 +1,55 @@
+/* Animation Configurations
+========================================================================== */
+:root {
+  // Transition timings
+  --transition-quick: 100ms;
+  --transition-normal: 200ms;
+  --transition-slow: 300ms;
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Component Animations
+========================================================================== */
+// Buttons
+.mat-mdc-raised-button,
+.mat-mdc-icon-button {
+  transition: all var(--transition-normal) var(--transition-timing) !important;
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+// Cards
+.mat-mdc-card {
+  transition: transform var(--transition-normal) var(--transition-timing),
+    box-shadow var(--transition-normal) var(--transition-timing) !important;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3) !important;
+  }
+}
+
+// List Items
+.mat-mdc-list-item {
+  transition: background-color var(--transition-quick) var(--transition-timing) !important;
+}
+
+/* Custom ripple animation for icon buttons */
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.icon-btn-ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  background: var(--brush-ripple-color);
+  opacity: 0.4;
+  animation: ripple 0.5s linear;
+  pointer-events: none;
+}

@@ -1,0 +1,29 @@
+/* Custom Scrollbar Styling
+========================================================================== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+
+  &-track {
+    background: var(--brush-background-elevated);
+  }
+
+  &-thumb {
+    background: var(--color-neutral-medium);
+    border-radius: 5px;
+
+    &:hover {
+      background: var(--color-neutral-light);
+    }
+  }
+}
+
+// Global Snackbar Positioning
+.custom-snackbar {
+  position: fixed !important;
+  top: 80px !important;
+  right: 16px !important;
+  left: unset !important;
+  bottom: unset !important;
+  margin: 0 !important;
+}

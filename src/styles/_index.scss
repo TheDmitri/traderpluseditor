@@ -1,0 +1,28 @@
+/**
+ * Style System Index
+ * 
+ * This file imports all modular styles in the correct order to ensure
+ * proper cascade and specificity.
+ */
+
+// Abstracts
+@import './abstracts/variables';
+
+// Base styles
+@import './base/animations';
+@import './base/reset';
+@import './base/typography';
+
+// Components
+@import './components/buttons';
+@import './components/cards';
+@import './components/dialogs';
+@import './components/forms';
+@import './components/tables';
+@import './components/toggles';
+
+// Material overrides
+@import './overrides/material';
+
+// Utilities
+@import './utilities/scrollbar';

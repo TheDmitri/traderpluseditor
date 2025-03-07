@@ -1,0 +1,16 @@
+/* Material Ripple Effect Customization */
+.mat-ripple-element {
+  background-color: var(--brush-ripple-color) !important;
+
+  .light-button &,
+  .light-card &,
+  .light-dialog &,
+  .light-table & {
+    background-color: var(--brush-ripple-color-light) !important;
+  }
+}
+
+// Icons
+.mat-icon {
+  color: inherit;
+}

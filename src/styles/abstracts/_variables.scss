@@ -1,0 +1,119 @@
+/* Material Theme Configuration
+========================================================================== */
+@use "@angular/material" as mat;
+@include mat.core();
+
+/* Color System
+========================================================================== */
+:root {
+  // Base Colors - Dark Theme
+  --color-background-dark: #1e1e1e;
+
+  // Text Colors
+  --color-text-primary-light: #ffffff; // For dark backgrounds
+  --color-text-primary-dark: #000000; // For light backgrounds
+  --color-text-secondary-light: #e0e0e0; // For dark backgrounds
+  --color-text-secondary-dark: #424242; // For light backgrounds
+  --color-text-disabled: #757575;
+
+  // Accent Colors - Orange Palette
+  --color-accent-darkest: #bf360c;
+  --color-accent-dark: #e65100;
+  --color-accent-medium: #f57c00;
+  --color-accent-light: #ffb74d;
+  --color-accent-lightest: #ffe0b2;
+
+  // System Status Colors
+  // Info - Blue Palette
+  --color-info-dark: #1976d2;
+  --color-info-medium: #64b5f6;
+  --color-info-light: #90caf9;
+  --color-info-lightest: #bbdefb;
+
+  // Warning - Orange/Yellow Palette
+  --color-warning-darkest: #ff6f00;
+  --color-warning-dark: #ff8f00;
+  --color-warning-light: #ffd54f;
+  --color-warning-lightest: #fff8e1;
+
+  // Error - Red Palette
+  --color-error-darkest: #b71c1c;
+  --color-error-dark: #d32f2f;
+  --color-error-light: #ef9a9a;
+  --color-error-lightest: #ffcdd2;
+
+  // Success - Green Palette
+  --color-success-dark: #388e3c;
+  --color-success-medium: #4caf50;
+  --color-success-light: #a5d6a7;
+  --color-success-lightest: #c8e6c9;
+
+  // Neutral - Gray Palette
+  --color-neutral-dark: #424242;
+  --color-neutral-medium: #616161;
+  --color-neutral-light: #bdbdbd;
+  --color-neutral-lightest: #e0e0e0;
+}
+
+/* Semantic Color System
+  ========================================================================== */
+:root {
+  // Layout & Structure
+  --brush-background-default: var(--color-background-dark);
+  --brush-background-elevated: var(--color-neutral-dark);
+  --brush-background-overlay: rgba(0, 0, 0, 0.5);
+  --brush-border-default: var(--color-neutral-medium);
+  --brush-border-light: rgba(255, 255, 255, 0.12);
+
+  // Typography - Dark Theme (default)
+  --brush-text-primary: var(--color-text-primary-light);
+  --brush-text-secondary: var(--color-text-secondary-light);
+  --brush-text-disabled: var(--color-text-disabled);
+
+  // Typography - Light Surfaces
+  --brush-text-primary-on-light: var(--color-text-primary-dark);
+  --brush-text-secondary-on-light: var(--color-text-secondary-dark);
+
+  // Component Specific
+  --brush-card-background: var(--color-neutral-dark);
+  --brush-dialog-header: var(--color-neutral-dark);
+  --brush-sidebar-background: var(--color-background-dark);
+  --brush-toolbar-background: var(--color-background-dark);
+
+  // Interactive States
+  --brush-hover-overlay: rgba(255, 255, 255, 0.04);
+  --brush-active-overlay: rgba(255, 255, 255, 0.08);
+  --brush-selected-overlay: rgba(255, 255, 255, 0.12);
+  --brush-hover-overlay-light: rgba(0, 0, 0, 0.04);
+  --brush-active-overlay-light: rgba(0, 0, 0, 0.08);
+  --brush-selected-overlay-light: rgba(0, 0, 0, 0.12);
+
+  // Status Indicators
+  --brush-success: var(--color-success-medium);
+  --brush-error: var(--color-error-dark);
+  --brush-warning: var(--color-warning-dark);
+  --brush-info: var(--color-info-dark);
+
+  // Actions
+  --brush-primary-action: var(--color-accent-dark);
+  --brush-primary-action-hover: var(--color-accent-medium);
+  --brush-destructive-action: var(--color-error-dark);
+  --brush-destructive-action-hover: var(--color-error-darkest);
+
+  // Button States
+  --brush-button-disabled-background: var(--color-neutral-dark);
+  --brush-button-disabled-text: var(--color-text-disabled);
+  --brush-button-active: var(--color-accent-darkest);
+  --brush-button-focus-ring: var(--color-accent-light);
+
+  // Interactive States - Additional
+  --brush-ripple-color: rgba(255, 255, 255, 0.12);
+  --brush-focus-outline: rgba(255, 255, 255, 0.24);
+  --brush-pressed-overlay: rgba(255, 255, 255, 0.16);
+
+  // Light Variants
+  --brush-button-disabled-background-light: var(--color-neutral-lightest);
+  --brush-ripple-color-light: rgba(0, 0, 0, 0.12);
+  --brush-focus-outline-light: rgba(0, 0, 0, 0.24);
+  --brush-pressed-overlay-light: rgba(0, 0, 0, 0.16);
+}
