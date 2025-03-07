@@ -122,12 +122,13 @@ export class ProductListComponent implements OnInit {
   private addCategoryInfo(products: Product[]): ProductWithCategories[] {
     try {
       const categories = this.storageService.categories();
-
+  
       return products.map((product) => {
         const productCategories = categories
           .filter((category) => category.productIds.includes(product.productId))
-          .map((category) => category.categoryName);
-
+          .map((category) => category.categoryName)
+          .sort(); // Sort categories alphabetically for better readability in tooltips
+  
         return {
           ...product,
           categories: productCategories,

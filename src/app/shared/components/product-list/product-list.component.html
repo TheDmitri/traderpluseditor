@@ -27,8 +27,17 @@
         <td
           mat-cell
           *matCellDef="let row"
+          [matTooltip]="row.categories?.join(', ') || 'No categories'"
         >
-          {{ row.categories?.join(", ") }}
+          <span *ngIf="row.categories && row.categories.length > 0">
+            {{ row.categories[0] }}
+            <span *ngIf="row.categories.length > 1" class="additional-count">
+              + {{ row.categories.length - 1 }} more
+            </span>
+          </span>
+          <span *ngIf="!row.categories || row.categories.length === 0">
+            None
+          </span>
         </td>
       </ng-container>
 
