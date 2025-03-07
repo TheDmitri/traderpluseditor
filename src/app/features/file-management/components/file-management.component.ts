@@ -18,37 +18,38 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatListModule } from '@angular/material/list';
 import { FileService, StorageService } from '../../../core/services';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { MatExpansionPanel, MatExpansionPanelHeader } from '@angular/material/expansion';
 
 /**
  * Interface for tracking and displaying user actions in the activity log
- * 
+ *
  * @property {string} type - The category of activity (import, export, error, etc.)
  * @property {string} message - Descriptive text about what happened
  * @property {Date} timestamp - When the activity occurred
  */
 interface ActivityLog {
   type:
-    | 'import'    // File import operations
-    | 'export'    // File export operations
-    | 'error'     // Error conditions
+    | 'import' // File import operations
+    | 'export' // File export operations
+    | 'error' // Error conditions
     | 'categories' // Category-specific operations
-    | 'products'   // Product-specific operations 
+    | 'products' // Product-specific operations
     | 'currencies' // Currency settings operations
-    | 'settings';  // General settings operations
+    | 'settings'; // General settings operations
   message: string;
   timestamp: Date;
 }
 
 /**
  * FileManagementComponent provides functionality to import and export TraderPlus configuration files.
- * 
+ *
  * This component handles:
  * - Importing categories, products, currency settings, and general settings via file selection
  * - Drag & drop import of multiple files with automatic format detection
  * - Exporting configuration files individually or as a combined ZIP archive
  * - Tracking and displaying recent file operations
  * - Providing visual feedback on import/export operations
- * 
+ *
  * The component implements intelligent file type detection based on both filename patterns
  * and content analysis to provide a seamless import experience for users.
  */
@@ -64,6 +65,8 @@ interface ActivityLog {
     MatDividerModule,
     MatTooltipModule,
     MatProgressBarModule,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
     MatMenuModule,
     MatChipsModule,
     MatListModule,
@@ -77,7 +80,7 @@ export class FileManagementComponent implements OnInit {
   private storageService = inject(StorageService);
   private notificationService = inject(NotificationService);
 
-  /** 
+  /**
    * References to hidden file input elements used for triggering file selection dialogs
    * Each input handles a specific file type (categories, products, etc.)
    */
@@ -91,7 +94,7 @@ export class FileManagementComponent implements OnInit {
   isDragging = false;
   /** Flag indicating whether a file upload operation is in progress */
   isUploading = false;
-  
+
   /** Data availability flags to track what types of data are currently loaded */
   /** Flag indicating whether any category data is currently loaded */
   hasCategories = false;
@@ -101,26 +104,27 @@ export class FileManagementComponent implements OnInit {
   hasCurrencies = false;
   /** Flag indicating whether general settings data is currently loaded */
   hasSettings = false;
+  isActivityExpanded: boolean = false;
 
-  /** 
+  /**
    * Array of recent activities for displaying in the activity log
    * Most recent activities are added to the beginning of the array
    */
   recentActivity: ActivityLog[] = [];
 
-  /** 
+  /**
    * Detailed statistics about import operations for providing user feedback
    * Tracks counts of processed, successful, failed, and skipped files by type
    */
   importStats = {
-    processed: 0,  // Total number of files processed
+    processed: 0, // Total number of files processed
     successful: 0, // Files successfully imported
-    failed: 0,     // Files that failed to import
-    skipped: 0,    // Files skipped (not matching any known format)
+    failed: 0, // Files that failed to import
+    skipped: 0, // Files skipped (not matching any known format)
     categories: 0, // Number of category files successfully processed
-    products: 0,   // Number of product files successfully processed
+    products: 0, // Number of product files successfully processed
     currencies: 0, // Number of currency settings files successfully processed
-    settings: 0,   // Number of general settings files successfully processed
+    settings: 0, // Number of general settings files successfully processed
   };
 
   /**
@@ -151,7 +155,7 @@ export class FileManagementComponent implements OnInit {
 
   /**
    * Returns the total number of categories currently in storage
-   * 
+   *
    * @returns {number} The count of categories, or 0 if none exist
    */
   getCategoriesCount(): number {
@@ -160,7 +164,7 @@ export class FileManagementComponent implements OnInit {
 
   /**
    * Returns the total number of products currently in storage
-   * 
+   *
    * @returns {number} The count of products, or 0 if none exist
    */
   getProductsCount(): number {
@@ -169,7 +173,7 @@ export class FileManagementComponent implements OnInit {
 
   /**
    * Returns the number of currency types defined in currency settings
-   * 
+   *
    * @returns {number} The count of currency types, or 0 if none exist
    */
   getCurrencyTypesCount(): number {
@@ -180,7 +184,7 @@ export class FileManagementComponent implements OnInit {
   /**
    * Checks if any type of data exists in the application
    * Used to determine whether export functions should be enabled
-   * 
+   *
    * @returns {boolean} True if any data exists, false otherwise
    */
   hasAnyData(): boolean {
@@ -197,7 +201,7 @@ export class FileManagementComponent implements OnInit {
   /**
    * Logs an activity for display in the recent activity section
    * Keeps a limited history of the most recent operations
-   * 
+   *
    * @param {ActivityLog['type']} type - The type of activity being logged
    * @param {string} message - A descriptive message about the activity
    */
@@ -217,7 +221,7 @@ export class FileManagementComponent implements OnInit {
   /**
    * Returns the appropriate Material icon name for each activity type
    * Used to visually distinguish different types of activities in the log
-   * 
+   *
    * @param {string} type - The type of activity
    * @returns {string} The name of the Material icon to display
    */
@@ -247,7 +251,7 @@ export class FileManagementComponent implements OnInit {
   /**
    * Triggers the appropriate file input element based on the specified type
    * This creates the effect of clicking a hidden file input when a visible button is clicked
-   * 
+   *
    * @param {string} type - The type of file input to trigger ('categories', 'products', etc.)
    */
   triggerFileInput(type: string): void {
@@ -270,7 +274,7 @@ export class FileManagementComponent implements OnInit {
   /**
    * Handles file selection from input element
    * Processes the selected files and resets the input element
-   * 
+   *
    * @param {Event} event - The file input change event
    */
   onFileSelected(event: Event): void {
@@ -283,9 +287,12 @@ export class FileManagementComponent implements OnInit {
     // Reset statistics for each new import session
     this.resetImportStats();
     this.isUploading = true;
-    
+
     // Log the number of files being processed
-    this.logActivity('import', `Processing ${input.files.length} selected files`);
+    this.logActivity(
+      'import',
+      `Processing ${input.files.length} selected files`
+    );
 
     // Process files with automatic type detection
     this.processFiles(input.files);
@@ -299,7 +306,7 @@ export class FileManagementComponent implements OnInit {
   /**
    * Handles the dragover event for the drop zone
    * Prevents default behavior and updates UI state
-   * 
+   *
    * @param {DragEvent} event - The drag event
    */
   onDragOver(event: DragEvent): void {
@@ -311,7 +318,7 @@ export class FileManagementComponent implements OnInit {
   /**
    * Handles the dragleave event for the drop zone
    * Prevents default behavior and updates UI state
-   * 
+   *
    * @param {DragEvent} event - The drag event
    */
   onDragLeave(event: DragEvent): void {
@@ -323,7 +330,7 @@ export class FileManagementComponent implements OnInit {
   /**
    * Handles the drop event when files are dropped onto the drop zone
    * Processes the dropped files and updates UI state
-   * 
+   *
    * @param {DragEvent} event - The drop event containing the files
    */
   onDrop(event: DragEvent): void {
@@ -365,7 +372,7 @@ export class FileManagementComponent implements OnInit {
 
   /**
    * Returns a user-friendly label for each data type, with pluralization support
-   * 
+   *
    * @param {string} type - The data type ('categories', 'products', etc.)
    * @param {boolean} plural - Whether to use the plural form
    * @returns {string} The formatted label
@@ -388,7 +395,7 @@ export class FileManagementComponent implements OnInit {
   /**
    * Processes one or more files for import
    * Core file processing logic that handles file type detection, parsing, and importing
-   * 
+   *
    * @param {FileList} files - The files to process
    * @param {string} [typeHint] - Optional hint about the file type for better detection
    * @returns {Promise<void>} Promise that resolves when processing is complete
@@ -418,13 +425,15 @@ export class FileManagementComponent implements OnInit {
     for (const file of filesArray) {
       try {
         // If we have a type hint (from button selection), prioritize it over filename detection
-        let dataType = typeHint ? this.convertTypeHint(typeHint) : this.guessTypeFromFilename(file.name);
+        let dataType = typeHint
+          ? this.convertTypeHint(typeHint)
+          : this.guessTypeFromFilename(file.name);
         let data;
-  
+
         try {
           // Parse the file contents
           data = await this.fileService.importFile(file);
-          
+
           // Only use content detection if we don't have a type hint
           // This prevents mis-categorization when the user has explicitly selected a type
           if (!typeHint) {
@@ -504,8 +513,7 @@ export class FileManagementComponent implements OnInit {
         successTypes.push(`${this.importStats.products} products`);
       if (this.importStats.currencies > 0)
         successTypes.push('currency settings');
-      if (this.importStats.settings > 0) 
-        successTypes.push('general settings');
+      if (this.importStats.settings > 0) successTypes.push('general settings');
 
       const successMessage = `Successfully imported ${
         this.importStats.successful
@@ -537,24 +545,31 @@ export class FileManagementComponent implements OnInit {
   /**
    * Converts type hints from menu selections to file type identifiers
    * Translates UI concepts (plural, human-readable) to internal type identifiers
-   * 
+   *
    * @param {string} hint - The type hint from the UI
    * @returns {'category' | 'product' | 'currency' | 'general' | null} The corresponding file type
    */
-  private convertTypeHint(hint: string): 'category' | 'product' | 'currency' | 'general' | null {
+  private convertTypeHint(
+    hint: string
+  ): 'category' | 'product' | 'currency' | 'general' | null {
     switch (hint) {
-      case 'categories': return 'category';
-      case 'products': return 'product';
-      case 'currencies': return 'currency';
-      case 'settings': return 'general';
-      default: return null;
+      case 'categories':
+        return 'category';
+      case 'products':
+        return 'product';
+      case 'currencies':
+        return 'currency';
+      case 'settings':
+        return 'general';
+      default:
+        return null;
     }
   }
 
   /**
    * Attempts to determine the file type based on filename patterns
    * Uses common naming conventions to identify file types when content analysis is ambiguous
-   * 
+   *
    * @param {string} fileName - The name of the file
    * @returns {'category' | 'product' | 'currency' | 'general' | null} The best guess file type, or null if unknown
    */

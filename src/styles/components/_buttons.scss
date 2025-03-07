@@ -10,7 +10,8 @@
  * Overrides default Material button styling to match application design system
  * Includes primary, accent, warning, and light variants with consistent interaction states
  */
-.mat-mdc-raised-button {
+.mat-mdc-raised-button,
+.mat-mdc-button {
   // Primary action button - main call to action
   &.mat-primary {
     background-color: var(--brush-primary-action) !important;
