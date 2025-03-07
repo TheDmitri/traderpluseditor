@@ -268,23 +268,22 @@ export class FileManagementComponent implements OnInit {
   }
 
   /**
-   * Handles file selection from input elements
+   * Handles file selection from input element
    * Processes the selected files and resets the input element
    * 
    * @param {Event} event - The file input change event
-   * @param {string} type - The type of files being imported
    */
-  onFileSelected(event: Event, type: string): void {
+  onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
 
     if (!input.files?.length) {
       return;
     }
 
-    this.processFiles(input.files, type);
+    // Process files with automatic type detection
+    this.processFiles(input.files);
 
     // Reset the input so that selecting the same file again will trigger the event.
-    // This is important for UX as users may want to import the same file multiple times.
     input.value = '';
   }
 

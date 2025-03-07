@@ -7,28 +7,10 @@
         <p class="subtitle">Import and configure your TraderPlus setup</p>
       </div>
       <div class="header-actions">
-        <button mat-raised-button color="primary" class="action-button" [matMenuTriggerFor]="importMenu" matTooltip="Import files">
+        <button mat-raised-button color="primary" class="action-button" (click)="fileInput.click()" matTooltip="Import any TraderPlus JSON configuration files">
           <mat-icon>file_upload</mat-icon>
-          Import
+          Import Files
         </button>
-        <mat-menu #importMenu="matMenu" class="import-menu">
-          <button mat-menu-item (click)="triggerFileInput('categories')">
-            <mat-icon class="menu-icon categories-color">my_library_books</mat-icon>
-            <span>Categories</span>
-          </button>
-          <button mat-menu-item (click)="triggerFileInput('products')">
-            <mat-icon class="menu-icon products-color">shopping_cart</mat-icon>
-            <span>Products</span>
-          </button>
-          <button mat-menu-item (click)="triggerFileInput('currencies')">
-            <mat-icon class="menu-icon currencies-color">attach_money</mat-icon>
-            <span>Currency Settings</span>
-          </button>
-          <button mat-menu-item (click)="triggerFileInput('settings')">
-            <mat-icon class="menu-icon settings-color">settings</mat-icon>
-            <span>General Settings</span>
-          </button>
-        </mat-menu>
         
         <button mat-raised-button color="accent" class="action-button" [matMenuTriggerFor]="exportMenu" matTooltip="Export files">
           <mat-icon>file_download</mat-icon>
@@ -61,11 +43,8 @@
     </div>
   </div>
 
-  <!-- Hidden file inputs -->
-  <input #categoriesInput type="file" hidden accept=".json" multiple (change)="onFileSelected($event, 'categories')" />
-  <input #productsInput type="file" hidden accept=".json" multiple (change)="onFileSelected($event, 'products')" />
-  <input #currenciesInput type="file" hidden accept=".json" (change)="onFileSelected($event, 'currencies')" />
-  <input #settingsInput type="file" hidden accept=".json" (change)="onFileSelected($event, 'settings')" />
+  <!-- Single hidden file input for all JSON files -->
+  <input #fileInput type="file" hidden accept=".json" multiple (change)="onFileSelected($event)" />
 
   <!-- Main Content Area -->
   <div class="content-area">
@@ -113,13 +92,6 @@
             <div class="status-actions">
               <button 
                 mat-button 
-                color="primary" 
-                (click)="triggerFileInput('categories')" 
-                matTooltip="Import category files">
-                <mat-icon>upload_file</mat-icon> Import
-              </button>
-              <button 
-                mat-button 
                 color="accent" 
                 [disabled]="!hasCategories" 
                 (click)="exportCategories()" 
@@ -140,13 +112,6 @@
             <p *ngIf="hasProducts">{{getProductsCount()}} products loaded</p>
             <p *ngIf="!hasProducts">No products imported</p>
             <div class="status-actions">
-              <button 
-                mat-button 
-                color="primary" 
-                (click)="triggerFileInput('products')" 
-                matTooltip="Import product files">
-                <mat-icon>upload_file</mat-icon> Import
-              </button>
               <button 
                 mat-button 
                 color="accent" 
@@ -171,13 +136,6 @@
             <div class="status-actions">
               <button 
                 mat-button 
-                color="primary" 
-                (click)="triggerFileInput('currencies')" 
-                matTooltip="Import currency settings">
-                <mat-icon>upload_file</mat-icon> Import
-              </button>
-              <button 
-                mat-button 
                 color="accent" 
                 [disabled]="!hasCurrencies" 
                 (click)="exportCurrencySettings()" 
@@ -198,13 +156,6 @@
             <p *ngIf="hasSettings">General configuration loaded</p>
             <p *ngIf="!hasSettings">No general settings imported</p>
             <div class="status-actions">
-              <button 
-                mat-button 
-                color="primary" 
-                (click)="triggerFileInput('settings')" 
-                matTooltip="Import general settings">
-                <mat-icon>upload_file</mat-icon> Import
-              </button>
               <button 
                 mat-button 
                 color="accent" 
