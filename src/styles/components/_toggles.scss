@@ -1,12 +1,26 @@
 /* Material Slide Toggle Styles
 ========================================================================== */
+/**
+ * Custom Slide Toggle Implementation
+ * 
+ * The Material slide toggle is heavily customized to match our design system.
+ * The default Material theming approach doesn't provide enough control over
+ * specific toggle components, so we manually override several internal parts.
+ * 
+ * Key customizations include:
+ * - Consistent handle color regardless of state
+ * - Custom track colors for checked/unchecked states
+ * - Specific hover and focus states
+ * - Light variant for use on dark backgrounds
+ */
 .mat-mdc-slide-toggle {
-  // Handle (Schieber) - konsistent weiß
+  // Handle (Thumb) - consistently white regardless of state
   .mdc-switch:enabled .mdc-switch__handle::after {
     background-color: var(--color-neutral-lightest) !important;
   }
 
   // Track - Unchecked State
+  // We use multiple selectors to ensure high specificity to override Material defaults
   .mdc-switch:enabled .mdc-switch__track,
   .mdc-switch:enabled .mdc-switch__track::before,
   .mdc-switch:enabled .mdc-switch__track::after {
@@ -15,7 +29,7 @@
     opacity: 0.3;
   }
 
-  // Track - Checked State
+  // Track - Checked State with primary accent color
   &.mat-primary {
     .mdc-switch.mdc-switch--selected:enabled {
       .mdc-switch__track,
@@ -36,10 +50,10 @@
     }
   }
 
-  // Hover States
+  // Hover States - Improves visual feedback on interaction
   &:hover {
     .mdc-switch:enabled .mdc-switch__track {
-      opacity: 0.4; // Leicht hervorgehoben im Hover
+      opacity: 0.4; // Slightly more visible on hover
     }
 
     &.mat-primary .mdc-switch.mdc-switch--selected:enabled .mdc-switch__track {
@@ -47,10 +61,10 @@
     }
   }
 
-  // Disabled States
+  // Disabled States - Clearly indicates non-interactive state
   .mdc-switch:disabled {
     .mdc-switch__handle::after {
-      background-color: var(--color-neutral-light) !important; // Gedimmtes Weiß
+      background-color: var(--color-neutral-light) !important; // Dimmed white
     }
 
     .mdc-switch__track {
@@ -59,16 +73,21 @@
     }
   }
 
-  // Focus State
+  // Focus State - Improves accessibility by showing clear focus indication
   .mdc-switch:focus-within {
     outline: 2px solid var(--brush-focus-outline) !important;
     outline-offset: 2px;
   }
 
-  // Light Variant
+  /**
+   * Light Variant
+   * 
+   * For use on dark backgrounds or in contexts where the toggle
+   * should stand out from the dark theme background
+   */
   &.light-toggle {
     .mdc-switch:enabled .mdc-switch__handle::after {
-      background-color: #ffffff !important; // Bleibt weiß
+      background-color: #ffffff !important; // Remains white
     }
 
     .mdc-switch:enabled .mdc-switch__track {

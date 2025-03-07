@@ -1,5 +1,16 @@
-/* Material Dialogs and modals
+/* Material Dialogs and Modals
 ========================================================================== */
+/**
+ * Dialog Component Customization
+ * 
+ * Angular Material dialogs are customized to match our design system.
+ * Two variants are supported:
+ * 1. Default (dark) - For standard modal interactions
+ * 2. Light - For important or high-contrast modal interactions
+ * 
+ * Customizations focus on typography, color, and ensuring proper
+ * contrast for readability.
+ */
 .mat-mdc-dialog-container {
   .mdc-dialog__title {
     color: var(--brush-text-primary) !important;
@@ -9,7 +20,12 @@
     color: var(--brush-text-secondary) !important;
   }
 
-  // Light dialog variant
+  /**
+   * Light Dialog Variant
+   * 
+   * Used for confirmation dialogs, important messages,
+   * or when the dialog content needs higher visibility
+   */
   &.light-dialog {
     background-color: var(--color-neutral-lightest) !important;
 
@@ -25,7 +41,17 @@
 
 /* Material Snackbars
 ========================================================================== */
-// Global Snackbar Positioning
+/**
+ * Notification System
+ * 
+ * Snackbars provide brief messages about app processes.
+ * Our implementation includes:
+ * 1. Custom positioning (top-right instead of bottom-center)
+ * 2. Semantic color variants based on message type
+ * 3. Appropriate text contrast for each variant
+ */
+
+// Global positioning override
 .custom-snackbar {
   position: fixed !important;
   top: 80px !important;
@@ -35,6 +61,15 @@
   margin: 0 !important;
 }
 
+/**
+ * Snackbar Variants
+ * 
+ * Each variant has specific colors based on the message context:
+ * - Success: Confirming successful operations
+ * - Warning: Alerting about potential issues
+ * - Error: Indicating failures or blocking issues
+ * - Info: Providing neutral information
+ */
 .mat-mdc-snack-bar-container {
   &.success-snackbar {
     --mdc-snackbar-container-color: var(--brush-info) !important;

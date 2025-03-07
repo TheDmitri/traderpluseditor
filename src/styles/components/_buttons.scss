@@ -1,33 +1,49 @@
+/**
+ * Button Component Styling
+ * ========================================================================== 
+ * This file contains styling for Angular Material buttons and custom icon buttons,
+ * providing consistent appearance, interactive states, and accessibility features
+ * across the application.
+ */
+
 /* Material Button Customization
-========================================================================== */
+ * Overrides default Material button styling to match application design system
+ * Includes primary, accent, warning, and light variants with consistent interaction states
+ */
 .mat-mdc-raised-button {
+  // Primary action button - main call to action
   &.mat-primary {
     background-color: var(--brush-primary-action) !important;
     color: var(--brush-text-primary) !important;
 
+    // Interactive states
     &:hover {
-      background-color: var(--brush-primary-action-hover) !important;
+      background-color: var(--brush-primary-action-hover) !important; // Lighter shade on hover
     }
 
     &:active {
-      background-color: var(--brush-button-active) !important;
+      background-color: var(--brush-button-active) !important; // Darker shade when pressed
     }
 
+    // Accessibility focus indicator
     &:focus:not(:active) {
       outline: 2px solid var(--brush-button-focus-ring) !important;
       outline-offset: 2px;
     }
 
+    // Disabled state
     &:disabled {
       background-color: var(--brush-button-disabled-background) !important;
       color: var(--brush-button-disabled-text) !important;
     }
   }
 
+  // Accent buttons - secondary actions
   &.mat-accent {
     background-color: var(--color-accent-medium) !important;
     color: var(--brush-text-primary-on-light) !important;
 
+    // Interactive states
     &:hover {
       background-color: var(--color-accent-light) !important;
     }
@@ -36,21 +52,25 @@
       background-color: var(--color-accent-darkest) !important;
     }
 
+    // Accessibility focus indicator
     &:focus:not(:active) {
       outline: 2px solid var(--brush-button-focus-ring) !important;
       outline-offset: 2px;
     }
 
+    // Disabled state
     &:disabled {
       background-color: var(--brush-button-disabled-background) !important;
       color: var(--brush-button-disabled-text) !important;
     }
   }
 
+  // Warning/destructive buttons
   &.mat-warn {
     background-color: var(--brush-destructive-action) !important;
     color: var(--brush-text-primary) !important;
 
+    // Interactive states
     &:hover {
       background-color: var(--brush-destructive-action-hover) !important;
     }
@@ -59,22 +79,25 @@
       background-color: var(--color-error-darkest) !important;
     }
 
+    // Accessibility focus indicator
     &:focus:not(:active) {
       outline: 2px solid var(--color-error-light) !important;
       outline-offset: 2px;
     }
 
+    // Disabled state
     &:disabled {
       background-color: var(--brush-button-disabled-background) !important;
       color: var(--brush-button-disabled-text) !important;
     }
   }
 
-  // Light button variant
+  // Light variant for use on dark backgrounds
   &.light-button {
     background-color: var(--color-neutral-lightest) !important;
     color: var(--brush-text-primary-on-light) !important;
 
+    // Interactive states
     &:hover {
       background-color: var(--brush-hover-overlay-light) !important;
     }
@@ -83,11 +106,13 @@
       background-color: var(--color-neutral-light) !important;
     }
 
+    // Accessibility focus indicator
     &:focus:not(:active) {
       outline: 2px solid var(--brush-focus-outline-light) !important;
       outline-offset: 2px;
     }
 
+    // Disabled state
     &:disabled {
       background-color: var(
         --brush-button-disabled-background-light
@@ -97,8 +122,11 @@
   }
 }
 
-/* Custom Icon Button Styles
-========================================================================== */
+/* Custom Icon Button System
+ * ========================================================================== 
+ * Provides a flexible icon button system with consistent styling, sizes,
+ * and variants that match the application's design language.
+ */
 .custom-icon-btn {
   display: inline-flex;
   align-items: center;
@@ -113,14 +141,16 @@
   transition: all var(--transition-normal) var(--transition-timing);
   padding: 0;
   
+  // Accessibility focus handling
   &:focus {
     outline: none;
   }
   
   &:focus-visible {
-    box-shadow: 0 0 0 2px var(--brush-focus-outline);
+    box-shadow: 0 0 0 2px var(--brush-focus-outline); // Keyboard focus indicator
   }
   
+  // Icon styling and animation
   .mat-icon {
     color: inherit;
     font-size: 24px;
@@ -129,10 +159,13 @@
     transition: transform var(--transition-normal) var(--transition-timing);
   }
   
-  /* Button Variants */
+  /* Button Color Variants */
+  
+  // Primary action icon buttons
   &.icon-btn-primary {
     color: var(--color-accent-medium);
     
+    // Interactive states
     &:hover {
       background-color: var(--brush-hover-overlay);
       color: var(--color-accent-light);
@@ -140,10 +173,10 @@
     
     &:active {
       background-color: var(--brush-active-overlay);
-      transform: scale(0.95);
+      transform: scale(0.95); // Subtle pressed effect
       
       .mat-icon {
-        transform: scale(0.95);
+        transform: scale(0.95); // Coordinated icon animation
       }
     }
     
@@ -154,9 +187,11 @@
     }
   }
   
+  // Destructive/warning icon buttons
   &.icon-btn-warn {
     color: var(--brush-destructive-action);
     
+    // Interactive states
     &:hover {
       background-color: rgba(211, 47, 47, 0.08);
       color: var(--color-error-light);
@@ -178,9 +213,11 @@
     }
   }
   
+  // Light variant for dark backgrounds
   &.icon-btn-light {
     color: var(--brush-text-primary-on-light);
     
+    // Interactive states
     &:hover {
       background-color: var(--brush-hover-overlay-light);
     }
@@ -201,7 +238,9 @@
     }
   }
   
-  /* Size variants */
+  /* Size Variants */
+  
+  // Small icon button
   &.icon-btn-sm {
     width: 32px;
     height: 32px;
@@ -213,6 +252,7 @@
     }
   }
   
+  // Large icon button
   &.icon-btn-lg {
     width: 48px;
     height: 48px;
@@ -224,7 +264,7 @@
     }
   }
   
-  /* With text label variant */
+  /* Button with Text Label */
   &.icon-btn-with-text {
     width: auto;
     padding: 0 16px;
@@ -238,7 +278,7 @@
     }
   }
   
-  /* Ripple effect container */
+  // Container for ripple effect
   .icon-btn-ripple {
     position: absolute;
     top: 0;

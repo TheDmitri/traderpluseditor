@@ -1,5 +1,14 @@
 /* Custom Scrollbar Styling
 ========================================================================== */
+/**
+ * Cross-browser scrollbar customization
+ * 
+ * These styles create a consistent, themed scrollbar appearance across
+ * WebKit-based browsers (Chrome, Safari, Edge).
+ * 
+ * Note: Firefox requires a different approach using the scrollbar-color 
+ * and scrollbar-width properties, which could be added for full compatibility.
+ */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -18,7 +27,13 @@
   }
 }
 
-// Global Snackbar Positioning
+/**
+ * Global Snackbar Positioning
+ * 
+ * Positions notification snackbars in a consistent location
+ * in the upper right corner of the viewport, rather than
+ * using Material's default bottom center positioning.
+ */
 .custom-snackbar {
   position: fixed !important;
   top: 80px !important;

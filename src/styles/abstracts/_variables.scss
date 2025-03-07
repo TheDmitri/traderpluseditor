@@ -1,10 +1,24 @@
 /* Material Theme Configuration
 ========================================================================== */
+/**
+ * Angular Material Theme Integration
+ * This imports and sets up the core Material theming system
+ */
 @use "@angular/material" as mat;
 @include mat.core();
 
 /* Color System
 ========================================================================== */
+/**
+ * Design Token Architecture
+ * 
+ * This application uses a two-layer color system:
+ * 1. Base Colors: Raw color values (direct HEX/RGB values)
+ * 2. Semantic Colors: Contextual usage of colors (prefixed with "brush-")
+ * 
+ * This approach separates color definition from color application,
+ * making theme updates easier and more consistent.
+ */
 :root {
   // Base Colors - Dark Theme
   --color-background-dark: #1e1e1e;
@@ -57,6 +71,16 @@
 
 /* Semantic Color System
   ========================================================================== */
+/**
+ * Semantic Color Application
+ * 
+ * These variables define the contextual usage of colors throughout the application.
+ * By using these semantic variables (brushes) instead of direct color values,
+ * we can consistently update the theme by changing only these mappings.
+ * 
+ * Naming convention:
+ * --brush-[context]-[variant]
+ */
 :root {
   // Layout & Structure
   --brush-background-default: var(--color-background-dark);

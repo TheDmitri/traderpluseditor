@@ -1,5 +1,18 @@
 /* Responsive Typography
 ========================================================================== */
+/**
+ * Fluid Typography System
+ * 
+ * This implements a responsive type scale using CSS clamp() to automatically
+ * adjust font sizes based on viewport width. Each size variable scales
+ * smoothly between its minimum and maximum values without requiring
+ * media queries.
+ * 
+ * Format: clamp(min-size, preferred-size, max-size)
+ * - min-size: Applied on smallest screens
+ * - preferred-size: Calculated based on viewport width (vw)
+ * - max-size: Maximum size cap for larger screens
+ */
 :root {
   // Base text sizes
   --font-size-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);

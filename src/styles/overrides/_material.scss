@@ -1,4 +1,21 @@
-/* Material Ripple Effect Customization */
+/**
+ * Angular Material Core Overrides
+ * ========================================================================== 
+ * 
+ * This file contains critical overrides for Angular Material's base components
+ * that appear throughout the application. These overrides apply to the core
+ * Material behaviors rather than specific component implementations.
+ */
+
+/* Material Ripple Effect Customization
+   ========================================================================== */
+/**
+ * The ripple effect is a core Material interaction pattern that provides
+ * tactile feedback when users interact with clickable elements.
+ * 
+ * We customize the ripple color to match our theme and provide different
+ * ripple effects for light vs dark surfaces.
+ */
 .mat-ripple-element {
   background-color: var(--brush-ripple-color) !important;
 
@@ -10,7 +27,11 @@
   }
 }
 
-// Icons
+/**
+ * Material Icons
+ * ========================================================================== 
+ * Ensures icons inherit their color from parent elements for consistent theming
+ */
 .mat-icon {
   color: inherit;
 }

@@ -1,15 +1,25 @@
-/* Material Card Customization
-========================================================================== */
-.mat-mdc-card {
-  background-color: var(--brush-card-background) !important;
-  color: var(--brush-text-primary) !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+/**
+ * Material Card Customization
+ * ========================================================================== 
+ * This file contains styling for Angular Material cards, providing consistent
+ * appearance and interactive behaviors across the application. Includes variants
+ * for different contexts and interaction states.
+ */
 
-  // Light card variant
+/* Material Card Customization
+ * Standardizes card appearance with theme-consistent colors and shadows
+ */
+.mat-mdc-card {
+  background-color: var(--brush-card-background) !important; // Default dark theme background
+  color: var(--brush-text-primary) !important; // Default text color
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important; // Consistent elevation shadow
+
+  // Light variant for use on dark backgrounds or in light theme contexts
   &.light-card {
     background-color: var(--color-neutral-lightest) !important;
     color: var(--brush-text-primary-on-light) !important;
 
+    // Content color adjustments for light cards
     .mat-mdc-card-title {
       color: var(--brush-text-primary-on-light) !important;
     }
@@ -19,21 +29,25 @@
     }
   }
 
+  // Interactive card with hover and active states
   &.hoverable {
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); // Smooth animation
 
+    // Hover effect - subtle elevation increase and upward movement
     &:hover {
       transform: translateY(-4px);
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3) !important;
     }
 
+    // Active state - pressed effect
     &:active {
       transform: translateY(-2px);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2) !important;
     }
   }
 
+  // Variant with visible border
   &.bordered {
     border: 1px solid var(--brush-border-light);
   }

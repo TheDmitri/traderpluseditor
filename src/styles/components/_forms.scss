@@ -1,19 +1,29 @@
+/**
+ * Material Form Field Customization
+ * ========================================================================== 
+ * This file contains styling for Angular Material form fields, focusing on
+ * validation states and helper text styling for consistency across the application.
+ */
+
 /* Material Form Field Customization
-========================================================================== */
+ * Provides validation styling and text size standardization
+ */
 .mat-mdc-form-field {
+  // Invalid form field styling - highlights errors with appropriate color
   &.ng-invalid.ng-touched {
     .mat-mdc-form-field-outline {
-      color: var(--color-error-light) !important;
+      color: var(--color-error-light) !important; // Error outline highlight
     }
 
     .mat-mdc-form-field-label {
-      color: var(--color-error-light) !important;
+      color: var(--color-error-light) !important; // Label color changes to indicate error
     }
   }
 
+  // Helper text and error message standardization
   .mat-mdc-form-field-hint,
   .mat-mdc-form-field-error {
-    font-size: 0.75rem;
-    letter-spacing: 0.025em;
+    font-size: 0.75rem; // Consistent small text for hints and errors
+    letter-spacing: 0.025em; // Improved readability for small text
   }
 }

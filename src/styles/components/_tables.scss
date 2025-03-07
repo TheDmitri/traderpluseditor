@@ -1,33 +1,44 @@
+/**
+ * Material Tables and Paginators
+ * ========================================================================== 
+ * This file contains custom styling for Angular Material tables and paginator components,
+ * including theme variants, hover states, and full MDC overrides to maintain design consistency.
+ */
+
 /* Material Table Customization
-========================================================================== */
+ * Provides transparent backgrounds, custom text colors, and interactive states
+ * for both dark and light theme variants.
+ */
 .mat-mdc-table {
   background-color: transparent !important;
 
   .mat-mdc-header-cell {
-    color: var(--brush-text-secondary) !important;
+    color: var(--brush-text-secondary) !important; // Header text uses secondary color for contrast
   }
 
   .mat-mdc-cell {
-    color: var(--brush-text-primary) !important;
+    color: var(--brush-text-primary) !important; // Cell content uses primary text color
   }
 
+  // Interactive states for rows
   .mat-mdc-row {
     transition: background-color 0.2s ease;
 
     &:hover {
-      background-color: var(--brush-hover-overlay);
+      background-color: var(--brush-hover-overlay); // Subtle highlight on hover
     }
 
     &.selected {
-      background-color: var(--brush-selected-overlay);
+      background-color: var(--brush-selected-overlay); // Stronger highlight for selected rows
     }
   }
 
+  // Interactive rows with pointer cursor
   .clickable-row {
     cursor: pointer;
   }
 
-  // Light table variant
+  // Light theme variant with appropriate contrast colors
   &.light-table {
     background-color: var(--color-neutral-lightest) !important;
 
@@ -41,28 +52,30 @@
   }
 }
 
-/* Material Paginator Customization - Complete Override
-========================================================================== */
+/* Material Paginator Customization
+ * ========================================================================== 
+ * Complete override of Material Paginator styling to match application design system.
+ * Includes customization of navigation buttons, dropdown selectors, and text elements.
+ */
 
-// Entfernen vorhandener Paginator-Stile (falls vorhanden)
+// Base paginator styling - transparent background with themed text
 .mat-mdc-paginator {
   background: transparent !important;
   color: var(--brush-text-primary) !important;
 }
 
-// Tiefer Override mit hoher Spezifität für alle Paginator-Elemente
-// Hauptcontainer
+// Comprehensive paginator overrides with high specificity selectors
 .mat-mdc-paginator {
   background: transparent !important;
 
-  // Text-Elemente
+  // Text labels for page size and range indicators
   .mat-mdc-paginator-page-size-label,
   .mat-mdc-paginator-range-label {
     color: var(--brush-text-secondary) !important;
     font-size: var(--font-size-sm);
   }
 
-  // Navigation buttons - correct shape override
+  // Navigation buttons with standardized styling
   .mat-mdc-icon-button.mat-mdc-paginator-navigation-first,
   .mat-mdc-icon-button.mat-mdc-paginator-navigation-previous,
   .mat-mdc-icon-button.mat-mdc-paginator-navigation-next,
@@ -86,18 +99,19 @@
       background-color: transparent !important;
     }
 
-    // Icon color
+    // Icon color to match action buttons
     .mat-mdc-paginator-icon {
       fill: var(--brush-primary-action) !important;
     }
 
+    // Disabled state styling
     &:disabled .mat-mdc-paginator-icon {
       fill: var(--brush-button-disabled-text) !important;
       opacity: 0.5;
     }
   }
 
-  // Dropdown container
+  // Page size dropdown styling with transparent background and themed borders
   .mat-mdc-paginator-page-size-select {
     .mdc-text-field {
       background-color: transparent !important;
@@ -135,7 +149,7 @@
     }
   }
 
-  // Align content
+  // Layout adjustments for paginator container
   .mat-mdc-paginator-container {
     display: flex;
     align-items: center;
@@ -148,11 +162,14 @@
   }
 }
 
-// Dropdown panel and options
+/* Dropdown Menu Styling for Paginators
+ * Ensures consistent styling with the rest of the application
+ */
 .mat-mdc-select-panel {
   background-color: var(--brush-card-background) !important;
 }
 
+// Dropdown option styling with proper states
 .cdk-overlay-pane {
   .mat-mdc-option {
     color: var(--brush-text-primary) !important;
@@ -181,7 +198,7 @@
 
         &::after {
           color: var(--brush-primary-action) !important;
-          border-color: var(--brush-primary-action) !important;
+          border-color: var (--brush-primary-action) !important;
         }
       }
     }
@@ -193,7 +210,7 @@
   }
 }
 
-// Force override for outline colors when mat-select is clicked/focused
+// Focus state overrides for form fields within paginators
 .mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
   color: var(--brush-primary-action) !important;
 }
@@ -246,7 +263,9 @@
   border-bottom-color: var(--brush-primary-action) !important;
 }
 
-// Custom selector for light theme variant
+/* Light Theme Overrides
+ * Special styling for paginator when used in light mode contexts
+ */
 .light-theme .mat-mdc-paginator {
   color: var(--brush-text-primary-on-light) !important;
 
