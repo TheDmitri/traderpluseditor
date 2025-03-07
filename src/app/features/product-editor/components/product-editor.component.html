@@ -1,8 +1,9 @@
 <div class="product-editor-container">
-  <mat-card class="header-card">
+  <div class="page-header">
     <div class="header-content">
       <div class="header-left">
         <h2>Product Editor</h2>
+        <p class="subtitle">Manage your TraderPlus products</p>
         <div class="action-buttons">
           <button
             mat-raised-button
@@ -11,7 +12,7 @@
             matTooltip="Create a new product"
           >
             <mat-icon>add</mat-icon>
-            Add Product
+            Create New Product
           </button>
           <button
             mat-raised-button
@@ -46,16 +47,18 @@
         </mat-menu>
       </div>
     </div>
-  </mat-card>
+  </div>
 
-  <mat-card class="data-card">
+  <div class="data-card">
+    <h2 class="section-title">Products Overview</h2>
     <mat-card-content>
       <app-product-list
         [products]="products"
         [showActions]="true"
         (productRemoved)="onProductRemoved($event)"
-        (productEdited)="onProductEdited($event)">
+        (productEdited)="onProductEdited($event)"
+      >
       </app-product-list>
     </mat-card-content>
-  </mat-card>
+  </div>
 </div>
