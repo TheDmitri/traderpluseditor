@@ -1,10 +1,13 @@
 /**
  * Angular Material Core Overrides
  * ========================================================================== 
- * 
  * This file contains critical overrides for Angular Material's base components
- * that appear throughout the application. These overrides apply to the core
- * Material behaviors rather than specific component implementations.
+ * that appear throughout the application.
+ * 
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Component backgrounds, containers, surfaces (neutral/background colors)
+ * - 30%: Labels, supporting elements, icons (secondary colors)
+ * - 10%: Interactive elements, focus states (primary/accent colors)
  */
 
 /* Material Ripple Effect Customization
@@ -13,25 +16,396 @@
  * The ripple effect is a core Material interaction pattern that provides
  * tactile feedback when users interact with clickable elements.
  * 
- * We customize the ripple color to match our theme and provide different
- * ripple effects for light vs dark surfaces.
+ * We customize the ripple color to match our color ratio system:
+ * - For primary actions: Primary color (10% accent)
+ * - For standard interactions: Neutral colors (60% structural)
  */
 .mat-ripple-element {
-  background-color: var(--brush-ripple-color) !important;
+  background-color: var(--brush-ripple-color) !important; // Default ripple (60% neutral)
 
+  // Context-specific ripple colors
+  .mat-primary & {
+    background-color: var(--color-primary-transparent-20) !important; // Primary context (10% accent)
+  }
+
+  .mat-accent & {
+    background-color: var(--color-secondary-transparent-20) !important; // Secondary context (30% supporting)
+  }
+
+  .mat-warn & {
+    background-color: var(--color-error-transparent-20) !important; // Error/warning context
+  }
+
+  // Light variant ripples for different backgrounds
   .light-button &,
   .light-card &,
   .light-dialog &,
   .light-table & {
-    background-color: var(--brush-ripple-color-light) !important;
+    background-color: var(--brush-ripple-color-light) !important; // Light context
   }
 }
 
+/* Material Icons
+   ========================================================================== */
 /**
- * Material Icons
- * ========================================================================== 
  * Ensures icons inherit their color from parent elements for consistent theming
+ * while providing standard color options that follow the 60-30-10 system
  */
 .mat-icon {
-  color: inherit;
+  color: inherit; // Default behavior - inherit from parent
+
+  // Icon color variants
+  &.icon-primary {
+    color: var(--color-primary-medium) !important; // 10% accent color
+  }
+
+  &.icon-secondary {
+    color: var(--color-secondary-medium) !important; // 30% supporting color
+  }
+
+  &.icon-neutral {
+    color: var(--brush-text-secondary) !important; // 60% neutral/structural color
+  }
+
+  &.icon-disabled {
+    color: var(--brush-text-disabled) !important;
+    opacity: 0.5;
+  }
+
+  // Status icon colors
+  &.icon-success {
+    color: var(--brush-text-success) !important;
+  }
+
+  &.icon-error {
+    color: var(--brush-text-error) !important;
+  }
+
+  &.icon-warning {
+    color: var(--brush-text-warning) !important;
+  }
+
+  &.icon-info {
+    color: var(--brush-text-info) !important;
+  }
+}
+
+/* Focus Indicator Standardization
+   ========================================================================== */
+/**
+ * Consistent focus indicators across all Material components
+ * for better accessibility and visual feedback
+ */
+.mat-mdc-focus-indicator {
+  &::before {
+    border-color: var(--brush-focus-ring) !important; // 10% accent for focus
+  }
+}
+
+// Standard keyboard focus outline for all interactive Material elements
+.mat-mdc-button,
+.mat-mdc-icon-button,
+.mat-mdc-menu-item,
+.mat-mdc-option,
+.mat-mdc-tab,
+.mat-mdc-chip {
+  &.cdk-keyboard-focused {
+    outline: 2px solid var(--brush-focus-ring) !important; // 10% accent for focus
+    outline-offset: 2px;
+    z-index: 1; // Ensure focus ring is visible
+  }
+}
+
+/* Overlay Background Colors
+   ========================================================================== */
+/**
+ * Standardizes backdrop colors for modals, menus, and other overlays
+ */
+.cdk-overlay-dark-backdrop {
+  background-color: var(--brush-overlay-background) !important; // 60% structural
+}
+
+.cdk-overlay-transparent-backdrop {
+  background-color: transparent !important;
+}
+
+/* Material Tooltip Customization
+   ========================================================================== */
+/**
+ * Override default tooltip styles to match our design system
+ */
+.mat-mdc-tooltip {
+  background-color: var(--brush-tooltip-background) !important; // 60% structural
+  color: var(--brush-tooltip-text) !important; // 60% primary text
+  font-size: var(--font-size-sm) !important;
+  padding: 8px 12px !important;
+  border-radius: 4px !important;
+  margin: 8px !important;
+  max-width: 250px !important;
+  word-break: break-word;
+  border: 1px solid var(--brush-tooltip-border) !important; // 60% subtle border
+}
+
+/* Menu Panel Standardization
+   ========================================================================== */
+/**
+ * Ensures consistent styling for all dropdown menus
+ */
+.mat-mdc-menu-panel {
+  background-color: var(--brush-menu-background) !important; // 60% structural
+  border: 1px solid var(--brush-menu-border) !important; // 60% subtle border
+  border-radius: 4px !important;
+  min-width: 180px !important;
+  
+  .mat-mdc-menu-item {
+    color: var(--brush-text-primary) !important; // 60% primary text
+    font-size: var(--font-size-base) !important;
+    height: 40px !important;
+    line-height: 40px !important;
+    
+    &:hover:not([disabled]) {
+      background-color: var(--brush-menu-item-hover) !important; // 60% subtle hover
+    }
+    
+    &.mat-mdc-menu-item-highlighted {
+      background-color: var(--color-primary-transparent-10) !important; // 10% accent highlight
+    }
+    
+    &[disabled] {
+      color: var(--brush-text-disabled) !important;
+    }
+    
+    .mat-icon {
+      margin-right: 12px;
+      font-size: 20px;
+      height: 20px;
+      width: 20px;
+    }
+  }
+  
+  .mat-mdc-menu-item-text {
+    color: inherit;
+  }
+  
+  .mat-mdc-menu-submenu-icon {
+    color: var(--brush-text-secondary) !important; // 30% supporting element
+  }
+}
+
+/* Divider Consistency
+   ========================================================================== */
+/**
+ * Ensures all dividers share consistent styling
+ */
+.mat-divider {
+  border-top-color: var(--brush-divider) !important; // 60% structural element
+  margin: 8px 0 !important;
+
+  &.mat-divider-vertical {
+    border-right-color: var(--brush-divider) !important; // 60% structural element
+    margin: 0 8px !important;
+  }
+}
+
+/* Badge Customization
+   ========================================================================== */
+/**
+ * Customizes Material badges to match our design system
+ */
+.mat-badge-content {
+  background-color: var(--brush-badge-background) !important; // 10% accent
+  color: white !important;
+  font-weight: var(--font-weight-medium) !important;
+  font-size: var(--font-size-xs) !important;
+  height: 18px !important;
+  width: 18px !important;
+  line-height: 18px !important;
+
+  &.mat-badge-active {
+    transform: scale(1.1);
+  }
+}
+
+// Badge variants
+.mat-badge {
+  &.badge-primary .mat-badge-content {
+    background-color: var(--color-primary-dark) !important; // 10% accent  
+  }
+  
+  &.badge-secondary .mat-badge-content {
+    background-color: var(--color-secondary-dark) !important; // 30% supporting
+  }
+  
+  &.badge-success .mat-badge-content {
+    background-color: var(--brush-status-success-background) !important;
+  }
+  
+  &.badge-error .mat-badge-content {
+    background-color: var(--brush-status-error-background) !important;
+  }
+  
+  &.badge-warning .mat-badge-content {
+    background-color: var(--brush-status-warning-background) !important;
+    color: black !important;
+  }
+  
+  &.badge-info .mat-badge-content {
+    background-color: var(--brush-status-info-background) !important;
+  }
+}
+
+/* Progress Indicators
+   ========================================================================== */
+/**
+ * Standardizes all progress indicators to match the design system
+ */
+// Progress bar
+.mat-mdc-progress-bar {
+  .mdc-linear-progress__buffer {
+    background-color: var(--brush-progress-track) !important; // 60% structural
+  }
+  
+  .mdc-linear-progress__buffer-bar {
+    background-color: var(--brush-progress-buffer) !important; // 10% accent with low opacity
+  }
+  
+  .mdc-linear-progress__bar-inner {
+    background-color: var(--brush-progress-indicator) !important; // 10% accent
+  }
+  
+  // Progress variants
+  &.mat-accent .mdc-linear-progress__bar-inner {
+    background-color: var(--color-secondary-medium) !important; // 30% supporting
+  }
+  
+  &.mat-warn .mdc-linear-progress__bar-inner {
+    background-color: var(--color-error-dark) !important;
+  }
+}
+
+// Progress spinner
+.mat-mdc-progress-spinner {
+  .mdc-circular-progress__determinate-circle,
+  .mdc-circular-progress__indeterminate-circle-graphic {
+    stroke: var(--brush-spinner-indicator) !important; // 10% accent
+  }
+  
+  &.mat-accent {
+    .mdc-circular-progress__determinate-circle,
+    .mdc-circular-progress__indeterminate-circle-graphic {
+      stroke: var(--color-secondary-medium) !important; // 30% supporting
+    }
+  }
+  
+  &.mat-warn {
+    .mdc-circular-progress__determinate-circle,
+    .mdc-circular-progress__indeterminate-circle-graphic {
+      stroke: var(--color-error-dark) !important;
+    }
+  }
+}
+
+/* Tab Group Customization
+   ========================================================================== */
+/**
+ * Standardizes tab styling to match our design system
+ */
+.mat-mdc-tab-group {
+  // Tab header background
+  .mat-mdc-tab-header {
+    border-bottom: 1px solid var(--brush-divider) !important; // 60% subtle divider
+  }
+  
+  // Individual tab styling
+  .mat-mdc-tab {
+    height: 48px !important;
+    
+    .mdc-tab__text-label {
+      color: var(--brush-text-secondary) !important; // 30% supporting text
+      font-size: var(--font-size-base) !important;
+    }
+    
+    &.mdc-tab--active .mdc-tab__text-label {
+      color: var(--brush-text-accent) !important; // 10% accent text
+      font-weight: var(--font-weight-medium) !important;
+    }
+    
+    // Tab indicator colors
+    .mdc-tab-indicator__content--underline {
+      border-color: var(--color-primary-medium) !important; // 10% accent element
+    }
+    
+    &:hover:not(.mdc-tab--active) {
+      background-color: var(--brush-hover-overlay) !important; // Interactive state
+    }
+  }
+  
+  // Tab content area
+  .mat-mdc-tab-body-content {
+    padding: 16px 0;
+  }
+}
+
+/* Global Input Styling
+   ========================================================================== */
+/**
+ * Provides consistent styling for all input elements
+ * that may not be covered in the forms component file
+ */
+.mat-mdc-input-element::placeholder {
+  color: var(--brush-input-placeholder) !important; // 30% supporting text
+  opacity: 0.7;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  font-size: var(--font-size-xs) !important;
+}
+
+/* Autocomplete Panel
+   ========================================================================== */
+/**
+ * Ensures autocomplete dropdown menus match our design system
+ */
+.mat-mdc-autocomplete-panel {
+  background-color: var(--brush-dropdown-background) !important; // 60% structural
+  border: 1px solid var(--brush-menu-border) !important; // 60% subtle border
+  border-radius: 4px !important;
+  
+  .mat-mdc-option {
+    color: var(--brush-text-primary) !important; // 60% primary text
+    
+    &:hover:not(.mat-mdc-option-disabled) {
+      background-color: var(--brush-dropdown-item-hover) !important; // 60% subtle hover
+    }
+    
+    &.mat-mdc-option-active {
+      background-color: var(--color-primary-transparent-20) !important; // 10% accent
+    }
+  }
+}
+
+/* Common Interactive States
+   ========================================================================== */
+/**
+ * Ensures consistent behavior across all material interactive elements
+ */
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-stroked-button,
+.mat-mdc-flat-button,
+.mat-mdc-icon-button {
+  &:not(.mat-mdc-button-disabled) {
+    // Focus state takes precedence over hover
+    &:focus-visible {
+      outline: 2px solid var(--brush-focus-ring) !important; // 10% accent for focus
+      outline-offset: 2px;
+      // No background change to avoid competing with the outline
+    }
+  }
+  
+  // Ensures Material disabled styling is consistently applied
+  &.mat-mdc-button-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
