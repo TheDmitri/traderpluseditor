@@ -1,18 +1,19 @@
 <div class="product-editor-container">
+  <!-- Page header with standardized structure -->
   <div class="page-header">
     <div class="header-content">
       <div class="header-left">
         <h2>Product Editor</h2>
         <p class="subtitle">Manage your TraderPlus products</p>
         <div class="action-buttons">
-          <button class="custom-stroked-button color-accent"
+          <button class="custom-stroked-button color-primary with-icon"
             (click)="addProduct()"
             matTooltip="Create a new product"
           >
             <mat-icon>add</mat-icon>
             Create New Product
           </button>
-          <button class="custom-stroked-button color-accent"
+          <button class="custom-stroked-button color-secondary with-icon"
             routerLink="/file-management"
             matTooltip="Import products from file"
           >
@@ -22,7 +23,7 @@
         </div>
       </div>
       <div class="header-right">
-        <button class="custom-stroked-button color-warn"
+        <button class="custom-stroked-button color-warn with-icon"
           [matMenuTriggerFor]="dangerMenu"
           matTooltip="Dangerous operations"
         >
@@ -34,8 +35,9 @@
             mat-menu-item
             (click)="removeAllProducts()"
             matTooltip="Remove all products permanently"
+            matTooltipPosition="left"
           >
-            <mat-icon>delete_forever</mat-icon>
+            <mat-icon class="icon-error">delete_forever</mat-icon>
             <span>Remove All Products</span>
           </button>
         </mat-menu>
@@ -43,6 +45,7 @@
     </div>
   </div>
 
+  <!-- Data content card with standardized styling -->
   <div class="data-card">
     <h2 class="section-title">Products Overview</h2>
     <mat-card-content>
