@@ -7,53 +7,387 @@
  * Styles defined here will apply to current and future panel components.
  */
 
-/* Panel & Material Card Customization
- * Standardizes panel appearance with theme-consistent colors and shadows
- * for header panels and other container elements
+/**
+ * Card Component Styling
+ * ========================================================================== 
+ * Defines styles for card components, following the 60-30-10 color ratio:
+ * - 60%: Card backgrounds, borders, structural elements (neutral colors)
+ * - 30%: Supporting elements, secondary information (secondary colors)
+ * - 10%: Call-to-action elements, highlights, interactive elements (primary/accent colors)
+ */
+
+/* Base Card Styling
+ * Provides foundational styling for all card variants
  */
 .mat-mdc-card {
-  background-color: var(
-    --brush-card-background
-  ) !important; // Default dark theme background
-  color: var(--brush-text-primary) !important; // Default text color
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important; // Consistent elevation shadow
-
-  // Light variant for use on dark backgrounds or in light theme contexts
-  &.light-card {
-    background-color: var(--color-neutral-lightest) !important;
-    color: var(--brush-text-primary-on-light) !important;
-
-    // Content color adjustments for light cards
-    .mat-mdc-card-title {
-      color: var(--brush-text-primary-on-light) !important;
-    }
-
-    .mat-mdc-card-subtitle {
-      color: var(--brush-text-secondary-on-light) !important;
-    }
+  background-color: var(--brush-card-background) !important; /* 60% - dominant background */
+  border-radius: 8px;
+  transition: transform var(--transition-normal) var(--transition-timing),
+              box-shadow var(--transition-normal) var(--transition-timing);
+  position: relative;
+  overflow: hidden;
+  
+  // Card border styling
+  &.with-border {
+    border: 1px solid var(--brush-card-border); /* 60% - subtle structure */
   }
-
-  // Interactive card with hover and active states
-  &.hoverable {
+  
+  // Card elevation styles
+  &.card-elevation-1 {
+    box-shadow: 0 2px 4px var(--brush-shadow-light) !important;
+  }
+  
+  &.card-elevation-2 {
+    box-shadow: 0 4px 8px var(--brush-shadow-medium) !important;
+  }
+  
+  &.card-elevation-3 {
+    box-shadow: 0 8px 16px var(--brush-shadow-heavy) !important;
+  }
+  
+  // Interactive card
+  &.interactive {
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); // Smooth animation
-
-    // Hover effect - subtle elevation increase and upward movement
+    
     &:hover {
       transform: translateY(-4px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3) !important;
+      box-shadow: 0 8px 16px var(--brush-shadow-medium) !important;
     }
-
-    // Active state - pressed effect
+    
     &:active {
       transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2) !important;
+      box-shadow: 0 6px 12px var(--brush-shadow-medium) !important;
     }
   }
+}
 
-  // Variant with visible border
-  &.bordered {
-    border: 1px solid var(--brush-border-light);
+/* Card Header
+ * Styling for the top section of cards, often containing titles and actions
+ */
+.mat-mdc-card-header {
+  padding: 16px;
+  background-color: var(--brush-card-header); /* 60% - structural element */
+  border-bottom: 1px solid var(--brush-divider); /* 60% - subtle divider */
+  
+  .mat-mdc-card-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    color: var(--brush-text-primary); /* 60% - primary text */
+    margin-bottom: 4px;
+  }
+  
+  .mat-mdc-card-subtitle {
+    color: var(--brush-text-secondary); /* 30% - supporting text */
+    font-size: var(--font-size-sm);
+  }
+  
+  // Header with accent color on left border
+  &.with-accent-border {
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background-color: var(--color-primary-medium); /* 10% - accent element */
+    }
+  }
+}
+
+/* Card Content
+ * Main content area of the card
+ */
+.mat-mdc-card-content {
+  padding: 16px;
+  color: var(--brush-text-primary); /* 60% - main content */
+  
+  p {
+    margin: 0 0 16px;
+    line-height: var(--line-height-normal);
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  // Highlight text within content (10% accent)
+  .content-highlight {
+    color: var(--color-primary-medium);
+    font-weight: var(--font-weight-medium);
+  }
+  
+  // Secondary text within content (30% supporting)
+  .content-secondary {
+    color: var(--brush-text-secondary);
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Card Actions
+ * Bottom section containing interactive elements
+ */
+.mat-mdc-card-actions {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid var(--brush-divider); /* 60% - structural */
+  background-color: var(--brush-card-footer); /* 60% - structural */
+  
+  // Primary action buttons (10% accent)
+  .action-primary {
+    margin-right: auto;
+    
+    .mat-mdc-button,
+    .mat-mdc-raised-button {
+      &:not(:last-child) {
+        margin-right: 8px;
+      }
+    }
+  }
+  
+  // Secondary action buttons (30% supporting)
+  .action-secondary {
+    margin-left: 8px;
+  }
+}
+
+/* Card Media
+ * Image/media container within cards
+ */
+.mat-mdc-card-image,
+.mat-mdc-card-media {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  
+  img {
+    width: 100%;
+    display: block;
+  }
+  
+  // Overlay for image cards
+  .media-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: linear-gradient(transparent, var(--color-background-transparent-80));
+    color: var(--brush-text-primary);
+    
+    .overlay-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-medium);
+      margin: 0 0 4px;
+    }
+    
+    .overlay-subtitle {
+      font-size: var(--font-size-sm);
+      opacity: 0.9;
+      margin: 0;
+    }
+  }
+}
+
+/* Card Avatars
+ * Small circular images or icons
+ */
+.mat-mdc-card-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 16px;
+  overflow: hidden;
+  background-color: var(--color-background-light); /* 60% - container */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .avatar-icon {
+    color: var(--color-primary-medium); /* 10% - accent element */
+    font-size: 24px;
+  }
+}
+
+/* Card Variants
+ * ========================================================================== 
+ * Specialized card styles for different use cases
+ */
+
+/* Status Cards
+ * Cards that represent system status with appropriate colors
+ */
+.status-card {
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+  
+  // Status variants
+  &.status-success::before {
+    background-color: var(--brush-status-success-background);
+  }
+  
+  &.status-warning::before {
+    background-color: var(--brush-status-warning-background);
+  }
+  
+  &.status-error::before {
+    background-color: var(--brush-status-error-background);
+  }
+  
+  &.status-info::before {
+    background-color: var(--brush-status-info-background);
+  }
+}
+
+/* Dashboard Cards
+ * Cards designed for dashboard statistics and metrics
+ */
+.dashboard-card {
+  text-align: center;
+  padding: 16px;
+  
+  .metric-value {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--brush-text-primary); /* 60% - main value */
+    margin: 8px 0;
+  }
+  
+  .metric-label {
+    font-size: var(--font-size-sm);
+    color: var(--brush-text-secondary); /* 30% - supporting text */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .metric-icon {
+    margin-bottom: 8px;
+    font-size: 32px;
+    
+    &.positive {
+      color: var(--brush-text-success); /* Status color */
+    }
+    
+    &.negative {
+      color: var(--brush-text-error); /* Status color */
+    }
+    
+    &.neutral {
+      color: var(--brush-text-info); /* Status color */
+    }
+  }
+  
+  .metric-change {
+    font-size: var(--font-size-sm);
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    
+    .change-up {
+      color: var(--brush-text-success);
+    }
+    
+    .change-down {
+      color: var(--brush-text-error);
+    }
+    
+    .change-neutral {
+      color: var(--brush-text-info);
+    }
+  }
+}
+
+/* Bordered Cards
+ * Cards with distinct border styles for visual separation
+ */
+.bordered-card {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--brush-card-border); /* 60% - structural */
+  box-shadow: none !important;
+  
+  &.border-primary {
+    border-color: var(--color-primary-dark); /* 10% - accent border */
+  }
+  
+  &.border-secondary {
+    border-color: var(--color-secondary-dark); /* 30% - supporting border */
+  }
+}
+
+/* Compact Cards
+ * Smaller, more condensed card style for dense UIs
+ */
+.compact-card {
+  .mat-mdc-card-header {
+    padding: 12px 16px;
+    
+    .mat-mdc-card-title {
+      font-size: var(--font-size-base);
+    }
+  }
+  
+  .mat-mdc-card-content {
+    padding: 12px 16px;
+  }
+  
+  .mat-mdc-card-actions {
+    padding: 6px 16px;
+  }
+}
+
+/* Feature Cards
+ * Cards highlighting specific features or capabilities
+ */
+.feature-card {
+  text-align: center;
+  padding: 24px 16px;
+  
+  .feature-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--color-primary-transparent-20); /* 10% - accent background */
+    
+    .mat-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      color: var(--color-primary-medium); /* 10% - accent color */
+    }
+  }
+  
+  .feature-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: 8px;
+  }
+  
+  .feature-description {
+    color: var(--brush-text-secondary); /* 30% - supporting text */
+    margin-bottom: 16px;
   }
 }
 
