@@ -1,16 +1,20 @@
 /**
- * Material Card Customization
+ * Global Panel & Card Styles
  * ========================================================================== 
- * This file contains styling for Angular Material cards, providing consistent
- * appearance and interactive behaviors across the application. Includes variants
- * for different contexts and interaction states.
+ * This file contains styling for various panel components including Angular Material cards,
+ * header panels, and other panel types. It provides consistent appearance and interactive
+ * behaviors across the application, with variants for different contexts and interaction states.
+ * Styles defined here will apply to current and future panel components.
  */
 
-/* Material Card Customization
- * Standardizes card appearance with theme-consistent colors and shadows
+/* Panel & Material Card Customization
+ * Standardizes panel appearance with theme-consistent colors and shadows
+ * for header panels and other container elements
  */
 .mat-mdc-card {
-  background-color: var(--brush-card-background) !important; // Default dark theme background
+  background-color: var(
+    --brush-card-background
+  ) !important; // Default dark theme background
   color: var(--brush-text-primary) !important; // Default text color
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important; // Consistent elevation shadow
 
@@ -50,5 +54,37 @@
   // Variant with visible border
   &.bordered {
     border: 1px solid var(--brush-border-light);
+  }
+}
+
+// Data panel styles - used for content sections, headers, and general panel containers
+.data-card {
+  padding: 24px;
+  background: linear-gradient(
+    135deg,
+    var(--brush-background-elevated),
+    var(--brush-background-default)
+  );
+  border-radius: 8px;
+
+  .section-title {
+    font-size: var(--font-size-xl);
+    font-weight: 500;
+    color: var(--brush-text-primary);
+    margin: 0 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--brush-border-light);
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background-color: var(--brush-primary-action);
+      border-radius: 3px;
+    }
   }
 }

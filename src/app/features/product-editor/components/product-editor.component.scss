@@ -18,39 +18,6 @@
     font-size: var(--font-size-lg);
     margin: 0;
   }
-
-  // Page header styles removed - now using global styles
-}
-
-.data-card {
-  padding: 24px;
-  background: linear-gradient(
-    135deg,
-    var(--brush-background-elevated),
-    var(--brush-background-default)
-  );
-  border-radius: 8px;
-
-  .section-title {
-    font-size: var(--font-size-xl);
-    font-weight: 500;
-    color: var(--brush-text-primary);
-    margin: 0 0 24px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--brush-border-light);
-    position: relative;
-
-    &::after {
-      content: "";
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      width: 60px;
-      height: 3px;
-      background-color: var(--brush-primary-action);
-      border-radius: 3px;
-    }
-  }
 }
 
 /* Responsive Adjustments */
