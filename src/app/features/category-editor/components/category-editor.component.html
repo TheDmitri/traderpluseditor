@@ -1,18 +1,19 @@
 <div class="category-editor-container">
+  <!-- Page header with standardized structure -->
   <div class="page-header">
     <div class="header-content">
       <div class="header-left">
         <h2>Category Editor</h2>
         <p class="subtitle">Import and configure your TraderPlus setup</p>
         <div class="action-buttons">
-          <button class="custom-stroked-button color-accent"
+          <button class="custom-stroked-button color-primary with-icon"
             (click)="addCategory()"
             matTooltip="Create a new category"
           >
             <mat-icon>add</mat-icon>
             Create New Category
           </button>
-          <button class="custom-stroked-button color-accent"
+          <button class="custom-stroked-button color-secondary with-icon"
             routerLink="/file-management"
             matTooltip="Import categories from file"
           >
@@ -22,7 +23,7 @@
         </div>
       </div>
       <div class="header-right">
-        <button class="custom-stroked-button color-warn"
+        <button class="custom-stroked-button color-warn with-icon"
           [matMenuTriggerFor]="dangerMenu"
           matTooltip="Dangerous operations"
         >
@@ -36,7 +37,7 @@
             matTooltip="Remove all categories permanently"
             matTooltipPosition="left"
           >
-            <mat-icon>delete_forever</mat-icon>
+            <mat-icon class="icon-error">delete_forever</mat-icon>
             <span>Remove All Categories</span>
           </button>
           <button
@@ -53,9 +54,11 @@
     </div>
   </div>
 
+  <!-- Data content card with standardized styling -->
   <div class="data-card">
     <h2 class="section-title">Categories Overview</h2>
     <mat-card-content>
+      <!-- Search field with standardized styling -->
       <mat-form-field class="filter-field" appearance="outline">
         <mat-label>Filter Categories</mat-label>
         <input
@@ -69,8 +72,9 @@
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
 
+      <!-- Table container with responsive styling -->
       <div class="table-container">
-        <table mat-table [dataSource]="dataSource" matSort>
+        <table mat-table [dataSource]="dataSource" matSort class="with-border hoverable-table consistent-rows">
           <!-- Icon Column -->
           <ng-container matColumnDef="icon">
             <th mat-header-cell *matHeaderCellDef>Icon</th>
@@ -79,8 +83,8 @@
                 [matTooltip]="
                   category.icon ? 'Icon: ' + category.icon : 'Default icon'
                 "
-                >{{ category.icon || "category" }}</mat-icon
-              >
+                class="icon-secondary"
+              >{{ category.icon || "category" }}</mat-icon>
             </td>
           </ng-container>
 
@@ -95,7 +99,7 @@
           <!-- ID Column -->
           <ng-container matColumnDef="categoryId">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
-            <td mat-cell *matCellDef="let category">
+            <td mat-cell *matCellDef="let category" class="numeric-cell">
               {{ category.categoryId }}
             </td>
           </ng-container>
@@ -129,7 +133,7 @@
                 getProductCount(category) + ' products in this category'
               "
             >
-              {{ getProductCount(category) }}
+              <span class="cell-highlight">{{ getProductCount(category) }}</span>
             </td>
           </ng-container>
 
@@ -139,29 +143,46 @@
               Actions
             </th>
             <td mat-cell *matCellDef="let category" class="actions-cell">
-              <button
-                class="custom-icon-btn icon-btn-primary"
-                (click)="editCategory(category)"
-                aria-label="Edit category"
-                matTooltip="Edit this category"
-              >
-                <mat-icon>edit</mat-icon>
-                <div class="icon-btn-ripple"></div>
-              </button>
-              <button
-                class="custom-icon-btn icon-btn-warn"
-                (click)="removeCategory(category.categoryId)"
-                aria-label="Delete category"
-                matTooltip="Delete this category"
-              >
-                <mat-icon>delete_forever</mat-icon>
-                <div class="icon-btn-ripple"></div>
-              </button>
+              <div class="action-buttons">
+                <button
+                  class="custom-icon-btn icon-btn-primary"
+                  (click)="editCategory(category)"
+                  aria-label="Edit category"
+                  matTooltip="Edit this category"
+                >
+                  <mat-icon>edit</mat-icon>
+                  <div class="icon-btn-ripple"></div>
+                </button>
+                <button
+                  class="custom-icon-btn icon-btn-warn"
+                  (click)="removeCategory(category.categoryId)"
+                  aria-label="Delete category"
+                  matTooltip="Delete this category"
+                >
+                  <mat-icon>delete_forever</mat-icon>
+                  <div class="icon-btn-ripple"></div>
+                </button>
+              </div>
             </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          <tr 
+            mat-row 
+            *matRowDef="let row; columns: displayedColumns"
+            class="interactive-row"
+          ></tr>
+          
+          <!-- No data row -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="6">
+              <div class="empty-table-message">
+                <mat-icon class="empty-icon">category</mat-icon>
+                <h3 class="empty-title">No categories found</h3>
+                <p class="empty-description">Try creating a new category or importing from a file</p>
+              </div>
+            </td>
+          </tr>
         </table>
 
         <mat-paginator

@@ -5,8 +5,30 @@
   flex-direction: column;
   gap: 24px;
 
-  .filter-field {
-    width: 100%;
+  // Specific overrides for the actions column in this view
+  .actions-cell {
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+  }
+
+  // Product count styling
+  .product-count {
+    text-align: start;
+  }
+
+  // Empty state enhancements
+  .empty-table-message {
+    padding: 40px 0;
+
+    .empty-icon {
+      color: var(--brush-text-secondary);
+      font-size: 48px;
+      height: 48px;
+      width: 48px;
+    }
   }
 
   .table-container {
@@ -24,6 +46,7 @@
 
       .mat-column-categoryId {
         min-width: 150px;
+        text-align: start;
         flex: 1.5;
       }
 
@@ -44,28 +67,37 @@
     }
   }
 
-  // Progressive responsive column hiding
-  // First breakpoint - hide categoryId
+  // Responsive adjustments - kept from original but optimized
   @media screen and (max-width: 960px) {
-    .table-container table {
-      .mat-column-categoryId {
-        display: none;
-      }
+    padding: 16px;
+    
+    .mat-column-categoryId {
+      display: none;
     }
   }
 
-  // Second breakpoint - hide productCount, isVisible and icon
   @media screen and (max-width: 768px) {
-    .table-container table {
-      .mat-column-productCount {
-        display: none;
-      }
-      .mat-column-isVisible {
-        display: none;
-      }
-      .mat-column-icon {
-        display: none;
-      }
+    .mat-column-productCount {
+      display: none;
+    }
+    
+    .mat-column-isVisible {
+      display: none;
+    }
+    
+    .mat-column-icon {
+      display: none;
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .action-buttons {
+      width: 100%;
     }
   }
 }
