@@ -12,13 +12,27 @@
 ========================================================================== */
 .dashboard-header {
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 32px;
+  position: relative;
+  padding-bottom: 24px;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: var(--brush-primary-action);
+    border-radius: 3px;
+  }
 
   .dashboard-title {
-    font-size: var(--font-size-5xl);
+    font-size: var(--font-size-4xl);
     font-weight: 300;
     color: var(--brush-text-primary);
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     letter-spacing: 0.5px;
   }
 
@@ -26,6 +40,8 @@
     font-size: var(--font-size-lg);
     color: var(--brush-text-secondary);
     margin: 0;
+    max-width: 600px;
+    margin: 0 auto;
   }
 }
 
@@ -44,10 +60,36 @@
     border-radius: 12px;
     transition: all var(--transition-normal) var(--transition-timing);
     overflow: hidden;
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.05) 0%,
+        transparent 70%
+      );
+      pointer-events: none;
+      transform: translate(30%, -30%);
+      transition: all var(--transition-normal) var(--transition-timing);
+    }
 
     &:hover {
       transform: translateY(-4px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+      &::before {
+        transform: translate(20%, -20%) scale(1.2);
+      }
+
+      .stats-icon {
+        transform: scale(1.05);
+      }
     }
 
     .stats-content {
@@ -69,7 +111,7 @@
     }
 
     .stats-value {
-      font-size: var(--font-size-2xl);
+      font-size: var(--font-size-3xl);
       font-weight: 300;
       color: var(--brush-text-primary);
     }
@@ -83,6 +125,14 @@
       &.positive {
         color: var(--color-success-light);
       }
+      
+      &.negative {
+        color: var(--color-error-light);
+      }
+
+      &.neutral {
+        color: var(--color-info-light);
+      }
 
       mat-icon {
         font-size: 16px;
@@ -92,21 +142,36 @@
     }
 
     .stats-icon {
-      background: linear-gradient(135deg,
-        var(--color-accent-dark),
-        var(--color-accent-medium));
-      width: 48px;
-      height: 48px;
+      position: relative;
+      transition: all var(--transition-normal) var(--transition-timing);
+      width: 56px;
+      height: 56px;
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+          circle at top right,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        pointer-events: none;
+      }
 
       mat-icon {
         color: var(--brush-text-primary);
-        font-size: 24px;
-        height: 24px;
-        width: 24px;
+        font-size: 28px;
+        height: 28px;
+        width: 28px;
       }
     }
 
@@ -119,9 +184,26 @@
         width: 100%;
         justify-content: center;
         gap: 8px;
-        background-color: var(--brush-background-elevated);
-        color: var(--brush-text-primary);
       }
+    }
+    
+    // Card variants by color
+    &.category-card .stats-icon {
+      background: linear-gradient(135deg,
+        var(--color-info-dark),
+        var(--color-info-medium));
+    }
+    
+    &.product-card .stats-icon {
+      background: linear-gradient(135deg,
+        var(--color-success-dark),
+        var(--color-success-medium));
+    }
+    
+    &.currency-card .stats-icon {
+      background: linear-gradient(135deg,
+        var(--color-accent-dark),
+        var(--color-accent-medium));
     }
   }
 }
@@ -132,6 +214,26 @@
   mat-card {
     border: 1px solid var(--brush-border-light);
     border-radius: 12px;
+    background: linear-gradient(135deg, 
+      var(--brush-background-elevated),
+      var(--brush-background-default));
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.03) 0%,
+        transparent 70%
+      );
+      pointer-events: none;
+    }
 
     mat-card-header {
       padding: 24px 24px 0;
@@ -147,6 +249,23 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        overflow: hidden;
+        
+        &::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: radial-gradient(
+            circle at top right,
+            rgba(255, 255, 255, 0.3),
+            transparent
+          );
+          pointer-events: none;
+        }
 
         mat-icon {
           color: var(--brush-text-primary);
@@ -165,8 +284,22 @@
         border-radius: 8px;
         font-weight: 500;
         gap: 8px;
-        background-color: var(--color-accent-dark);
-        color: var(--brush-text-primary);
+        
+        mat-icon {
+          margin-right: 4px;
+        }
+      }
+      
+      .import-button {
+        color: var(--color-info-light);
+      }
+      
+      .export-button {
+        color: var(--color-accent-light);
+      }
+      
+      .settings-button {
+        color: var(--color-neutral-light);
       }
     }
   }
@@ -178,6 +311,26 @@
   mat-card {
     border: 1px solid var(--brush-border-light);
     border-radius: 12px;
+    background: linear-gradient(135deg, 
+      var(--brush-background-elevated),
+      var(--brush-background-default));
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.03) 0%,
+        transparent 70%
+      );
+      pointer-events: none;
+    }
 
     mat-card-header {
       padding: 24px 24px 0;
@@ -193,6 +346,23 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        overflow: hidden;
+        
+        &::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: radial-gradient(
+            circle at top right,
+            rgba(255, 255, 255, 0.3),
+            transparent
+          );
+          pointer-events: none;
+        }
 
         mat-icon {
           color: var(--brush-text-primary);
@@ -210,6 +380,15 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
+        padding: 16px;
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.03);
+        transition: all var(--transition-normal) var(--transition-timing);
+        
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.05);
+          transform: translateY(-2px);
+        }
 
         .info-label {
           font-size: var(--font-size-sm);
@@ -230,7 +409,7 @@
 ========================================================================== */
 @media (max-width: 1200px) {
   .dashboard-stats {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .info-section .info-grid {
@@ -242,9 +421,13 @@
   .dashboard-container {
     padding: 24px;
   }
+  
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
   .quick-actions .action-buttons {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -258,6 +441,10 @@
   }
 
   .info-section .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .quick-actions .action-buttons {
     grid-template-columns: 1fr;
   }
 }
