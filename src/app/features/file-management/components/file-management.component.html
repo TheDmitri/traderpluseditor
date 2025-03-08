@@ -1,6 +1,6 @@
 <div class="file-management-container">
-  <!-- Sticky Header Section -->
-  <div class="page-header sticky-header">
+  <!-- Sticky Header Section with class for right-aligned actions -->
+  <div class="page-header actions-right sticky-header">
     <div class="header-content">
       <div class="title-section">
         <h1>File Management</h1>
@@ -17,62 +17,6 @@
           <mat-icon>file_upload</mat-icon>
           Import Files
         </button>
-
-        <button
-          mat-raised-button
-          color="primary"
-          class="action-button"
-          [matMenuTriggerFor]="exportMenu"
-          matTooltip="Export files"
-        >
-          <mat-icon>file_download</mat-icon>
-          Export
-        </button>
-        <mat-menu #exportMenu="matMenu" class="export-menu">
-          <button
-            mat-menu-item
-            (click)="exportCategories()"
-            [disabled]="!hasCategories"
-          >
-            <mat-icon class="menu-icon categories-color"
-              >my_library_books</mat-icon
-            >
-            <span>Categories</span>
-          </button>
-          <button
-            mat-menu-item
-            (click)="exportProducts()"
-            [disabled]="!hasProducts"
-          >
-            <mat-icon class="menu-icon products-color">shopping_cart</mat-icon>
-            <span>Products</span>
-          </button>
-          <button
-            mat-menu-item
-            (click)="exportCurrencySettings()"
-            [disabled]="!hasCurrencies"
-          >
-            <mat-icon class="menu-icon currencies-color">attach_money</mat-icon>
-            <span>Currency Settings</span>
-          </button>
-          <button
-            mat-menu-item
-            (click)="exportGeneralSettings()"
-            [disabled]="!hasSettings"
-          >
-            <mat-icon class="menu-icon settings-color">settings</mat-icon>
-            <span>General Settings</span>
-          </button>
-          <mat-divider></mat-divider>
-          <button
-            mat-menu-item
-            (click)="exportAllConfigs()"
-            [disabled]="!hasAnyData()"
-          >
-            <mat-icon class="menu-icon">inventory_2</mat-icon>
-            <span>Export All as ZIP</span>
-          </button>
-        </mat-menu>
       </div>
     </div>
   </div>
@@ -258,13 +202,58 @@
               <button
                 mat-raised-button
                 color="primary"
-                [disabled]="!hasAnyData()"
-                (click)="exportAllConfigs()"
-                matTooltip="Export all configurations as a ZIP archive"
+                class="action-button"
+                [matMenuTriggerFor]="exportMenu"
+                matTooltip="Export files"
               >
-                <mat-icon>download</mat-icon>
-                Export All Files
+                <mat-icon>file_download</mat-icon>
+                Export Files
               </button>
+              <mat-menu #exportMenu="matMenu" class="export-menu">
+                <button
+                  mat-menu-item
+                  (click)="exportCategories()"
+                  [disabled]="!hasCategories"
+                >
+                  <mat-icon class="menu-icon categories-color"
+                    >my_library_books</mat-icon
+                  >
+                  <span>Categories</span>
+                </button>
+                <button
+                  mat-menu-item
+                  (click)="exportProducts()"
+                  [disabled]="!hasProducts"
+                >
+                  <mat-icon class="menu-icon products-color">shopping_cart</mat-icon>
+                  <span>Products</span>
+                </button>
+                <button
+                  mat-menu-item
+                  (click)="exportCurrencySettings()"
+                  [disabled]="!hasCurrencies"
+                >
+                  <mat-icon class="menu-icon currencies-color">attach_money</mat-icon>
+                  <span>Currency Settings</span>
+                </button>
+                <button
+                  mat-menu-item
+                  (click)="exportGeneralSettings()"
+                  [disabled]="!hasSettings"
+                >
+                  <mat-icon class="menu-icon settings-color">settings</mat-icon>
+                  <span>General Settings</span>
+                </button>
+                <mat-divider></mat-divider>
+                <button
+                  mat-menu-item
+                  (click)="exportAllConfigs()"
+                  [disabled]="!hasAnyData()"
+                >
+                  <mat-icon class="menu-icon">inventory_2</mat-icon>
+                  <span>Export All as ZIP</span>
+                </button>
+              </mat-menu>
             </div>
           </mat-card>
         </div>
