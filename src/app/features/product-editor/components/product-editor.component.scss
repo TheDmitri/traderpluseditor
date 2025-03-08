@@ -1,9 +1,9 @@
 .product-editor-container {
-  padding: 24px;
+  padding: 32px;
+  max-width: 1800px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  display: grid;
+  gap: 32px;
 }
 
 /* Responsive Adjustments */

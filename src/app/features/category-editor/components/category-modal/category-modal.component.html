@@ -1,6 +1,6 @@
 <div class="category-modal">
   <div class="modal-header">
-    <h2>{{ isEditMode ? "Edit" : "Create" }} Category</h2>
+    <h2 class="text-primary font-medium">{{ isEditMode ? "Edit" : "Create" }} Category</h2>
   </div>
 
   <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
@@ -23,7 +23,7 @@
             formControlName="icon"
             placeholder="e.g., shopping_cart"
           />
-          <mat-icon matSuffix>{{
+          <mat-icon matSuffix class="icon-secondary">{{
             categoryForm.get("icon")?.value || "category"
           }}</mat-icon>
         </mat-form-field>
@@ -37,20 +37,22 @@
           />
         </mat-form-field>
 
-        <mat-slide-toggle formControlName="isVisible">
-          Visible
-        </mat-slide-toggle>
+        <div class="form-field">
+          <mat-slide-toggle formControlName="isVisible" class="mat-primary">
+            Visible
+          </mat-slide-toggle>
+        </div>
 
-        <!-- Add product list here -->
-        <div class="product-list-section" (click)="$event.stopPropagation()">
-          <div class="product-list-header">
-            <h3>Products in Category</h3>
-            <div class="header-buttons">
+        <div class="product-list-section">
+          <div class="section-title">
+            <h3 class="text-primary font-medium">Products in Category</h3>
+            <div class="action-buttons">
               <button
                 mat-raised-button
                 color="primary"
-                (click)="$event.stopPropagation(); assignExistingProducts()"
-                (mousedown)="$event.stopPropagation()"
+                type="button"
+                (click)="assignExistingProducts()"
+                class="action-button"
               >
                 <mat-icon>playlist_add</mat-icon>
                 Assign Products
@@ -58,28 +60,43 @@
               <button
                 mat-raised-button
                 color="primary"
-                (click)="$event.stopPropagation(); addProductToCategory()"
-                (mousedown)="$event.stopPropagation()"
+                type="button"
+                (click)="addProductToCategory()"
+                class="action-button"
               >
                 <mat-icon>add</mat-icon>
                 Add Product
               </button>
             </div>
           </div>
-          <app-product-list
-            [products]="categoryProducts"
-            [showActions]="true"
-            (productRemoved)="onProductRemoved($event)"
-            (productEdited)="onProductEdited($event)"
-          >
-          </app-product-list>
+          <div class="product-list-container scroll-y slim-scrollbar">
+            <!-- Leere Zustands-Meldung -->
+            <div *ngIf="categoryProducts.length === 0" class="empty-state">
+              <p class="text-secondary">No products in this category.</p>
+              <p class="text-secondary">Use the buttons above to add products.</p>
+            </div>
+            
+            <!-- Produktliste nur anzeigen, wenn Produkte vorhanden sind -->
+            <ng-container *ngIf="categoryProducts.length > 0">
+              <app-product-list
+                [products]="categoryProducts"
+                [showActions]="true"
+                (productRemoved)="onProductRemoved($event)"
+                (productEdited)="onProductEdited($event)"
+              >
+              </app-product-list>
+            </ng-container>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="modal-footer">
       <button mat-button type="button" (click)="onCancel()">Cancel</button>
-      <button mat-raised-button color="primary" type="submit"
+      <button 
+        mat-raised-button 
+        color="primary" 
+        type="submit"
         [disabled]="categoryForm.invalid">
         {{ isEditMode ? "Save" : "Create" }}
       </button>

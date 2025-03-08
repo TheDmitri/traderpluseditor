@@ -1,5 +1,4 @@
 .product-list-container {
-
   .table-container {
     position: relative;
     min-height: 200px;
@@ -66,6 +65,15 @@
         text-align: center;
       }
 
+      // Actions-Spalte mit konsistenter Darstellung
+      .actions-cell {
+        .action-buttons {
+          display: flex;
+          gap: 8px;
+          justify-content: flex-end;
+        }
+      }
+
       // Cell styles
       .mat-mdc-header-cell,
       .mat-mdc-cell {
@@ -108,12 +116,13 @@
   @media screen and (max-width: 1245px) {
     .table-container table {
       .mat-column-coefficient,
-      .mat-column-maxStock ,
+      .mat-column-maxStock,
       .mat-column-tradeQuantity {
         display: none;
       }
     }
   }
+
   @media screen and (max-width: 1000px) {
     .table-container table {
       .mat-column-categories {
@@ -130,5 +139,12 @@
         display: none;
       }
     }
+  }
+}
+
+/* Specific enhancements for empty state */
+.empty-table-message {
+  .empty-icon {
+    color: var(--brush-text-secondary);
   }
 }

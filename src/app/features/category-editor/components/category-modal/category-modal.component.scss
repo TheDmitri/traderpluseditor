@@ -3,6 +3,7 @@
   flex-direction: column;
   height: 85vh;
 
+  // Header styling using global dialog header variables
   .modal-header {
     position: sticky;
     top: 0;
@@ -12,21 +13,23 @@
     padding: 0 24px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    background: #424242;
+    border-bottom: 1px solid var(--brush-divider);
+    background: var(--brush-dialog-header);
 
     h2 {
       margin: 0;
-      color: rgba(255, 255, 255, 0.87);
-      font-size: 1.5rem;
-      font-weight: 500;
+      font-size: var(--font-size-xl);
+      color: var(--brush-text-primary);
+      font-weight: var(--font-weight-medium);
     }
   }
 
+  // Main content area with proper styling
   .modal-content {
     flex: 1 1 auto;
     overflow: hidden;
     padding: 24px;
+    background-color: var(--brush-dialog-background);
     
     .form-container {
       display: flex;
@@ -40,41 +43,77 @@
         gap: 16px;
       }
 
+      // Product list section with scrollable content
       .product-list-section {
         flex: 1;
         display: flex;
         flex-direction: column;
-        min-height: 0; // Important for scrolling
         margin-top: 24px;
+        min-height: 300px; // Mindesthöhe für die Produktliste
 
-        .product-list-header {
-          flex: 0 0 auto;
+        .section-title {
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 16px;
+          padding-bottom: 8px;
+          border-bottom: 1px solid var(--brush-divider);
           
-          .header-buttons {
-            display: flex;
-            gap: 8px;
-          }
-      
           h3 {
             margin: 0;
-            color: rgba(255, 255, 255, 0.87);
-            font-size: 1.1rem;
-            font-weight: 500;
+            font-size: var(--font-size-lg);
+            color: var(--brush-text-primary);
+          }
+          
+          .action-buttons {
+            display: flex;
+            gap: 8px;
+            
+            .action-button {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              
+              mat-icon {
+                margin-right: 0;
+              }
+            }
           }
         }
 
-        app-product-list {
+        .product-list-container {
           flex: 1;
           overflow: auto;
+          min-height: 0; // Important for proper scrolling
+          display: flex; // Flex-Container für die Produktliste
+          flex-direction: column;
+          
+          // Leerer Zustand
+          .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            padding: 20px;
+            text-align: center;
+            
+            p {
+              margin: 6px 0;
+            }
+          }
+          
+          app-product-list {
+            flex: 1;
+            display: block;
+            min-height: 200px; // Mindesthöhe, um leeren Zustand zu vermeiden
+          }
         }
       }
     }
   }
 
+  // Footer styling using global dialog footer variables
   .modal-footer {
     position: sticky;
     bottom: 0;
@@ -85,22 +124,44 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    background: #424242;
+    gap: 12px;
+    border-top: 1px solid var(--brush-divider);
+    background: var(--brush-dialog-header);
   }
 }
 
+// Ensure consistent table styling using global variables
 :host ::ng-deep {
-  .mat-mdc-dialog-content {
-    max-height: 70vh;
+  // Apply scrollbar styling from utilities
+  .slim-scrollbar {
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    
+    scrollbar-width: thin;
   }
-
+  
+  // Ensure table is transparent and uses proper hover effects
   .mat-mdc-table {
     background: transparent;
   }
 
   .mat-mdc-row:hover {
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--brush-hover-overlay);
+  }
+  
+  // Override Material form field appearance to match global styling
+  .mat-mdc-form-field {
+    width: 100%;
+    
+    .mat-mdc-text-field-wrapper {
+      background-color: var(--brush-input-background);
+    }
+  }
+  
+  // Ensure proper slide toggle styling
+  .mat-mdc-slide-toggle {
+    margin: 8px 0;
   }
 }

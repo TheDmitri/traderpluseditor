@@ -1,8 +1,9 @@
 .category-editor-container {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  padding: 32px;
+  max-width: 1800px;
+  margin: 0 auto;
+  display: grid;
+  gap: 32px;
 
   // Specific overrides for the actions column in this view
   .actions-cell {

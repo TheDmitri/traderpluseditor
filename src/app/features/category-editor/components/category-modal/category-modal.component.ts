@@ -86,6 +86,9 @@ export class CategoryModalComponent implements OnInit {
         licensesRequired: this.data.category.licensesRequired.join(', '),
         isVisible: this.data.category.isVisible,
       });
+    } else {
+      // Sicherstellen, dass categoryProducts initialisiert ist
+      this.categoryProducts = [];
     }
   }
 
@@ -95,6 +98,11 @@ export class CategoryModalComponent implements OnInit {
       this.categoryProducts = allProducts.filter((product) =>
         this.data.category!.productIds.includes(product.productId)
       );
+      
+      console.log(`Loaded ${this.categoryProducts.length} products for category ${this.data.category.categoryName}`);
+      
+      // Trigger change detection with a new array reference
+      this.categoryProducts = [...this.categoryProducts];
     }
   }
 
@@ -172,10 +180,9 @@ export class CategoryModalComponent implements OnInit {
 
           if (this.data.category) {
             this.data.category.productIds.push(result.product.productId);
+            this.loadCategoryProducts(); // Explicitly reload products
             this.notificationService.success('Product added to category successfully');
           }
-
-          this.loadCategoryProducts();
         }
       });
     });
@@ -198,7 +205,7 @@ export class CategoryModalComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         if (result && this.data.category) {
           this.data.category.productIds = result;
-          this.loadCategoryProducts();
+          this.loadCategoryProducts(); // Explicitly reload products
           this.notificationService.success('Products assigned successfully');
         }
       });
