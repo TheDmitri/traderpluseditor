@@ -6,8 +6,8 @@
   // Toolbar styling
   .app-toolbar {
     flex: 0 0 64px; // Fixed height
-    background-color: var(--brush-background-default);
-    border-bottom: 1px solid var(--brush-border-light);
+    background-color: var(--brush-background-surface); // 60% - dominant background color
+    border-bottom: 1px solid var(--brush-border-subtle); // 60% - structural element
     padding: 0 16px;
     display: flex;
     align-items: center;
@@ -15,10 +15,7 @@
     z-index: 2;
 
     // Enhanced box shadow for depth
-    box-shadow: 
-      0 2px 4px -1px rgba(0, 0, 0, 0.1),
-      0 4px 5px 0 rgba(0, 0, 0, 0.07),
-      0 1px 10px 0 rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px var(--brush-shadow-light); // 60% - structural element
 
     .toolbar-title-container {
       margin-left: 16px;
@@ -26,9 +23,9 @@
       align-items: center;
 
       .app-title {
-        color: var(--color-accent-light);
+        color: var(--brush-text-primary); // 60% - primary text
         font-size: var(--font-size-xl);
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
         letter-spacing: 0.25rem;
         white-space: nowrap;
         overflow: hidden;
@@ -36,7 +33,7 @@
         transition: color var(--transition-normal) var(--transition-timing);
 
         &:hover {
-          color: var(--color-accent-lightest);
+          color: var(--brush-text-accent); // 10% - accent for interactive element
         }
       }
     }
@@ -45,37 +42,17 @@
       flex: 1 1 auto;
     }
 
-    // Buttons in toolbar
+    // Using existing button styles from _buttons.scss
     .menu-button,
     .help-button {
       margin: 0 4px;
-      transition: all var(--transition-normal) var(--transition-timing);
-
-      .mat-icon {
-        font-size: 32px;
-        width: 32px;
-        height: 32px;
-        line-height: 32px;
-        color: var(--brush-text-primary);
-        transition: transform var(--transition-normal) var(--transition-timing);
-      }
-
-      &:hover .mat-icon {
-        color: var(--color-accent);
-        transform: scale(1.1);
-      }
-
-      &:active .mat-icon {
-        transform: scale(0.95);
-      }
-    }
-
-    // Special animation for menu button when nav is expanded
-    .menu-button .mat-icon {
-      transition: transform var(--transition-normal) var(--transition-timing);
       
-      &.expanded {
-        transform: rotate(-180deg);
+      .mat-icon {
+        transition: transform var(--transition-normal) var(--transition-timing);
+        
+        &.expanded {
+          transform: rotate(-180deg);
+        }
       }
     }
   }
@@ -85,14 +62,14 @@
     flex: 1;
     overflow: hidden;
     position: relative;
-    background-color: var(--brush-background-default);
+    background-color: var(--brush-background-body); // 60% - dominant background color
   }
 
   // Footer styling
   .app-footer {
     flex: 0 0 48px; // Fixed height
-    background-color: var(--brush-background-default);
-    border-top: 1px solid var(--brush-border-light);
+    background-color: var(--brush-background-surface); // 60% - structural element 
+    border-top: 1px solid var(--brush-border-subtle); // 60% - subtle border
     z-index: 1;
 
     .footer-content {
@@ -101,7 +78,7 @@
       align-items: center;
       justify-content: center;
       padding: 0 24px;
-      color: var(--brush-text-secondary);
+      color: var(--brush-text-secondary); // 30% - supporting text
       font-size: var(--font-size-sm);
       letter-spacing: 0.0625rem;
 
@@ -109,7 +86,7 @@
         transition: color var(--transition-normal) var(--transition-timing);
 
         &:hover {
-          color: var(--color-accent-light);
+          color: var(--brush-text-link); // 10% - accent for interactive element
         }
       }
     }
