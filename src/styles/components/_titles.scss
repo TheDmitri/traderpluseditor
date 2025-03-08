@@ -1,10 +1,24 @@
+/**
+ * Title Component Styling
+ * ========================================================================== 
+ * This file contains styling for various heading and title components.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Main title text, borders (neutral/primary text colors)
+ * - 30%: Subtitles, supporting text (secondary colors)
+ * - 10%: Accents, decorative elements (primary/accent colors)
+ */
+
+/* Section Title
+ * ========================================================================== 
+ * Standard section heading with accent underline
+ */
 .section-title {
   font-size: var(--font-size-xl);
-  font-weight: 500;
-  color: var(--brush-text-primary);
+  font-weight: var(--font-weight-medium);
+  color: var(--brush-text-primary); /* 60% - main title text */
   margin: 0 0 16px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--brush-border-light);
+  border-bottom: 1px solid var(--brush-divider); /* 60% - subtle structural element */
   position: relative;
 
   &::after {
@@ -14,7 +28,213 @@
     left: 0;
     width: 60px;
     height: 3px;
-    background-color: var(--brush-primary-action);
+    background-color: var(--color-primary-medium); /* 10% - accent element */
     border-radius: 3px;
+  }
+  
+  // Modifier for right-aligned accent
+  &.accent-right::after {
+    left: auto;
+    right: 0;
+  }
+  
+  // Modifier for centered accent
+  &.accent-center::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  // Variant with secondary accent color
+  &.secondary-accent::after {
+    background-color: var(--color-secondary-medium); /* 30% - supporting accent */
+  }
+}
+
+/* Page Title
+ * ========================================================================== 
+ * Larger title for page headers
+ */
+.page-title {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--brush-text-primary); /* 60% - main title text */
+  margin: 0 0 24px;
+  line-height: var(--line-height-tight);
+  
+  // Optional subtitle
+  .subtitle {
+    display: block;
+    font-size: var(--font-size-lg);
+    color: var(--brush-text-secondary); /* 30% - supporting text */
+    font-weight: var(--font-weight-normal);
+    margin-top: 8px;
+  }
+  
+  // Optional highlight text
+  .highlight {
+    color: var(--color-primary-medium); /* 10% - accent text */
+  }
+}
+
+/* Card Title
+ * ========================================================================== 
+ * Title styled for card headers
+ */
+.card-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--brush-text-primary); /* 60% - main title text */
+  margin: 0 0 8px;
+  
+  // Optional subtitle
+  .card-subtitle {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--brush-text-secondary); /* 30% - supporting text */
+    font-weight: var(--font-weight-normal);
+    margin-top: 4px;
+  }
+}
+
+/* Title With Icon
+ * ========================================================================== 
+ * Section title that includes an icon
+ */
+.icon-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--brush-text-primary); /* 60% - main title text */
+  margin: 0 0 16px;
+  
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    
+    // Primary icon - 10% accent
+    &.primary-icon {
+      color: var(--color-primary-medium); /* 10% - accent element */
+    }
+    
+    // Secondary icon - 30% supporting
+    &.secondary-icon {
+      color: var(--color-secondary-medium); /* 30% - supporting element */
+    }
+  }
+  
+  // Optional subtitle
+  .icon-subtitle {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--brush-text-secondary); /* 30% - supporting text */
+    font-weight: var(--font-weight-normal);
+    margin-top: 4px;
+  }
+}
+
+/* Badge Title
+ * ========================================================================== 
+ * Title with a status indicator badge
+ */
+.badge-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--brush-text-primary); /* 60% - main title text */
+  margin: 0 0 16px;
+  
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    
+    &.badge-success {
+      background-color: var(--brush-status-success-background);
+      color: var(--brush-status-success-text);
+    }
+    
+    &.badge-error {
+      background-color: var(--brush-status-error-background);
+      color: var(--brush-status-error-text);
+    }
+    
+    &.badge-warning {
+      background-color: var(--brush-status-warning-background);
+      color: var(--brush-status-warning-text);
+    }
+    
+    &.badge-info {
+      background-color: var(--brush-status-info-background);
+      color: var(--brush-status-info-text);
+    }
+  }
+}
+
+/* Decorative Title
+ * ========================================================================== 
+ * Title with more elaborate styling
+ */
+.decorative-title {
+  position: relative;
+  text-align: center;
+  margin: 32px 0;
+  
+  .title-text {
+    display: inline-block;
+    background-color: var(--brush-background-body); /* 60% - background */
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-medium);
+    color: var(--brush-text-primary); /* 60% - main title text */
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background-color: var(--brush-divider); /* 60% - subtle structural element */
+    z-index: 0;
+  }
+  
+  // Accent variant
+  &.with-accent {
+    .title-text {
+      color: var(--color-primary-medium); /* 10% - accent element */
+    }
+  }
+}
+
+/* Responsive Adjustments
+ * ========================================================================== 
+ * Ensure titles look good on smaller screens
+ */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .decorative-title .title-text {
+    font-size: var(--font-size-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title::after {
+    width: 40px;
   }
 }
