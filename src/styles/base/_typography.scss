@@ -1,17 +1,17 @@
 /* Responsive Typography
 ========================================================================== */
 /**
- * Fluid Typography System
+ * Fluid Typography System with Color Integration
  * 
  * This implements a responsive type scale using CSS clamp() to automatically
  * adjust font sizes based on viewport width. Each size variable scales
  * smoothly between its minimum and maximum values without requiring
  * media queries.
  * 
- * Format: clamp(min-size, preferred-size, max-size)
- * - min-size: Applied on smallest screens
- * - preferred-size: Calculated based on viewport width (vw)
- * - max-size: Maximum size cap for larger screens
+ * Color usage follows the 60-30-10 rule:
+ * - 60% neutral colors for most text
+ * - 30% secondary colors for supporting text
+ * - 10% primary/accent for emphasis or interactive text
  */
 :root {
   // Base text sizes
@@ -25,4 +25,102 @@
   --font-size-4xl: clamp(2.5rem, 2.15rem + 1.75vw, 3.25rem);
   --font-size-5xl: clamp(3rem, 2.5rem + 2.25vw, 4rem);
   --font-size-6xl: clamp(3.5rem, 3rem + 2.75vw, 5rem);
+
+  // Line heights
+  --line-height-tight: 1.1;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.8;
+  
+  // Font weights
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+}
+
+/* Typography Base Styles
+========================================================================== */
+body {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-normal);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-bold);
+  color: var(--brush-text-primary); /* 60% - dominant text color */
+}
+
+h1 { font-size: var(--font-size-4xl); }
+h2 { font-size: var(--font-size-3xl); }
+h3 { font-size: var(--font-size-2xl); }
+h4 { font-size: var(--font-size-xl); }
+h5 { font-size: var(--font-size-lg); }
+h6 { font-size: var(--font-size-base); }
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* Typography Utility Classes
+========================================================================== */
+/**
+ * These classes can be applied to elements to modify their typography
+ * according to the 60-30-10 color ratio
+ */
+
+/* Text Colors - Following 60-30-10 rule */
+.text-primary {
+  color: var(--brush-text-primary); /* 60% - main text */
+}
+
+.text-secondary {
+  color: var(--brush-text-secondary); /* 30% - supporting text */
+}
+
+.text-accent {
+  color: var(--brush-text-accent); /* 10% - emphasizing text */
+}
+
+.text-link {
+  color: var(--brush-text-link); /* 10% - interactive text */
+  cursor: pointer;
+  
+  &:hover {
+    color: var(--brush-text-link-hover);
+    text-decoration: underline;
+  }
+}
+
+/* Status Text Colors */
+.text-success { color: var(--brush-text-success); }
+.text-error { color: var(--brush-text-error); }
+.text-warning { color: var(--brush-text-warning); }
+.text-info { color: var(--brush-text-info); }
+.text-disabled { color: var(--brush-text-disabled); }
+
+/* Text Weights */
+.font-light { font-weight: var(--font-weight-light); }
+.font-normal { font-weight: var(--font-weight-normal); }
+.font-medium { font-weight: var(--font-weight-medium); }
+.font-bold { font-weight: var(--font-weight-bold); }
+
+/* Text Alignment */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* Text Transforms */
+.text-uppercase { text-transform: uppercase; }
+.text-lowercase { text-transform: lowercase; }
+.text-capitalize { text-transform: capitalize; }
+
+/* Text Overflow */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

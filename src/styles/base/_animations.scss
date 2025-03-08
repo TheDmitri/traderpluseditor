@@ -3,6 +3,7 @@
  * 
  * This file defines global animation variables and component-specific
  * animation behaviors to ensure consistent motion design throughout the application.
+ * Color usage follows the 60-30-10 rule for visual hierarchy.
  */
 
 /* Global Animation Configuration
@@ -36,7 +37,7 @@
 
   &:hover {
     transform: translateY(-2px); // Slight lift effect
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3) !important; // Enhanced shadow for depth
+    box-shadow: 0 6px 12px var(--brush-shadow-medium) !important; // Enhanced shadow for depth
   }
 }
 
@@ -63,8 +64,45 @@
   position: absolute;
   border-radius: 50%;
   transform: scale(0);
-  background: var(--brush-ripple-color);
+  background: var(--brush-ripple-color); /* Interactive element uses primary color (10%) */
   opacity: 0.4;
   animation: ripple 0.5s linear;
   pointer-events: none; // Ensures the ripple doesn't interfere with clicks
+}
+
+/* State Transition Animations
+========================================================================== */
+/**
+ * Define transition effects for component state changes
+ * to provide consistent feedback across the UI
+ */
+
+// Focus state animation (for keyboard navigation)
+.focus-visible-outline {
+  outline: 2px solid var(--brush-focus-ring); /* Primary color (10%) for focus state */
+  outline-offset: 2px;
+  transition: outline-color var(--transition-quick) var(--transition-timing);
+}
+
+// Hover effect for interactive elements that follows the 60-30-10 ratio
+.hover-effect {
+  position: relative;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--brush-hover-overlay);
+    opacity: 0;
+    transition: opacity var(--transition-quick) var(--transition-timing);
+    pointer-events: none;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+  }
 }

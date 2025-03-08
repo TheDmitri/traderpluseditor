@@ -3,6 +3,10 @@
  * 
  * This file contains foundational styling for the application,
  * normalizing browser defaults and establishing base theme properties.
+ * Colors follow the 60-30-10 rule: 
+ * - 60% background/neutral (dominant)
+ * - 30% secondary (supporting)
+ * - 10% primary/accent (emphasis)
  */
 
 /* Base HTML Element Styles
@@ -12,12 +16,35 @@ body {
   height: 100%;
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: var(--brush-background-default);
+  background-color: var(--brush-background-body); /* 60% - dominant background color */
   color: var(--brush-text-primary);
 }
 
 * {
   box-sizing: border-box;
+}
+
+/* Element Styling with Color Ratio Application
+========================================================================== */
+a {
+  color: var(--brush-text-link); /* 10% - accent color for interactive elements */
+  text-decoration: none;
+  transition: color var(--transition-quick) var(--transition-timing);
+}
+
+a:hover {
+  color: var(--brush-text-link-hover);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--brush-divider); /* 60% - subtle structural element */
+  margin: 1rem 0;
+}
+
+::selection {
+  background-color: var(--color-primary-transparent-20); /* 10% - accent color for selection */
+  color: var(--brush-text-primary);
 }
 
 /* Text Selection Control
