@@ -1,23 +1,103 @@
+/**
+ * Dialog Component Styling
+ * ========================================================================== 
+ * This file contains styling for Angular Material dialogs, modals, and notification components.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Dialog backgrounds, containers, structure (neutral/background colors)
+ * - 30%: Secondary text, supporting elements (secondary colors)
+ * - 10%: Action buttons, focus states, highlights (primary/accent colors)
+ */
+
 /* Material Dialogs and Modals
 ========================================================================== */
-/**
- * Dialog Component Customization
- * 
- * Angular Material dialogs are customized to match our design system.
- * Two variants are supported:
- * 1. Default (dark) - For standard modal interactions
- * 2. Light - For important or high-contrast modal interactions
- * 
- * Customizations focus on typography, color, and ensuring proper
- * contrast for readability.
- */
 .mat-mdc-dialog-container {
+  // Dialog container styling - 60% (structural)
+  .mdc-dialog__surface {
+    background-color: var(--brush-dialog-background) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 24px var(--brush-dialog-shadow) !important;
+    border: 1px solid var(--brush-dialog-border) !important;
+    overflow: hidden !important;
+  }
+  
+  // Dialog header - 60% (structural)
   .mdc-dialog__title {
+    background-color: var(--brush-dialog-header);
     color: var(--brush-text-primary) !important;
+    padding: 16px 24px !important;
+    font-size: var(--font-size-lg) !important;
+    font-weight: var(--font-weight-medium) !important;
+    margin: 0 !important;
+    border-bottom: 1px solid var(--brush-divider);
   }
 
+  // Dialog content - Main content uses 60% color (text on neutral), details use 30% (secondary)
   .mdc-dialog__content {
     color: var(--brush-text-secondary) !important;
+    padding: 20px 24px !important;
+    
+    // Primary content - Main message
+    .dialog-primary-text {
+      color: var(--brush-text-primary);
+      font-size: var(--font-size-base);
+      margin-bottom: 16px;
+    }
+    
+    // Secondary content - Additional details
+    .dialog-secondary-text {
+      color: var(--brush-text-secondary);
+      font-size: var(--font-size-sm);
+    }
+    
+    // Highlighted content - Important notice (10% accent)
+    .dialog-highlight {
+      color: var(--color-primary-medium);
+      font-weight: var(--font-weight-medium);
+    }
+  }
+  
+  // Dialog actions - Contains buttons with 10% accent for primary actions
+  .mdc-dialog__actions {
+    border-top: 1px solid var(--brush-divider);
+    padding: 12px 24px !important;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    
+    // Cancel button should be less prominent
+    .mat-mdc-button:not(.mat-primary):not(.mat-accent):not(.mat-warn) {
+      color: var(--brush-text-secondary) !important;
+    }
+    
+    // Primary action (10% accent)
+    .mat-primary {
+      background-color: var(--brush-button-primary-background) !important;
+      color: var(--brush-button-primary-text) !important;
+    }
+    
+    // Secondary action (30% supporting)
+    .mat-accent {
+      background-color: var(--brush-button-secondary-background) !important;
+      color: var(--brush-button-secondary-text) !important;
+    }
+    
+    // Destructive action (part of 10% accent)
+    .mat-warn {
+      background-color: var(--brush-button-destructive-background) !important;
+      color: white !important;
+    }
+  }
+
+  // Close button (X) styling
+  .mat-mdc-dialog-close {
+    color: var(--brush-text-secondary) !important;
+    margin-top: 8px !important;
+    margin-right: 8px !important;
+    
+    &:hover {
+      background-color: var(--brush-hover-overlay) !important;
+      color: var(--brush-text-primary) !important;
+    }
   }
 
   /**
@@ -27,14 +107,38 @@
    * or when the dialog content needs higher visibility
    */
   &.light-dialog {
-    background-color: var(--color-neutral-lightest) !important;
+    .mdc-dialog__surface {
+      background-color: var(--color-neutral-lightest) !important;
+    }
 
     .mdc-dialog__title {
       color: var(--brush-text-primary-on-light) !important;
+      background-color: white;
+      border-bottom-color: var(--color-neutral-light);
     }
 
     .mdc-dialog__content {
       color: var(--brush-text-secondary-on-light) !important;
+      
+      .dialog-primary-text {
+        color: var(--brush-text-primary-on-light);
+      }
+      
+      .dialog-secondary-text {
+        color: var(--brush-text-secondary-on-light);
+      }
+    }
+    
+    .mdc-dialog__actions {
+      border-top-color: var(--color-neutral-light);
+    }
+    
+    .mat-mdc-dialog-close {
+      color: var(--color-neutral-dark) !important;
+      
+      &:hover {
+        background-color: var(--brush-hover-overlay-light) !important;
+      }
     }
   }
 }
@@ -45,10 +149,11 @@
  * Notification System
  * 
  * Snackbars provide brief messages about app processes.
- * Our implementation includes:
- * 1. Custom positioning (top-right instead of bottom-center)
- * 2. Semantic color variants based on message type
- * 3. Appropriate text contrast for each variant
+ * Each variant uses the appropriate semantic color:
+ * - Success: Green palette (positive feedback)
+ * - Warning: Orange/Yellow palette (caution)
+ * - Error: Red palette (critical issues)
+ * - Info: Blue palette (neutral information)
  */
 
 // Global positioning override
@@ -64,40 +169,100 @@
 /**
  * Snackbar Variants
  * 
- * Each variant has specific colors based on the message context:
- * - Success: Confirming successful operations
- * - Warning: Alerting about potential issues
- * - Error: Indicating failures or blocking issues
- * - Info: Providing neutral information
+ * Each variant has specific colors based on the message context
+ * with appropriate text colors for readability
  */
 .mat-mdc-snack-bar-container {
+  // Success snackbar - Green
   &.success-snackbar {
-    --mdc-snackbar-container-color: var(--brush-info) !important;
-    --mdc-snackbar-supporting-text-color: var(
-      --brush-text-primary
-    ) !important;
-  }
-  &.success-snackbar {
-    --mdc-snackbar-container-color: var(--brush-success) !important;
-    --mdc-snackbar-supporting-text-color: var(
-      --brush-text-primary-on-light
-    ) !important;
+    --mdc-snackbar-container-color: var(--brush-status-success-background) !important;
+    --mdc-snackbar-supporting-text-color: var(--brush-status-success-text) !important;
+    
+    .mat-mdc-button {
+      color: var(--color-success-lightest) !important;
+    }
   }
 
+  // Warning snackbar - Orange/Yellow
   &.warning-snackbar {
-    --mdc-snackbar-container-color: var(--brush-warning) !important;
-    --mdc-snackbar-supporting-text-color: var(
-      --brush-text-primary-on-light
-    ) !important;
+    --mdc-snackbar-container-color: var(--brush-status-warning-background) !important;
+    --mdc-snackbar-supporting-text-color: var(--brush-status-warning-text) !important;
+    
+    .mat-mdc-button {
+      color: var(--color-warning-lightest) !important;
+    }
   }
 
+  // Error snackbar - Red
   &.error-snackbar {
-    --mdc-snackbar-container-color: var(--brush-error) !important;
-    --mdc-snackbar-supporting-text-color: var(--brush-text-primary) !important;
+    --mdc-snackbar-container-color: var(--brush-status-error-background) !important;
+    --mdc-snackbar-supporting-text-color: var(--brush-status-error-text) !important;
+    
+    .mat-mdc-button {
+      color: var(--color-error-lightest) !important;
+    }
   }
 
+  // Info snackbar - Blue
   &.info-snackbar {
-    --mdc-snackbar-container-color: var(--brush-info) !important;
-    --mdc-snackbar-supporting-text-color: var(--brush-text-primary) !important;
+    --mdc-snackbar-container-color: var(--brush-status-info-background) !important;
+    --mdc-snackbar-supporting-text-color: var(--brush-status-info-text) !important;
+    
+    .mat-mdc-button {
+      color: var(--color-info-lightest) !important;
+    }
+  }
+  
+  // Default/Neutral snackbar - Gray
+  &.default-snackbar {
+    --mdc-snackbar-container-color: var(--brush-status-neutral-background) !important;
+    --mdc-snackbar-supporting-text-color: var(--brush-status-neutral-text) !important;
+    
+    .mat-mdc-button {
+      color: var(--color-neutral-lightest) !important;
+    }
+  }
+}
+
+/* Overlay Backdrop
+========================================================================== */
+/**
+ * Dialog backdrop customization
+ * This is the semi-transparent background behind dialogs
+ */
+.cdk-overlay-dark-backdrop {
+  background-color: var(--brush-overlay-background) !important;
+}
+
+/* Bottom Sheet
+========================================================================== */
+/**
+ * Bottom sheet styling for mobile interfaces
+ * Similar to dialogs but slides up from the bottom
+ */
+.mat-bottom-sheet-container {
+  background-color: var(--brush-dialog-background) !important;
+  color: var(--brush-text-primary) !important;
+  border-top-left-radius: 16px !important;
+  border-top-right-radius: 16px !important;
+  padding: 20px 24px !important;
+  
+  &::before {
+    content: '';
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background-color: var(--brush-border-subtle);
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .bottom-sheet-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: 16px;
+    margin-top: 16px;
   }
 }
