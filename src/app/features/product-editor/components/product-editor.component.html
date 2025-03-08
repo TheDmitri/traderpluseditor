@@ -5,18 +5,14 @@
         <h2>Product Editor</h2>
         <p class="subtitle">Manage your TraderPlus products</p>
         <div class="action-buttons">
-          <button
-            mat-raised-button
-            color="primary"
+          <button class="custom-stroked-button color-accent"
             (click)="addProduct()"
             matTooltip="Create a new product"
           >
             <mat-icon>add</mat-icon>
             Create New Product
           </button>
-          <button
-            mat-raised-button
-            color="primary"
+          <button class="custom-stroked-button color-accent"
             routerLink="/file-management"
             matTooltip="Import products from file"
           >
@@ -26,9 +22,7 @@
         </div>
       </div>
       <div class="header-right">
-        <button
-          mat-raised-button
-          color="warn"
+        <button class="custom-stroked-button color-warn"
           [matMenuTriggerFor]="dangerMenu"
           matTooltip="Dangerous operations"
         >

@@ -277,31 +277,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
-      padding: 0 24px 24px;
-
-      .action-button {
-        height: 48px;
-        border-radius: 8px;
-        font-weight: 500;
-        gap: 8px;
-        
-        mat-icon {
-          margin-right: 4px;
-        }
-      }
-      
-      .import-button {
-        color: var(--color-info-light);
-      }
-      
-      .export-button {
-        color: var(--color-accent-light);
-      }
-      
-      .settings-button {
-        color: var(--color-neutral-light);
-      }
-    }
+      padding: 0 24px 24px;    }
   }
 }
 
