@@ -6,7 +6,7 @@
       <div class="sidenav-content">
         <mat-nav-list>
           @for (item of navItems; track item.route) {
-          <a mat-list-item [routerLink]="item.route" routerLinkActive="active-link"
+          <button mat-stroked-button [routerLink]="item.route" routerLinkActive="active-link"
             [matTooltip]="!isExpanded() ? item.label : ''" matTooltipPosition="right">
             <div class="nav-item-content">
               <div class="nav-icon-wrapper">
@@ -16,7 +16,7 @@
               <span class="nav-item-label">{{ item.label }}</span>
               }
             </div>
-          </a>
+          </button>
           }
         </mat-nav-list>
       </div>

@@ -9,14 +9,14 @@
 
     // Sidenav panel styling
     .sidenav {
-      width: 250px;
+      width: 230px;
       background-color: var(--brush-sidebar-background);
       border-right: 1px solid var(--brush-border-light);
       transition: width var(--transition-normal) var(--transition-timing);
 
       // Collapsed state
       &.collapsed {
-        width: 85px;
+        width: 75px;
       }
     }
   }
@@ -29,11 +29,11 @@
 
     // Content positioning based on sidenav state
     &.content-default {
-      margin-left: 250px;
+      margin-left: 230px;
     }
 
     &.content-collapsed {
-      margin-left: 64px;
+      margin-left: 75px;
     }
 
     // Content scrolling container
@@ -55,13 +55,15 @@ mat-nav-list {
   justify-content: flex-start;
   
   // Navigation item styling
-  a {
+  button {
     height: 56px;
     margin: 4px 8px;
+    width: 100%;
     border-radius: 4px;
     transition: all var(--transition-quick) var(--transition-timing);
     overflow: hidden;
     position: relative; // For ripple effect
+    justify-content: flex-start;
     
     // Interactive states
     &:hover {
@@ -195,7 +197,7 @@ mat-sidenav-content {
   will-change: margin-left; // Optimize animations
   
   &.content-expanded {
-    margin-left: 250px !important;
+    margin-left: 230px !important;
   }
   
   &.content-collapsed {
