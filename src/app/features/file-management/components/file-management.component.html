@@ -1,16 +1,14 @@
 <div class="file-management-container">
-  <!-- Sticky Header Section with class for right-aligned actions -->
-  <div class="page-header actions-right sticky-header">
+  <!-- Page Header using design system patterns -->
+  <header class="page-header">
     <div class="header-content">
-      <div class="title-section">
-        <h2>File Management</h2>
+      <div class="header-left">
+        <h1 class="page-title">File Management</h1>
         <p class="subtitle">Import and configure your TraderPlus setup</p>
       </div>
-      <div class="header-actions">
+      <div class="header-right">
         <button
-          mat-raised-button
-          color="primary"
-          class="action-button"
+          class="custom-stroked-button color-primary with-icon"
           (click)="fileInput.click()"
           matTooltip="Import any TraderPlus JSON configuration files"
         >
@@ -19,9 +17,9 @@
         </button>
       </div>
     </div>
-  </div>
+  </header>
 
-  <!-- Single hidden file input for all JSON files -->
+  <!-- Hidden file input -->
   <input
     #fileInput
     type="file"
@@ -31,275 +29,236 @@
     (change)="onFileSelected($event)"
   />
 
-  <!-- Main Content Area with new layout structure -->
+  <!-- Main Content Area -->
   <div class="main-content-area">
-    <h2 class="section-title">Import Configurations</h2>
-    <!-- Top section with drag & drop and activity log side by side -->
-    <div class="top-content-row">
-      <!-- Drag & Drop Zone -->
-      <div
-        class="drag-drop-zone"
-        [class.active-drop]="isDragging"
-        [class.uploading]="isUploading"
-        (dragover)="onDragOver($event)"
-        (dragleave)="onDragLeave($event)"
-        (drop)="onDrop($event)"
-      >
-        <div class="drop-container">
-          <div class="drop-icon-container">
-            <mat-icon class="cloud-icon">cloud_upload</mat-icon>
-            <mat-icon class="arrow-icon">arrow_downward</mat-icon>
-          </div>
-          <h2>Drag & Drop Files Here</h2>
-          <p>Upload JSON configuration files for TraderPlus</p>
-          <div class="format-hint">
-            <mat-chip-set>
-              <mat-chip
-                class="format-chip categories-chip"
-                matTooltip="Category files format"
-                >cat_*.json</mat-chip
-              >
-              <mat-chip
-                class="format-chip products-chip"
-                matTooltip="Product files format"
-                >prod_*.json</mat-chip
-              >
-              <mat-chip
-                class="format-chip currencies-chip"
-                matTooltip="Currency files format"
-                >*currency*.json</mat-chip
-              >
-              <mat-chip
-                class="format-chip settings-chip"
-                matTooltip="Settings files format"
-                >*settings*.json</mat-chip
-              >
-            </mat-chip-set>
-          </div>
-          <mat-progress-bar
-            *ngIf="isUploading"
-            mode="indeterminate"
-            color="primary"
-            class="upload-progress"
-          ></mat-progress-bar>
+    <div class="content-grid">
+      <!-- Left Column -->
+      <section class="content-panel upload-section">
+        <div class="panel-header">
+          <h2 class="section-title">Import Configurations</h2>
+          <p class="panel-subtitle">Drag & drop files to import</p>
         </div>
-      </div>
-
-      <!-- Status Dashboard with full width -->
-      <div class="status-dashboard">
-        <h2 class="section-title">Export Configurations</h2>
-
-        <div class="status-grid">
-          <!-- Categories Status -->
-          <mat-card class="status-card" [class.has-data]="hasCategories">
-            <div class="status-icon categories-bg">
-              <mat-icon>my_library_books</mat-icon>
+        <div class="panel-body">
+          <!-- Custom File Upload Area -->
+          <div
+            class="custom-file-upload drag-drop-zone"
+            [class.drag-over]="isDragging"
+            [class.uploading]="isUploading"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+          >
+            <div class="drop-icon-container">
+              <mat-icon class="upload-icon">cloud_upload</mat-icon>
+              <mat-icon class="arrow-icon">arrow_downward</mat-icon>
             </div>
-            <div class="status-content">
-              <h3>Categories</h3>
-              <p *ngIf="hasCategories">
-                {{ getCategoriesCount() }} categories loaded
-              </p>
-              <p *ngIf="!hasCategories">No categories imported</p>
-              <div class="status-actions">
-                <button
-                  mat-button
-                  color="primary"
-                  [disabled]="!hasCategories"
-                  (click)="exportCategories()"
-                  matTooltip="Export categories as JSON"
-                >
-                  <mat-icon>download</mat-icon> Export
-                </button>
+            <h3 class="upload-title">Drag & Drop Files Here</h3>
+            <p class="upload-text">Upload JSON configuration files for TraderPlus</p>
+            
+            <div class="format-hint">
+              <div class="chip-container">
+                <span class="format-chip categories-chip" matTooltip="Category files format">cat_*.json</span>
+                <span class="format-chip products-chip" matTooltip="Product files format">prod_*.json</span>
+                <span class="format-chip currencies-chip" matTooltip="Currency files format">*currency*.json</span>
+                <span class="format-chip settings-chip" matTooltip="Settings files format">*settings*.json</span>
               </div>
             </div>
-          </mat-card>
-
-          <!-- Products Status -->
-          <mat-card class="status-card" [class.has-data]="hasProducts">
-            <div class="status-icon products-bg">
-              <mat-icon>shopping_cart</mat-icon>
-            </div>
-            <div class="status-content">
-              <h3>Products</h3>
-              <p *ngIf="hasProducts">
-                {{ getProductsCount() }} products loaded
-              </p>
-              <p *ngIf="!hasProducts">No products imported</p>
-              <div class="status-actions">
-                <button
-                  mat-button
-                  color="primary"
-                  [disabled]="!hasProducts"
-                  (click)="exportProducts()"
-                  matTooltip="Export products as JSON"
-                >
-                  <mat-icon>download</mat-icon> Export
-                </button>
-              </div>
-            </div>
-          </mat-card>
-
-          <!-- Currency Status -->
-          <mat-card class="status-card" [class.has-data]="hasCurrencies">
-            <div class="status-icon currencies-bg">
-              <mat-icon>attach_money</mat-icon>
-            </div>
-            <div class="status-content">
-              <h3>Currency Settings</h3>
-              <p *ngIf="hasCurrencies">
-                {{ getCurrencyTypesCount() }} currency types defined
-              </p>
-              <p *ngIf="!hasCurrencies">No currency settings imported</p>
-              <div class="status-actions">
-                <button
-                  mat-button
-                  color="primary"
-                  [disabled]="!hasCurrencies"
-                  (click)="exportCurrencySettings()"
-                  matTooltip="Export currency settings as JSON"
-                >
-                  <mat-icon>download</mat-icon> Export
-                </button>
-              </div>
-            </div>
-          </mat-card>
-
-          <!-- General Settings Status -->
-          <mat-card class="status-card" [class.has-data]="hasSettings">
-            <div class="status-icon settings-bg">
-              <mat-icon>settings</mat-icon>
-            </div>
-            <div class="status-content">
-              <h3>General Settings</h3>
-              <p *ngIf="hasSettings">General configuration loaded</p>
-              <p *ngIf="!hasSettings">No general settings imported</p>
-              <div class="status-actions">
-                <button
-                  mat-button
-                  color="primary"
-                  [disabled]="!hasSettings"
-                  (click)="exportGeneralSettings()"
-                  matTooltip="Export general settings as JSON"
-                >
-                  <mat-icon>download</mat-icon> Export
-                </button>
-              </div>
-            </div>
-          </mat-card>
+            
+            <mat-progress-bar
+              *ngIf="isUploading"
+              mode="indeterminate"
+              color="primary"
+              class="upload-progress"
+            ></mat-progress-bar>
+          </div>
         </div>
+      </section>
 
-        <!-- Export All Option -->
-        <div class="export-all-container">
-          <mat-card class="export-all-card">
-            <div class="export-all-content">
-              <div class="export-icon-container">
+      <!-- Right Column - Status & Export -->
+      <section class="content-panel export-section">
+        <div class="panel-header">
+          <h2 class="section-title">Export Configurations</h2>
+          <p class="panel-subtitle">Manage and export your configuration files</p>
+        </div>
+        <div class="panel-body">
+          <div class="status-grid">
+            <!-- Categories Status -->
+            <div class="status-card" [class.has-data]="hasCategories">
+              <div class="status-icon-container">
+                <div class="status-icon categories-bg">
+                  <mat-icon>my_library_books</mat-icon>
+                </div>
+              </div>
+              <div class="status-content">
+                <h3 class="card-title">Categories</h3>
+                <p class="card-text" *ngIf="hasCategories">{{ getCategoriesCount() }} categories loaded</p>
+                <p class="card-text" *ngIf="!hasCategories">No categories imported</p>
+                <div class="status-actions">
+                  <button
+                    class="custom-stroked-button color-secondary with-icon"
+                    [disabled]="!hasCategories"
+                    (click)="exportCategories()"
+                    matTooltip="Export categories as JSON"
+                  >
+                    <mat-icon>download</mat-icon>
+                    Export Categories
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Products Status -->
+            <div class="status-card" [class.has-data]="hasProducts">
+              <div class="status-icon-container">
+                <div class="status-icon products-bg">
+                  <mat-icon>shopping_cart</mat-icon>
+                </div>
+              </div>
+              <div class="status-content">
+                <h3 class="card-title">Products</h3>
+                <p class="card-text" *ngIf="hasProducts">{{ getProductsCount() }} products loaded</p>
+                <p class="card-text" *ngIf="!hasProducts">No products imported</p>
+                <div class="status-actions">
+                  <button
+                    class="custom-stroked-button color-secondary with-icon"
+                    [disabled]="!hasProducts"
+                    (click)="exportProducts()"
+                    matTooltip="Export products as JSON"
+                  >
+                    <mat-icon>download</mat-icon>
+                    Export Products
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Currency Status -->
+            <div class="status-card" [class.has-data]="hasCurrencies">
+              <div class="status-icon-container">
+                <div class="status-icon currencies-bg">
+                  <mat-icon>attach_money</mat-icon>
+                </div>
+              </div>
+              <div class="status-content">
+                <h3 class="card-title">Currency Settings</h3>
+                <p class="card-text" *ngIf="hasCurrencies">{{ getCurrencyTypesCount() }} currency types defined</p>
+                <p class="card-text" *ngIf="!hasCurrencies">No currency settings imported</p>
+                <div class="status-actions">
+                  <button
+                    class="custom-stroked-button color-secondary with-icon"
+                    [disabled]="!hasCurrencies"
+                    (click)="exportCurrencySettings()"
+                    matTooltip="Export currency settings as JSON"
+                  >
+                    <mat-icon>download</mat-icon>
+                    Export Currencies
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- General Settings Status -->
+            <div class="status-card" [class.has-data]="hasSettings">
+              <div class="status-icon-container">
+                <div class="status-icon settings-bg">
+                  <mat-icon>settings</mat-icon>
+                </div>
+              </div>
+              <div class="status-content">
+                <h3 class="card-title">General Settings</h3>
+                <p class="card-text" *ngIf="hasSettings">General configuration loaded</p>
+                <p class="card-text" *ngIf="!hasSettings">No general settings imported</p>
+                <div class="status-actions">
+                  <button
+                    class="custom-stroked-button color-secondary with-icon"
+                    [disabled]="!hasSettings"
+                    (click)="exportGeneralSettings()"
+                    matTooltip="Export general settings as JSON"
+                  >
+                    <mat-icon>download</mat-icon>
+                    Export Settings
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Export All Option -->
+          <div class="export-all-container">
+            <div class="export-all-card">
+              <div class="export-icon">
                 <mat-icon>inventory_2</mat-icon>
               </div>
-              <div class="export-text">
-                <h3>Export Complete Configuration</h3>
-                <p>Export all configuration files in a single ZIP archive</p>
+              <div class="export-content">
+                <h3 class="export-title">Export Complete Configuration</h3>
+                <p class="export-subtitle">Export all configuration files in a single ZIP archive</p>
               </div>
-              <button
-                mat-raised-button
-                color="primary"
-                class="action-button"
-                [matMenuTriggerFor]="exportMenu"
-                matTooltip="Export files"
-              >
-                <mat-icon>file_download</mat-icon>
-                Export Files
-              </button>
-              <mat-menu #exportMenu="matMenu" class="export-menu">
+              <div class="export-action">
                 <button
-                  mat-menu-item
-                  (click)="exportCategories()"
-                  [disabled]="!hasCategories"
+                  class="custom-stroked-button color-primary with-icon"
+                  [matMenuTriggerFor]="exportMenu"
+                  matTooltip="Export files"
+                  [disabled]="!hasAnyData()"
                 >
-                  <mat-icon class="menu-icon categories-color"
-                    >my_library_books</mat-icon
-                  >
+                  <mat-icon>file_download</mat-icon>
+                  Export .zip
+                </button>
+              </div>
+              
+              <mat-menu #exportMenu="matMenu" class="export-menu">
+                <button mat-menu-item (click)="exportCategories()" [disabled]="!hasCategories">
+                  <mat-icon class="categories-color">my_library_books</mat-icon>
                   <span>Categories</span>
                 </button>
-                <button
-                  mat-menu-item
-                  (click)="exportProducts()"
-                  [disabled]="!hasProducts"
-                >
-                  <mat-icon class="menu-icon products-color">shopping_cart</mat-icon>
+                <button mat-menu-item (click)="exportProducts()" [disabled]="!hasProducts">
+                  <mat-icon class="products-color">shopping_cart</mat-icon>
                   <span>Products</span>
                 </button>
-                <button
-                  mat-menu-item
-                  (click)="exportCurrencySettings()"
-                  [disabled]="!hasCurrencies"
-                >
-                  <mat-icon class="menu-icon currencies-color">attach_money</mat-icon>
+                <button mat-menu-item (click)="exportCurrencySettings()" [disabled]="!hasCurrencies">
+                  <mat-icon class="currencies-color">attach_money</mat-icon>
                   <span>Currency Settings</span>
                 </button>
-                <button
-                  mat-menu-item
-                  (click)="exportGeneralSettings()"
-                  [disabled]="!hasSettings"
-                >
-                  <mat-icon class="menu-icon settings-color">settings</mat-icon>
+                <button mat-menu-item (click)="exportGeneralSettings()" [disabled]="!hasSettings">
+                  <mat-icon class="settings-color">settings</mat-icon>
                   <span>General Settings</span>
                 </button>
                 <mat-divider></mat-divider>
-                <button
-                  mat-menu-item
-                  (click)="exportAllConfigs()"
-                  [disabled]="!hasAnyData()"
-                >
-                  <mat-icon class="menu-icon">inventory_2</mat-icon>
+                <button mat-menu-item (click)="exportAllConfigs()" [disabled]="!hasAnyData()">
+                  <mat-icon>inventory_2</mat-icon>
                   <span>Export All as ZIP</span>
                 </button>
               </mat-menu>
             </div>
-          </mat-card>
+          </div>
         </div>
+      </section>
+    </div>
 
-        <!-- Recent Activity Section with scrollable content -->
-        <div class="activity-log-container">
-          <h2 class="section-title">Recent Activity</h2>
-
-          <mat-expansion-panel
-            [expanded]="isActivityExpanded"
-            (opened)="isActivityExpanded = true"
-            (closed)="isActivityExpanded = false"
-          >
-            <mat-expansion-panel-header>
-              <h3> Click to expand </h3>
-            </mat-expansion-panel-header>
-
-            <div class="activity-content-scrollable">
-              <mat-card class="activity-card" *ngIf="recentActivity.length > 0">
-                <mat-list role="list">
-                  <mat-list-item
-                    *ngFor="let activity of recentActivity"
-                    role="listitem"
-                    class="activity-item"
-                  >
-                    <mat-icon
-                      matListItemIcon
-                      [ngClass]="activity.type + '-color'"
-                      >{{ getActivityIcon(activity.type) }}</mat-icon
-                    >
-                    <div matListItemTitle>{{ activity.message }}</div>
-                    <div matListItemLine class="activity-time">
-                      {{ activity.timestamp | date : "short" }}
-                    </div>
-                  </mat-list-item>
-                </mat-list>
-              </mat-card>
-              <div class="no-activity" *ngIf="recentActivity.length === 0">
-                <mat-icon>history</mat-icon>
-                <p>No recent activity</p>
+    <!-- Activity Log -->
+    <section class="content-panel activity-section">
+      <div class="panel-header">
+        <h2 class="section-title">Recent Activity</h2>
+        <p class="panel-subtitle">Tracking import and export operations</p>
+      </div>
+      <div class="panel-body">
+        <div class="activity-content-scrollable slim-scrollbar">
+          <div class="activity-list" *ngIf="recentActivity.length > 0">
+            <div *ngFor="let activity of recentActivity" class="activity-item">
+              <div class="activity-icon-container">
+                <mat-icon [ngClass]="activity.type + '-color'">{{ getActivityIcon(activity.type) }}</mat-icon>
+              </div>
+              <div class="activity-details">
+                <div class="activity-message">{{ activity.message }}</div>
+                <div class="activity-time">{{ activity.timestamp | date : "short" }}</div>
               </div>
             </div>
-          </mat-expansion-panel>
+          </div>
+          <div class="no-activity" *ngIf="recentActivity.length === 0">
+            <mat-icon>history</mat-icon>
+            <p>No recent activity</p>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 </div>
