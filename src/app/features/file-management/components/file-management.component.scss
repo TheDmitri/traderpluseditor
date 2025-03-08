@@ -7,8 +7,6 @@
   max-width: 100%;
   margin: 0 auto;
 
-  // Header Section styles removed - now using global styles with actions-right variation
-  
   // Content area
   .content-area {
     display: grid;
@@ -679,32 +677,6 @@
     .file-management-container {
       padding: 16px;
 
-      .page-header {
-        padding: 20px;
-        min-height: 100px; // Slightly smaller fixed height on mobile
-
-        .header-content {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 16px;
-
-          .title-section {
-            h1 {
-              font-size: var(--font-size-2xl);
-            }
-
-            .subtitle {
-              font-size: var(--font-size-md);
-            }
-          }
-
-          .header-actions {
-            width: 100%;
-            justify-content: space-between;
-          }
-        }
-      }
-
       .content-area {
         gap: 16px;
       }
@@ -763,18 +735,6 @@
 
   @media screen and (max-width: 480px) {
     .file-management-container {
-      .page-header {
-        .header-content {
-          .header-actions {
-            flex-direction: column;
-            gap: 12px;
-
-            .action-button {
-              width: 100%;
-            }
-          }
-        }
-      }
 
       .drag-drop-zone .drop-container {
         padding: 24px 12px;
@@ -830,9 +790,6 @@
   // Landscape mode adjustments for mobile
   @media screen and (max-height: 500px) and (orientation: landscape) {
     .file-management-container {
-      .page-header {
-        min-height: 80px; // Smaller header in landscape mode
-      }
 
       .drag-drop-zone {
         min-height: 160px;
@@ -885,19 +842,6 @@
   @media print {
     .file-management-container {
       padding: 0;
-
-      .page-header {
-        background: none !important;
-        box-shadow: none !important;
-        border: none !important;
-        padding: 0 0 20px 0;
-        margin-bottom: 20px;
-        border-bottom: 1px solid #ccc !important;
-
-        .header-actions {
-          display: none;
-        }
-      }
 
       .drag-drop-zone,
       .status-dashboard .status-actions,
