@@ -1,54 +1,483 @@
 /**
- * Material Tables and Paginators
+ * Table Component Styling
  * ========================================================================== 
- * This file contains custom styling for Angular Material tables and paginator components,
- * including theme variants, hover states, and full MDC overrides to maintain design consistency.
+ * This file contains styling for Angular Material tables and custom table components.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Table backgrounds, borders, structure (neutral/background colors)
+ * - 30%: Headers, secondary information (secondary colors)
+ * - 10%: Interactive elements, selected rows (primary/accent colors)
  */
 
-/* Material Table Customization
- * Provides transparent backgrounds, custom text colors, and interactive states
- * for both dark and light theme variants.
+/* Base Table Styling
+ * ========================================================================== 
+ * Common styles for all table variants
  */
 .mat-mdc-table {
-  background-color: transparent !important;
-
-  .mat-mdc-header-cell {
-    color: var(--brush-text-secondary) !important; // Header text uses secondary color for contrast
+  width: 100%;
+  background-color: var(--brush-table-row) !important; // 60% - structural background
+  border-radius: 4px;
+  overflow: hidden;
+  
+  // Table border
+  &.with-border {
+    border: 1px solid var(--brush-table-border); // 60% - subtle border
   }
-
-  .mat-mdc-cell {
-    color: var(--brush-text-primary) !important; // Cell content uses primary text color
+  
+  // Table with box shadow
+  &.with-elevation {
+    box-shadow: 0 2px 8px var(--brush-shadow-light);
   }
+}
 
-  // Interactive states for rows
-  .mat-mdc-row {
-    transition: background-color 0.2s ease;
+/* Table Header
+ * ========================================================================== 
+ * Column headers and sticky header behavior
+ */
+.mat-mdc-header-row {
+  background-color: var(--brush-table-header-background) !important; // 60% - slightly different from body
+  border-bottom: 1px solid var(--brush-table-border); // 60% - structural element
+  
+  // Make header sticky when needed
+  &.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+}
 
+.mat-mdc-header-cell {
+  color: var(--brush-table-header-text) !important; // 30% - supporting text
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 16px !important;
+  
+  // Sortable header elements
+  &.mat-sort-header {
     &:hover {
-      background-color: var(--brush-hover-overlay); // Subtle highlight on hover
+      background-color: var(--brush-hover-overlay); // Interactive state
     }
-
-    &.selected {
-      background-color: var(--brush-selected-overlay); // Stronger highlight for selected rows
+    
+    // Sort icon color
+    .mat-sort-header-arrow {
+      color: var(--color-primary-medium); // 10% - accent element
     }
   }
+  
+  // Header cell with actions or filter
+  &.header-with-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    .header-action {
+      margin-left: 8px;
+      
+      .mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        color: var(--brush-text-secondary); // 30% - supporting element
+        
+        &:hover {
+          color: var(--color-primary-medium); // 10% - accent on hover
+        }
+      }
+    }
+  }
+}
 
-  // Interactive rows with pointer cursor
-  .clickable-row {
+/* Table Rows
+ * ========================================================================== 
+ * Row styles for different states (hover, selected, alternate)
+ */
+.mat-mdc-row {
+  height: 52px; // Standard row height
+  
+  // Hover state
+  &:hover {
+    background-color: var(--brush-table-row-hover) !important; // 60% - subtle highlight
+  }
+  
+  // Selected state - uses primary color (10%)
+  &.selected-row {
+    background-color: var(--brush-table-row-selected) !important; // 10% - primary accent
+    
+    .mat-mdc-cell {
+      font-weight: var(--font-weight-medium);
+    }
+  }
+  
+  // Alternate row coloring for better readability
+  &:nth-child(even) {
+    background-color: var(--brush-table-row-alternate) !important; // 60% - subtle variation
+  }
+  
+  // Status-based rows
+  &.status-success {
+    border-left: 4px solid var(--brush-status-success-background);
+  }
+  
+  &.status-warning {
+    border-left: 4px solid var(--brush-status-warning-background);
+  }
+  
+  &.status-error {
+    border-left: 4px solid var(--brush-status-error-background);
+  }
+  
+  &.status-info {
+    border-left: 4px solid var(--brush-status-info-background);
+  }
+  
+  // Interactive row with pointer cursor
+  &.interactive-row {
     cursor: pointer;
   }
+}
 
-  // Light theme variant with appropriate contrast colors
-  &.light-table {
-    background-color: var(--color-neutral-lightest) !important;
-
-    .mat-mdc-header-cell {
-      color: var(--brush-text-secondary-on-light) !important;
+/* Table Cells
+ * ========================================================================== 
+ * Individual cell styling and content formatting
+ */
+.mat-mdc-cell {
+  color: var(--brush-text-primary) !important; // 60% - primary text
+  font-size: var(--font-size-base);
+  padding: 0 16px !important;
+  
+  // Cell variants
+  &.numeric-cell {
+    text-align: right;
+    font-family: monospace;
+    font-size: 14px;
+  }
+  
+  // Action cell with buttons/icons
+  &.action-cell {
+    text-align: right;
+    padding: 0 8px !important;
+    width: 1%;
+    white-space: nowrap;
+    
+    .action-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 4px;
     }
+  }
+  
+  // Status indicator cell
+  &.status-cell {
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+      
+      .status-icon {
+        margin-right: 4px;
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+      }
+      
+      &.status-success {
+        background-color: var(--brush-status-success-subtle);
+        color: var(--brush-status-success-background);
+      }
+      
+      &.status-warning {
+        background-color: var(--brush-status-warning-subtle);
+        color: var(--brush-status-warning-background);
+      }
+      
+      &.status-error {
+        background-color: var(--brush-status-error-subtle);
+        color: var(--brush-status-error-background);
+      }
+      
+      &.status-info {
+        background-color: var(--brush-status-info-subtle);
+        color: var(--brush-status-info-background);
+      }
+    }
+  }
+  
+  // Highlight cell content (10% accent)
+  .cell-highlight {
+    color: var(--brush-text-accent);
+    font-weight: var(--font-weight-medium);
+  }
+  
+  // Secondary cell content (30% supporting)
+  .cell-secondary {
+    color: var(--brush-text-secondary);
+    font-size: var(--font-size-sm);
+    display: block;
+  }
+  
+  // Truncate long text with ellipsis
+  .cell-truncate {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
 
+/* Table Footer
+ * ========================================================================== 
+ * Footer row for summaries, totals, or pagination
+ */
+.mat-mdc-footer-row {
+  background-color: var(--brush-table-header-background) !important; // 60% - structural, matches header
+  border-top: 1px solid var(--brush-table-border); // 60% - structural element
+  font-weight: var(--font-weight-medium);
+}
+
+.mat-mdc-footer-cell {
+  color: var(--brush-text-primary) !important; // 60% - primary text
+  padding: 16px !important;
+}
+
+/* Table Pagination
+ * ========================================================================== 
+ * Styling for pagination controls
+ */
+.mat-mdc-paginator {
+  background-color: var(--brush-table-header-background) !important; // 60% - structural, matches header
+  border-top: 1px solid var(--brush-table-border); // 60% - subtle border
+  
+  .mat-mdc-paginator-outer-container {
+    color: var(--brush-text-secondary) !important; // 30% - supporting text
+  }
+  
+  .mat-mdc-paginator-range-label,
+  .mat-mdc-paginator-page-size-label {
+    color: var(--brush-text-secondary) !important; // 30% - supporting text
+  }
+  
+  .mat-mdc-icon-button {
+    color: var(--brush-text-secondary) !important; // 30% - supporting element
+    
+    &:hover {
+      background-color: var(--brush-hover-overlay);
+      color: var(--brush-text-primary) !important; // 60% - enhanced visibility on hover
+    }
+    
+    &:disabled {
+      color: var(--brush-text-disabled) !important; // 60% - muted icon
+    }
+  }
+  
+  .mat-mdc-select-value {
+    color: var (--brush-text-secondary) !important; // 30% - supporting text
+  }
+}
+
+/* Table Size Variants
+ * ========================================================================== 
+ * Different size options for varying information density
+ */
+// Compact tables for dense data display
+.mat-mdc-table.compact-table {
+  .mat-mdc-header-row, 
+  .mat-mdc-row {
+    height: 40px !important;
+  }
+  
+  .mat-mdc-header-cell,
+  .mat-mdc-cell,
+  .mat-mdc-footer-cell {
+    padding: 0 12px !important;
+    font-size: var(--font-size-sm) !important;
+  }
+}
+
+// Large tables for more spacious data display
+.mat-mdc-table.large-table {
+  .mat-mdc-header-row, 
+  .mat-mdc-row {
+    height: 64px !important;
+  }
+  
+  .mat-mdc-header-cell,
+  .mat-mdc-cell,
+  .mat-mdc-footer-cell {
+    padding: 0 24px !important;
+  }
+}
+
+/* Table Style Variants
+ * ========================================================================== 
+ * Different appearance options for tables
+ */
+// Bordered table - more defined cell borders
+.mat-mdc-table.bordered-table {
+  .mat-mdc-header-cell,
+  .mat-mdc-cell,
+  .mat-mdc-footer-cell {
+    border-right: 1px solid var(--brush-table-border); // 60% - subtle cell border
+    
+    &:last-child {
+      border-right: none;
+    }
+  }
+  
+  .mat-mdc-row {
+    border-bottom: 1px solid var(--brush-table-border); // 60% - subtle row border
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+// Striped table - alternating row colors
+.mat-mdc-table.striped-table {
+  .mat-mdc-row:nth-child(odd) {
+    background-color: var(--brush-table-row) !important; // 60% - base color
+  }
+  
+  .mat-mdc-row:nth-child(even) {
+    background-color: var(--brush-table-row-alternate) !important; // 60% - alternate color
+  }
+}
+
+// Hoverable table - enhanced hover behavior
+.mat-mdc-table.hoverable-table {
+  .mat-mdc-row {
+    transition: background-color var(--transition-quick) var(--transition-timing);
+    
+    &:hover {
+      background-color: var(--color-secondary-transparent-10) !important; // 30% - supporting highlight
+    }
+  }
+}
+
+/* Responsive Table Behavior
+ * ========================================================================== 
+ * Adaptations for smaller screens
+ */
+@media (max-width: 768px) {
+  // Scrollable tables on small screens
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    
+    .mat-mdc-table {
+      min-width: 768px; // Ensures horizontal scrolling
+    }
+  }
+  
+  // Stacked responsive table alternative
+  .responsive-stacked-table {
+    .mat-mdc-header-row {
+      display: none !important; // Hide headers in stacked view
+    }
+    
+    .mat-mdc-row {
+      display: flex !important;
+      flex-direction: column !important;
+      padding: 16px !important;
+      height: auto !important;
+      border-bottom: 1px solid var(--brush-table-border);
+      
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    
     .mat-mdc-cell {
-      color: var(--brush-text-primary-on-light) !important;
+      display: flex !important;
+      padding: 8px 16px !important;
+      border: none !important;
+      
+      &::before {
+        content: attr(data-column);
+        width: 30%;
+        font-weight: var(--font-weight-medium);
+        color: var(--brush-text-secondary); // 30% - supporting text
+        margin-right: 16px;
+      }
     }
+  }
+}
+
+/* Empty Table State
+ * ========================================================================== 
+ * Styling for tables with no data
+ */
+.empty-table-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  color: var(--brush-text-secondary); // 30% - supporting text
+  text-align: center;
+  
+  .empty-icon {
+    font-size: 48px;
+    opacity: 0.5;
+    margin-bottom: 16px;
+  }
+  
+  .empty-title {
+    font-size: var(--font-size-lg);
+    margin: 0 0 8px;
+  }
+  
+  .empty-description {
+    font-size: var(--font-size-base);
+    max-width: 400px;
+    margin: 0 0 16px;
+  }
+}
+
+/* Table Selection Controls
+ * ========================================================================== 
+ * Styling for selection checkboxes and bulk actions
+ */
+.selection-column {
+  width: 56px;
+  min-width: 56px;
+  max-width: 56px;
+}
+
+.selection-header {
+  display: flex;
+  align-items: center;
+  
+  .selection-info {
+    margin-left: 8px;
+    color: var(--brush-text-accent); // 10% - accent text for selection feedback
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-sm);
+  }
+}
+
+.bulk-actions {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-primary-transparent-20); // 10% - accent background
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  
+  .selected-count {
+    margin-right: auto;
+    color: var(--brush-text-accent); // 10% - accent text
+    font-weight: var(--font-weight-medium);
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 8px;
   }
 }
 
