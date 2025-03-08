@@ -390,14 +390,3 @@
     margin-bottom: 16px;
   }
 }
-
-// Data panel styles - used for content sections, headers, and general panel containers
-.data-card {
-  padding: 24px;
-  background: linear-gradient(
-    135deg,
-    var(--brush-background-elevated),
-    var(--brush-background-default)
-  );
-  border-radius: 8px;
-}

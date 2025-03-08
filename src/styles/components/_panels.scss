@@ -405,6 +405,22 @@
   }
 }
 
+/* Data Card Panel
+ * ========================================================================== 
+ * Panel styled as a card for displaying structured data
+ */
+.data-card {
+  padding: 24px;
+  background: linear-gradient(
+    135deg,
+    var(--brush-background-elevated),
+    var(--brush-background-body)
+  );
+  border-radius: 8px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 4px var(--brush-shadow-light);
+}
+
 /* Collapsible Panel
  * ========================================================================== 
  * Panel that can be expanded/collapsed to show/hide content
