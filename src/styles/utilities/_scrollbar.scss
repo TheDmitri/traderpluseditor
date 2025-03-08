@@ -1,44 +1,183 @@
-/* Custom Scrollbar Styling
-========================================================================== */
 /**
- * Cross-browser scrollbar customization
- * 
- * These styles create a consistent, themed scrollbar appearance across
- * WebKit-based browsers (Chrome, Safari, Edge).
- * 
- * Note: Firefox requires a different approach using the scrollbar-color 
- * and scrollbar-width properties, which could be added for full compatibility.
+ * Scrollbar Customization
+ * ========================================================================== 
+ * This file contains custom styling for scrollbars across the application.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Scrollbar track and background (neutral/background colors)
+ * - 30%: Scrollbar thumb in default state (secondary/supporting colors)
+ * - 10%: Scrollbar thumb in hover/active state (primary/accent for emphasis)
  */
+
+/* Cross-browser Scrollbar Implementation
+ * ========================================================================== 
+ * Implements consistent scrollbar styling across browsers:
+ * - WebKit/Blink (Chrome, Edge, Safari, Opera) using ::-webkit-scrollbar
+ * - Firefox using scrollbar-color and scrollbar-width
+ */
+
+/* Base Scrollbar Styling - Webkit Browsers
+ * ========================================================================== */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 
+  // Track styling - 60% neutral color (subtle background)
   &-track {
-    background: var(--brush-background-elevated);
+    background: var(--brush-background-elevated); // 60% - structural element
   }
 
+  // Thumb styling - 30% supporting color (visible but not distracting)
   &-thumb {
-    background: var(--color-neutral-medium);
+    background: var(--color-neutral-medium); // 30% - supporting element
     border-radius: 5px;
 
+    // Hover state - 10% accent color (emphasizes interaction)
     &:hover {
-      background: var(--color-neutral-light);
+      background: var(--color-primary-medium); // 10% - accent for interaction
     }
+    
+    // Ensures thumb has a minimum size
+    &:vertical {
+      min-height: 30px;
+    }
+    
+    &:horizontal {
+      min-width: 30px;
+    }
+  }
+  
+  // Button styling (up/down arrows) - if visible
+  &-button {
+    background: var(--brush-background-surface); // 60% - structural element
+    
+    &:hover {
+      background: var(--brush-background-elevated); // 60% - subtle hover effect
+    }
+  }
+  
+  // Corner where vertical and horizontal scrollbars meet
+  &-corner {
+    background: var(--brush-background-surface); // 60% - structural element
   }
 }
 
+/* Firefox Scrollbar Support
+ * ========================================================================== */
+* {
+  // Sets colors for track and thumb in one property
+  // Format: scrollbar-color: <thumb> <track>;
+  scrollbar-color: var(--color-neutral-medium) var(--brush-background-elevated);
+  
+  // Controls scrollbar thickness: auto, thin, none
+  scrollbar-width: thin;
+}
+
+/* Scrollbar Variants
+ * ========================================================================== */
+
+/* Slim Scrollbar - for compact UIs */
+.slim-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  scrollbar-width: thin;
+}
+
+/* Accent Scrollbar - uses primary color for emphasis */
+.accent-scrollbar {
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-primary-dark); // 10% - accent element
+    
+    &:hover {
+      background: var(--color-primary-medium); // 10% - accent hover state
+    }
+  }
+  
+  scrollbar-color: var(--color-primary-dark) var(--brush-background-elevated);
+}
+
+/* Transparent Scrollbar - more subtle for content-focused areas */
+.transparent-scrollbar {
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2); // 60% - subtle neutral with transparency
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.3); // 60% - slightly more visible on hover
+    }
+  }
+  
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* Hidden Scrollbar - scrolling functionality without visible scrollbar */
+.hidden-scrollbar {
+  -ms-overflow-style: none; // IE and Edge
+  scrollbar-width: none; // Firefox
+  
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari and Opera
+  }
+}
+
+/* Light Mode Scrollbar - for light theme contexts */
+.light-scrollbar {
+  &::-webkit-scrollbar-track {
+    background: var(--color-neutral-lightest); // 60% - light structural element
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-neutral-medium); // 30% - supporting element
+    
+    &:hover {
+      background: var(--color-primary-medium); // 10% - accent for interaction
+    }
+  }
+  
+  scrollbar-color: var(--color-neutral-medium) var(--color-neutral-lightest);
+}
+
+/* Custom Content Scrolling Utilities
+ * ========================================================================== */
 /**
- * Global Snackbar Positioning
- * 
- * Positions notification snackbars in a consistent location
- * in the upper right corner of the viewport, rather than
- * using Material's default bottom center positioning.
+ * Utility classes to control scrolling behavior in specific containers
  */
-.custom-snackbar {
-  position: fixed !important;
-  top: 80px !important;
-  right: 16px !important;
-  left: unset !important;
-  bottom: unset !important;
-  margin: 0 !important;
+
+// Enables smooth scrolling for the entire application
+html {
+  scroll-behavior: smooth;
+}
+
+// Container with vertical scrolling only
+.scroll-y {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+// Container with horizontal scrolling only
+.scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+// Container with both scrolling directions
+.scroll-both {
+  overflow: auto;
+}
+
+// Container with automatic scroll shadows (fades at the edges)
+.scroll-shadow {
+  background: 
+    linear-gradient(var(--brush-background-surface) 30%, rgba(255, 255, 255, 0)),
+    linear-gradient(rgba(255, 255, 255, 0), var(--brush-background-surface) 70%) 0 100%,
+    radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+    radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
+  background-attachment: local, local, scroll, scroll;
 }
