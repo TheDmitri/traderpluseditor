@@ -55,9 +55,6 @@
   
   // Sortable header elements
   &.mat-sort-header {
-    &:hover {
-      background-color: var(--brush-hover-overlay); // Interactive state
-    }
     
     // Sort icon color
     .mat-sort-header-arrow {
@@ -95,11 +92,6 @@
 .mat-mdc-row {
   height: 52px; // Standard row height
   
-  // Hover state
-  &:hover {
-    background-color: var(--brush-table-row-hover) !important; // 60% - subtle highlight
-  }
-  
   // Selected state - uses primary color (10%)
   &.selected-row {
     background-color: var(--brush-table-row-selected) !important; // 10% - primary accent
@@ -133,7 +125,7 @@
   
   // Interactive row with pointer cursor
   &.interactive-row {
-    cursor: pointer;
+    cursor: default;
   }
 }
 
@@ -264,7 +256,6 @@
     color: var(--brush-text-secondary) !important; // 30% - supporting element
     
     &:hover {
-      background-color: var(--brush-hover-overlay);
       color: var(--brush-text-primary) !important; // 60% - enhanced visibility on hover
     }
     
@@ -347,13 +338,48 @@
   }
 }
 
+// Tables with consistent row colors (no alternating colors)
+.mat-mdc-table.consistent-rows {
+  .mat-mdc-row {
+    // Apply the base row color to all rows
+    background-color: var(--brush-table-row) !important; // 60% - base color for all rows
+    
+    // Override the even row styling
+    &:nth-child(even) {
+      background-color: var(--brush-table-row) !important; // Same as odd rows
+    }
+  }
+}
+
 // Hoverable table - enhanced hover behavior
 .mat-mdc-table.hoverable-table {
+  // Row hover effect
   .mat-mdc-row {
     transition: background-color var(--transition-quick) var(--transition-timing);
     
     &:hover {
-      background-color: var(--color-secondary-transparent-10) !important; // 30% - supporting highlight
+      background-color: var(--color-primary-transparent-10) !important; // 10% - accent highlight
+    }
+    
+    &:nth-child(even):hover {
+      background-color: var(--color-primary-transparent-10) !important; // 10% - accent highlight
+    }
+  }
+}
+
+// Hoverable table with consistent row colors
+.mat-mdc-table.hoverable-table.consistent-rows {
+  // Row hover effect with non-transparent color
+  .mat-mdc-row {
+    transition: background-color var(--transition-quick) var(--transition-timing);
+    
+    &:hover {
+      background-color: var(--brush-table-row-hover) !important; // Use solid color instead of transparent
+    }
+    
+    // Ensure even rows have same hover effect
+    &:nth-child(even):hover {
+      background-color: var(--brush-table-row-hover) !important; // Same as odd rows
     }
   }
 }
