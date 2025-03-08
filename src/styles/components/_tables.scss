@@ -8,21 +8,27 @@
  * - 10%: Interactive elements, selected rows (primary/accent colors)
  */
 
+.filter-field {
+  width: 100%;
+}
+
 /* Base Table Styling
  * ========================================================================== 
  * Common styles for all table variants
  */
 .mat-mdc-table {
   width: 100%;
-  background-color: var(--brush-table-row) !important; // 60% - structural background
+  background-color: var(
+    --brush-table-row
+  ) !important; // 60% - structural background
   border-radius: 4px;
   overflow: hidden;
-  
+
   // Table border
   &.with-border {
     border: 1px solid var(--brush-table-border); // 60% - subtle border
   }
-  
+
   // Table with box shadow
   &.with-elevation {
     box-shadow: 0 2px 8px var(--brush-shadow-light);
@@ -34,9 +40,11 @@
  * Column headers and sticky header behavior
  */
 .mat-mdc-header-row {
-  background-color: var(--brush-table-header-background) !important; // 60% - slightly different from body
+  background-color: var(
+    --brush-table-header-background
+  ) !important; // 60% - slightly different from body
   border-bottom: 1px solid var(--brush-table-border); // 60% - structural element
-  
+
   // Make header sticky when needed
   &.sticky-header {
     position: sticky;
@@ -52,31 +60,30 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
   padding: 16px !important;
-  
+
   // Sortable header elements
   &.mat-sort-header {
-    
     // Sort icon color
     .mat-sort-header-arrow {
       color: var(--color-primary-medium); // 10% - accent element
     }
   }
-  
+
   // Header cell with actions or filter
   &.header-with-action {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    
+
     .header-action {
       margin-left: 8px;
-      
+
       .mat-icon {
         font-size: 18px;
         width: 18px;
         height: 18px;
         color: var(--brush-text-secondary); // 30% - supporting element
-        
+
         &:hover {
           color: var(--color-primary-medium); // 10% - accent on hover
         }
@@ -91,38 +98,42 @@
  */
 .mat-mdc-row {
   height: 52px; // Standard row height
-  
+
   // Selected state - uses primary color (10%)
   &.selected-row {
-    background-color: var(--brush-table-row-selected) !important; // 10% - primary accent
-    
+    background-color: var(
+      --brush-table-row-selected
+    ) !important; // 10% - primary accent
+
     .mat-mdc-cell {
       font-weight: var(--font-weight-medium);
     }
   }
-  
+
   // Alternate row coloring for better readability
   &:nth-child(even) {
-    background-color: var(--brush-table-row-alternate) !important; // 60% - subtle variation
+    background-color: var(
+      --brush-table-row-alternate
+    ) !important; // 60% - subtle variation
   }
-  
+
   // Status-based rows
   &.status-success {
     border-left: 4px solid var(--brush-status-success-background);
   }
-  
+
   &.status-warning {
     border-left: 4px solid var(--brush-status-warning-background);
   }
-  
+
   &.status-error {
     border-left: 4px solid var(--brush-status-error-background);
   }
-  
+
   &.status-info {
     border-left: 4px solid var(--brush-status-info-background);
   }
-  
+
   // Interactive row with pointer cursor
   &.interactive-row {
     cursor: default;
@@ -137,28 +148,28 @@
   color: var(--brush-text-primary) !important; // 60% - primary text
   font-size: var(--font-size-base);
   padding: 0 16px !important;
-  
+
   // Cell variants
   &.numeric-cell {
     text-align: right;
     font-family: monospace;
     font-size: 14px;
   }
-  
+
   // Action cell with buttons/icons
   &.action-cell {
     text-align: right;
     padding: 0 8px !important;
     width: 1%;
     white-space: nowrap;
-    
+
     .action-buttons {
       display: flex;
       justify-content: flex-end;
       gap: 4px;
     }
   }
-  
+
   // Status indicator cell
   &.status-cell {
     .status-badge {
@@ -168,49 +179,49 @@
       border-radius: 12px;
       font-size: var(--font-size-xs);
       font-weight: var(--font-weight-medium);
-      
+
       .status-icon {
         margin-right: 4px;
         font-size: 14px;
         width: 14px;
         height: 14px;
       }
-      
+
       &.status-success {
         background-color: var(--brush-status-success-subtle);
         color: var(--brush-status-success-background);
       }
-      
+
       &.status-warning {
         background-color: var(--brush-status-warning-subtle);
         color: var(--brush-status-warning-background);
       }
-      
+
       &.status-error {
         background-color: var(--brush-status-error-subtle);
         color: var(--brush-status-error-background);
       }
-      
+
       &.status-info {
         background-color: var(--brush-status-info-subtle);
         color: var(--brush-status-info-background);
       }
     }
   }
-  
+
   // Highlight cell content (10% accent)
   .cell-highlight {
     color: var(--brush-text-accent);
     font-weight: var(--font-weight-medium);
   }
-  
+
   // Secondary cell content (30% supporting)
   .cell-secondary {
     color: var(--brush-text-secondary);
     font-size: var(--font-size-sm);
     display: block;
   }
-  
+
   // Truncate long text with ellipsis
   .cell-truncate {
     max-width: 200px;
@@ -225,7 +236,9 @@
  * Footer row for summaries, totals, or pagination
  */
 .mat-mdc-footer-row {
-  background-color: var(--brush-table-header-background) !important; // 60% - structural, matches header
+  background-color: var(
+    --brush-table-header-background
+  ) !important; // 60% - structural, matches header
   border-top: 1px solid var(--brush-table-border); // 60% - structural element
   font-weight: var(--font-weight-medium);
 }
@@ -240,30 +253,34 @@
  * Styling for pagination controls
  */
 .mat-mdc-paginator {
-  background-color: var(--brush-table-header-background) !important; // 60% - structural, matches header
+  background-color: var(
+    --brush-table-header-background
+  ) !important; // 60% - structural, matches header
   border-top: 1px solid var(--brush-table-border); // 60% - subtle border
-  
+
   .mat-mdc-paginator-outer-container {
     color: var(--brush-text-secondary) !important; // 30% - supporting text
   }
-  
+
   .mat-mdc-paginator-range-label,
   .mat-mdc-paginator-page-size-label {
     color: var(--brush-text-secondary) !important; // 30% - supporting text
   }
-  
+
   .mat-mdc-icon-button {
     color: var(--brush-text-secondary) !important; // 30% - supporting element
-    
+
     &:hover {
-      color: var(--brush-text-primary) !important; // 60% - enhanced visibility on hover
+      color: var(
+        --brush-text-primary
+      ) !important; // 60% - enhanced visibility on hover
     }
-    
+
     &:disabled {
       color: var(--brush-text-disabled) !important; // 60% - muted icon
     }
   }
-  
+
   .mat-mdc-select-value {
     color: var (--brush-text-secondary) !important; // 30% - supporting text
   }
@@ -275,11 +292,11 @@
  */
 // Compact tables for dense data display
 .mat-mdc-table.compact-table {
-  .mat-mdc-header-row, 
+  .mat-mdc-header-row,
   .mat-mdc-row {
     height: 40px !important;
   }
-  
+
   .mat-mdc-header-cell,
   .mat-mdc-cell,
   .mat-mdc-footer-cell {
@@ -290,11 +307,11 @@
 
 // Large tables for more spacious data display
 .mat-mdc-table.large-table {
-  .mat-mdc-header-row, 
+  .mat-mdc-header-row,
   .mat-mdc-row {
     height: 64px !important;
   }
-  
+
   .mat-mdc-header-cell,
   .mat-mdc-cell,
   .mat-mdc-footer-cell {
@@ -312,15 +329,15 @@
   .mat-mdc-cell,
   .mat-mdc-footer-cell {
     border-right: 1px solid var(--brush-table-border); // 60% - subtle cell border
-    
+
     &:last-child {
       border-right: none;
     }
   }
-  
+
   .mat-mdc-row {
     border-bottom: 1px solid var(--brush-table-border); // 60% - subtle row border
-    
+
     &:last-child {
       border-bottom: none;
     }
@@ -332,9 +349,11 @@
   .mat-mdc-row:nth-child(odd) {
     background-color: var(--brush-table-row) !important; // 60% - base color
   }
-  
+
   .mat-mdc-row:nth-child(even) {
-    background-color: var(--brush-table-row-alternate) !important; // 60% - alternate color
+    background-color: var(
+      --brush-table-row-alternate
+    ) !important; // 60% - alternate color
   }
 }
 
@@ -342,8 +361,10 @@
 .mat-mdc-table.consistent-rows {
   .mat-mdc-row {
     // Apply the base row color to all rows
-    background-color: var(--brush-table-row) !important; // 60% - base color for all rows
-    
+    background-color: var(
+      --brush-table-row
+    ) !important; // 60% - base color for all rows
+
     // Override the even row styling
     &:nth-child(even) {
       background-color: var(--brush-table-row) !important; // Same as odd rows
@@ -355,14 +376,19 @@
 .mat-mdc-table.hoverable-table {
   // Row hover effect
   .mat-mdc-row {
-    transition: background-color var(--transition-quick) var(--transition-timing);
-    
+    transition: background-color var(--transition-quick)
+      var(--transition-timing);
+
     &:hover {
-      background-color: var(--color-primary-transparent-10) !important; // 10% - accent highlight
+      background-color: var(
+        --color-primary-transparent-10
+      ) !important; // 10% - accent highlight
     }
-    
+
     &:nth-child(even):hover {
-      background-color: var(--color-primary-transparent-10) !important; // 10% - accent highlight
+      background-color: var(
+        --color-primary-transparent-10
+      ) !important; // 10% - accent highlight
     }
   }
 }
@@ -371,15 +397,20 @@
 .mat-mdc-table.hoverable-table.consistent-rows {
   // Row hover effect with non-transparent color
   .mat-mdc-row {
-    transition: background-color var(--transition-quick) var(--transition-timing);
-    
+    transition: background-color var(--transition-quick)
+      var(--transition-timing);
+
     &:hover {
-      background-color: var(--brush-table-row-hover) !important; // Use solid color instead of transparent
+      background-color: var(
+        --brush-table-row-hover
+      ) !important; // Use solid color instead of transparent
     }
-    
+
     // Ensure even rows have same hover effect
     &:nth-child(even):hover {
-      background-color: var(--brush-table-row-hover) !important; // Same as odd rows
+      background-color: var(
+        --brush-table-row-hover
+      ) !important; // Same as odd rows
     }
   }
 }
@@ -394,35 +425,35 @@
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    
+
     .mat-mdc-table {
       min-width: 768px; // Ensures horizontal scrolling
     }
   }
-  
+
   // Stacked responsive table alternative
   .responsive-stacked-table {
     .mat-mdc-header-row {
       display: none !important; // Hide headers in stacked view
     }
-    
+
     .mat-mdc-row {
       display: flex !important;
       flex-direction: column !important;
       padding: 16px !important;
       height: auto !important;
       border-bottom: 1px solid var(--brush-table-border);
-      
+
       &:last-child {
         border-bottom: none;
       }
     }
-    
+
     .mat-mdc-cell {
       display: flex !important;
       padding: 8px 16px !important;
       border: none !important;
-      
+
       &::before {
         content: attr(data-column);
         width: 30%;
@@ -446,18 +477,18 @@
   padding: 40px 24px;
   color: var(--brush-text-secondary); // 30% - supporting text
   text-align: center;
-  
+
   .empty-icon {
     font-size: 48px;
     opacity: 0.5;
     margin-bottom: 16px;
   }
-  
+
   .empty-title {
     font-size: var(--font-size-lg);
     margin: 0 0 8px;
   }
-  
+
   .empty-description {
     font-size: var(--font-size-base);
     max-width: 400px;
@@ -478,7 +509,7 @@
 .selection-header {
   display: flex;
   align-items: center;
-  
+
   .selection-info {
     margin-left: 8px;
     color: var(--brush-text-accent); // 10% - accent text for selection feedback
@@ -490,17 +521,19 @@
 .bulk-actions {
   display: flex;
   align-items: center;
-  background-color: var(--color-primary-transparent-20); // 10% - accent background
+  background-color: var(
+    --color-primary-transparent-20
+  ); // 10% - accent background
   padding: 12px 16px;
   border-radius: 4px;
   margin-bottom: 16px;
-  
+
   .selected-count {
     margin-right: auto;
     color: var(--brush-text-accent); // 10% - accent text
     font-weight: var(--font-weight-medium);
   }
-  
+
   .action-buttons {
     display: flex;
     gap: 8px;
