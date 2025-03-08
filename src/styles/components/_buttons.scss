@@ -2,28 +2,30 @@
  * Button Component Styling
  * ========================================================================== 
  * This file contains styling for Angular Material buttons and custom icon buttons,
- * providing consistent appearance, interactive states, and accessibility features
- * across the application.
+ * following the 60-30-10 ratio principle:
+ * - Primary buttons use primary colors (10% - visual emphasis)
+ * - Secondary buttons use secondary colors (30% - supporting actions)
+ * - Background, borders, disabled states use neutral colors (60% - structural)
  */
 
 /* Material Button Customization
  * Overrides default Material button styling to match application design system
- * Includes primary, accent, warning, and light variants with consistent interaction states
+ * Includes primary, secondary, warning, and light variants with consistent interaction states
  */
 .mat-mdc-raised-button,
 .mat-mdc-button {
-  // Primary action button - main call to action
+  // Primary action button - main call to action (10% of UI)
   &.mat-primary {
-    background-color: var(--brush-primary-action) !important;
-    color: var(--brush-text-primary) !important;
+    background-color: var(--brush-button-primary-background) !important;
+    color: var(--brush-button-primary-text) !important;
 
     // Interactive states
     &:hover {
-      background-color: var(--brush-primary-action-hover) !important; // Lighter shade on hover
+      background-color: var(--brush-button-primary-hover) !important;
     }
 
     &:active {
-      background-color: var(--brush-button-active) !important; // Darker shade when pressed
+      background-color: var(--brush-button-primary-active) !important;
     }
 
     // Accessibility focus indicator
@@ -32,25 +34,25 @@
       outline-offset: 2px;
     }
 
-    // Disabled state
+    // Disabled state (60% - structural)
     &:disabled {
       background-color: var(--brush-button-disabled-background) !important;
       color: var(--brush-button-disabled-text) !important;
     }
   }
 
-  // Accent buttons - secondary actions
+  // Secondary buttons - supporting actions (30% of UI)
   &.mat-accent {
-    background-color: var(--color-accent-medium) !important;
-    color: var(--brush-text-primary-on-light) !important;
+    background-color: var(--brush-button-secondary-background) !important;
+    color: var(--brush-button-secondary-text) !important;
 
     // Interactive states
     &:hover {
-      background-color: var(--color-accent-light) !important;
+      background-color: var(--brush-button-secondary-hover) !important;
     }
 
     &:active {
-      background-color: var(--color-accent-darkest) !important;
+      background-color: var(--brush-button-secondary-active) !important;
     }
 
     // Accessibility focus indicator
@@ -66,18 +68,18 @@
     }
   }
 
-  // Warning/destructive buttons
+  // Warning/destructive buttons (special emphasis - part of 10%)
   &.mat-warn {
-    background-color: var(--brush-destructive-action) !important;
-    color: var(--brush-text-primary) !important;
+    background-color: var(--brush-button-destructive-background) !important;
+    color: white !important;
 
     // Interactive states
     &:hover {
-      background-color: var(--brush-destructive-action-hover) !important;
+      background-color: var(--brush-button-destructive-hover) !important;
     }
 
     &:active {
-      background-color: var(--color-error-darkest) !important;
+      background-color: var(--brush-button-destructive-active) !important;
     }
 
     // Accessibility focus indicator
@@ -93,18 +95,18 @@
     }
   }
 
-  // Light variant for use on dark backgrounds
+  // Light variant for use on dark backgrounds (part of 60% structural)
   &.light-button {
     background-color: var(--color-neutral-lightest) !important;
     color: var(--brush-text-primary-on-light) !important;
 
     // Interactive states
     &:hover {
-      background-color: var(--brush-hover-overlay-light) !important;
+      background-color: var(--color-neutral-light) !important;
     }
 
     &:active {
-      background-color: var(--color-neutral-light) !important;
+      background-color: var(--color-neutral-medium) !important;
     }
 
     // Accessibility focus indicator
@@ -115,9 +117,7 @@
 
     // Disabled state
     &:disabled {
-      background-color: var(
-        --brush-button-disabled-background-light
-      ) !important;
+      background-color: var(--brush-button-disabled-background-light) !important;
       color: var(--brush-button-disabled-text) !important;
     }
   }
@@ -162,18 +162,18 @@
   
   /* Button Color Variants */
   
-  // Primary action icon buttons
+  // Primary action icon buttons (10% emphasis)
   &.icon-btn-primary {
-    color: var(--color-accent-medium);
+    color: var(--color-primary-medium);
     
     // Interactive states
     &:hover {
-      background-color: var(--brush-hover-overlay);
-      color: var(--color-accent-light);
+      background-color: var(--color-primary-transparent-10);
+      color: var(--color-primary-light);
     }
     
     &:active {
-      background-color: var(--brush-active-overlay);
+      background-color: var(--color-primary-transparent-20);
       transform: scale(0.95); // Subtle pressed effect
       
       .mat-icon {
@@ -188,18 +188,18 @@
     }
   }
   
-  // Destructive/warning icon buttons
-  &.icon-btn-warn {
-    color: var(--brush-destructive-action);
+  // Secondary icon buttons (30% supporting)
+  &.icon-btn-secondary {
+    color: var(--color-secondary-medium);
     
     // Interactive states
     &:hover {
-      background-color: rgba(211, 47, 47, 0.08);
-      color: var(--color-error-light);
+      background-color: var(--color-secondary-transparent-10);
+      color: var(--color-secondary-light);
     }
     
     &:active {
-      background-color: rgba(211, 47, 47, 0.15);
+      background-color: var(--color-secondary-transparent-20);
       transform: scale(0.95);
       
       .mat-icon {
@@ -214,17 +214,44 @@
     }
   }
   
-  // Light variant for dark backgrounds
-  &.icon-btn-light {
-    color: var(--brush-text-primary-on-light);
+  // Destructive/warning icon buttons (special emphasis - part of 10%)
+  &.icon-btn-warn {
+    color: var(--color-error-medium);
     
     // Interactive states
     &:hover {
-      background-color: var(--brush-hover-overlay-light);
+      background-color: var(--color-error-transparent-50);
+      color: var(--color-error-light);
     }
     
     &:active {
-      background-color: var(--brush-active-overlay-light);
+      background-color: var(--color-error-transparent-50);
+      transform: scale(0.95);
+      
+      .mat-icon {
+        transform: scale(0.95);
+      }
+    }
+    
+    &:disabled {
+      color: var(--brush-button-disabled-text);
+      cursor: not-allowed;
+      background-color: transparent;
+    }
+  }
+  
+  // Light variant for dark backgrounds (part of 60% structural)
+  &.icon-btn-light {
+    color: var(--color-neutral-lightest);
+    
+    // Interactive states
+    &:hover {
+      background-color: var(--brush-hover-overlay);
+      color: white;
+    }
+    
+    &:active {
+      background-color: var(--brush-active-overlay);
       transform: scale(0.95);
       
       .mat-icon {
@@ -320,21 +347,21 @@
   border-style: solid;
   user-select: none;
   
-  // Primary variant
+  // Primary variant (10% emphasis)
   &.color-primary {
-    border-color: var(--brush-primary-action);
-    color: var(--brush-primary-action);
+    border-color: var(--color-primary-dark);
+    color: var(--color-primary-medium);
 
     &:hover {
-      background-color: rgba(245, 124, 0, 0.08);
-      border-color: var(--brush-primary-action-hover);
-      color: var(--brush-primary-action-hover);
+      background-color: var(--color-primary-transparent-10);
+      border-color: var(--color-primary-medium);
+      color: var(--color-primary-light);
     }
 
     &:active {
-      background-color: rgba(245, 124, 0, 0.15);
-      border-color: var(--brush-button-active);
-      color: var(--brush-button-active);
+      background-color: var(--color-primary-transparent-20);
+      border-color: var(--color-primary-darkest);
+      color: var(--color-primary-darkest);
     }
 
     &:focus:not(:active) {
@@ -349,25 +376,54 @@
     }
   }
 
-  // Accent variant
+  // Secondary variant (30% supporting)
+  &.color-secondary {
+    border-color: var(--color-secondary-dark);
+    color: var(--color-secondary-medium);
+
+    &:hover {
+      background-color: var(--color-secondary-transparent-10);
+      border-color: var(--color-secondary-medium);
+      color: var(--color-secondary-light);
+    }
+
+    &:active {
+      background-color: var(--color-secondary-transparent-20);
+      border-color: var(--color-secondary-darkest);
+      color: var(--color-secondary-darkest);
+    }
+
+    &:focus:not(:active) {
+      outline: 2px solid var(--color-secondary-light);
+      outline-offset: 1px;
+    }
+
+    &:disabled {
+      border-color: var(--brush-button-disabled-text);
+      color: var(--brush-button-disabled-text);
+      cursor: not-allowed;
+    }
+  }
+
+  // Accent variant (part of 10% emphasis)
   &.color-accent {
-    border-color: var(--color-accent-medium);
+    border-color: var(--color-accent-dark);
     color: var(--color-accent-medium);
 
     &:hover {
-      background-color: rgba(255, 183, 77, 0.08);
-      border-color: var(--color-accent-light);
+      background-color: var(--color-accent-transparent-10);
+      border-color: var(--color-accent-medium);
       color: var(--color-accent-light);
     }
 
     &:active {
-      background-color: rgba(255, 183, 77, 0.15);
+      background-color: var(--color-accent-transparent-20);
       border-color: var(--color-accent-darkest);
       color: var(--color-accent-darkest);
     }
 
     &:focus:not(:active) {
-      outline: 2px solid var(--brush-button-focus-ring);
+      outline: 2px solid var(--color-accent-light);
       outline-offset: 1px;
     }
 
@@ -378,19 +434,19 @@
     }
   }
 
-  // Warning/destructive variant
+  // Warning/destructive variant (special emphasis - part of 10%)
   &.color-warn {
-    border-color: var(--brush-destructive-action);
-    color: var(--brush-destructive-action);
+    border-color: var(--color-error-dark);
+    color: var(--color-error-medium);
 
     &:hover {
-      background-color: rgba(211, 47, 47, 0.08);
-      border-color: var(--brush-destructive-action-hover);
-      color: var(--brush-destructive-action-hover);
+      background-color: var(--color-error-transparent-50);
+      border-color: var(--color-error-medium);
+      color: var(--color-error-light);
     }
 
     &:active {
-      background-color: rgba(211, 47, 47, 0.15);
+      background-color: var(--color-error-transparent-50);
       border-color: var(--color-error-darkest);
       color: var(--color-error-darkest);
     }
@@ -433,15 +489,15 @@
     }
   }
 
-  // Light variant for dark backgrounds
+  // Light variant for dark backgrounds (part of 60% structural)
   &.light-stroked-button {
     border-color: var(--color-neutral-lightest);
     color: var(--color-neutral-lightest);
 
     &:hover {
       background-color: var(--brush-hover-overlay);
-      border-color: var(--color-text-primary-light);
-      color: var(--color-text-primary-light);
+      border-color: white;
+      color: white;
     }
 
     &:active {
