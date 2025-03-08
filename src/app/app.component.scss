@@ -52,10 +52,16 @@
       transition: all var(--transition-normal) var(--transition-timing);
 
       .mat-icon {
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        color: var(--brush-text-primary);
         transition: transform var(--transition-normal) var(--transition-timing);
       }
 
       &:hover .mat-icon {
+        color: var(--color-accent);
         transform: scale(1.1);
       }
 
