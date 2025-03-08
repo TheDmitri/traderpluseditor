@@ -24,33 +24,8 @@
   }
 
   .table-container {
-    position: relative;
-    min-height: 200px;
-    overflow-x: auto;
-
     table {
-      width: 100%;
-
-      .mat-mdc-column-actions,
-      .mat-column-actions {
-        min-width: 120px;
-        width: 120px;
-        flex: 0 0 120px;
-
-        .actions-header,
-        .actions-cell {
-          text-align: center;
-          justify-content: flex-end;
-        }
-      }
-
-      // Other columns remain flexible
-      [class*="mat-column-"]:not([class*="mat-column-actions"]) {
-        flex: 1;
-        min-width: 100px;
-      }
-
-      // Specific column adjustments
+      // Specific column adjustments for category editor table
       .mat-column-icon {
         min-width: 48px;
         flex: 0.3;
@@ -79,22 +54,6 @@
       .product-count {
         min-width: 100px;
         text-align: start;
-      }
-
-      // Cell styles
-      .mat-mdc-header-cell,
-      .mat-mdc-cell {
-        padding: 12px 8px;
-        font-size: 14px;
-        color: var(--brush-text-primary);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .mat-mdc-header-cell {
-        font-weight: 500;
-        color: var(--brush-text-secondary);
       }
     }
   }

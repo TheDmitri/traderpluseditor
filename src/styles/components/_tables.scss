@@ -52,6 +52,59 @@
   }
 }
 
+/* Shared Table Container Styling
+ * ========================================================================== 
+ * Common table container styling used across the application.
+ * Provides consistent layout, sizing, and cell appearance for all data tables.
+ */
+.table-container {
+  position: relative;
+  min-height: 200px;
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+
+    // Actions column standardization
+    .mat-mdc-column-actions,
+    .mat-column-actions {
+      min-width: 120px;
+      width: 120px;
+      flex: 0 0 120px;
+      text-align: center;
+      padding-right: 16px;
+
+      .actions-header,
+      .actions-cell {
+        text-align: center;
+        justify-content: flex-end;
+      }
+    }
+
+    // Default column behavior - all columns except actions are flexible
+    [class*="mat-column-"]:not([class*="mat-column-actions"]) {
+      flex: 1;
+      min-width: 100px;
+    }
+
+    // Standard cell styling
+    .mat-mdc-header-cell,
+    .mat-mdc-cell {
+      padding: 12px 8px;
+      font-size: 14px;
+      color: var(--brush-text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mat-mdc-header-cell {
+      font-weight: 500;
+      color: var(--brush-text-secondary);
+    }
+  }
+}
+
 /* Material Paginator Customization
  * ========================================================================== 
  * Complete override of Material Paginator styling to match application design system.
