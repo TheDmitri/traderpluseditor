@@ -1,29 +1,482 @@
 /**
- * Material Form Field Customization
+ * Form Component Styling
  * ========================================================================== 
- * This file contains styling for Angular Material form fields, focusing on
- * validation states and helper text styling for consistency across the application.
+ * This file contains styling for Angular Material form components and custom form elements.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Form backgrounds, containers, structure (neutral/background colors)
+ * - 30%: Labels, secondary elements, helper text (secondary colors)
+ * - 10%: Focus states, validation indicators, interactive elements (primary/accent colors)
  */
 
-/* Material Form Field Customization
- * Provides validation styling and text size standardization
+/* Base Input Styling
+ * ========================================================================== 
+ * Common styles shared across all input types
  */
 .mat-mdc-form-field {
-  // Invalid form field styling - highlights errors with appropriate color
+  width: 100%;
+  margin-bottom: 16px;
+  
+  // Form field appearance
+  .mat-mdc-text-field-wrapper {
+    background-color: var(--brush-input-background) !important; // 60% - container
+    border-radius: 4px !important;
+  }
+  
+  // Label styling
+  .mat-mdc-form-field-label {
+    color: var(--brush-label-text) !important; // 30% - supporting text
+  }
+  
+  // Input text styling
+  .mat-mdc-input-element {
+    color: var(--brush-input-text) !important; // 60% - primary text
+  }
+  
+  // Placeholder styling
+  ::placeholder {
+    color: var(--brush-input-placeholder) !important; // 30% - supporting text
+    opacity: 0.7;
+  }
+  
+  // Focus state - 10% accent color for emphasis
+  &.mat-focused {
+    .mat-mdc-form-field-outline {
+      color: var(--brush-input-border-focus) !important; // 10% - primary accent
+    }
+    
+    .mat-mdc-form-field-label {
+      color: var(--brush-input-border-focus) !important; // 10% - primary accent
+    }
+  }
+  
+  // Hover state
+  &:hover:not(.mat-focused):not(.ng-invalid) {
+    .mat-mdc-text-field-wrapper {
+      background-color: var(--brush-input-background-hover) !important; // 60% - slightly lighter container
+    }
+    
+    .mat-mdc-form-field-outline {
+      color: var(--brush-input-border-hover) !important; // 30% - supporting highlight
+    }
+  }
+  
+  // Disabled state
+  &.mat-form-field-disabled {
+    opacity: 0.7;
+    
+    .mat-mdc-text-field-wrapper {
+      background-color: var(--brush-input-background-disabled) !important; // 60% - muted container
+    }
+    
+    .mat-mdc-form-field-label,
+    .mat-mdc-input-element {
+      color: var(--brush-input-text-disabled) !important; // 60% - muted text
+    }
+  }
+  
+  // Invalid form field styling - highlights errors with appropriate color (10% accent)
   &.ng-invalid.ng-touched {
     .mat-mdc-form-field-outline {
-      color: var(--color-error-light) !important; // Error outline highlight
+      color: var(--brush-input-border-error) !important; // 10% - error accent
     }
 
     .mat-mdc-form-field-label {
-      color: var(--color-error-light) !important; // Label color changes to indicate error
+      color: var(--brush-input-border-error) !important; // 10% - error accent
+    }
+    
+    .mat-error {
+      color: var(--brush-text-error) !important; // 10% - error text
     }
   }
 
   // Helper text and error message standardization
   .mat-mdc-form-field-hint,
   .mat-mdc-form-field-error {
-    font-size: 0.75rem; // Consistent small text for hints and errors
+    font-size: var(--font-size-xs) !important; // Consistent small text for hints and errors
     letter-spacing: 0.025em; // Improved readability for small text
+  }
+  
+  // Helper text color
+  .mat-mdc-form-field-hint {
+    color: var(--brush-text-secondary) !important; // 30% - supporting text
+  }
+  
+  // Error message color
+  .mat-mdc-form-field-error {
+    color: var(--brush-text-error) !important; // 10% - error accent
+  }
+}
+
+/* Select Fields
+ * ========================================================================== 
+ * Styling for dropdown menus and select controls
+ */
+.mat-mdc-select {
+  .mat-mdc-select-value {
+    color: var(--brush-input-text) !important; // 60% - primary text
+  }
+  
+  .mat-mdc-select-arrow {
+    color: var(--brush-input-icon) !important; // 30% - supporting element
+  }
+}
+
+// Select panel/dropdown styling
+.mat-mdc-select-panel {
+  background-color: var(--brush-dropdown-background) !important; // 60% - container
+  border-radius: 4px !important;
+  box-shadow: 0 4px 12px var(--brush-dropdown-shadow) !important;
+  
+  .mat-mdc-option {
+    color: var(--brush-text-primary) !important; // 60% - primary text
+    
+    &:hover:not(.mat-mdc-option-disabled) {
+      background-color: var(--brush-dropdown-item-hover) !important; // 60% - subtle hover
+    }
+    
+    &.mat-mdc-option-active {
+      background-color: var(--color-primary-transparent-20) !important; // 10% - primary accent
+    }
+    
+    &.mat-mdc-selected:not(.mat-mdc-option-multiple) {
+      background-color: var(--color-primary-transparent-10) !important; // 10% - primary accent
+      color: var (--brush-text-accent) !important; // 10% - accent text
+    }
+    
+    &.mat-mdc-option-disabled {
+      color: var(--brush-text-disabled) !important; // 60% - muted text
+    }
+  }
+}
+
+/* Checkbox and Radio Buttons
+ * ========================================================================== 
+ * Styling for selection controls
+ */
+// Checkbox styling
+.mat-mdc-checkbox {
+  .mdc-checkbox {
+    .mdc-checkbox__background {
+      background-color: var(--brush-checkbox-background) !important; // 60% - container
+      border-color: var(--brush-input-border) !important; // 60% - subtle border
+    }
+    
+    &.mdc-checkbox--selected {
+      .mdc-checkbox__background {
+        background-color: var(--brush-checkbox-selected) !important; // 10% - primary accent
+        border-color: var(--brush-checkbox-selected) !important; // 10% - primary accent
+      }
+    }
+    
+    &:hover:not(.mdc-checkbox--disabled) {
+      .mdc-checkbox__background {
+        border-color: var(--brush-input-border-hover) !important; // 30% - supporting highlight
+      }
+    }
+    
+    &.mdc-checkbox--disabled {
+      .mdc-checkbox__background {
+        background-color: var(--brush-input-background-disabled) !important; // 60% - muted container
+        border-color: var(--brush-input-text-disabled) !important; // 60% - muted border
+      }
+    }
+  }
+  
+  .mdc-checkbox-touch {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 48px;
+    width: 48px;
+    transform: translate(-50%, -50%);
+  }
+  
+  .mdc-form-field {
+    label {
+      color: var(--brush-label-text) !important; // 30% - supporting text
+    }
+  }
+}
+
+// Radio button styling
+.mat-mdc-radio-button {
+  .mdc-radio {
+    .mdc-radio__background {
+      .mdc-radio__outer-circle {
+        border-color: var(--brush-input-border) !important; // 60% - subtle border
+      }
+      
+      .mdc-radio__inner-circle {
+        background-color: var(--brush-radio-selected) !important; // 10% - primary accent
+      }
+    }
+    
+    &.mdc-radio--disabled {
+      .mdc-radio__background {
+        .mdc-radio__outer-circle {
+          border-color: var(--brush-input-text-disabled) !important; // 60% - muted border
+        }
+        
+        .mdc-radio__inner-circle {
+          background-color: var(--brush-input-text-disabled) !important; // 60% - muted fill
+        }
+      }
+    }
+  }
+  
+  &.mat-mdc-radio-checked {
+    .mdc-radio__background {
+      .mdc-radio__outer-circle {
+        border-color: var(--brush-radio-selected) !important; // 10% - primary accent
+      }
+    }
+  }
+  
+  .mdc-form-field {
+    label {
+      color: var(--brush-label-text) !important; // 30% - supporting text
+    }
+  }
+}
+
+/* Switches/Toggles
+ * ========================================================================== 
+ * Styling for toggle switches
+ */
+.mat-mdc-slide-toggle {
+  .mdc-switch {
+    // Track styling
+    .mdc-switch__track {
+      background-color: var(--brush-switch-track) !important; // 60% - container
+      border-color: var(--brush-switch-track) !important; // 60% - container
+    }
+    
+    // Thumb/knob styling
+    .mdc-switch__thumb {
+      background-color: var(--brush-switch-thumb) !important; // 60% - neutral element
+    }
+    
+    // Active/selected state
+    &.mdc-switch--selected {
+      .mdc-switch__track {
+        background-color: var(--brush-switch-track-active) !important; // 10% - primary accent
+        border-color: var(--brush-switch-track-active) !important; // 10% - primary accent
+      }
+      
+      .mdc-switch__thumb {
+        background-color: var(--brush-switch-thumb-active) !important; // 10% - primary accent
+      }
+    }
+    
+    // Disabled state
+    &.mdc-switch--disabled {
+      opacity: 0.5;
+      
+      .mdc-switch__track {
+        background-color: var(--brush-input-background-disabled) !important; // 60% - muted container
+      }
+      
+      .mdc-switch__thumb {
+        background-color: var(--brush-input-text-disabled) !important; // 60% - muted element
+      }
+    }
+  }
+  
+  .mat-mdc-slide-toggle-content {
+    color: var(--brush-label-text) !important; // 30% - supporting text
+  }
+}
+
+/* Sliders
+ * ========================================================================== 
+ * Styling for range sliders
+ */
+.mat-mdc-slider {
+  // Track styling
+  .mdc-slider__track {
+    background-color: var(--brush-slider-track) !important; // 60% - container
+    
+    .mdc-slider__track--active {
+      background-color: var(--brush-slider-thumb) !important; // 10% - primary accent
+    }
+  }
+  
+  // Thumb/handle styling
+  .mdc-slider__thumb {
+    background-color: var(--brush-slider-thumb) !important; // 10% - primary accent
+    border-color: var(--brush-slider-thumb) !important; // 10% - primary accent
+    
+    .mdc-slider__thumb-knob {
+      border-color: var(--brush-slider-thumb) !important; // 10% - primary accent
+    }
+  }
+  
+  // Disabled state
+  &.mat-mdc-slider-disabled {
+    opacity: 0.5;
+    
+    .mdc-slider__track {
+      background-color: var(--brush-input-text-disabled) !important; // 60% - muted container
+    }
+    
+    .mdc-slider__thumb {
+      background-color: var(--brush-input-text-disabled) !important; // 60% - muted element
+    }
+  }
+}
+
+/* Text Areas
+ * ========================================================================== 
+ * Styling for multi-line text inputs
+ */
+textarea.mat-mdc-input-element {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.5;
+}
+
+/* Form Layout Helpers
+ * ========================================================================== 
+ * Classes to assist with form layout and organization
+ */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -8px;
+  
+  .form-col {
+    padding: 0 8px;
+    flex: 1;
+    min-width: 0; // Prevents flex items from overflowing
+    
+    &-half { width: 50%; }
+    &-third { width: 33.333%; }
+    &-quarter { width: 25%; }
+    &-full { width: 100%; }
+    
+    // Responsive adjustments
+    @media (max-width: 768px) {
+      &-half, &-third, &-quarter {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.form-group {
+  margin-bottom: 24px;
+  
+  .form-group-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--brush-text-primary); // 60% - primary text
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+  }
+  
+  .form-group-hint {
+    margin-top: 4px;
+    color: var(--brush-text-secondary); // 30% - supporting text
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Form Validation States
+ * ========================================================================== 
+ * Additional styles for form validation feedback
+ */
+.validation-indicator {
+  display: flex;
+  align-items: center;
+  font-size: var(--font-size-xs);
+  margin-top: 4px;
+  
+  .mat-icon {
+    margin-right: 4px;
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+  }
+  
+  &.validation-success {
+    color: var(--brush-text-success); // Status color
+  }
+  
+  &.validation-error {
+    color: var(--brush-text-error); // Status color
+  }
+  
+  &.validation-warning {
+    color: var(--brush-text-warning); // Status color
+  }
+  
+  &.validation-info {
+    color: var(--brush-text-info); // Status color
+  }
+}
+
+/* Custom Form Elements
+ * ========================================================================== 
+ * Styling for custom non-Material form components
+ */
+.custom-file-upload {
+  display: block;
+  cursor: pointer;
+  padding: 12px;
+  border: 1px dashed var(--brush-input-border); // 60% - structural
+  border-radius: 4px;
+  background-color: var(--brush-input-background); // 60% - container
+  text-align: center;
+  transition: all var(--transition-normal) var(--transition-timing);
+  
+  &:hover {
+    border-color: var(--brush-input-border-hover); // 30% - supporting highlight
+    background-color: var(--brush-input-background-hover); // 60% - slightly lighter
+  }
+  
+  &.drag-over {
+    border-color: var(--brush-input-border-focus); // 10% - primary accent
+    background-color: var(--color-primary-transparent-10); // 10% - primary feedback
+  }
+  
+  .upload-icon {
+    font-size: 24px;
+    color: var(--brush-input-icon); // 30% - supporting element
+    margin-bottom: 8px;
+  }
+  
+  .upload-text {
+    color: var(--brush-text-secondary); // 30% - supporting text
+  }
+  
+  input[type="file"] {
+    display: none;
+  }
+}
+
+/* Chips/Tags Input
+ * ========================================================================== 
+ * Styling for chip/tag input components
+ */
+.mat-mdc-chip {
+  background-color: var(--brush-chip-background) !important; // 60% - container
+  border: 1px solid var(--brush-chip-border) !important; // 60% - subtle border
+  color: var(--brush-text-primary) !important; // 60% - primary text
+  
+  .mat-mdc-chip-remove {
+    color: var(--brush-text-secondary) !important; // 30% - supporting element
+    
+    &:hover {
+      color: var(--brush-text-primary) !important; // 60% - increased visibility on hover
+    }
+  }
+  
+  &.mat-mdc-chip-selected {
+    background-color: var(--color-primary-transparent-20) !important; // 10% - primary accent
+    border-color: var(--color-primary-transparent-50) !important; // 10% - primary accent
+  }
+  
+  &.mat-mdc-chip-disabled {
+    opacity: 0.5;
   }
 }
