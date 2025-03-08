@@ -1,7 +1,7 @@
 .category-modal {
   display: flex;
   flex-direction: column;
-  height: 85vh;
+  max-height: 85vh;
 
   // Header styling using global dialog header variables
   .modal-header {
