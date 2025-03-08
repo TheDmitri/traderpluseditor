@@ -90,7 +90,7 @@ mat-nav-list {
     
     // Route active state (current page)
     &.active-link {
-      background-color: transparent !important; // Remove background
+      background-color: var(--brush-active-overlay) !important; // Remove background
       border-left: 3px solid var(--color-accent-medium);
       
       .nav-icon-wrapper {
