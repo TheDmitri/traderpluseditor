@@ -1,138 +1,167 @@
 <div class="dashboard-container">
-  <!-- Header Section -->
-  <header class="dashboard-header">
-    <h1 class="dashboard-title">Welcome to TraderPlus Editor</h1>
-    <p class="dashboard-subtitle">Manage and optimize your DayZ trading system with ease</p>
+  <!-- Page Header Section -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h1 class="page-title">Welcome to TraderPlus Editor</h1>
+        <p class="subtitle">Manage and optimize your DayZ trading system with ease</p>
+      </div>
+    </div>
   </header>
 
-  <!-- Statistics Cards -->
+  <!-- Statistics Cards Section -->
   <section class="dashboard-stats">
+    <!-- Category Stats Card -->
     <mat-card class="stats-card category-card" appearance="outlined">
       <div class="stats-content">
+        <div class="stats-icon">
+          <mat-icon aria-label="Categories">category</mat-icon>
+        </div>
         <div class="stats-info">
           <span class="stats-label">Categories</span>
           <span class="stats-value">{{ categoriesCount }}</span>
-          <span class="stats-trend positive">
+          <div class="stats-trend positive">
             <mat-icon>trending_up</mat-icon>
-            Active
-          </span>
-        </div>
-        <div class="stats-icon">
-          <mat-icon>my_library_books</mat-icon>
+            <span>Active</span>
+          </div>
         </div>
       </div>
-      <mat-card-actions>
-        <button class="custom-stroked-button color-accent" routerLink="/categories">
-          <mat-icon>edit</mat-icon>
-          Manage Categories
-        </button>
-      </mat-card-actions>
+      <div class="stats-action">
+        <a class="text-link with-icon" routerLink="/categories">
+          <span>Manage Categories</span>
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+      </div>
     </mat-card>
 
+    <!-- Product Stats Card -->
     <mat-card class="stats-card product-card" appearance="outlined">
       <div class="stats-content">
+        <div class="stats-icon">
+          <mat-icon aria-label="Products">shopping_cart</mat-icon>
+        </div>
         <div class="stats-info">
           <span class="stats-label">Products</span>
           <span class="stats-value">{{ productsCount }}</span>
-          <span class="stats-trend positive">
+          <div class="stats-trend positive">
             <mat-icon>trending_up</mat-icon>
-            Active
-          </span>
-        </div>
-        <div class="stats-icon">
-          <mat-icon>shopping_cart</mat-icon>
+            <span>Active</span>
+          </div>
         </div>
       </div>
-      <mat-card-actions>
-        <button class="custom-stroked-button color-accent" routerLink="/products">
-          <mat-icon>edit</mat-icon>
-          Manage Products
-        </button>
-      </mat-card-actions>
+      <div class="stats-action">
+        <a class="text-link with-icon" routerLink="/products">
+          <span>Manage Products</span>
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+      </div>
     </mat-card>
 
+    <!-- Currency Stats Card -->
     <mat-card class="stats-card currency-card" appearance="outlined">
       <div class="stats-content">
+        <div class="stats-icon">
+          <mat-icon aria-label="Currencies">attach_money</mat-icon>
+        </div>
         <div class="stats-info">
           <span class="stats-label">Currencies</span>
           <span class="stats-value">{{ currenciesCount }}</span>
-          <span class="stats-trend positive">
+          <div class="stats-trend positive">
             <mat-icon>trending_up</mat-icon>
-            Active
-          </span>
-        </div>
-        <div class="stats-icon">
-          <mat-icon>attach_money</mat-icon>
+            <span>Active</span>
+          </div>
         </div>
       </div>
-      <mat-card-actions>
-        <button class="custom-stroked-button color-accent" routerLink="/currencies">
-          <mat-icon>edit</mat-icon>
-          Manage Currencies
-        </button>
-      </mat-card-actions>
+      <div class="stats-action">
+        <a class="text-link with-icon" routerLink="/currencies">
+          <span>Manage Currencies</span>
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+      </div>
     </mat-card>
   </section>
 
   <!-- Quick Actions Section -->
-  <section class="quick-actions">
-    <mat-card appearance="outlined">
-      <mat-card-header>
-        <div mat-card-avatar class="quick-actions-icon">
-          <mat-icon>flash_on</mat-icon>
-        </div>
-        <mat-card-title>Quick Actions</mat-card-title>
-        <mat-card-subtitle>Common tasks and operations</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="action-buttons">
-          <button class="custom-stroked-button color-accent" routerLink="/file-management">
+  <section class="content-panel quick-actions">
+    <div class="panel-header">
+      <h2 class="section-title">Quick Actions</h2>
+      <p class="panel-subtitle">Common operations to manage your trading system</p>
+    </div>
+    <div class="panel-body">
+      <div class="action-grid">
+        <div class="action-item">
+          <div class="action-icon import-icon">
             <mat-icon>upload_file</mat-icon>
-            Import Configuration
-          </button>
-          <button class="custom-stroked-button color-accent" routerLink="/settings">
-            <mat-icon>settings</mat-icon>
-            Settings
-          </button>
-          <button class="custom-stroked-button color-accent" routerLink="/file-management">
-            <mat-icon>download</mat-icon>
-            Export Configuration
-          </button>
+          </div>
+          <div class="action-info">
+            <h3 class="action-title">Import Configuration</h3>
+            <p class="action-description">Upload and parse existing TraderPlus JSON files</p>
+            <a class="action-link" routerLink="/file-management">Import Now</a>
+          </div>
         </div>
-      </mat-card-content>
-    </mat-card>
+
+        <div class="action-item">
+          <div class="action-icon settings-icon">
+            <mat-icon>settings</mat-icon>
+          </div>
+          <div class="action-info">
+            <h3 class="action-title">Settings</h3>
+            <p class="action-description">Configure application preferences and defaults</p>
+            <a class="action-link" routerLink="/settings">Go to Settings</a>
+          </div>
+        </div>
+
+        <div class="action-item">
+          <div class="action-icon export-icon">
+            <mat-icon>download</mat-icon>
+          </div>
+          <div class="action-info">
+            <h3 class="action-title">Export Configuration</h3>
+            <p class="action-description">Download your configurations as JSON files</p>
+            <a class="action-link" routerLink="/file-management">Export Files</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <!-- Info Section -->
-  <section class="info-section">
-    <mat-card appearance="outlined">
-      <mat-card-header>
-        <div mat-card-avatar class="info-icon">
-          <mat-icon>info</mat-icon>
-        </div>
-        <mat-card-title>System Information</mat-card-title>
-        <mat-card-subtitle>Current configuration status</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="info-grid">
-          <div class="info-item">
+  <!-- System Information Section -->
+  <section class="content-panel info-section">
+    <div class="panel-header">
+      <h2 class="section-title">System Information</h2>
+      <p class="panel-subtitle">Current configuration status and statistics</p>
+    </div>
+    <div class="panel-body">
+      <div class="info-grid">
+        <div class="info-item">
+          <mat-icon class="info-icon">history</mat-icon>
+          <div class="info-content">
             <span class="info-label">Last Import</span>
             <span class="info-value">2 hours ago</span>
           </div>
-          <div class="info-item">
+        </div>
+        <div class="info-item">
+          <mat-icon class="info-icon">save_alt</mat-icon>
+          <div class="info-content">
             <span class="info-label">Last Export</span>
             <span class="info-value">1 hour ago</span>
           </div>
-          <div class="info-item">
+        </div>
+        <div class="info-item">
+          <mat-icon class="info-icon">storage</mat-icon>
+          <div class="info-content">
             <span class="info-label">Storage Usage</span>
             <span class="info-value">45%</span>
           </div>
-          <div class="info-item">
+        </div>
+        <div class="info-item">
+          <mat-icon class="info-icon">new_releases</mat-icon>
+          <div class="info-content">
             <span class="info-label">Version</span>
             <span class="info-value">1.0.0</span>
           </div>
         </div>
-      </mat-card-content>
-    </mat-card>
+      </div>
+    </div>
   </section>
 </div>
