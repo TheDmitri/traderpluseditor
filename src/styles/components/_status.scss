@@ -1,0 +1,208 @@
+/**
+ * Status Indicator Components
+ * ========================================================================== 
+ * This file contains styling for status indicators used throughout the application.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Container backgrounds and structure (neutral colors)
+ * - 30%: Supporting elements (secondary colors)
+ * - 10%: Status colors for emphasis (semantic colors)
+ */
+
+/* Status Badges
+ * ========================================================================== 
+ * Compact badges that indicate item status
+ */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  
+  .status-icon {
+    margin-right: 4px;
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+  
+  &.status-success {
+    background-color: var(--brush-status-success-subtle);
+    color: var(--brush-status-success-background);
+  }
+  
+  &.status-warning {
+    background-color: var(--brush-status-warning-subtle);
+    color: var(--brush-status-warning-background);
+  }
+  
+  &.status-error {
+    background-color: var(--brush-status-error-subtle);
+    color: var(--brush-status-error-background);
+  }
+  
+  &.status-info {
+    background-color: var(--brush-status-info-subtle);
+    color: var(--brush-status-info-background);
+  }
+  
+  &.status-neutral {
+    background-color: var(--brush-background-elevated);
+    color: var(--brush-text-secondary);
+  }
+}
+
+/* Status Panels
+ * ========================================================================== 
+ * Panels that represent different states or feedback messages
+ */
+.status-panel {
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  
+  .status-icon {
+    flex-shrink: 0;
+    margin-right: 16px;
+    
+    .mat-icon {
+      font-size: 24px;
+      height: 24px;
+      width: 24px;
+    }
+  }
+  
+  .status-content {
+    flex: 1;
+    
+    .status-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-medium);
+      margin: 0 0 8px;
+    }
+    
+    .status-message {
+      margin: 0;
+      line-height: var(--line-height-normal);
+    }
+    
+    .status-actions {
+      margin-top: 16px;
+    }
+  }
+  
+  // Status variants
+  &.success {
+    background-color: var(--brush-status-success-subtle);
+    border: 1px solid var(--brush-status-success-border);
+    
+    .status-icon {
+      color: var(--brush-status-success-background);
+    }
+    
+    .status-title {
+      color: var(--brush-status-success-background);
+    }
+  }
+  
+  &.error {
+    background-color: var(--brush-status-error-subtle);
+    border: 1px solid var(--brush-status-error-border);
+    
+    .status-icon {
+      color: var(--brush-status-error-background);
+    }
+    
+    .status-title {
+      color: var(--brush-status-error-background);
+    }
+  }
+  
+  &.warning {
+    background-color: var(--brush-status-warning-subtle);
+    border: 1px solid var(--brush-status-warning-border);
+    
+    .status-icon {
+      color: var(--brush-status-warning-background);
+    }
+    
+    .status-title {
+      color: var(--brush-status-warning-background);
+    }
+  }
+  
+  &.info {
+    background-color: var(--brush-status-info-subtle);
+    border: 1px solid var(--brush-status-info-border);
+    
+    .status-icon {
+      color: var(--brush-status-info-background);
+    }
+    
+    .status-title {
+      color: var(--brush-status-info-background);
+    }
+  }
+}
+
+/* Status Indicators for Table Rows
+ * ========================================================================== 
+ * Row-based status indicators
+ */
+.status-row {
+  position: relative;
+  
+  &.status-success {
+    border-left: 4px solid var(--brush-status-success-background);
+  }
+  
+  &.status-warning {
+    border-left: 4px solid var(--brush-status-warning-background);
+  }
+  
+  &.status-error {
+    border-left: 4px solid var(--brush-status-error-background);
+  }
+  
+  &.status-info {
+    border-left: 4px solid var(--brush-status-info-background);
+  }
+}
+
+/* Status Card Indicators
+ * ========================================================================== 
+ * Card-based status indicators
+ */
+.status-card-indicator {
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+  
+  &.status-success::before {
+    background-color: var(--brush-status-success-background);
+  }
+  
+  &.status-warning::before {
+    background-color: var(--brush-status-warning-background);
+  }
+  
+  &.status-error::before {
+    background-color: var(--brush-status-error-background);
+  }
+  
+  &.status-info::before {
+    background-color: var(--brush-status-info-background);
+  }
+}
