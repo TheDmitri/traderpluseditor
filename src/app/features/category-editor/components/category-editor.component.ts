@@ -311,7 +311,6 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
         const newCategory: Category = {
           ...result,
           categoryId: categoryId,
-          productIds: [],
         };
         const categories = [...this.dataSource.data, newCategory];
         this.storageService.saveCategories(categories);

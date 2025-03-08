@@ -50,6 +50,9 @@ export class CategoryModalComponent implements OnInit {
   categoryForm: FormGroup;
   categoryProducts: Product[] = [];
   isEditMode: boolean;
+  
+  // New property to store product IDs for new categories
+  selectedProductIds: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -68,6 +71,12 @@ export class CategoryModalComponent implements OnInit {
       }
     });
     this.isEditMode = !!data.category;
+    
+    // Initialize selected product IDs if we're editing
+    if (this.isEditMode && this.data.category) {
+      this.selectedProductIds = [...this.data.category.productIds];
+    }
+    
     this.categoryForm = this.fb.group({
       categoryName: ['', Validators.required],
       icon: [''],
@@ -87,23 +96,29 @@ export class CategoryModalComponent implements OnInit {
         isVisible: this.data.category.isVisible,
       });
     } else {
-      // Sicherstellen, dass categoryProducts initialisiert ist
+      // Initialize empty products array for new category
       this.categoryProducts = [];
     }
   }
 
   loadCategoryProducts(): void {
-    if (this.data.category) {
-      const allProducts = this.storageService.products();
-      this.categoryProducts = allProducts.filter((product) =>
-        this.data.category!.productIds.includes(product.productId)
-      );
-      
-      console.log(`Loaded ${this.categoryProducts.length} products for category ${this.data.category.categoryName}`);
-      
-      // Trigger change detection with a new array reference
-      this.categoryProducts = [...this.categoryProducts];
-    }
+    const allProducts = this.storageService.products();
+    
+    // Use selectedProductIds when we don't have a category yet (new category)
+    // or use the category's productIds when editing
+    const productIds = this.isEditMode && this.data.category 
+      ? this.data.category.productIds 
+      : this.selectedProductIds;
+    
+    this.categoryProducts = allProducts.filter((product) =>
+      productIds.includes(product.productId)
+    );
+    
+    // Log for debugging
+    console.log(`Loaded ${this.categoryProducts.length} products for ${this.isEditMode ? 'existing' : 'new'} category`);
+    
+    // Trigger change detection with a new array reference
+    this.categoryProducts = [...this.categoryProducts];
   }
 
   onProductRemoved(productId: string): void {
@@ -119,11 +134,20 @@ export class CategoryModalComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result && this.data.category) {
-        const updatedProductIds = this.data.category.productIds.filter(
-          (id) => id !== productId
-        );
-        this.data.category.productIds = updatedProductIds;
+      if (result) {
+        if (this.isEditMode && this.data.category) {
+          // Remove from existing category
+          this.data.category.productIds = this.data.category.productIds.filter(
+            (id) => id !== productId
+          );
+          this.selectedProductIds = [...this.data.category.productIds];
+        } else {
+          // Remove from new category
+          this.selectedProductIds = this.selectedProductIds.filter(
+            (id) => id !== productId
+          );
+        }
+        
         this.loadCategoryProducts();
         this.notificationService.success('Product removed from category');
       }
@@ -166,7 +190,7 @@ export class CategoryModalComponent implements OnInit {
     const dialogRef = this.dialog.open(ProductModalComponent, {
       disableClose: true, // Prevent closing on backdrop click
       data: {
-        categoryId: this.data.category?.categoryId,
+        categoryId: this.isEditMode ? this.data.category?.categoryId : undefined,
       },
     });
 
@@ -178,11 +202,17 @@ export class CategoryModalComponent implements OnInit {
           const updatedProducts = [...allProducts, result.product];
           this.storageService.saveProducts(updatedProducts);
 
-          if (this.data.category) {
+          if (this.isEditMode && this.data.category) {
+            // Add to existing category
             this.data.category.productIds.push(result.product.productId);
-            this.loadCategoryProducts(); // Explicitly reload products
-            this.notificationService.success('Product added to category successfully');
+            this.selectedProductIds = [...this.data.category.productIds];
+          } else {
+            // Add to new category
+            this.selectedProductIds.push(result.product.productId);
           }
+          
+          this.loadCategoryProducts();
+          this.notificationService.success('Product added to category successfully');
         }
       });
     });
@@ -194,18 +224,26 @@ export class CategoryModalComponent implements OnInit {
   
     const dialogRef = this.dialog.open(AssignProductsDialogComponent, {
       disableClose: true,
-      autoFocus: false, // Verhindert Auto-Fokus auf das erste Element
+      autoFocus: false,
       data: {
         allProducts: this.storageService.products(),
-        currentProductIds: this.data.category?.productIds || []
+        // Use selectedProductIds for both new and existing categories
+        currentProductIds: this.selectedProductIds
       }
     });
   
     setTimeout(() => {
       dialogRef.afterClosed().subscribe(result => {
-        if (result && this.data.category) {
-          this.data.category.productIds = result;
-          this.loadCategoryProducts(); // Explicitly reload products
+        if (result) {
+          if (this.isEditMode && this.data.category) {
+            // Update existing category
+            this.data.category.productIds = result;
+          }
+          
+          // Always update selectedProductIds
+          this.selectedProductIds = result;
+          
+          this.loadCategoryProducts();
           this.notificationService.success('Products assigned successfully');
         }
       });
@@ -222,7 +260,8 @@ export class CategoryModalComponent implements OnInit {
         licensesRequired: formValue.licensesRequired
           ? formValue.licensesRequired.split(',').map((s: string) => s.trim())
           : [],
-        productIds: this.isEditMode ? this.data.category?.productIds : [],
+        // Use selectedProductIds for both new and existing categories
+        productIds: this.selectedProductIds,
       };
       this.dialogRef.close(category);
     }
