@@ -58,22 +58,22 @@
   <div class="data-card">
     <h2 class="section-title">Categories Overview</h2>
     <mat-card-content>
-      <!-- Search field with standardized styling -->
-      <mat-form-field class="filter-field" appearance="outline">
-        <mat-label>Filter Categories</mat-label>
-        <input
-          matInput
-          (keyup)="applyFilter($event)"
-          placeholder="Search categories..."
-          #input
-          matTooltip="Filter categories by any field"
-          matTooltipPosition="below"
-        />
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
-
-      <!-- Table container with responsive styling -->
+      <!-- Search field with standardized styling and proper containment -->
       <div class="table-container">
+        <mat-form-field class="filter-field" appearance="outline">
+          <mat-label>Filter Categories</mat-label>
+          <input
+            matInput
+            (keyup)="applyFilter($event)"
+            placeholder="Search categories..."
+            #input
+            matTooltip="Filter categories by any field"
+            matTooltipPosition="below"
+          />
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <!-- Table with proper alignment -->
         <table mat-table [dataSource]="dataSource" matSort class="with-border hoverable-table consistent-rows">
           <!-- Icon Column -->
           <ng-container matColumnDef="icon">

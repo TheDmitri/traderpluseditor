@@ -8,8 +8,11 @@
  * - 10%: Interactive elements, selected rows (primary/accent colors)
  */
 
+// Properly contained filter field styling
 .filter-field {
   width: 100%;
+  margin-bottom: 16px;
+  box-sizing: border-box;
 }
 
 /* Base Table Styling
