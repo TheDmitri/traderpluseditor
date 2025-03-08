@@ -11,7 +11,6 @@
  * Includes primary, accent, warning, and light variants with consistent interaction states
  */
 .mat-mdc-raised-button,
-.mat-mdc-stroked-button,
 .mat-mdc-button {
   // Primary action button - main call to action
   &.mat-primary {
@@ -290,5 +289,168 @@
     border-radius: inherit;
     pointer-events: none;
     overflow: hidden;
+  }
+}
+
+/* Custom Stroked Button System
+ * ========================================================================== 
+ * Provides outlined buttons with consistent styling using the application's 
+ * color system. These mimic mat-stroked-button but use our custom color palette.
+ */
+.custom-stroked-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  padding: 0 16px;
+  min-width: 64px;
+  height: 36px;
+  border-radius: 4px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 36px;
+  text-decoration: none;
+  text-align: center;
+  vertical-align: baseline;
+  cursor: pointer;
+  background-color: transparent;
+  transition: all 0.2s ease;
+  border-width: 0.5px;
+  border-style: solid;
+  user-select: none;
+  
+  // Primary variant
+  &.color-primary {
+    border-color: var(--brush-primary-action);
+    color: var(--brush-primary-action);
+
+    &:hover {
+      background-color: rgba(245, 124, 0, 0.08);
+      border-color: var(--brush-primary-action-hover);
+      color: var(--brush-primary-action-hover);
+    }
+
+    &:active {
+      background-color: rgba(245, 124, 0, 0.15);
+      border-color: var(--brush-button-active);
+      color: var(--brush-button-active);
+    }
+
+    &:focus:not(:active) {
+      outline: 2px solid var(--brush-button-focus-ring);
+      outline-offset: 1px;
+    }
+
+    &:disabled {
+      border-color: var(--brush-button-disabled-text);
+      color: var(--brush-button-disabled-text);
+      cursor: not-allowed;
+    }
+  }
+
+  // Accent variant
+  &.color-accent {
+    border-color: var(--color-accent-medium);
+    color: var(--color-accent-medium);
+
+    &:hover {
+      background-color: rgba(255, 183, 77, 0.08);
+      border-color: var(--color-accent-light);
+      color: var(--color-accent-light);
+    }
+
+    &:active {
+      background-color: rgba(255, 183, 77, 0.15);
+      border-color: var(--color-accent-darkest);
+      color: var(--color-accent-darkest);
+    }
+
+    &:focus:not(:active) {
+      outline: 2px solid var(--brush-button-focus-ring);
+      outline-offset: 1px;
+    }
+
+    &:disabled {
+      border-color: var(--brush-button-disabled-text);
+      color: var(--brush-button-disabled-text);
+      cursor: not-allowed;
+    }
+  }
+
+  // Warning/destructive variant
+  &.color-warn {
+    border-color: var(--brush-destructive-action);
+    color: var(--brush-destructive-action);
+
+    &:hover {
+      background-color: rgba(211, 47, 47, 0.08);
+      border-color: var(--brush-destructive-action-hover);
+      color: var(--brush-destructive-action-hover);
+    }
+
+    &:active {
+      background-color: rgba(211, 47, 47, 0.15);
+      border-color: var(--color-error-darkest);
+      color: var(--color-error-darkest);
+    }
+
+    &:focus:not(:active) {
+      outline: 2px solid var(--color-error-light);
+      outline-offset: 1px;
+    }
+
+    &:disabled {
+      border-color: var(--brush-button-disabled-text);
+      color: var(--brush-button-disabled-text);
+      cursor: not-allowed;
+    }
+  }
+
+  // Size variants
+  &.button-sm {
+    height: 32px;
+    line-height: 32px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  &.button-lg {
+    height: 44px;
+    line-height: 44px;
+    padding: 0 24px;
+    font-size: 15px;
+  }
+
+  // With icon
+  &.with-icon {
+    gap: 8px;
+    
+    .mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  // Light variant for dark backgrounds
+  &.light-stroked-button {
+    border-color: var(--color-neutral-lightest);
+    color: var(--color-neutral-lightest);
+
+    &:hover {
+      background-color: var(--brush-hover-overlay);
+      border-color: var(--color-text-primary-light);
+      color: var(--color-text-primary-light);
+    }
+
+    &:active {
+      background-color: var(--brush-active-overlay);
+    }
+    
+    &:disabled {
+      border-color: var(--brush-button-disabled-text);
+      color: var(--brush-button-disabled-text);
+    }
   }
 }
