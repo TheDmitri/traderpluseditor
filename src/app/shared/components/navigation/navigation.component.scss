@@ -16,7 +16,7 @@
 
       // Collapsed state
       &.collapsed {
-        width: 75px;
+        width: 80px;
       }
     }
   }
@@ -33,7 +33,7 @@
     }
 
     &.content-collapsed {
-      margin-left: 75px;
+      margin-left: 80px;
     }
 
     // Content scrolling container
@@ -56,25 +56,40 @@ mat-nav-list {
   
   // Navigation item styling
   button {
-    height: 56px;
+    height: 64px;
     margin: 4px 8px;
-    width: 100%;
-    border-radius: 4px;
-    transition: all var(--transition-quick) var(--transition-timing);
+    width: calc(100% - 16px);
+    border-radius: 6px;
+    transition: all var(--transition-normal) var(--transition-timing);
     overflow: hidden;
-    position: relative; // For ripple effect
+    position: relative;
     justify-content: flex-start;
+    border: none !important;
+    background-color: transparent;
+    
+    // Inactive state - neutral styling
+    .nav-icon-wrapper {
+      background-color: transparent;
+      
+      mat-icon {
+        color: var(--brush-text-secondary);
+      }
+    }
+    
+    .nav-item-label {
+      color: var(--brush-text-secondary);
+      font-weight: 400;
+    }
     
     // Interactive states
     &:hover {
-      background-color: var(--brush-hover-overlay) !important;
+      background-color: var(--brush-hover-overlay);
 
       .nav-icon-wrapper {
-        transform: scale(1.1);
-        background-color: var(--brush-active-overlay);
-
+        background-color: var(--brush-hover-overlay);
+        
         mat-icon {
-          color: var(--color-accent-lightest);
+          color: var(--brush-text-primary);
         }
       }
 
@@ -84,25 +99,37 @@ mat-nav-list {
     }
     
     &:active {
+      background-color: var(--brush-pressed-overlay);
+      
       .nav-icon-wrapper {
-        transform: scale(0.95);
         background-color: var(--brush-pressed-overlay);
       }
     }
     
     // Route active state (current page)
     &.active-link {
-      background-color: var(--brush-active-overlay) !important; // Remove background
-      border-left: 3px solid var(--color-accent-medium);
+      position: relative;
+      background-color: var(--brush-active-overlay);
+      
+      // Active indicator - left border
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 1px;
+        bottom: 1px;
+        width: 3px;
+        background: linear-gradient(to bottom,
+          var(--color-accent-medium),
+          var(--color-accent-light));
+        border-radius: 0 2px 2px 0;
+      }
       
       .nav-icon-wrapper {
-        background: linear-gradient(135deg, 
-          var(--color-accent-dark),
-          var(--color-accent-medium));
-        transform: scale(1); // Reset scale for active item
+        background-color: transparent;
         
         mat-icon {
-          color: var(--brush-text-primary) !important;
+          color: var(--color-accent-medium);
         }
       }
       
@@ -113,8 +140,36 @@ mat-nav-list {
 
       // Active hover state
       &:hover {
+        background-color: var(--brush-active-overlay);
+        
+        .nav-icon-wrapper mat-icon {
+          color: var(--color-accent-light);
+        }
+      }
+    }
+
+    // Special handling for collapsed state
+    .sidenav.collapsed & {
+      display: flex;
+      justify-content: center;
+      
+      // Only apply if not active
+      &:not(.active-link) {
+        .nav-item-content {
+          justify-content: center;
+          padding: 0;
+        }
+        
         .nav-icon-wrapper {
-          transform: scale(1.05);
+          margin: 0 auto;
+        }
+      }
+      
+      // Active button in collapsed state
+      &.active-link {
+        .nav-item-content {
+          justify-content: flex-start;
+          padding-left: 12px;
         }
       }
     }
@@ -127,37 +182,42 @@ mat-nav-list {
   display: flex;
   align-items: center;
   height: 100%;
+  padding: 0 12px;
+  transition: padding var(--transition-normal) var(--transition-timing), 
+              justify-content var(--transition-normal) var(--transition-timing);
   
   .sidenav.collapsed & {
     justify-content: center;
+    padding: 0 4px;
   }
 }
 
 // Icon wrapper styling
 .nav-icon-wrapper {
-  width: 36px;
-  height: 36px;
-  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--brush-hover-overlay);
   transition: all var(--transition-normal) var(--transition-timing);
-  will-change: transform, background-color; // Optimize animations
 
   mat-icon {
-    color: var(--color-accent-light);
     transition: color var(--transition-normal) var(--transition-timing);
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
   }
 }
 
 // Navigation item label
 .nav-item-label {
-  margin-left: 16px;
+  margin-left: 12px;
   font-size: var(--font-size-sm);
-  color: var(--brush-text-secondary);
   transition: color var(--transition-normal) var(--transition-timing);
   white-space: nowrap;
+  letter-spacing: 0.1px;
 }
 
 /* Sidenav Footer
@@ -201,6 +261,6 @@ mat-sidenav-content {
   }
   
   &.content-collapsed {
-    margin-left: 75px !important;
+    margin-left: 80px !important;
   }
 }
