@@ -1,78 +1,104 @@
 <div class="assign-products-dialog">
-  <div class="modal-header">
+  <!-- Dialog header using consistent styling with other modals -->
+  <div class="mdc-dialog__title">
     <h2>Assign Products</h2>
   </div>
 
-  <div class="modal-description">
-    <p class="dialog-description">
-      Click on products to move them between lists.
-    </p>
-  </div>
+  <!-- Dialog content -->
+  <div class="mdc-dialog__content">
 
-  <mat-form-field class="filter-field" appearance="fill">
-    <mat-label>Filter Products</mat-label>
-    <input
-      matInput
-      [(ngModel)]="filterValue"
-      (ngModelChange)="applyFilter($event)"
-      placeholder="Enter product name..."
-    />
-    <mat-icon matSuffix>search</mat-icon>
-  </mat-form-field>
-
-  <mat-dialog-content>
+    <!-- Filter section -->
+    <div class="dialog-filter-section">
+      <p class="dialog-primary-text">
+        Select products to assign them to this category.
+      </p>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Filter Products</mat-label>
+        <input
+          matInput
+          [(ngModel)]="filterValue"
+          (ngModelChange)="applyFilter($event)"
+          placeholder="Enter product name..."
+          [disabled]="!hasAnyProducts"
+        />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+    
     <div class="lists-container">
       <!-- Available Products -->
       <div class="products-list">
         <h3>Available Products</h3>
-        <mat-list>
-          <mat-list-item
-            *ngFor="let product of availableProducts"
-            (click)="moveToSelected(product)"
-            class="clickable"
-          >
-            {{ product.className }}
-          </mat-list-item>
-        </mat-list>
+        <div class="list-container">
+          <div *ngIf="availableProducts.length === 0" class="empty-list">
+            <mat-icon>info</mat-icon>
+            <span>No products available</span>
+          </div>
+          <mat-list *ngIf="availableProducts.length > 0">
+            <mat-list-item
+              *ngFor="let product of availableProducts"
+              (click)="moveToSelected(product)"
+              class="product-item"
+              matTooltip="Click to add to selection"
+              matTooltipPosition="right"
+            >
+              <span class="product-name">{{ product.className }}</span>
+            </mat-list-item>
+          </mat-list>
+        </div>
       </div>
 
       <!-- Action Buttons -->
       <div class="action-buttons">
         <button
-          mat-icon-button
+          class="custom-icon-btn icon-btn-primary"
           (click)="moveAllVisibleToSelected()"
           [disabled]="availableProducts.length === 0"
-          matTooltip="Move all visible products to selected"
+          matTooltip="Add all visible products"
+          matTooltipPosition="above"
         >
           <mat-icon>arrow_forward</mat-icon>
+          <span class="icon-btn-ripple"></span>
         </button>
         <button
-          mat-icon-button
+          class="custom-icon-btn icon-btn-primary"
           (click)="moveAllVisibleToAvailable()"
           [disabled]="selectedProducts.length === 0"
-          matTooltip="Move all visible products to available"
+          matTooltip="Remove all visible products"
+          matTooltipPosition="below"
         >
           <mat-icon>arrow_back</mat-icon>
+          <span class="icon-btn-ripple"></span>
         </button>
       </div>
 
       <!-- Selected Products -->
       <div class="products-list">
         <h3>Selected Products</h3>
-        <mat-list>
-          <mat-list-item
-            *ngFor="let product of selectedProducts"
-            (click)="moveToAvailable(product)"
-            class="clickable"
-          >
-            {{ product.className }}
-          </mat-list-item>
-        </mat-list>
+        <div class="list-container">
+          <div *ngIf="selectedProducts.length === 0" class="empty-list">
+            <mat-icon>info</mat-icon>
+            <span>No products selected</span>
+          </div>
+          <mat-list *ngIf="selectedProducts.length > 0">
+            <mat-list-item
+              *ngFor="let product of selectedProducts"
+              (click)="moveToAvailable(product)"
+              class="product-item"
+              matTooltip="Click to remove from selection"
+              matTooltipPosition="left"
+            >
+              <span class="product-name">{{ product.className }}</span>
+            </mat-list-item>
+          </mat-list>
+        </div>
       </div>
     </div>
-  </mat-dialog-content>
+  </div>
 
-  <div class="modal-footer">
+  <!-- Dialog actions matched with other modals -->
+  <div class="mdc-dialog__actions">
     <button mat-button (click)="onCancel()">Cancel</button>
     <button mat-raised-button color="primary" (click)="onSave()">Save</button>
   </div>

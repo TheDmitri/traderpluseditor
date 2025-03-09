@@ -39,6 +39,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class AssignProductsDialogComponent implements OnInit {
   availableProducts: Product[] = [];
   selectedProducts: Product[] = [];
+  hasAnyProducts = false;
 
   filterValue: string = '';
   private unfilteredAvailableProducts: Product[] = [];
@@ -55,6 +56,7 @@ export class AssignProductsDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeLists();
+    this.hasAnyProducts = this.data.allProducts.length > 0;
   }
 
   private initializeLists(): void {
@@ -72,7 +74,7 @@ export class AssignProductsDialogComponent implements OnInit {
     const filter = filterValue.toLowerCase().trim();
 
     if (filter) {
-      // Nur die Anzeige filtern, nicht die unfilteredArrays verändern
+      // Filter only the display, don't modify unfilteredArrays
       this.availableProducts = this.unfilteredAvailableProducts.filter(
         (product) => product.className.toLowerCase().includes(filter)
       );
@@ -80,7 +82,7 @@ export class AssignProductsDialogComponent implements OnInit {
         (product) => product.className.toLowerCase().includes(filter)
       );
     } else {
-      // Bei leerem Filter alle Produkte anzeigen
+      // Show all products when filter is empty
       this.availableProducts = [...this.unfilteredAvailableProducts];
       this.selectedProducts = [...this.unfilteredSelectedProducts];
     }
@@ -95,14 +97,14 @@ export class AssignProductsDialogComponent implements OnInit {
   }
 
   moveAllVisibleToSelected(): void {
-    // Verschiebe alle aktuell sichtbaren Produkte in die selected Liste
+    // Move all currently visible products to the selected list
     for (const product of [...this.availableProducts]) {
       this.moveToSelected(product);
     }
   }
 
   moveAllVisibleToAvailable(): void {
-    // Verschiebe alle aktuell sichtbaren Produkte in die available Liste
+    // Move all currently visible products to the available list
     for (const product of [...this.selectedProducts]) {
       this.moveToAvailable(product);
     }
@@ -113,7 +115,7 @@ export class AssignProductsDialogComponent implements OnInit {
     fromArray: Product[],
     toArray: Product[]
   ): void {
-    // Erst in den ungefilterten Arrays verschieben
+    // First move in the unfiltered arrays
     if (fromArray === this.availableProducts) {
       const index = this.unfilteredAvailableProducts.findIndex(
         (p) => p.productId === product.productId
@@ -135,12 +137,12 @@ export class AssignProductsDialogComponent implements OnInit {
       }
     }
 
-    // Filter neu anwenden, um die Anzeige zu aktualisieren
+    // Reapply filter to update the display
     this.applyFilter(this.filterValue);
   }
 
   onSave(): void {
-    // Nutze die ungefilterte Liste für das Speichern
+    // Use the unfiltered list for saving
     this.dialogRef.close(
       this.unfilteredSelectedProducts.map((p) => p.productId)
     );

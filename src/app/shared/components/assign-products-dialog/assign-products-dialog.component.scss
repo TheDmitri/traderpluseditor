@@ -1,146 +1,159 @@
 .assign-products-dialog {
   display: flex;
   flex-direction: column;
-  height: 75vh;
+  width: 100%;
+  max-height: 80vh;
+  min-width: 40vw;
   box-sizing: border-box;
-
-  .modal-header {
+  
+  // Dialog title - matching other modal components
+  .mdc-dialog__title {
+    background-color: var(--brush-dialog-header);
+    color: var(--brush-text-primary);
+    padding: 16px 24px;
+    margin: 0;
+    border-bottom: 1px solid var(--brush-divider);
+    flex: 0 0 auto; // Don't allow flex to shrink this
     position: sticky;
     top: 0;
     z-index: 1;
-    height: 64px;
-    padding: 24px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    background: #424242;
-
+    
     h2 {
       margin: 0;
-      color: rgba(255, 255, 255, 0.87);
-      font-size: 1.5rem;
-      font-weight: 500;
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-medium);
     }
   }
 
-  .dialog-description {
-    color: rgba(255, 255, 255, 0.7);
-    text-align: center;
-    margin: 8px;
+  // Dialog filter section
+  .dialog-filter-section {
+    flex: 0 0 auto; // Don't allow flex to shrink this
+
+    .dialog-primary-text {
+      margin-top: 0;
+      margin-bottom: 16px;
+      color: var(--brush-text-primary);
+    }
+
+    mat-form-field {
+      width: 100%;
+      margin-bottom: 8px;
+    }
   }
 
-  mat-dialog-content {
-    flex: 1;
+  // Dialog content
+  .mdc-dialog__content {
+    padding: 0 24px 20px;
     margin: 0;
-    padding: 0;
-    max-height: unset !important;
-    overflow: hidden;
+    overflow-y: auto; // Enable vertical scrolling
+    flex: 1 1 auto; // Allow this to grow and shrink as needed
+    min-height: 0; // Required for proper flex child scrolling
   }
 
   .lists-container {
     display: flex;
-    gap: 24px;
-    height: 95%;
-    padding: 24px;
-    min-height: 0; // Important for flex container
+    gap: 16px;
+    height: 100%;
+    width: 100%;
 
+    // Product lists
     .products-list {
       flex: 1;
+      width: 0; // This will allow the flex-grow to distribute space properly
       display: flex;
       flex-direction: column;
-      min-width: 250px;
-      overflow: hidden; // Important for child scrolling
+      min-width: 40%; // Set minimum width
 
       h3 {
-        margin: 0 0 16px 0;
-        color: rgba(255, 255, 255, 0.87);
-        font-size: 1rem;
-        font-weight: 500;
+        margin: 0 0 12px 0;
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-medium);
+        color: var(--brush-text-primary);
       }
 
-      mat-list {
-        flex: 1;
-        border: 1px solid rgba(255, 255, 255, 0.12);
+      // Container for the scrollable list
+      .list-container {
+        border: 1px solid var(--brush-border-subtle);
         border-radius: 4px;
+        background-color: var(--brush-surface-secondary);
+        height: 400px;
         overflow-y: auto;
-        min-height: 0; // Important for scrolling
+        min-width: 100%; // Ensure it keeps the parent's width
 
-        .clickable {
-          cursor: pointer;
-          height: 40px !important;
+        // Empty state styling
+        .empty-list {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+          padding: 24px;
+          color: var(--brush-text-secondary);
 
-          &:hover {
-            background: rgba(255, 255, 255, 0.04);
+          mat-icon {
+            font-size: 32px;
+            height: 32px;
+            width: 32px;
+            margin-bottom: 12px;
+          }
+
+          span {
+            font-size: var(--font-size-sm);
+            text-align: center;
           }
         }
 
-        mat-list-item {
-          height: 40px;
-          font-size: 14px;
-        }
+        // Product items
+        mat-list {
+          padding: 0;
+          width: 100%;
 
-        &::-webkit-scrollbar {
-          width: 8px;
-        }
+          .product-item {
+            height: 48px;
+            border-bottom: 1px solid var(--brush-border-subtle);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-        &::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 4px;
-        }
+            &:hover {
+              background-color: var(--brush-hover-overlay);
+            }
 
-        &::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.2);
-          border-radius: 4px;
-
-          &:hover {
-            background: rgba(255, 255, 255, 0.3);
+            .product-name {
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
           }
         }
       }
     }
 
+    // Action buttons between lists
     .action-buttons {
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
-      gap: 16px;
-      padding: 0 16px;
-
-      button {
-        mat-icon {
-          color: rgba(255, 255, 255, 0.7);
-        }
-
-        &:disabled {
-          mat-icon {
-            color: rgba(255, 255, 255, 0.3);
-          }
-        }
-
-        &:not(:disabled):hover {
-          background-color: rgba(255, 255, 255, 0.04);
-
-          mat-icon {
-            color: rgba(255, 255, 255, 0.9);
-          }
-        }
-      }
+      gap: 12px;
+      padding: 0 8px;
+      flex: 0 0 auto; // Prevent this from growing or shrinking
     }
   }
 
-  .modal-footer {
+  // Dialog actions - matching other modal components
+  .mdc-dialog__actions {
+    border-top: 1px solid var(--brush-divider);
+    padding: 12px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    background-color: var(--brush-dialog-header);
+    flex: 0 0 auto; // Don't allow flex to shrink this
     position: sticky;
     bottom: 0;
     z-index: 1;
-    flex: 0 0 64px;
-    height: 64px;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    background: #424242;
   }
 }
