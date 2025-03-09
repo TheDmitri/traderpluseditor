@@ -1,6 +1,6 @@
 <div class="product-list-container">
   <div class="table-container">
-    <mat-form-field class="filter-field" appearance="outline">
+    <mat-form-field class="filter-field" appearance="outline" *ngIf="hasProducts">
       <mat-label>Filter Products</mat-label>
       <input
         matInput

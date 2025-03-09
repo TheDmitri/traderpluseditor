@@ -70,6 +70,9 @@ export class ProductListComponent implements OnInit {
     'actions',
   ];
 
+  // Add a flag to track if products are available
+  hasProducts = false;
+
   // Add helper method to format stock settings
   formatStockSettings(value: number): string {
     try {
@@ -100,7 +103,10 @@ export class ProductListComponent implements OnInit {
     if (this.showActions) {
       // Initialize with data
       const productsWithCategories = this.addCategoryInfo(this.products);
-      if (productsWithCategories.length === 0) {
+      this.hasProducts = productsWithCategories.length > 0;
+      
+      // Only show notification if we're not on initial load
+      if (productsWithCategories.length === 0 && this.products.length > 0) {
         this.notificationService.error('No products available');
       }
       this.dataSource.data = productsWithCategories;
@@ -111,9 +117,11 @@ export class ProductListComponent implements OnInit {
     if (changes['products']) {
       const productsWithCategories = this.addCategoryInfo(this.products);
       this.dataSource.data = productsWithCategories;
+      this.hasProducts = productsWithCategories.length > 0;
 
-      // Notify if filtered products are empty
-      if (changes['products'].currentValue?.length === 0) {
+      // Only show notification if products were previously available but filter returned none
+      if (changes['products'].currentValue?.length === 0 && 
+          changes['products'].previousValue?.length > 0) {
         this.notificationService.error('No products match the current filter');
       }
     }
@@ -146,6 +154,9 @@ export class ProductListComponent implements OnInit {
   }
 
   applyFilter(event: Event): void {
+    // Only apply filter if we have products
+    if (!this.hasProducts) return;
+    
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
 
@@ -153,8 +164,8 @@ export class ProductListComponent implements OnInit {
       this.dataSource.paginator.firstPage();
     }
 
-    // Notify if no results found
-    if (this.dataSource.filteredData.length === 0) {
+    // Only notify if we have products in the dataset but none match the filter
+    if (this.dataSource.filteredData.length === 0 && this.dataSource.data.length > 0) {
       this.notificationService.error('No products match the search criteria');
     }
   }
