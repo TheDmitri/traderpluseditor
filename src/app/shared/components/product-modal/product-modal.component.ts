@@ -75,6 +75,9 @@ export class ProductModalComponent implements OnInit {
     { value: 2, label: 'Random value between 0 and maximum' },
   ];
 
+  /** Availability check for products */
+  private availableProductsCount = 0;
+
   /**
    * Constructor initializes required services and form controls
    *
@@ -312,6 +315,9 @@ export class ProductModalComponent implements OnInit {
    * OnInit lifecycle hook - Loads product data if in edit mode
    */
   ngOnInit(): void {
+    // Cache the count of available products for button enabling/disabling
+    this.availableProductsCount = this.storageService.products().length;
+
     if (this.isEditMode && this.data.product) {
       const allProducts = this.storageService.products();
       this.attachmentProducts = allProducts.filter((p) =>
@@ -499,6 +505,14 @@ export class ProductModalComponent implements OnInit {
     this.variantProducts = this.variantProducts.filter(
       (p) => p.productId !== productId
     );
+  }
+
+  /**
+   * Checks if there are available products to assign
+   * Used to enable/disable the attachment and variant buttons
+   */
+  hasAvailableProducts(): boolean {
+    return this.availableProductsCount > 0;
   }
 
   /**

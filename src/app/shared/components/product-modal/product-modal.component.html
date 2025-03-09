@@ -207,8 +207,9 @@
                     class="custom-icon-btn icon-btn-primary"
                     type="button"
                     (click)="$event.stopPropagation(); addAttachments()"
-                    matTooltip="Add attachments"
+                    matTooltip="{{ hasAvailableProducts() ? 'Add attachments' : 'No products available' }}"
                     aria-label="Add attachments"
+                    [disabled]="!hasAvailableProducts()"
                   >
                     <mat-icon>add_box</mat-icon>
                     <div class="icon-btn-ripple"></div>
@@ -258,8 +259,9 @@
                     class="custom-icon-btn icon-btn-primary"
                     type="button"
                     (click)="$event.stopPropagation(); addVariants()"
-                    matTooltip="Add Variants"
+                    matTooltip="{{ hasAvailableProducts() ? 'Add variants' : 'No products available' }}"
                     aria-label="Add variants"
+                    [disabled]="!hasAvailableProducts()"
                   >
                     <mat-icon>add_box</mat-icon>
                     <div class="icon-btn-ripple"></div>
