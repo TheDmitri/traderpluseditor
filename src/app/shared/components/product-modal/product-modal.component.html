@@ -3,166 +3,228 @@
     <h2>{{ isEditMode ? "Edit" : "Create" }} Product</h2>
   </div>
 
-  <div class="modal-content">
-    <form [formGroup]="productForm">
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <div class="modal-content">
       <div class="form-container">
-        <!-- Class Name (full width) -->
-        <mat-form-field appearance="fill">
-          <mat-label>Class Name</mat-label>
-          <input matInput formControlName="className" required />
-          <mat-error *ngIf="productForm.get('className')?.hasError('required')">
-            Class name is required
-          </mat-error>
-        </mat-form-field>
-
-        <!-- First row of three columns -->
-        <div class="number-row">
-          <mat-form-field appearance="fill">
-            <mat-label>Coefficient</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="coefficient"
-              required
-            />
-          </mat-form-field>
-
-          <mat-form-field appearance="fill">
-            <mat-label>Max Stock</mat-label>
-            <input matInput type="number" formControlName="maxStock" required />
-          </mat-form-field>
-
-          <mat-form-field appearance="fill">
-            <mat-label>Trade Quantity</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="tradeQuantity"
-              required
-            />
-          </mat-form-field>
+        <!-- Basic Product Information Section -->
+        <div class="form-section">
+          <h4 class="section-title">Basic Information</h4>
+          
+          <!-- Class Name (full width) -->
+          <div class="form-row">
+            <div class="form-col form-col-full">
+              <mat-form-field appearance="fill">
+                <mat-label>Class Name</mat-label>
+                <input matInput formControlName="className" required />
+                <mat-error *ngIf="productForm.get('className')?.hasError('required')">
+                  Class name is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
         </div>
+        
+        <!-- Trading Configuration Section -->
+        <div class="form-section">
+          <h4 class="section-title">Trading Configuration</h4>
+          
+          <!-- First row of three columns -->
+          <div class="form-row">
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Coefficient</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="coefficient"
+                  required
+                />
+                <mat-hint>Price multiplier for this item</mat-hint>
+              </mat-form-field>
+            </div>
 
-        <!-- Second row of three columns -->
-        <div class="number-row">
-          <mat-form-field appearance="fill">
-            <mat-label>Buy Price</mat-label>
-            <input matInput type="number" formControlName="buyPrice" required />
-          </mat-form-field>
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Max Stock</mat-label>
+                <input matInput type="number" formControlName="maxStock" required />
+                <mat-hint>Maximum items available in trader</mat-hint>
+              </mat-form-field>
+            </div>
 
-          <mat-form-field appearance="fill">
-            <mat-label>Stock Settings</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="stockSettings"
-              required
-            />
-          </mat-form-field>
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Trade Quantity</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="tradeQuantity"
+                  required
+                />
+                <mat-hint>Units traded per transaction</mat-hint>
+              </mat-form-field>
+            </div>
+          </div>
 
-          <mat-form-field appearance="fill">
-            <mat-label>Sell Price</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="sellPrice"
-              required
-            />
-          </mat-form-field>
+          <!-- Second row of three columns -->
+          <div class="form-row">
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Buy Price</mat-label>
+                <input matInput type="number" formControlName="buyPrice" required />
+                <mat-hint>Player purchase price</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Sell Price</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="sellPrice"
+                  required
+                />
+                <mat-hint>Player selling price</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Stock Settings</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="stockSettings"
+                  required
+                />
+                <mat-hint>Stock refresh configuration</mat-hint>
+              </mat-form-field>
+            </div>
+          </div>
         </div>
-
-        <!-- Product Lists -->
-        <mat-accordion>
-          <!-- Attachments -->
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <span>Attachments ({{ attachmentProducts.length }})</span>
-                <button
-                  mat-icon-button
-                  color="primary"
-                  (click)="$event.stopPropagation(); addAttachments()"
-                  matTooltip="Add attachments"
-                >
-                  <mat-icon>add_box</mat-icon>
-                </button>
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-
-            <div class="product-list-container">
-              <div class="product-list">
-                <div
-                  *ngFor="let product of attachmentProducts"
-                  class="product-item"
-                >
-                  <span class="product-info">
-                    <small class="product-id">{{ product.productId }}</small>
-                    <span class="product-name">{{ product.className }}</span>
-                  </span>
+        
+        <!-- Product Relationships Section -->
+        <div class="form-section">
+          <h4 class="section-title">Product Relationships</h4>
+          
+          <!-- Product Lists -->
+          <div class="product-lists-container">
+            <!-- Attachments -->
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <span>Attachments ({{ attachmentProducts.length }})</span>
                   <button
-                    mat-icon-button
-                    class="remove-button"
-                    (click)="removeAttachment(product.productId)"
-                    matTooltip="Remove attachment"
+                    class="custom-icon-btn icon-btn-primary"
+                    type="button"
+                    (click)="$event.stopPropagation(); addAttachments()"
+                    matTooltip="Add attachments"
+                    aria-label="Add attachments"
                   >
-                    <mat-icon>close</mat-icon>
+                    <mat-icon>add_box</mat-icon>
+                    <div class="icon-btn-ripple"></div>
                   </button>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <div class="product-list-container">
+                <div class="product-list slim-scrollbar">
+                  <!-- Empty state when no attachments -->
+                  <div *ngIf="attachmentProducts.length === 0" class="empty-state">
+                    <mat-icon class="empty-state-icon">extension</mat-icon>
+                    <p>No attachments assigned to this product.</p>
+                    <p>Click the '+' button to add attachments.</p>
+                  </div>
+                  
+                  <!-- List of attachments -->
+                  <div
+                    *ngFor="let product of attachmentProducts"
+                    class="product-item"
+                  >
+                    <span class="product-info">
+                      <small class="product-id">{{ product.productId }}</small>
+                      <span class="product-name">{{ product.className }}</span>
+                    </span>
+                    <button
+                      class="custom-icon-btn icon-btn-sm icon-btn-warn remove-button"
+                      type="button"
+                      (click)="removeAttachment(product.productId)"
+                      matTooltip="Remove attachment"
+                      aria-label="Remove attachment"
+                    >
+                      <mat-icon>close</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </mat-expansion-panel>
+            </mat-expansion-panel>
 
-          <!-- Variants -->
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <span>Variants ({{ variantProducts.length }})</span>
-                <button 
-                  mat-icon-button 
-                  color="primary"
-                  (click)="$event.stopPropagation(); addVariants()"
-                  matTooltip="Add Variants">
-                  <mat-icon>add_box</mat-icon>
-                </button>
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-
-            <div class="product-list-container">
-              <div class="product-list">
-                <div
-                  *ngFor="let product of variantProducts"
-                  class="product-item"
-                >
-                  <span class="product-info">
-                    <small class="product-id">{{ product.productId }}</small>
-                    <span class="product-name">{{ product.className }}</span>
-                  </span>
-                  <button
-                    mat-icon-button
-                    class="remove-button"
-                    (click)="removeVariant(product.productId)"
+            <!-- Variants -->
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <span>Variants ({{ variantProducts.length }})</span>
+                  <button 
+                    class="custom-icon-btn icon-btn-primary"
+                    type="button"
+                    (click)="$event.stopPropagation(); addVariants()"
+                    matTooltip="Add Variants"
+                    aria-label="Add variants"
                   >
-                    <mat-icon>close</mat-icon>
+                    <mat-icon>add_box</mat-icon>
+                    <div class="icon-btn-ripple"></div>
                   </button>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <div class="product-list-container">
+                <div class="product-list slim-scrollbar">
+                  <!-- Empty state when no variants -->
+                  <div *ngIf="variantProducts.length === 0" class="empty-state">
+                    <mat-icon class="empty-state-icon">style</mat-icon>
+                    <p>No variants assigned to this product.</p>
+                    <p>Click the '+' button to add variants.</p>
+                  </div>
+                  
+                  <!-- List of variants -->
+                  <div
+                    *ngFor="let product of variantProducts"
+                    class="product-item"
+                  >
+                    <span class="product-info">
+                      <small class="product-id">{{ product.productId }}</small>
+                      <span class="product-name">{{ product.className }}</span>
+                    </span>
+                    <button
+                      class="custom-icon-btn icon-btn-sm icon-btn-warn remove-button"
+                      type="button"
+                      (click)="removeVariant(product.productId)"
+                      matTooltip="Remove variant"
+                      aria-label="Remove variant"
+                    >
+                      <mat-icon>close</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </mat-expansion-panel>
-        </mat-accordion>
+            </mat-expansion-panel>
+          </div>
+        </div>
       </div>
-    </form>
-  </div>
+    </div>
 
-  <div class="modal-footer">
-    <button mat-button type="button" (click)="onCancel()">Cancel</button>
-    <button
-      mat-raised-button
-      color="primary"
-      type="button"
-      (click)="onSubmit()"
-      [disabled]="productForm.invalid"
-    >
-      {{ isEditMode ? "Save" : "Create" }}
-    </button>
-  </div>
+    <div class="modal-footer">
+      <button mat-button type="button" (click)="onCancel()">Cancel</button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="productForm.invalid"
+      >
+        {{ isEditMode ? "Save" : "Create" }}
+      </button>
+    </div>
+  </form>
 </div>
