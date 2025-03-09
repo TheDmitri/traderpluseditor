@@ -20,29 +20,16 @@
       }
     }
   }
+}
 
-  // Main content area
-  .mat-sidenav-content {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--brush-background-default);
-
-    // Content positioning based on sidenav state
-    &.content-default {
-      margin-left: 230px;
-    }
-
-    &.content-collapsed {
-      margin-left: 80px;
-    }
-
-    // Content scrolling container
-    .content {
-      flex: 1;
-      overflow: auto;
-      padding: 24px;
-    }
-  }
+/* Sidenav Content Area
+========================================================================== */
+.sidenav-content {
+  flex: 1;
+  max-height: calc(100% - 56px); // Account for footer height
+  overflow-y: auto;
+  padding-top: 8px;
+  padding-left: 8px;
 }
 
 /* Navigation Items
@@ -51,21 +38,34 @@ mat-nav-list {
   padding-top: 8px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
   
   // Navigation item styling
-  button {
-    height: 64px;
+  .nav-item {
+    height: 54px;
     margin: 4px 8px;
     width: calc(100% - 16px);
-    border-radius: 6px;
-    transition: all var(--transition-normal) var(--transition-timing);
+    border-radius: 8px;
+    transition: all var(--transition-fast) var(--transition-timing);
     overflow: hidden;
     position: relative;
     justify-content: flex-start;
     border: none !important;
     background-color: transparent;
+    
+    // Element that indicates active state
+    .nav-item-active-indicator {
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 4px;
+      border-radius: 0 4px 4px 0;
+      transform: scaleY(0);
+      transition: transform var(--transition-fast) var(--transition-timing), 
+                  background-color var(--transition-fast) var(--transition-timing);
+      background: var(--color-primary-medium);
+      transform-origin: center left;
+    }
     
     // Inactive state - neutral styling
     .nav-icon-wrapper {
@@ -73,12 +73,17 @@ mat-nav-list {
       
       mat-icon {
         color: var(--brush-text-secondary);
+        transition: color var(--transition-fast) cubic-bezier(0.4, 0, 0.2, 1), 
+                    transform var(--transition-fast) cubic-bezier(0.34, 1.56, 0.64, 1);
       }
     }
     
     .nav-item-label {
       color: var(--brush-text-secondary);
       font-weight: 400;
+      transition: color var(--transition-fast) var(--transition-timing),
+                  transform var(--transition-fast) cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform: translateX(0);
     }
     
     // Interactive states
@@ -90,11 +95,13 @@ mat-nav-list {
         
         mat-icon {
           color: var(--brush-text-primary);
+          transform: scale(1.1);
         }
       }
 
       .nav-item-label {
         color: var(--brush-text-primary);
+        transform: translateX(4px);
       }
     }
     
@@ -104,6 +111,16 @@ mat-nav-list {
       .nav-icon-wrapper {
         background-color: var(--brush-pressed-overlay);
       }
+      
+      .nav-item-active-indicator {
+        transform: scaleY(0.5);
+        background: var(--color-primary-medium);
+      }
+    }
+    
+    // Remove the focus outline that remains after clicking
+    &:focus {
+      outline: none;
     }
     
     // Route active state (current page)
@@ -111,30 +128,23 @@ mat-nav-list {
       position: relative;
       background-color: var(--brush-active-overlay);
       
-      // Active indicator - left border
-      &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 1px;
-        bottom: 1px;
-        width: 3px;
+      .nav-item-active-indicator {
+        transform: scaleY(1);
         background: linear-gradient(to bottom,
-          var(--color-accent-medium),
-          var(--color-accent-light));
-        border-radius: 0 2px 2px 0;
+          var(--color-primary-medium),
+          var(--color-primary-light));
       }
       
       .nav-icon-wrapper {
         background-color: transparent;
         
         mat-icon {
-          color: var(--color-accent-medium);
+          color: var(--color-primary-medium);
         }
       }
       
       .nav-item-label {
-        color: var(--color-accent-light);
+        color: var(--color-primary-light);
         font-weight: 500;
       }
 
@@ -143,7 +153,7 @@ mat-nav-list {
         background-color: var(--brush-active-overlay);
         
         .nav-icon-wrapper mat-icon {
-          color: var(--color-accent-light);
+          color: var(--color-primary-light);
         }
       }
     }
@@ -204,10 +214,10 @@ mat-nav-list {
 
   mat-icon {
     transition: color var(--transition-normal) var(--transition-timing);
-    font-size: 28px;
-    width: 28px;
-    height: 28px;
-    line-height: 28px;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
   }
 }
 
@@ -223,9 +233,10 @@ mat-nav-list {
 /* Sidenav Footer
 ========================================================================== */
 .sidenav-footer {
-  padding: 16px;
+  padding: 12px;
   border-top: 1px solid var(--brush-border-light);
   text-align: center;
+  height: 32px; // Consistent footer height
 }
 
 .version-text {
@@ -233,28 +244,16 @@ mat-nav-list {
   color: var(--brush-text-secondary);
 }
 
-/* Scrollbar Customization
-========================================================================== */
-.sidenav-content {
-  flex: 1;
-  overflow-y: auto;
-  padding-top: 8px;
-  padding-left: 8px;
-  
-  // Hide scrollbar while maintaining functionality
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
-  
-  &::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
-  }
-}
-
 /* Content Transition Improvements
 ========================================================================== */
 mat-sidenav-content {
   transition: margin-left var(--transition-normal) var(--transition-timing);
   will-change: margin-left; // Optimize animations
+  display: flex;
+  flex-direction: column;
+  
+  // Applying the dominant color (60%) as per 60-30-10 rule
+  background-color: var(--brush-background-surface); // Main content area - dominant neutral tone
   
   &.content-expanded {
     margin-left: 230px !important;
@@ -263,4 +262,36 @@ mat-sidenav-content {
   &.content-collapsed {
     margin-left: 80px !important;
   }
+  
+  // Content scrolling container
+  .content {
+    flex: 1;
+    overflow: auto;
+    padding: 24px;
+    
+    // Adding subtle elevation to content area for depth
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+}
+
+/* Animation for Route Changes
+========================================================================== */
+@keyframes nav-item-selected {
+  0% { 
+    transform: translateY(0) scaleY(0); 
+    opacity: 0;
+  }
+  50% { 
+    transform: translateY(0) scaleY(1.2); 
+    opacity: 0.7;
+  }
+  100% { 
+    transform: translateY(0) scaleY(1); 
+    opacity: 1;
+  }
+}
+
+.active-link .nav-item-active-indicator {
+  animation: nav-item-selected 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }

@@ -3,11 +3,12 @@
     <mat-sidenav #sidenav mode="side" [opened]="true" class="sidenav"
       [ngClass]="isExpanded() ? 'expanded' : 'collapsed'">
       
-      <div class="sidenav-content">
+      <div class="sidenav-content custom-scrollbar">
         <mat-nav-list>
           @for (item of navItems; track item.route) {
           <button mat-stroked-button [routerLink]="item.route" routerLinkActive="active-link"
-            [matTooltip]="!isExpanded() ? item.label : ''" matTooltipPosition="right">
+            [matTooltip]="!isExpanded() ? item.label : ''" matTooltipPosition="right"
+            class="nav-item">
             <div class="nav-item-content">
               <div class="nav-icon-wrapper">
                 <mat-icon>{{ item.icon }}</mat-icon>
@@ -16,6 +17,7 @@
               <span class="nav-item-label">{{ item.label }}</span>
               }
             </div>
+            <div class="nav-item-active-indicator"></div>
           </button>
           }
         </mat-nav-list>
