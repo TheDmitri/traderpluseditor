@@ -86,7 +86,7 @@
           *matCellDef="let row"
           class="numeric-cell"
         >
-          <span class="cell-highlight">{{ row.buyPrice }}</span>
+          <span class="buy-price-highlight">{{ row.buyPrice }}</span>
         </td>
       </ng-container>
 
@@ -122,7 +122,7 @@
           [matTooltip]="row.attachments?.join(', ') || 'No attachments'"
           class="numeric-cell"
         >
-          <span class="cell-highlight">{{ row.attachments?.length || 0 }}</span>
+          <span>{{ row.attachments?.length || 0 }}</span>
         </td>
       </ng-container>
 
@@ -135,7 +135,7 @@
           [matTooltip]="row.variants?.join(', ') || 'No variants'"
           class="numeric-cell"
         >
-          <span class="cell-highlight">{{ row.variants?.length || 0 }}</span>
+          <span>{{ row.variants?.length || 0 }}</span>
         </td>
       </ng-container>
 

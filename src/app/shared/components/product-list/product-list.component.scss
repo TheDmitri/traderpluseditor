@@ -160,3 +160,9 @@
     color: var(--brush-text-secondary);
   }
 }
+
+/* Custom color for buy price column */
+.buy-price-highlight {
+  color: var(--color-secondary-medium);
+  font-weight: 500;
+}
