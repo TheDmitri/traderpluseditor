@@ -202,7 +202,10 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
       this.dataSource.paginator.firstPage();
     }
 
-    if (this.dataSource.filteredData.length === 0 && this.dataSource.data.length > 0) {
+    if (
+      this.dataSource.filteredData.length === 0 &&
+      this.dataSource.data.length > 0
+    ) {
       this.notificationService.error('No categories match the search criteria');
     }
   }

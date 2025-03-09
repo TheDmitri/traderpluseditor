@@ -21,13 +21,20 @@
 
   // Empty state enhancements
   .empty-table-message {
-    padding: 40px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    padding: 24px;
+    text-align: center;
 
     .empty-icon {
-      color: var(--brush-text-secondary);
       font-size: 48px;
       height: 48px;
       width: 48px;
+      margin-bottom: 16px;
+      color: var(--brush-text-secondary);
     }
   }
 
@@ -70,7 +77,7 @@
   // Responsive adjustments - kept from original but optimized
   @media screen and (max-width: 960px) {
     padding: 16px;
-    
+
     .mat-column-categoryId {
       display: none;
     }
@@ -80,15 +87,15 @@
     .mat-column-productCount {
       display: none;
     }
-    
+
     .mat-column-isVisible {
       display: none;
     }
-    
+
     .mat-column-icon {
       display: none;
     }
-    
+
     .action-buttons {
       flex-direction: column;
       gap: 8px;
