@@ -198,47 +198,6 @@
   }
 }
 
-// Radio button styling
-.mat-mdc-radio-button {
-  .mdc-radio {
-    .mdc-radio__background {
-      .mdc-radio__outer-circle {
-        border-color: var(--brush-input-border) !important; // 60% - subtle border
-      }
-      
-      .mdc-radio__inner-circle {
-        background-color: var(--brush-radio-selected) !important; // 10% - primary accent
-      }
-    }
-    
-    &.mdc-radio--disabled {
-      .mdc-radio__background {
-        .mdc-radio__outer-circle {
-          border-color: var(--brush-input-text-disabled) !important; // 60% - muted border
-        }
-        
-        .mdc-radio__inner-circle {
-          background-color: var(--brush-input-text-disabled) !important; // 60% - muted fill
-        }
-      }
-    }
-  }
-  
-  &.mat-mdc-radio-checked {
-    .mdc-radio__background {
-      .mdc-radio__outer-circle {
-        border-color: var(--brush-radio-selected) !important; // 10% - primary accent
-      }
-    }
-  }
-  
-  .mdc-form-field {
-    label {
-      color: var(--brush-label-text) !important; // 30% - supporting text
-    }
-  }
-}
-
 /* Switches/Toggles
  * ========================================================================== 
  * Styling for toggle switches

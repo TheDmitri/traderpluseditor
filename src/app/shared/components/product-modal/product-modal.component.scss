@@ -89,6 +89,19 @@
           align-items: center;
           width: 100%;
           padding-left: 4px; // Angleichung an mat-form-field internes Padding
+          
+          .radio-label {
+            flex: 0 0 auto;
+            font-size: var(--font-size-sm);
+            color: var(--brush-text-primary);
+            margin-right: 16px;
+            font-weight: var(--font-weight-medium);
+          }
+          
+          // Horizontal spacing for the custom radio button group
+          .radio-button-group {
+            flex: 1;
+          }
         }
       }
       
@@ -348,27 +361,10 @@
     }
   }
   
-  // Radio button styling
-  .mat-radio-group {
-    .mat-radio-button {
-      .mat-radio-label-content {
-        color: var(--brush-text-primary);
-        font-size: var(--font-size-sm);
-      }
-    }
-  }
-  
   // Select dropdown styling
   .mat-mdc-select {
     .mat-mdc-select-value {
       color: var(--brush-text-primary);
-    }
-  }
-
-  // Radio button styling with consistent spacing
-  .mat-mdc-radio-button {
-    .mdc-form-field {
-      margin: 0 0 0 -10px; // Korrigiert die interne Verschiebung von Material Design
     }
   }
 }

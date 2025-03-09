@@ -23,14 +23,22 @@
             </div>
           </div>
           
-          <!-- Stock Type Radio Buttons -->
+          <!-- Stock Type Radio Buttons - REPLACED WITH CUSTOM RADIO BUTTONS -->
           <div class="form-row radio-group-row">
             <div class="radio-group-wrapper">
               <label class="radio-label">Stock Type:</label>
-              <mat-radio-group formControlName="stockType" class="radio-group">
-                <mat-radio-button value="defined">Defined Stock</mat-radio-button>
-                <mat-radio-button value="infinite">Infinite Stock</mat-radio-button>
-              </mat-radio-group>
+              <div class="radio-button-group horizontal">
+                <label class="custom-radio radio-primary">
+                  <input type="radio" formControlName="stockType" value="defined" />
+                  <span class="radio-checkmark"></span>
+                  <span class="radio-label">Defined Stock</span>
+                </label>
+                <label class="custom-radio radio-primary">
+                  <input type="radio" formControlName="stockType" value="infinite" />
+                  <span class="radio-checkmark"></span>
+                  <span class="radio-label">Infinite Stock</span>
+                </label>
+              </div>
             </div>
           </div>
           
@@ -115,14 +123,22 @@
         <div class="form-section">
           <h4 class="section-title">Price Configuration</h4>
           
-          <!-- Price Type Radio Buttons (only visible for defined stock) -->
+          <!-- Price Type Radio Buttons (only visible for defined stock) - REPLACED WITH CUSTOM RADIO BUTTONS -->
           <div class="form-row radio-group-row" *ngIf="productForm.get('stockType')?.value === 'defined'">
             <div class="radio-group-wrapper">
               <label class="radio-label">Price Type:</label>
-              <mat-radio-group formControlName="priceType" class="radio-group">
-                <mat-radio-button value="static">Static Price</mat-radio-button>
-                <mat-radio-button value="dynamic">Dynamic Price</mat-radio-button>
-              </mat-radio-group>
+              <div class="radio-button-group horizontal">
+                <label class="custom-radio radio-secondary">
+                  <input type="radio" formControlName="priceType" value="static" />
+                  <span class="radio-checkmark"></span>
+                  <span class="radio-label">Static Price</span>
+                </label>
+                <label class="custom-radio radio-secondary">
+                  <input type="radio" formControlName="priceType" value="dynamic" />
+                  <span class="radio-checkmark"></span>
+                  <span class="radio-label">Dynamic Price</span>
+                </label>
+              </div>
             </div>
           </div>
           
