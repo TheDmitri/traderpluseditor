@@ -42,3 +42,66 @@
     opacity: 0.5; // Maintains color scheme but indicates inactive state
   }
 }
+
+/* File Management Format Chips
+========================================================================== */
+.format-hint {
+  .chip-container {
+    .mat-mdc-chip {
+      font-family: monospace;
+      font-size: var(--font-size-xs);
+      border-radius: 16px;
+      height: 28px;
+      transition: all var(--transition-normal) var(--transition-timing);
+      position: relative;
+      overflow: hidden;
+      
+      // Default gradient styling
+      background: linear-gradient(
+        135deg,
+        var(--color-primary-dark),
+        var(--color-secondary-medium)
+      );
+      
+      // Text color
+      --mdc-chip-label-text-color: white;
+      
+      // Add shine effect like app-icons
+      &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at top right,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        opacity: 0.8;
+        pointer-events: none;
+        z-index: 1;
+      }
+      
+      // Ensure text is above the shine effect
+      .mdc-evolution-chip__text-label {
+        position: relative;
+        z-index: 2;
+        color: white;
+      }
+      
+      // Feature-specific color variations
+      &.format-chip {
+        background: linear-gradient(
+          135deg,
+          var(--brush-background-elevated),
+          var(--brush-background-body)
+        );
+      }
+      
+      // Optional hover effects
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+}
