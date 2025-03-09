@@ -1,31 +1,88 @@
 <div class="navigation-container">
   <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #sidenav mode="side" [opened]="true" class="sidenav"
-      [ngClass]="isExpanded() ? 'expanded' : 'collapsed'">
-      
-      <div class="sidenav-content custom-scrollbar">
-        <mat-nav-list>
-          @for (item of navItems; track item.route) {
-          <button mat-stroked-button [routerLink]="item.route" routerLinkActive="active-link"
-            [matTooltip]="!isExpanded() ? item.label : ''" matTooltipPosition="right"
-            class="nav-item">
-            <div class="nav-item-content">
-              <div class="nav-icon-wrapper">
-                <mat-icon>{{ item.icon }}</mat-icon>
+    <mat-sidenav
+      #sidenav
+      mode="side"
+      [opened]="true"
+      class="sidenav"
+      [ngClass]="isExpanded() ? 'expanded' : 'collapsed'"
+    >
+      <div class="sidenav-wrapper">
+        <div class="sidenav-content custom-scrollbar">
+          <mat-nav-list>
+            @for (item of navItems; track item.route) {
+            <button
+              mat-stroked-button
+              [routerLink]="item.route"
+              routerLinkActive="active-link"
+              [matTooltip]="!isExpanded() ? item.label : ''"
+              matTooltipPosition="right"
+              class="nav-item"
+            >
+              <div class="nav-item-content">
+                <div class="nav-icon-wrapper">
+                  <mat-icon>{{ item.icon }}</mat-icon>
+                </div>
+                @if (isExpanded()) {
+                <span class="nav-item-label">{{ item.label }}</span>
+                }
               </div>
-              @if (isExpanded()) {
-              <span class="nav-item-label">{{ item.label }}</span>
-              }
-            </div>
-            <div class="nav-item-active-indicator"></div>
-          </button>
-          }
-        </mat-nav-list>
-      </div>
+              <div class="nav-item-active-indicator"></div>
+            </button>
+            }
+          </mat-nav-list>
+        </div>
 
-      <div class="sidenav-footer">
         @if (isExpanded()) {
-        <span class="version-text">Version 1.0</span>
+        <div class="sidenav-footer">
+          <div class="external-links">
+            <button
+              class="custom-icon-btn icon-btn-light icon-btn-sm"
+              href="https://discord.gg/yourlink"
+              target="_blank"
+              [matTooltip]="'Discord'"
+              matTooltipPosition="above"
+            >
+              <mat-icon>discord</mat-icon>
+            </button>
+            <button
+              class="custom-icon-btn icon-btn-light icon-btn-sm"
+              href="https://wiki.yoursite.com"
+              target="_blank"
+              [matTooltip]="'Documentation'"
+              matTooltipPosition="above"
+            >
+              <mat-icon>menu_book</mat-icon>
+            </button>
+            <button
+              class="custom-icon-btn icon-btn-light icon-btn-sm"
+              href="https://yourwebsite.com"
+              target="_blank"
+              [matTooltip]="'Website'"
+              matTooltipPosition="above"
+            >
+              <mat-icon>public</mat-icon>
+            </button>
+            <button
+              class="custom-icon-btn icon-btn-light icon-btn-sm"
+              href="https://github.com/youraccount/repo"
+              target="_blank"
+              [matTooltip]="'GitHub'"
+              matTooltipPosition="above"
+            >
+              <mat-icon>code</mat-icon>
+            </button>
+            <button
+              class="custom-icon-btn icon-btn-light icon-btn-sm"
+              href="https://donate.yoursite.com"
+              target="_blank"
+              [matTooltip]="'Support'"
+              matTooltipPosition="above"
+            >
+              <mat-icon>favorite</mat-icon>
+            </button>
+          </div>
+        </div>
         }
       </div>
     </mat-sidenav>
