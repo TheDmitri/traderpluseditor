@@ -124,42 +124,6 @@
           justify-content: center;
           gap: 8px;
         }
-
-        .format-chip {
-          font-family: monospace;
-          font-size: var(--font-size-xs);
-          padding: 4px 8px;
-          border-radius: 16px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          height: 28px;
-          transition: all var(--transition-normal) var(--transition-timing);
-          
-          &.categories-chip {
-            background-color: var(--color-info-transparent-10);
-            color: var(--color-info-light);
-            border: 1px solid var(--color-info-dark);
-          }
-
-          &.products-chip {
-            background-color: var(--color-success-transparent-10);
-            color: var(--color-success-light);
-            border: 1px solid var(--color-success-dark);
-          }
-
-          &.currencies-chip {
-            background-color: var(--color-accent-transparent-10);
-            color: var(--color-accent-light);
-            border: 1px solid var(--color-accent-dark);
-          }
-
-          &.settings-chip {
-            background-color: var(--color-secondary-transparent-10);
-            color: var(--color-secondary-light);
-            border: 1px solid var(--color-secondary-dark);
-          }
-        }
       }
 
       .upload-progress {
@@ -223,79 +187,10 @@
         &.has-data {
           border-color: var(--color-primary-medium);
           box-shadow: 0 4px 12px var(--brush-shadow-light);
-
-          .status-icon {
-            opacity: 1;
-          }
         }
 
         .status-icon-container {
           margin-right: 20px;
-        }
-
-        .status-icon {
-          width: 56px;
-          height: 56px;
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          opacity: 0.7;
-          position: relative;
-          overflow: hidden;
-          transition: all var(--transition-normal) var(--transition-timing);
-          
-          &::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(
-              circle at top right,
-              rgba(255, 255, 255, 0.3),
-              transparent
-            );
-            pointer-events: none;
-          }
-
-          mat-icon {
-            font-size: 28px;
-            height: 28px;
-            width: 28px;
-            color: white;
-            position: relative;
-          }
-
-          &.categories-bg {
-            background: linear-gradient(
-              135deg,
-              var(--color-info-dark),
-              var(--color-info-medium)
-            );
-          }
-
-          &.products-bg {
-            background: linear-gradient(
-              135deg,
-              var(--color-success-dark),
-              var(--color-success-medium)
-            );
-          }
-
-          &.currencies-bg {
-            background: linear-gradient(
-              135deg,
-              var(--color-accent-dark),
-              var(--color-accent-medium)
-            );
-          }
-
-          &.settings-bg {
-            background: linear-gradient(
-              135deg,
-              var(--color-secondary-dark),
-              var(--color-secondary-medium)
-            );
-          }
         }
 
         .status-content {
@@ -343,41 +238,8 @@
           box-shadow: 0 8px 24px var(--brush-shadow-medium);
         }
 
-        .export-icon {
-          width: 56px;
-          height: 56px;
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        .app-icon-bg {
           margin-right: 24px;
-          background: linear-gradient(
-            135deg,
-            var(--color-accent-dark),
-            var(--color-accent-medium)
-          );
-          position: relative;
-          overflow: hidden;
-
-          &::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(
-              circle at top right,
-              rgba(255, 255, 255, 0.3),
-              transparent
-            );
-            pointer-events: none;
-          }
-
-          mat-icon {
-            font-size: 28px;
-            height: 28px;
-            width: 28px;
-            color: white;
-            position: relative;
-          }
         }
 
         .export-content {
@@ -482,36 +344,6 @@
     }
   }
 
-  /* Color Classes for Icons
-  ========================================================================== */
-  .categories-color {
-    color: var(--color-info-medium);
-  }
-
-  .products-color {
-    color: var(--color-success-medium);
-  }
-
-  .currencies-color {
-    color: var(--color-accent-medium);
-  }
-
-  .settings-color {
-    color: var(--color-secondary-medium);
-  }
-
-  .import-color {
-    color: var(--color-info-medium);
-  }
-
-  .export-color {
-    color: var(--color-accent-medium);
-  }
-
-  .error-color {
-    color: var(--color-error-medium);
-  }
-
   /* Animation for Upload State
   ========================================================================== */
   @keyframes pulse {
@@ -551,7 +383,7 @@
         flex-direction: column;
         text-align: center;
         
-        .export-icon {
+        .app-icon-bg {
           margin-right: 0;
           margin-bottom: 16px;
         }

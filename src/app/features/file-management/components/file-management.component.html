@@ -57,10 +57,10 @@
             
             <div class="format-hint">
               <div class="chip-container">
-                <span class="format-chip categories-chip" matTooltip="Category files format">cat_*.json</span>
-                <span class="format-chip products-chip" matTooltip="Product files format">prod_*.json</span>
-                <span class="format-chip currencies-chip" matTooltip="Currency files format">*currency*.json</span>
-                <span class="format-chip settings-chip" matTooltip="Settings files format">*settings*.json</span>
+                <mat-chip class="format-chip categories-chip" matTooltip="Category files format">cat_*.json</mat-chip>
+                <mat-chip class="format-chip products-chip" matTooltip="Product files format">prod_*.json</mat-chip>
+                <mat-chip class="format-chip currencies-chip" matTooltip="Currency files format">*currency*.json</mat-chip>
+                <mat-chip class="format-chip settings-chip" matTooltip="Settings files format">*settings*.json</mat-chip>
               </div>
             </div>
             
@@ -85,8 +85,8 @@
             <!-- Categories Status -->
             <div class="status-card" [class.has-data]="hasCategories">
               <div class="status-icon-container">
-                <div class="status-icon categories-bg">
-                  <mat-icon>my_library_books</mat-icon>
+                <div class="app-icon-bg icon-lg categories-bg">
+                  <mat-icon>category</mat-icon>
                 </div>
               </div>
               <div class="status-content">
@@ -110,7 +110,7 @@
             <!-- Products Status -->
             <div class="status-card" [class.has-data]="hasProducts">
               <div class="status-icon-container">
-                <div class="status-icon products-bg">
+                <div class="app-icon-bg icon-lg products-bg">
                   <mat-icon>shopping_cart</mat-icon>
                 </div>
               </div>
@@ -135,7 +135,7 @@
             <!-- Currency Status -->
             <div class="status-card" [class.has-data]="hasCurrencies">
               <div class="status-icon-container">
-                <div class="status-icon currencies-bg">
+                <div class="app-icon-bg icon-lg currencies-bg">
                   <mat-icon>attach_money</mat-icon>
                 </div>
               </div>
@@ -160,7 +160,7 @@
             <!-- General Settings Status -->
             <div class="status-card" [class.has-data]="hasSettings">
               <div class="status-icon-container">
-                <div class="status-icon settings-bg">
+                <div class="app-icon-bg icon-lg settings-bg">
                   <mat-icon>settings</mat-icon>
                 </div>
               </div>
@@ -186,8 +186,8 @@
           <!-- Export All Option -->
           <div class="export-all-container">
             <div class="export-all-card">
-              <div class="export-icon">
-                <mat-icon>inventory_2</mat-icon>
+              <div class="app-icon-bg icon-lg neutral-bg">
+                <mat-icon>archive</mat-icon>
               </div>
               <div class="export-content">
                 <h3 class="export-title">Export Complete Configuration</h3>
@@ -207,24 +207,24 @@
               
               <mat-menu #exportMenu="matMenu" class="export-menu">
                 <button mat-menu-item (click)="exportCategories()" [disabled]="!hasCategories">
-                  <mat-icon class="categories-color">my_library_books</mat-icon>
+                  <mat-icon class="app-icon-color categories-color">category</mat-icon>
                   <span>Categories</span>
                 </button>
                 <button mat-menu-item (click)="exportProducts()" [disabled]="!hasProducts">
-                  <mat-icon class="products-color">shopping_cart</mat-icon>
+                  <mat-icon class="app-icon-color products-color">shopping_cart</mat-icon>
                   <span>Products</span>
                 </button>
                 <button mat-menu-item (click)="exportCurrencySettings()" [disabled]="!hasCurrencies">
-                  <mat-icon class="currencies-color">attach_money</mat-icon>
+                  <mat-icon class="app-icon-color currencies-color">attach_money</mat-icon>
                   <span>Currency Settings</span>
                 </button>
                 <button mat-menu-item (click)="exportGeneralSettings()" [disabled]="!hasSettings">
-                  <mat-icon class="settings-color">settings</mat-icon>
+                  <mat-icon class="app-icon-color settings-color">settings</mat-icon>
                   <span>General Settings</span>
                 </button>
                 <mat-divider></mat-divider>
                 <button mat-menu-item (click)="exportAllConfigs()" [disabled]="!hasAnyData()">
-                  <mat-icon>inventory_2</mat-icon>
+                  <mat-icon class="app-icon-color export-color">inventory_2</mat-icon>
                   <span>Export All as ZIP</span>
                 </button>
               </mat-menu>
@@ -245,7 +245,7 @@
           <div class="activity-list" *ngIf="recentActivity.length > 0">
             <div *ngFor="let activity of recentActivity" class="activity-item">
               <div class="activity-icon-container">
-                <mat-icon [ngClass]="activity.type + '-color'">{{ getActivityIcon(activity.type) }}</mat-icon>
+                <mat-icon class="app-icon-color {{ activity.type }}-color">{{ getActivityIcon(activity.type) }}</mat-icon>
               </div>
               <div class="activity-details">
                 <div class="activity-message">{{ activity.message }}</div>
@@ -254,7 +254,7 @@
             </div>
           </div>
           <div class="no-activity" *ngIf="recentActivity.length === 0">
-            <mat-icon>history</mat-icon>
+            <mat-icon class="app-icon-color info-color">history</mat-icon>
             <p>No recent activity</p>
           </div>
         </div>

@@ -189,25 +189,6 @@
         }
       }
     }
-    
-    // Card variants by color - using design system colors
-    &.category-card .stats-icon {
-      background: linear-gradient(135deg,
-        var(--color-info-dark),
-        var(--color-info-medium));
-    }
-    
-    &.product-card .stats-icon {
-      background: linear-gradient(135deg,
-        var(--color-success-dark),
-        var(--color-success-medium));
-    }
-    
-    &.currency-card .stats-icon {
-      background: linear-gradient(135deg,
-        var(--color-accent-dark),
-        var(--color-accent-medium));
-    }
   }
 }
 
@@ -236,57 +217,7 @@
       border-color: var(--brush-border-subtle);
     }
   }
-
-  .action-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    position: relative;
-    overflow: hidden;
-    
-    &::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(
-        circle at top right,
-        rgba(255, 255, 255, 0.3),
-        transparent
-      );
-      opacity: 0.8;
-    }
-    
-    mat-icon {
-      font-size: 24px;
-      height: 24px;
-      width: 24px;
-      color: white;
-      position: relative;
-    }
-    
-    &.import-icon {
-      background: linear-gradient(135deg,
-        var(--color-info-dark),
-        var(--color-info-medium));
-    }
-    
-    &.settings-icon {
-      background: linear-gradient(135deg,
-        var(--color-secondary-dark),
-        var(--color-secondary-medium));
-    }
-    
-    &.export-icon {
-      background: linear-gradient(135deg,
-        var(--color-accent-dark),
-        var(--color-accent-medium));
-    }
-  }
-
+  
   .action-info {
     flex: 1;
     
@@ -359,7 +290,6 @@
     }
     
     .info-icon {
-      color: var(--color-primary-medium);
       opacity: 0.8;
     }
     
@@ -438,7 +368,7 @@
     .action-item {
       flex-direction: column;
       
-      .action-icon {
+      .app-icon-bg {
         margin-bottom: 16px;
       }
     }
