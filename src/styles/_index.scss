@@ -11,31 +11,37 @@
 
 // Abstracts
 // Variables, functions, mixins, and placeholders that don't output CSS directly
-@import './abstracts/variables';
+@import "./abstracts/variables";
 
 // Base styles
 // Foundational styles applied globally including resets and typography
-@import './base/animations';
-@import './base/reset';
-@import './base/typography';
+@import "./base/animations";
+@import "./base/reset";
+@import "./base/typography";
 
 // Components
 // Reusable UI components with specific styling
-@import './components/buttons';
-@import './components/cards';
-@import './components/dialogs';
-@import './components/forms';
-@import './components/panels';
-@import './components/radio-button';
-@import './components/status';
-@import './components/tables';
-@import './components/titles';
-@import './components/toggles';
+@import "./components/cards";
+@import "./components/checkboxes";
+@import "./components/chips";
+@import "./components/collapsible-panel";
+@import "./components/content-panel";
+@import "./components/data-panel";
+@import "./components/dialogs";
+@import "./components/file-upload";
+@import "./components/forms";
+@import "./components/icon-button";
+@import "./components/material-buttons";
+@import "./components/page-header";
+@import "./components/radio-button";
+@import "./components/side-panel";
+@import "./components/sliders";
+@import "./components/snackbar";
+@import "./components/toggles";
+@import "./components/stroked-button";
+@import "./components/tables";
+@import "./components/titles";
 
-// Material overrides
-// Custom styles that modify the default Material Design components
-@import './overrides/material';
+@import "./overrides/material";
 
-// Utilities
-// Helper classes and standalone functionality
-@import './utilities/scrollbar';
+@import "./utilities/scrollbar";

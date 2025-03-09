@@ -1,0 +1,211 @@
+/**
+ * Page Header Panel
+ * ========================================================================== 
+ * Used across all feature components as the main page title/action container
+ */
+.page-header {
+  // 60% - Main structural component using neutral/background colors
+  background: linear-gradient(
+    135deg,
+    var(--brush-background-elevated),
+    var(--brush-background-body)
+  );
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 4px 20px var(--brush-shadow-medium);
+  border: 1px solid var(--brush-border-subtle);
+  position: relative;
+  overflow: hidden;
+  min-height: 120px;
+
+  // Decorative highlight effect
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.1) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    transform: translate(30%, -30%);
+  }
+
+  // Header content wrapper
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    
+    // Title and subtitle section - works for both header-left and title-section
+    .header-left,
+    .title-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      
+      h1, h2 {
+        font-size: var(--font-size-3xl);
+        font-weight: var(--font-weight-medium);
+        margin: 0 0 8px;
+        color: var(--brush-text-primary); // 60% - primary text
+      }
+      
+      .subtitle {
+        color: var(--brush-text-secondary); // 30% - supporting text
+        font-size: var(--font-size-lg);
+        margin: 0;
+      }
+
+      // Optional highlight text - 10% accent color
+      .highlight {
+        color: var(--brush-text-accent); // 10% - accent text
+        font-weight: var(--font-weight-medium);
+      }
+    }
+    
+    // Standard action buttons layout (category/product editor style)
+    .action-buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      
+      // Primary action button - 10% accent
+      .primary-action {
+        background-color: var(--brush-button-primary-background);
+        color: var(--brush-button-primary-text);
+      }
+      
+      // Secondary action button - 30% supporting
+      .secondary-action {
+        background-color: var(--brush-button-secondary-background);
+        color: var(--brush-button-secondary-text);
+      }
+      
+      button {
+        margin-bottom: 8px;
+        min-width: 110px;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-weight: var(--font-weight-medium);
+        letter-spacing: 0.01em;
+        
+        mat-icon {
+          margin-right: 4px;
+        }
+      }
+    }
+    
+    // Right section with buttons
+    .header-right,
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      
+      button,
+      .action-button {
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-weight: var(--font-weight-medium);
+        letter-spacing: 0.01em;
+        
+        mat-icon {
+          margin-right: 4px;
+        }
+      }
+    }
+  }
+  
+  // Variation with all actions right-aligned (file-management style)
+  &.actions-right .header-content {
+    .header-actions {
+      gap: 12px;
+    }
+  }
+
+  // Header with primary color accent - 10% accent
+  &.with-accent {
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background-color: var(--color-primary-dark); // 10% - accent element
+    }
+  }
+  
+  // Header with secondary color accent - 30% supporting
+  &.with-secondary-accent {
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background-color: var(--color-secondary-dark); // 30% - supporting element
+    }
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .page-header {
+    min-height: 100px; // Slightly smaller on mobile
+
+    .header-content {
+      padding: 20px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+
+      .header-right,
+      .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+      
+      .action-buttons {
+        width: 100%;
+
+        button {
+          flex: 1;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header .header-content {
+    .action-buttons,
+    .header-actions {
+      flex-direction: column;
+      width: 100%;
+
+      button,
+      .action-button {
+        width: 100%;
+      }
+    }
+  }
+}

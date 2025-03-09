@@ -53,11 +53,12 @@
   }
 }
 
-/* Status Panels
+/**
+ * Status Panels
  * ========================================================================== 
  * Panels that represent different states or feedback messages
  */
-.status-panel {
+ .status-panel {
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
@@ -95,7 +96,7 @@
     }
   }
   
-  // Status variants
+  // Success status - positive feedback
   &.success {
     background-color: var(--brush-status-success-subtle);
     border: 1px solid var(--brush-status-success-border);
@@ -109,6 +110,7 @@
     }
   }
   
+  // Error status - critical issues
   &.error {
     background-color: var(--brush-status-error-subtle);
     border: 1px solid var(--brush-status-error-border);
@@ -122,6 +124,7 @@
     }
   }
   
+  // Warning status - important alerts
   &.warning {
     background-color: var(--brush-status-warning-subtle);
     border: 1px solid var(--brush-status-warning-border);
@@ -135,6 +138,7 @@
     }
   }
   
+  // Info status - general information
   &.info {
     background-color: var(--brush-status-info-subtle);
     border: 1px solid var(--brush-status-info-border);

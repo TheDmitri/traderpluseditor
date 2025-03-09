@@ -1,11 +1,11 @@
 /**
  * Table Component Styling
  * ========================================================================== 
- * This file contains styling for Angular Material tables and custom table components.
+ * This file contains styling for Angular Material tables and custom table variants.
  * Following the 60-30-10 ratio principle:
- * - 60%: Table backgrounds, borders, structure (neutral/background colors)
- * - 30%: Headers, secondary information (secondary colors)
- * - 10%: Interactive elements, selected rows (primary/accent colors)
+ * - 60%: Table backgrounds, containers, borders (neutral colors)
+ * - 30%: Headers, secondary elements, supporting text (secondary colors)
+ * - 10%: Selected rows, interactive states, sorting indicators (primary/accent colors)
  */
 
 // Properly contained filter field styling
@@ -18,24 +18,193 @@
 
 /* Base Table Styling
  * ========================================================================== 
- * Common styles for all table variants
+ * Consistent table layout and structure
  */
 .mat-mdc-table {
   width: 100%;
-  background-color: var(
-    --brush-table-row
-  ) !important; // 60% - structural background
-  border-radius: 4px;
+  background-color: var(--brush-background-elevated) !important; // 60% - structural background
+  border-radius: 8px;
   overflow: hidden;
-
-  // Table border
-  &.with-border {
-    border: 1px solid var(--brush-table-border); // 60% - subtle border
+  
+  // Table header styling
+  .mat-mdc-header-row {
+    background-color: var(--brush-table-header-background) !important; // 60% - structural header
+    height: 52px;
   }
+  
+  .mat-mdc-header-cell {
+    color: var(--brush-table-header-text) !important; // 30% - supporting text
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-bottom-color: var(--brush-table-border) !important; // 60% - subtle border
+    
+    // Sort header icon adjustments
+    .mat-sort-header-arrow {
+      color: var(--brush-text-accent) !important; // 10% - accent element for interaction
+    }
+  }
+  
+  // Table body styling
+  .mat-mdc-row {
+    height: 48px;
+    
+    // Alternating row background for better readability
+    &:nth-child(odd) {
+      background-color: var(--brush-table-row) !important; // 60% - main row color
+    }
+    
+    &:nth-child(even) {
+      background-color: var(--brush-table-row-alternate) !important; // 60% - alternate row color
+    }
+    
+    // Row hover state for better user feedback
+    &:hover {
+      background-color: var(--brush-table-row-hover) !important; // 30% - supporting hover state
+    }
+    
+    // Selected row state
+    &.selected-row {
+      background-color: var(--brush-table-row-selected) !important; // 10% - accent background for selection
+      
+      .mat-mdc-cell {
+        color: var(--brush-text-accent) !important; // 10% - accent text for emphasis
+      }
+    }
+  }
+  
+  // Table cell styling
+  .mat-mdc-cell {
+    color: var(--brush-text-primary) !important; // 60% - primary text
+    font-size: var(--font-size-sm);
+    border-bottom-color: var(--brush-table-border) !important; // 60% - subtle border
+    
+    // Cell with primary content emphasis
+    &.primary-cell {
+      font-weight: var(--font-weight-medium);
+    }
+    
+    // Cell with secondary/supporting information
+    &.secondary-cell {
+      color: var(--brush-text-secondary) !important; // 30% - supporting text
+    }
+    
+    // Cell with action elements (buttons, icons)
+    &.action-cell {
+      width: 1%;
+      white-space: nowrap;
+      text-align: right;
+      padding: 0 8px;
+    }
+  }
+  
+  // Empty table state message
+  .mat-mdc-no-data-row {
+    height: 120px;
+    color: var(--brush-text-secondary) !important; // 30% - supporting text
+    font-style: italic;
+    
+    td {
+      text-align: center;
+    }
+  }
+}
 
-  // Table with box shadow
-  &.with-elevation {
-    box-shadow: 0 2px 8px var(--brush-shadow-light);
+/* Compact Table Variation
+ * ========================================================================== 
+ * Smaller footprint variant for displaying more data
+ */
+.compact-table {
+  .mat-mdc-header-row {
+    height: 40px;
+  }
+  
+  .mat-mdc-row {
+    height: 36px;
+  }
+  
+  .mat-mdc-cell,
+  .mat-mdc-header-cell {
+    padding: 0 8px;
+  }
+}
+
+/* Responsive Table Utilities
+ * ========================================================================== 
+ * Features to help with responsive table design
+ */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+  
+  // Shows/hides columns based on screen size
+  @media (max-width: 768px) {
+    .hide-sm {
+      display: none !important;
+    }
+  }
+  
+  @media (max-width: 992px) {
+    .hide-md {
+      display: none !important;
+    }
+  }
+}
+
+/* Table Footer/Pagination
+ * ========================================================================== 
+ * Styling for table pagination and footer elements
+ */
+.mat-mdc-paginator {
+  background-color: var(--brush-table-header-background) !important; // 60% - structural background
+  color: var(--brush-text-secondary) !important; // 30% - supporting text
+  border-top: 1px solid var(--brush-table-border) !important; // 60% - subtle border
+  
+  .mat-mdc-select-value-text {
+    color: var(--brush-text-primary) !important; // 60% - primary text
+  }
+  
+  .mat-mdc-icon-button {
+    color: var(--brush-text-secondary) !important; // 30% - supporting icon
+    
+    &:disabled {
+      color: var(--brush-text-disabled) !important; // 60% - disabled state
+    }
+    
+    &:not(:disabled):hover {
+      background-color: var(--brush-hover-overlay) !important; // Interactive hover state
+    }
+  }
+}
+
+/* Data Table Actions Bar
+ * ========================================================================== 
+ * Toolbar for table actions like filtering, adding items, etc.
+ */
+.table-actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  
+  .table-actions-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .table-actions-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .table-filter {
+    width: 240px;
+    margin-bottom: 0;
   }
 }
 

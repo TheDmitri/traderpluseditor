@@ -1,75 +1,116 @@
 /**
- * Scrollbar Customization
+ * Custom Scrollbar Styling
  * ========================================================================== 
- * This file contains custom styling for scrollbars across the application.
+ * This file contains styling for browser scrollbars to ensure they match
+ * the application's design system. These styles are cross-browser compatible
+ * with progressive enhancement in mind.
+ *
  * Following the 60-30-10 ratio principle:
- * - 60%: Scrollbar track and background (neutral/background colors)
- * - 30%: Scrollbar thumb in default state (secondary/supporting colors)
- * - 10%: Scrollbar thumb in hover/active state (primary/accent for emphasis)
+ * - 60%: Scrollbar track/background (neutral colors)
+ * - 30%: Scrollbar thumb in default state (secondary colors)
+ * - 10%: Scrollbar thumb in hover/active states (primary/accent colors)
  */
 
-/* Cross-browser Scrollbar Implementation
+/* Webkit Browsers (Chrome, Safari, newer Edge)
  * ========================================================================== 
- * Implements consistent scrollbar styling across browsers:
- * - WebKit/Blink (Chrome, Edge, Safari, Opera) using ::-webkit-scrollbar
- * - Firefox using scrollbar-color and scrollbar-width
+ * Styling for Webkit-based browsers
  */
-
-/* Base Scrollbar Styling - Webkit Browsers
- * ========================================================================== */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px; // Standard width for vertical scrollbar
+  height: 8px; // Height for horizontal scrollbar
+}
 
-  // Track styling - 60% neutral color (subtle background)
-  &-track {
-    background: var(--brush-background-elevated); // 60% - structural element
-  }
+::-webkit-scrollbar-track {
+  background-color: var(--brush-background-dark); // 60% - neutral background
+  border-radius: 4px;
+}
 
-  // Thumb styling - 30% supporting color (visible but not distracting)
-  &-thumb {
-    background: var(--color-neutral-medium); // 30% - supporting element
-    border-radius: 5px;
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-neutral-dark); // 30% - supporting element
+  border-radius: 4px;
+  transition: background-color var(--transition-normal) var(--transition-timing);
+}
 
-    // Hover state - 10% accent color (emphasizes interaction)
-    &:hover {
-      background: var(--color-primary-medium); // 10% - accent for interaction
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-primary-dark); // 10% - accent for interaction
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--color-primary-medium); // 10% - accent for interaction
+}
+
+/* Firefox Scrollbar
+ * ========================================================================== 
+ * Firefox uses its own scrollbar styling mechanism
+ */
+* {
+  scrollbar-width: thin; // Use thin scrollbars in Firefox
+  scrollbar-color: var(--color-neutral-dark) var(--brush-background-dark); // thumb and track colors
+}
+
+/* Edge and Internet Explorer
+ * ========================================================================== 
+ * Legacy support for non-webkit Edge and IE
+ */
+.scrollbar-container {
+  -ms-overflow-style: -ms-autohiding-scrollbar; // Auto-hiding scrollbars for Edge/IE
+}
+
+/* Custom Scrollable Areas
+ * ========================================================================== 
+ * Class for adding custom scrollbar to specific elements
+ */
+.custom-scrollbar {
+  overflow: auto;
+  
+  // Override for dark themes - lighter scrollbar on dark backgrounds
+  &.dark-theme {
+    &::-webkit-scrollbar-track {
+      background-color: var(--brush-background-darkest); // 60% - darker neutral
     }
     
-    // Ensures thumb has a minimum size
-    &:vertical {
-      min-height: 30px;
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--color-neutral-medium); // 30% - lighter for visibility
     }
     
-    &:horizontal {
-      min-width: 30px;
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: var(--color-primary-medium); // 10% - accent for interaction
     }
+    
+    // Firefox variant
+    scrollbar-color: var(--color-neutral-medium) var(--brush-background-darkest);
   }
   
-  // Button styling (up/down arrows) - if visible
-  &-button {
-    background: var(--brush-background-surface); // 60% - structural element
-    
-    &:hover {
-      background: var(--brush-background-elevated); // 60% - subtle hover effect
+  // Override for light themes - darker scrollbar on light backgrounds
+  &.light-theme {
+    &::-webkit-scrollbar-track {
+      background-color: var(--color-background-lightest); // 60% - light neutral
     }
-  }
-  
-  // Corner where vertical and horizontal scrollbars meet
-  &-corner {
-    background: var(--brush-background-surface); // 60% - structural element
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--color-neutral-light); // 30% - darker for visibility
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: var(--color-primary-dark); // 10% - accent for interaction
+    }
+    
+    // Firefox variant
+    scrollbar-color: var(--color-neutral-light) var (--color-background-lightest);
   }
 }
 
-/* Firefox Scrollbar Support
- * ========================================================================== */
-* {
-  // Sets colors for track and thumb in one property
-  // Format: scrollbar-color: <thumb> <track>;
-  scrollbar-color: var(--color-neutral-medium) var(--brush-background-elevated);
+/* Hide Scrollbar but Allow Scrolling
+ * ========================================================================== 
+ * Hides scrollbar visually while preserving scroll functionality
+ */
+.hide-scrollbar {
+  -ms-overflow-style: none; // IE and Edge
+  scrollbar-width: none; // Firefox
   
-  // Controls scrollbar thickness: auto, thin, none
-  scrollbar-width: thin;
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari, and Opera
+  }
 }
 
 /* Scrollbar Variants

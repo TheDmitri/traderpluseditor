@@ -1,0 +1,44 @@
+/**
+ * Chips/Tags Input Component
+ * ========================================================================== 
+ * This file contains styling for Angular Material chip components used for tags,
+ * filters, and selection items in the application.
+ * 
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Chip backgrounds, containers, text (neutral colors)
+ * - 30%: Supporting elements like remove buttons, borders (secondary colors)
+ * - 10%: Selected state, interactive elements (primary/accent colors)
+ */
+
+.mat-mdc-chip {
+  background-color: var(--brush-chip-background) !important; // 60% - container background
+  border: 1px solid var(--brush-chip-border) !important; // 60% - subtle border
+  color: var(--brush-text-primary) !important; // 60% - primary text
+
+  // Remove button styling - uses secondary color for supporting element
+  .mat-mdc-chip-remove {
+    color: var(--brush-text-secondary) !important; // 30% - supporting element
+
+    // Hover state increases visibility
+    &:hover {
+      color: var(
+        --brush-text-primary
+      ) !important; // 60% - increased visibility on hover
+    }
+  }
+
+  // Selected chip state - uses primary colors for emphasis (10%)
+  &.mat-mdc-chip-selected {
+    background-color: var(
+      --color-primary-transparent-20
+    ) !important; // 10% - primary accent
+    border-color: var(
+      --color-primary-transparent-50
+    ) !important; // 10% - primary accent
+  }
+
+  // Disabled chip state - reduces opacity for visual feedback
+  &.mat-mdc-chip-disabled {
+    opacity: 0.5; // Maintains color scheme but indicates inactive state
+  }
+}

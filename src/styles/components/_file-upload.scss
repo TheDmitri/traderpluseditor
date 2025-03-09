@@ -1,0 +1,54 @@
+/**
+ * File Upload Component
+ * ========================================================================== 
+ * This file contains styling for custom file upload components with drag-and-drop support.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Upload area backgrounds, containers, borders (neutral colors)
+ * - 30%: Supporting text, icons, hover states (secondary colors)
+ * - 10%: Active states, drag-over feedback, focus indicators (primary/accent colors)
+ */
+
+// Custom styled file upload area with drag-and-drop interaction
+.custom-file-upload {
+  display: block;
+  cursor: pointer;
+  padding: 12px;
+  border: 1px dashed var(--brush-input-border); // 60% - structural border with dashed style for visual cue
+  border-radius: 4px;
+  background-color: var(--brush-input-background); // 60% - container background
+  text-align: center;
+  transition: all var(--transition-normal) var(--transition-timing);
+
+  // Hover state provides visual feedback
+  &:hover {
+    border-color: var(--brush-input-border-hover); // 30% - supporting highlight
+    background-color: var(
+      --brush-input-background-hover
+    ); // 60% - slightly lighter container background
+  }
+
+  // Active drag-over state - uses primary color for emphasis (10%)
+  &.drag-over {
+    border-color: var(--brush-input-border-focus); // 10% - primary accent
+    background-color: var(
+      --color-primary-transparent-10
+    ); // 10% - primary feedback with transparency
+  }
+
+  // Upload icon provides visual cue
+  .upload-icon {
+    font-size: 24px;
+    color: var(--brush-input-icon); // 30% - supporting element
+    margin-bottom: 8px;
+  }
+
+  // Instructional text
+  .upload-text {
+    color: var(--brush-text-secondary); // 30% - supporting text
+  }
+
+  // Hide the native file input element
+  input[type="file"] {
+    display: none; // Hidden but still accessible via the label
+  }
+}
