@@ -264,6 +264,8 @@
 :host ::ng-deep {
   // Apply scrollbar styling from utilities
   .slim-scrollbar {
+    @extend .dark-scrollbar !optional;
+    
     &::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -274,16 +276,16 @@
     }
     
     &::-webkit-scrollbar-thumb {
-      background-color: var(--brush-scrollbar-thumb);
+      background-color: var(--brush-scrollbar-thumb, #444444);
       border-radius: 3px;
     }
     
     &::-webkit-scrollbar-thumb:hover {
-      background-color: var(--brush-scrollbar-thumb-hover);
+      background-color: var(--brush-scrollbar-thumb-hover, #666666);
     }
     
     scrollbar-width: thin;
-    scrollbar-color: var(--brush-scrollbar-thumb) transparent;
+    scrollbar-color: var(--brush-scrollbar-thumb, #444444) transparent;
   }
   
   // Form field styling
