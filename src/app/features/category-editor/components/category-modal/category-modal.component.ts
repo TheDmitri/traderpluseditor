@@ -18,6 +18,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { FormsModule } from '@angular/forms';
 import { Category, Product } from '../../../../core/models';
 import { StorageService } from '../../../../core/services/storage.service';
 import { ProductListComponent } from '../../../../shared/components/product-list/product-list.component';
@@ -33,6 +34,7 @@ import { AssignProductsDialogComponent } from '../../../../shared/components/ass
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     MatDialogModule,
     MatInputModule,
     MatButtonModule,
@@ -51,7 +53,11 @@ export class CategoryModalComponent implements OnInit {
   categoryProducts: Product[] = [];
   isEditMode: boolean;
   
-  // New property to store product IDs for new categories
+  // Properties for license management
+  currentLicense: string = '';
+  licenses: string[] = [];
+  
+  // Property to store product IDs for new categories
   selectedProductIds: string[] = [];
 
   constructor(
@@ -75,12 +81,13 @@ export class CategoryModalComponent implements OnInit {
     // Initialize selected product IDs if we're editing
     if (this.isEditMode && this.data.category) {
       this.selectedProductIds = [...this.data.category.productIds];
+      // Initialize licenses array if editing
+      this.licenses = [...this.data.category.licensesRequired];
     }
     
     this.categoryForm = this.fb.group({
       categoryName: ['', Validators.required],
       icon: [''],
-      licensesRequired: [''],
       isVisible: [data.category?.isVisible ?? true],
     });
   }
@@ -92,12 +99,31 @@ export class CategoryModalComponent implements OnInit {
       this.categoryForm.patchValue({
         categoryName: this.data.category.categoryName,
         icon: this.data.category.icon,
-        licensesRequired: this.data.category.licensesRequired.join(', '),
         isVisible: this.data.category.isVisible,
       });
     } else {
       // Initialize empty products array for new category
       this.categoryProducts = [];
+    }
+  }
+
+  // Add a new license to the list
+  addLicense(): void {
+    const license = this.currentLicense?.trim();
+    if (license) {
+      if (!this.licenses.includes(license)) {
+        this.licenses.push(license);
+        this.currentLicense = '';
+      } else {
+        this.notificationService.warning('License already added');
+      }
+    }
+  }
+
+  // Remove a license from the list
+  removeLicense(index: number): void {
+    if (index >= 0 && index < this.licenses.length) {
+      this.licenses.splice(index, 1);
     }
   }
 
@@ -257,9 +283,8 @@ export class CategoryModalComponent implements OnInit {
         categoryName: formValue.categoryName,
         icon: formValue.icon,
         isVisible: formValue.isVisible,
-        licensesRequired: formValue.licensesRequired
-          ? formValue.licensesRequired.split(',').map((s: string) => s.trim())
-          : [],
+        // Use the licenses array instead of parsing from a string
+        licensesRequired: this.licenses,
         // Use selectedProductIds for both new and existing categories
         productIds: this.selectedProductIds,
       };

@@ -1,82 +1,135 @@
 <div class="category-modal">
   <div class="modal-header">
-    <h2 class="text-primary font-medium">{{ isEditMode ? "Edit" : "Create" }} Category</h2>
+    <h2>{{ isEditMode ? "Edit" : "Create" }} Category</h2>
   </div>
 
   <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
     <div class="modal-content">
       <div class="form-container">
-        <mat-form-field appearance="fill">
-          <mat-label>Category Name</mat-label>
-          <input matInput formControlName="categoryName" required />
-          <mat-error
-            *ngIf="categoryForm.get('categoryName')?.hasError('required')"
-          >
-            Category name is required
-          </mat-error>
-        </mat-form-field>
+        <!-- Basic Category Information Section -->
+        <div class="form-section">
+          <h4 class="section-title">Basic Information</h4>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Icon</mat-label>
-          <input
-            matInput
-            formControlName="icon"
-            placeholder="e.g., shopping_cart"
-          />
-          <mat-icon matSuffix class="icon-secondary">{{
-            categoryForm.get("icon")?.value || "category"
-          }}</mat-icon>
-        </mat-form-field>
+          <div class="form-row">
+            <div class="form-col form-col-two-thirds">
+              <mat-form-field appearance="fill">
+                <mat-label>Category Name</mat-label>
+                <input matInput formControlName="categoryName" required />
+                <mat-error
+                  *ngIf="categoryForm.get('categoryName')?.hasError('required')"
+                >
+                  Category name is required
+                </mat-error>
+              </mat-form-field>
+            </div>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Required Licenses (comma separated)</mat-label>
-          <input
-            matInput
-            formControlName="licensesRequired"
-            placeholder="e.g., license_weapons, license_trade"
-          />
-        </mat-form-field>
+            <div class="form-col form-col-third">
+              <mat-form-field appearance="fill">
+                <mat-label>Icon</mat-label>
+                <input
+                  matInput
+                  formControlName="icon"
+                  placeholder="e.g., shopping_cart"
+                />
+                <mat-icon matSuffix class="icon-secondary">
+                  {{ categoryForm.get("icon")?.value || "category" }}
+                </mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
 
-        <div class="form-field">
-          <mat-slide-toggle formControlName="isVisible" class="mat-primary">
-            Visible
-          </mat-slide-toggle>
+          <div class="visibility-toggle">
+            <mat-slide-toggle formControlName="isVisible" color="primary">
+              Category Visible
+            </mat-slide-toggle>
+            <span class="toggle-hint"
+              >Toggle visibility in the trader menu</span
+            >
+          </div>
         </div>
 
-        <div class="product-list-section">
-          <div class="section-title">
-            <h3 class="text-primary font-medium">Products in Category</h3>
-            <div class="action-buttons">
+        <!-- License Section -->
+        <div class="form-section">
+          <h4 class="section-title">Required Licenses</h4>
+
+          <div class="license-input-row">
+            <mat-form-field appearance="fill" class="license-input">
+              <mat-label>License Name</mat-label>
+              <input
+                matInput
+                [(ngModel)]="currentLicense"
+                [ngModelOptions]="{ standalone: true }"
+                placeholder="e.g., license_weapons"
+                (keyup.enter)="addLicense()"
+              />
+              <mat-hint *ngIf="licenses.length === 0">
+                No licenses required. Add licenses if players need specific
+                permissions.
+              </mat-hint>
+            </mat-form-field>
+
+            <button
+              class="custom-stroked-button color-secondary with-icon license-add-button"
+              type="button"
+              color="primary"
+              (click)="addLicense()"
+              [disabled]="!currentLicense.trim()"
+            >
+              <mat-icon>add</mat-icon>
+              Add License
+            </button>
+          </div>
+
+          <!-- License chips list - moved closer to input -->
+          <div class="license-chips" *ngIf="licenses.length > 0">
+            <div class="chip" *ngFor="let license of licenses; let i = index">
+              <span class="chip-text">{{ license }}</span>
               <button
-                mat-raised-button
-                color="primary"
+                type="button"
+                class="custom-icon-btn icon-btn-sm icon-btn-warn"
+                (click)="removeLicense(i)"
+                aria-label="Remove license"
+              >
+                <mat-icon>close</mat-icon>
+                <div class="icon-btn-ripple"></div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Products Section -->
+        <div class="form-section product-section">
+          <div class="section-header-with-actions">
+            <h4 class="title">Products in Category</h4>
+            <div class="section-actions">
+              <button
+                class="custom-stroked-button color-primary with-icon"
                 type="button"
                 (click)="assignExistingProducts()"
-                class="action-button"
               >
                 <mat-icon>playlist_add</mat-icon>
                 Assign Products
               </button>
               <button
-                mat-raised-button
-                color="primary"
+                class="custom-stroked-button color-primary with-icon"
                 type="button"
                 (click)="addProductToCategory()"
-                class="action-button"
               >
                 <mat-icon>add</mat-icon>
                 Add Product
               </button>
             </div>
           </div>
+
           <div class="product-list-container scroll-y slim-scrollbar">
-            <!-- Leere Zustands-Meldung -->
+            <!-- Empty state message -->
             <div *ngIf="categoryProducts.length === 0" class="empty-state">
-              <p class="text-secondary">No products in this category.</p>
-              <p class="text-secondary">Use the buttons above to add products.</p>
+              <mat-icon class="empty-state-icon">category</mat-icon>
+              <p>No products in this category.</p>
+              <p>Use the buttons above to add products.</p>
             </div>
-            
-            <!-- Produktliste nur anzeigen, wenn Produkte vorhanden sind -->
+
+            <!-- Product list when products exist -->
             <ng-container *ngIf="categoryProducts.length > 0">
               <app-product-list
                 [products]="categoryProducts"
@@ -93,11 +146,12 @@
 
     <div class="modal-footer">
       <button mat-button type="button" (click)="onCancel()">Cancel</button>
-      <button 
-        mat-raised-button 
-        color="primary" 
+      <button
+        mat-raised-button
+        color="primary"
         type="submit"
-        [disabled]="categoryForm.invalid">
+        [disabled]="categoryForm.invalid"
+      >
         {{ isEditMode ? "Save" : "Create" }}
       </button>
     </div>

@@ -50,6 +50,62 @@
   }
 }
 
+/* Section Title with Actions
+ * ========================================================================== 
+ * Special variant for section headers that include action buttons
+ * Ensures the divider line extends full width while maintaining the accent
+ */
+.section-header-with-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--brush-divider); /* 60% - subtle structural element */
+  width: 100%;
+  position: relative;
+  
+  // Title text styling
+  .title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    color: var(--brush-text-primary); /* 60% - main title text */
+    margin: 0;
+    padding: 0;
+    border-bottom: none; // Remove default border since parent has it
+  }
+  
+  // Accent line positioning
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background-color: var(--color-primary-medium); /* 10% - accent element */
+    border-radius: 3px;
+  }
+  
+  // Container for action buttons
+  .section-actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    
+    .section-actions {
+      width: 100%;
+      margin-top: 8px;
+    }
+  }
+}
+
 /* Page Title
  * ========================================================================== 
  * Larger title for page headers
