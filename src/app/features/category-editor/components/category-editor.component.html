@@ -60,7 +60,7 @@
     <mat-card-content>
       <!-- Search field with standardized styling and proper containment -->
       <div class="table-container">
-        <mat-form-field class="filter-field" appearance="outline">
+        <mat-form-field class="filter-field" appearance="outline" *ngIf="hasCategories">
           <mat-label>Filter Categories</mat-label>
           <input
             matInput
@@ -175,7 +175,7 @@
           
           <!-- No data row -->
           <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="6">
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
               <div class="empty-table-message">
                 <mat-icon class="empty-icon">category</mat-icon>
                 <h3 class="empty-title">No categories found</h3>

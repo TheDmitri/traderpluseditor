@@ -84,6 +84,9 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
   /** Reference to the Material table component */
   @ViewChild(MatTable) table!: MatTable<Category>;
 
+  /** Flag to track if categories are available */
+  hasCategories = false;
+
   /**
    * Constructor initializes services and the data source
    *
@@ -178,6 +181,7 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
    */
   loadCategories(): void {
     const categories = this.storageService.categories();
+    this.hasCategories = categories.length > 0;
     this.dataSource.data = categories;
   }
 
@@ -189,8 +193,18 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
    * @param event - Input event containing the filter text
    */
   applyFilter(event: Event) {
+    if (!this.hasCategories) return;
+
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+
+    if (this.dataSource.filteredData.length === 0 && this.dataSource.data.length > 0) {
+      this.notificationService.error('No categories match the search criteria');
+    }
   }
 
   /**
