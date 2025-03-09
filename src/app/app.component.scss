@@ -6,9 +6,9 @@
   // Toolbar styling
   .app-toolbar {
     flex: 0 0 64px; // Fixed height
-    background-color: var(--brush-background-surface); // 60% - dominant background color
+    background-color: var(--brush-sidebar-background); // 60% - dominant background color
     border-bottom: 1px solid var(--brush-border-subtle); // 60% - structural element
-    padding: 0 16px;
+    padding: 0 24px;
     display: flex;
     align-items: center;
     position: relative;
@@ -25,8 +25,8 @@
       .app-title {
         color: var(--brush-text-primary); // 60% - primary text
         font-size: var(--font-size-xl);
-        font-weight: var(--font-weight-medium);
-        letter-spacing: 0.25rem;
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.35rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -48,6 +48,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-right: 16px;
       
       .mat-icon {
         display: flex;
@@ -75,7 +76,7 @@
   // Footer styling
   .app-footer {
     flex: 0 0 48px; // Fixed height
-    background-color: var(--brush-background-surface); // 60% - structural element 
+    background-color: var(--brush-sidebar-background); // 60% - structural element 
     border-top: 1px solid var(--brush-border-subtle); // 60% - subtle border
     z-index: 1;
 

@@ -45,7 +45,7 @@
       padding: 48px 24px;
       transition: all var(--transition-normal) var(--transition-timing);
       background-color: var(--brush-hover-overlay);
-      border: 2px dashed var(--brush-border-light);
+      border: 2px dashed var(--brush-border-subtle);
       border-radius: 12px;
       position: relative;
 
@@ -185,7 +185,7 @@
           var(--brush-background-elevated),
           var(--brush-background-body)
         );
-        border: 1px solid var(--brush-border-light);
+        border: 1px solid var(--brush-border-subtle);
         border-radius: 12px;
         padding: 20px;
         display: flex;
@@ -334,7 +334,7 @@
           var(--brush-background-elevated),
           var(--brush-background-body)
         );
-        border: 1px solid var(--brush-border-light);
+        border: 1px solid var(--brush-border-subtle);
         border-radius: 12px;
         transition: all var(--transition-normal) var(--transition-timing);
 

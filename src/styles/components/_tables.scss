@@ -834,7 +834,7 @@
       .mdc-notched-outline__leading,
       .mdc-notched-outline__notch,
       .mdc-notched-outline__trailing {
-        border-color: var(--brush-border-light) !important;
+        border-color: var(--brush-border-subtle) !important;
       }
 
       // Focused state
@@ -969,7 +969,7 @@
 .mdc-line-ripple,
 .mdc-line-ripple::before,
 .mdc-line-ripple::after {
-  border-bottom-color: var(--brush-border-light) !important;
+  border-bottom-color: var(--brush-border-subtle) !important;
 }
 
 .mdc-line-ripple--active::after,

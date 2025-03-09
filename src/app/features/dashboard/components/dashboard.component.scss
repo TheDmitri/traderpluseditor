@@ -66,7 +66,7 @@
       var(--brush-background-elevated),
       var(--brush-background-body)
     );
-    border: 1px solid var(--brush-border-light);
+    border: 1px solid var(--brush-border-subtle);
     
     &:hover {
       transform: translateY(-4px);
@@ -160,7 +160,7 @@
     
     .stats-action {
       padding: 12px 24px;
-      border-top: 1px solid var(--brush-border-light);
+      border-top: 1px solid var(--brush-border-subtle);
       margin-top: auto;
       text-align: right;
       
@@ -233,7 +233,7 @@
     &:hover {
       background-color: var(--brush-active-overlay);
       transform: translateY(-2px);
-      border-color: var(--brush-border-light);
+      border-color: var(--brush-border-subtle);
     }
   }
 
