@@ -22,35 +22,41 @@
               </mat-form-field>
             </div>
           </div>
-        </div>
-        
-        <!-- Trading Configuration Section -->
-        <div class="form-section">
-          <h4 class="section-title">Trading Configuration</h4>
           
-          <!-- First row of three columns -->
+          <!-- Stock Type Radio Buttons -->
+          <div class="form-row radio-group-row">
+            <div class="radio-group-wrapper">
+              <label class="radio-label">Stock Type:</label>
+              <mat-radio-group formControlName="stockType" class="radio-group">
+                <mat-radio-button value="defined">Defined Stock</mat-radio-button>
+                <mat-radio-button value="infinite">Infinite Stock</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+          
+          <!-- Max Stock -->
           <div class="form-row">
             <div class="form-col">
               <mat-form-field appearance="fill">
-                <mat-label>Coefficient</mat-label>
-                <input
-                  matInput
-                  type="number"
-                  formControlName="coefficient"
-                  required
-                />
-                <mat-hint>Price multiplier for this item</mat-hint>
-              </mat-form-field>
-            </div>
-
-            <div class="form-col">
-              <mat-form-field appearance="fill">
                 <mat-label>Max Stock</mat-label>
-                <input matInput type="number" formControlName="maxStock" required />
-                <mat-hint>Maximum items available in trader</mat-hint>
+                <input 
+                  matInput 
+                  type="number" 
+                  formControlName="maxStock" 
+                  [readonly]="productForm.get('stockType')?.value === 'infinite'"
+                />
+                <mat-hint *ngIf="productForm.get('stockType')?.value === 'infinite'">
+                  Set to -1 for infinite stock
+                </mat-hint>
+                <mat-hint *ngIf="productForm.get('stockType')?.value === 'defined'">
+                  Maximum items available in trader
+                </mat-hint>
+                <mat-error *ngIf="productForm.get('maxStock')?.hasError('invalidMaxStock')">
+                  Must be -1 for infinite or greater than 0 for defined stock
+                </mat-error>
               </mat-form-field>
             </div>
-
+            
             <div class="form-col">
               <mat-form-field appearance="fill">
                 <mat-label>Trade Quantity</mat-label>
@@ -61,12 +67,67 @@
                   required
                 />
                 <mat-hint>Units traded per transaction</mat-hint>
+                <mat-error *ngIf="productForm.get('tradeQuantity')?.invalid">
+                  Must be at least 1
+                </mat-error>
               </mat-form-field>
             </div>
           </div>
-
-          <!-- Second row of three columns -->
+        </div>
+        
+        <!-- Stock Configuration (only for defined stock) -->
+        <div class="form-section" *ngIf="productForm.get('stockType')?.value === 'defined'">
+          <h4 class="section-title">Stock Configuration</h4>
+          
           <div class="form-row">
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Destock Coefficient (%)</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="destockCoefficient"
+                  min="0"
+                  max="100"
+                />
+                <mat-hint>Percentage by which stock decreases over time</mat-hint>
+                <mat-error *ngIf="productForm.get('destockCoefficient')?.invalid">
+                  Must be between 0 and 100%
+                </mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Behavior at Server Restart</mat-label>
+                <mat-select formControlName="behaviorAtRestart">
+                  <mat-option *ngFor="let option of behaviorOptions" [value]="option.value">
+                    {{ option.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>How stock is handled when server restarts</mat-hint>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Price Configuration Section -->
+        <div class="form-section">
+          <h4 class="section-title">Price Configuration</h4>
+          
+          <!-- Price Type Radio Buttons (only visible for defined stock) -->
+          <div class="form-row radio-group-row" *ngIf="productForm.get('stockType')?.value === 'defined'">
+            <div class="radio-group-wrapper">
+              <label class="radio-label">Price Type:</label>
+              <mat-radio-group formControlName="priceType" class="radio-group">
+                <mat-radio-button value="static">Static Price</mat-radio-button>
+                <mat-radio-button value="dynamic">Dynamic Price</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+          
+          <!-- Static Price Fields -->
+          <div class="form-row" *ngIf="productForm.get('priceType')?.value === 'static'">
             <div class="form-col">
               <mat-form-field appearance="fill">
                 <mat-label>Buy Price</mat-label>
@@ -74,32 +135,60 @@
                 <mat-hint>Player purchase price</mat-hint>
               </mat-form-field>
             </div>
-
+            
             <div class="form-col">
               <mat-form-field appearance="fill">
                 <mat-label>Sell Price</mat-label>
-                <input
-                  matInput
-                  type="number"
-                  formControlName="sellPrice"
-                  required
-                />
+                <input matInput type="number" formControlName="sellPrice" required />
                 <mat-hint>Player selling price</mat-hint>
               </mat-form-field>
             </div>
-
-            <div class="form-col">
+            
+            <div class="form-col" *ngIf="productForm.get('stockType')?.value === 'defined'">
               <mat-form-field appearance="fill">
-                <mat-label>Stock Settings</mat-label>
-                <input
-                  matInput
-                  type="number"
-                  formControlName="stockSettings"
-                  required
-                />
-                <mat-hint>Stock refresh configuration</mat-hint>
+                <mat-label>Coefficient</mat-label>
+                <input matInput type="number" formControlName="coefficient" required />
+                <mat-hint>Price multiplier for this item</mat-hint>
               </mat-form-field>
             </div>
+          </div>
+          
+          <!-- Dynamic Price Fields -->
+          <div class="form-row" *ngIf="productForm.get('priceType')?.value === 'dynamic'">
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Min Price (High Stock)</mat-label>
+                <input matInput type="number" formControlName="minPrice" required />
+                <mat-hint>Price when stock is high</mat-hint>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Max Price (Low Stock)</mat-label>
+                <input matInput type="number" formControlName="maxPrice" required />
+                <mat-hint>Price when stock is low</mat-hint>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Calculated Coefficient</mat-label>
+                <input matInput type="number" formControlName="coefficient" readonly />
+                <mat-hint>Auto-calculated based on price range</mat-hint>
+              </mat-form-field>
+            </div>
+          </div>
+          
+          <!-- Price Validation Error Messages -->
+          <div class="validation-error" *ngIf="productForm.hasError('sellPriceExceedsBuyPrice')">
+            <mat-icon>error</mat-icon>
+            <span>Sell price must be less than buy price</span>
+          </div>
+          
+          <div class="validation-error" *ngIf="productForm.hasError('minPriceExceedsMaxPrice')">
+            <mat-icon>error</mat-icon>
+            <span>Minimum price must be less than maximum price</span>
           </div>
         </div>
         

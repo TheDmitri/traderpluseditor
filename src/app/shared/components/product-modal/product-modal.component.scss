@@ -77,6 +77,21 @@
       gap: 16px;
       width: 100%;
       
+      &.radio-group-row {
+        align-items: center;
+        padding: 0 0 16px; // Entferne oberes Padding
+        margin-top: -8px; // Negativer Abstand nach oben, um den Abstand zum Input zu verringern
+        margin-left: 0; // Entferne Versatz
+        
+        // Füge eine Wrapper-Klasse hinzu, um das gleiche Padding wie mat-form-field zu simulieren
+        .radio-group-wrapper {
+          display: flex;
+          align-items: center;
+          width: 100%;
+          padding-left: 4px; // Angleichung an mat-form-field internes Padding
+        }
+      }
+      
       .form-col {
         flex: 1;
         
@@ -93,6 +108,45 @@
       @media (max-width: 600px) {
         flex-direction: column;
         gap: 0;
+      }
+      
+      // Radio group styling
+      .radio-label {
+        flex: 0 0 auto;
+        font-size: var(--font-size-sm);
+        color: var(--brush-text-primary);
+        margin-right: 16px;
+        font-weight: var(--font-weight-medium);
+      }
+      
+      .radio-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        
+        .mat-radio-button {
+          margin-right: 16px;
+        }
+      }
+    }
+    
+    // Validation error messages
+    .validation-error {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      background-color: rgba(244, 67, 54, 0.08);
+      border: 1px solid rgba(244, 67, 54, 0.2);
+      color: #f44336;
+      margin-top: 8px;
+      font-size: var(--font-size-sm);
+      
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
       }
     }
     
@@ -122,6 +176,22 @@
           gap: 16px;
           color: var(--brush-text-primary);
           margin-right: 0;
+          
+          button.custom-icon-btn {
+            min-width: 32px;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            padding: 0;
+            margin: 0;
+            
+            mat-icon {
+              font-size: 20px;
+              width: 20px;
+              height: 20px;
+              line-height: 20px;
+            }
+          }
         }
       }
     }
@@ -262,6 +332,35 @@
       font-size: var(--font-size-xs);
       color: var(--brush-text-secondary);
     }
+    
+    // Reduziere den Bottom-Margin der Form-Field, wenn gefolgt von radio-group-row
+    & + .radio-group-row {
+      margin-top: -12px; // Stärkerer negativer Abstand
+    }
+  }
+  
+  // Radio button styling
+  .mat-radio-group {
+    .mat-radio-button {
+      .mat-radio-label-content {
+        color: var(--brush-text-primary);
+        font-size: var(--font-size-sm);
+      }
+    }
+  }
+  
+  // Select dropdown styling
+  .mat-mdc-select {
+    .mat-mdc-select-value {
+      color: var(--brush-text-primary);
+    }
+  }
+
+  // Radio button styling with consistent spacing
+  .mat-mdc-radio-button {
+    .mdc-form-field {
+      margin: 0 0 0 -10px; // Korrigiert die interne Verschiebung von Material Design
+    }
   }
 }
 
@@ -276,6 +375,21 @@
     
     .modal-footer {
       padding: 0 16px;
+    }
+    
+    .form-row {
+      &.radio-group-row {
+        flex-direction: column;
+        align-items: flex-start;
+        
+        .radio-label {
+          margin-bottom: 8px;
+        }
+        
+        .radio-group {
+          width: 100%;
+        }
+      }
     }
   }
 }
