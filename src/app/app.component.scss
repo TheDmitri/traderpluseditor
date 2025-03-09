@@ -45,13 +45,20 @@
     // Using existing button styles from _buttons.scss
     .menu-button,
     .help-button {
-      margin: 0 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       
       .mat-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         transition: transform var(--transition-normal) var(--transition-timing);
+        transform-origin: center center;
+        line-height: 1;
         
         &.expanded {
-          transform: rotate(-180deg);
+          transform: rotate(-2700deg) translateY(2px) scaleX(-1); // Vertical flip with scaleX(-1)
         }
       }
     }
