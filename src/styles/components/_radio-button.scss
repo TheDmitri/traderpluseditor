@@ -1,0 +1,210 @@
+/**
+ * Custom Radio Button Component Styling
+ * ========================================================================== 
+ * This file contains styling for custom radio buttons that match the Material Design
+ * aesthetic while using the application's theme and color palette.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Container, backgrounds, disabled states (neutral colors)
+ * - 30%: Labels, supporting elements (secondary colors)
+ * - 10%: Selected states, focus indicators (primary/accent colors)
+ */
+
+/* Base Custom Radio Button Styling 
+ * ========================================================================== 
+ * Core styling shared across all custom radio button variants
+ */
+.custom-radio {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  margin: 8px 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  
+  // Hide native radio input
+  input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+  }
+  
+  // Outer circle styling
+  .radio-outer-circle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--brush-input-border);
+    background-color: transparent;
+    margin-right: 10px;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease;
+  }
+  
+  // Inner circle styling (selected state indicator)
+  .radio-inner-circle {
+    position: absolute;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(0);
+  }
+  
+  // Label styling
+  .radio-label {
+    color: var(--brush-label-text);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    transition: color 0.15s ease;
+  }
+  
+  // Default hover state
+  &:hover .radio-outer-circle {
+    border-color: var(--brush-input-border-hover);
+  }
+  
+  // Selected state - fixed inner circle size and position
+  input[type="radio"]:checked + .radio-outer-circle {
+    border-width: 2px;
+    
+    .radio-inner-circle {
+      width: 20px;
+      height: 20px;
+      transform: scale(.75);
+      background-color: currentColor;
+    }
+  }
+  
+  // Focus state
+  input[type="radio"]:focus-visible + .radio-outer-circle {
+    outline: 2px solid var(--brush-focus-ring);
+    outline-offset: 2px;
+  }
+  
+  // Disabled state
+  input[type="radio"]:disabled {
+    cursor: not-allowed;
+    
+    & + .radio-outer-circle {
+      border-color: var(--brush-input-text-disabled);
+      
+      .radio-inner-circle {
+        background-color: var(--brush-input-text-disabled);
+      }
+    }
+    
+    & ~ .radio-label {
+      color: var(--brush-input-text-disabled);
+    }
+  }
+}
+
+/* Color Variants
+ * ========================================================================== 
+ * Different color themes for radio buttons matching the application's palette
+ */
+
+/* Primary Variant (10% accent color)
+ * For key interactive elements, main actions, primary user selections
+ */
+.custom-radio.radio-primary {
+  // Selected state
+  input[type="radio"]:checked + .radio-outer-circle {
+    border-color: var(--color-primary-medium);
+    color: var(--color-primary-medium);
+    
+    .radio-inner-circle {
+      background-color: var(--color-primary-medium);
+    }
+  }
+  
+  // Hover on selected
+  &:hover input[type="radio"]:checked + .radio-outer-circle {
+    border-color: var(--color-primary-light);
+    color: var(--color-primary-light);
+  }
+  
+  // Focus styles
+  input[type="radio"]:focus-visible + .radio-outer-circle {
+    outline-color: var(--color-primary-light);
+  }
+}
+
+/* Secondary Variant (30% supporting color)
+ * For secondary actions, supporting options, alternative selections
+ */
+.custom-radio.radio-secondary {
+  // Selected state
+  input[type="radio"]:checked + .radio-outer-circle {
+    border-color: var(--color-secondary-medium);
+    color: var(--color-secondary-medium);
+    
+    .radio-inner-circle {
+      background-color: var(--color-secondary-medium);
+    }
+  }
+  
+  // Hover on selected
+  &:hover input[type="radio"]:checked + .radio-outer-circle {
+    border-color: var(--color-secondary-light);
+    color: var(--color-secondary-light);
+  }
+  
+  // Focus styles
+  input[type="radio"]:focus-visible + .radio-outer-circle {
+    outline-color: var(--color-secondary-light);
+  }
+}
+
+/* Neutral Variant (60% structural color)
+ * For standard options, non-emphasized choices, default selections
+ */
+.custom-radio.radio-neutral {
+  // Selected state
+  input[type="radio"]:checked + .radio-outer-circle {
+    border-color: var(--color-neutral-medium);
+    color: var(--color-neutral-medium);
+    
+    .radio-inner-circle {
+      background-color: var(--color-neutral-medium);
+    }
+  }
+  
+  // Hover on selected
+  &:hover input[type="radio"]:checked + .radio-outer-circle {
+    border-color: var(--color-neutral-light);
+    color: var(--color-neutral-light);
+  }
+  
+  // Focus styles
+  input[type="radio"]:focus-visible + .radio-outer-circle {
+    outline-color: var(--color-neutral-light);
+  }
+}
+
+/* Radio Button Group
+ * ========================================================================== 
+ * Styling for groups of radio buttons with different layouts
+ */
+.radio-button-group {
+  display: flex;
+  gap: 16px;
+  
+  // Vertical orientation (default)
+  &.vertical {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  // Horizontal orientation
+  &.horizontal {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
