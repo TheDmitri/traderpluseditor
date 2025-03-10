@@ -62,10 +62,10 @@ mat-nav-list {
     .nav-item-active-indicator {
       position: absolute;
       left: 0;
-      top: 4px;
-      bottom: 4px;
-      width: 4px;
-      border-radius: 0 4px 4px 0;
+      top: -2px;
+      bottom: -2px;
+      width: 3px;
+      border-radius: 6px 0 0 6px;
       transform: scaleY(0);
       transition: transform var(--transition-fast) var(--transition-timing), 
                   background-color var(--transition-fast) var(--transition-timing);
@@ -119,7 +119,7 @@ mat-nav-list {
       }
       
       .nav-item-active-indicator {
-        transform: scaleY(0.5);
+        transform: scaleY(0.05);
         background: var(--color-primary-medium);
       }
     }
