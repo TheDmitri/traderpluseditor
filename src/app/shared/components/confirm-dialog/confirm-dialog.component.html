@@ -1,15 +1,19 @@
 <div class="confirm-dialog" [class]="data.type || 'info'">
-  <div class="dialog-header">
-    <mat-icon>{{ getIcon() }}</mat-icon>
-    <h2 mat-dialog-title>{{ data.title }}</h2>
-  </div>
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon class="dialog-icon" [ngClass]="data.type || 'info'">{{ getIcon() }}</mat-icon>
+    <span>{{ data.title }}</span>
+  </h2>
 
-  <div class="dialog-content">
-    <p>{{ data.message }}</p>
-  </div>
+  <mat-dialog-content class="dialog-content">
+    <div class="dialog-primary-text">{{ data.message }}</div>
+    <div *ngIf="data.additionalInfo" class="dialog-secondary-text">
+      {{ data.additionalInfo }}
+    </div>
+  </mat-dialog-content>
 
-  <div class="dialog-actions">
-    <button mat-button (click)="onCancel()">
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()"
+    cdkFocusInitial>
       {{ data.cancelText || "Cancel" }}
     </button>
     <button 
@@ -18,5 +22,5 @@
       (click)="onConfirm()">
       {{ data.confirmText || "Confirm" }}
     </button>
-  </div>
+  </mat-dialog-actions>
 </div>

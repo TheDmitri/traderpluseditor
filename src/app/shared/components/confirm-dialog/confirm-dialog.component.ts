@@ -15,6 +15,7 @@ interface ConfirmDialogData {
   confirmText?: string;
   cancelText?: string;
   type?: 'warning' | 'danger' | 'info';
+  additionalInfo?: string; // Optional additional information to display
 }
 
 @Component({
