@@ -51,7 +51,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatTooltipModule,
     MatDialogModule,
     RouterModule,
-    DenominationModalComponent,
   ],
   templateUrl: './currency-editor.component.html',
   styleUrls: ['./currency-editor.component.scss'],
