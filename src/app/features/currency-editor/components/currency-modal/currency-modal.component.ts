@@ -8,16 +8,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatExpansionModule } from '@angular/material/expansion'; // Neu hinzugefügt
+import { MatExpansionModule } from '@angular/material/expansion';
 import { CurrencyType, Currency } from '../../../../core/models';
 
-export interface DenominationModalData {
+export interface CurrencyModalData {
   currencyType: CurrencyType;
   readOnly?: boolean;
 }
 
 @Component({
-  selector: 'app-denomination-modal',
+  selector: 'app-currency-modal',
   standalone: true,
   imports: [
     CommonModule,
@@ -29,28 +29,28 @@ export interface DenominationModalData {
     MatIconModule,
     MatTableModule,
     MatTooltipModule,
-    MatExpansionModule // Neu hinzugefügt
+    MatExpansionModule
   ],
-  templateUrl: './denomination-modal.component.html',
-  styleUrls: ['./denomination-modal.component.scss']
+  templateUrl: './currency-modal.component.html',
+  styleUrls: ['./currency-modal.component.scss']
 })
-export class DenominationModalComponent implements OnInit {
-  // Direct array of denominations for read-only display
-  denominations: Currency[] = [];
+export class CurrencyModalComponent implements OnInit {
+  // Direct array of currencies for read-only display
+  currencies: Currency[] = [];
   
-  // Form for adding new denominations
-  newDenominationForm: FormGroup;
+  // Form for adding new currencies
+  newCurrencyForm: FormGroup;
 
   // Expansion panel state
   expansionPanelOpen = false;
   
   constructor(
     private fb: FormBuilder,
-    public dialogRef: MatDialogRef<DenominationModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DenominationModalData
+    public dialogRef: MatDialogRef<CurrencyModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: CurrencyModalData
   ) {
-    // Initialize the form for adding new denominations
-    this.newDenominationForm = this.fb.group({
+    // Initialize the form for adding new currencies
+    this.newCurrencyForm = this.fb.group({
       className: ['', [
         Validators.required,
         this.uniqueClassNameValidator()
@@ -60,62 +60,62 @@ export class DenominationModalComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    // Initialize the denominations array with sorted data
+    // Initialize the currencies array with sorted data
     if (this.data.currencyType.currencies) {
-      this.denominations = [...this.data.currencyType.currencies]
+      this.currencies = [...this.data.currencyType.currencies]
         .sort((a, b) => b.value - a.value);
     }
   }
   
   /**
-   * Add a new denomination to the list
+   * Add a new currency to the list
    */
-  addNewDenomination(): void {
-    if (this.newDenominationForm.valid) {
-      // Create new denomination from form values
-      const newDenomination: Currency = {
-        className: this.newDenominationForm.get('className')?.value,
-        value: this.newDenominationForm.get('value')?.value
+  addNewCurrency(): void {
+    if (this.newCurrencyForm.valid) {
+      // Create new currency from form values
+      const newCurrency: Currency = {
+        className: this.newCurrencyForm.get('className')?.value,
+        value: this.newCurrencyForm.get('value')?.value
       };
       
       // Add to the list
-      this.denominations.push(newDenomination);
+      this.currencies.push(newCurrency);
       
-      // Sort denominations by value (descending)
-      this.sortDenominations();
+      // Sort currencies by value (descending)
+      this.sortCurrencies();
       
       // Reset the form
-      this.newDenominationForm.reset();
+      this.newCurrencyForm.reset();
       
-      // Update validators to consider the newly added denomination
+      // Update validators to consider the newly added currency
       this.updateValidators();
     }
   }
   
   /**
-   * Remove a denomination from the list
-   * @param index Index of the denomination to remove
+   * Remove a currency from the list
+   * @param index Index of the currency to remove
    */
-  removeDenomination(index: number): void {
-    this.denominations.splice(index, 1);
+  removeCurrency(index: number): void {
+    this.currencies.splice(index, 1);
     
-    // Update validators after removing a denomination
+    // Update validators after removing a currency
     this.updateValidators();
   }
   
   /**
-   * Sort denominations by value in descending order
+   * Sort currencies by value in descending order
    */
-  sortDenominations(): void {
-    this.denominations.sort((a, b) => b.value - a.value);
+  sortCurrencies(): void {
+    this.currencies.sort((a, b) => b.value - a.value);
   }
   
   /**
-   * Update validators for the new denomination form
+   * Update validators for the new currency form
    */
   updateValidators(): void {
-    // Re-set the className validator to check against the current denominations list
-    const classNameControl = this.newDenominationForm.get('className');
+    // Re-set the className validator to check against the current currencies list
+    const classNameControl = this.newCurrencyForm.get('className');
     classNameControl?.clearValidators();
     classNameControl?.setValidators([
       Validators.required,
@@ -135,9 +135,9 @@ export class DenominationModalComponent implements OnInit {
       
       const className = control.value;
       
-      // Check if className exists in current denominations
-      const exists = this.denominations.some(
-        denomination => denomination.className === className
+      // Check if className exists in current currencies
+      const exists = this.currencies.some(
+        currency => currency.className === className
       );
       
       return exists ? { 'duplicate': { value: className } } : null;
@@ -148,10 +148,10 @@ export class DenominationModalComponent implements OnInit {
    * Save changes and close the dialog
    */
   onSave(): void {
-    // Update currency type with current denominations
+    // Update currency type with current currencies
     const updatedCurrencyType: CurrencyType = {
       ...this.data.currencyType,
-      currencies: this.denominations
+      currencies: this.currencies
     };
     
     // Return updated currency type to the caller

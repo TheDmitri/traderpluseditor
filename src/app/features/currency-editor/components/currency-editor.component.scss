@@ -1,3 +1,5 @@
+// Main container for the currency editor
+// Uses CSS Grid for layout with consistent spacing
 .currency-editor-container {
   padding: 32px;
   max-width: 1800px;
@@ -5,7 +7,8 @@
   display: grid;
   gap: 32px;
 
-  // Specific overrides for the actions column in this view
+  // Custom styling for action buttons in the table
+  // Ensures consistent alignment and spacing between buttons
   .actions-cell {
     .action-buttons {
       display: flex;
@@ -13,24 +16,29 @@
       justify-content: flex-end;
     }
   }
-
-  // Denomination count styling
-  .denomination-count {
+  
+  // Currency count column styling
+  // Left alignment for better readability of numeric values
+  .currency-count {
     text-align: start;
   }
 
-  // Denominations container styling
-  .denominations-container {
+  // Expandable section for currencies within a currency type
+  // Provides consistent padding and hierarchy through typography
+  .currencies-container {
     padding: 16px 24px 24px;
     
-    .denominations-title {
+    // Section title styling with appropriate spacing
+    .currencies-title {
       margin: 0 0 16px;
       font-size: 18px;
       font-weight: 500;
       color: var(--brush-text-primary);
     }
     
-    .empty-denominations-message {
+    // Empty state styling for when no currencies exist
+    // Centers content with a clear call to action
+    .empty-currencies-message {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -38,6 +46,7 @@
       padding: 32px 16px;
       text-align: center;
       
+      // Large icon for visual emphasis
       .empty-icon {
         font-size: 48px;
         height: 48px;
@@ -46,35 +55,43 @@
         color: var(--brush-text-secondary);
       }
       
+      // Description text with reduced emphasis
       p {
         margin-bottom: 24px;
         color: var(--brush-text-secondary);
       }
       
-      .add-denomination-btn {
+      // Prominent CTA button
+      .add-currency-btn {
         min-width: 180px;
       }
     }
     
-    .denomination-table {
+    // Table for displaying individual currencies
+    // Consistent with main table styling but emphasizes value field
+    .currency-table {
       width: 100%;
       margin-bottom: 16px;
       
+      // Special styling for currency value to highlight importance
       .value-cell {
-        font-family: monospace;
+        font-family: monospace; // Better alignment of numeric values
         color: var(--brush-success);
         font-weight: 500;
       }
     }
     
-    .denomination-actions {
+    // Container for actions below the currencies table
+    // Right-aligned to match table action columns
+    .currency-actions {
       display: flex;
       justify-content: flex-end;
       margin-top: 16px;
     }
   }
   
-  // Empty state enhancements
+  // Empty state styling for when no currency types exist
+  // Centered layout with icon, text and action button
   .empty-table-message {
     display: flex;
     flex-direction: column;
@@ -83,7 +100,8 @@
     min-height: 200px;
     padding: 24px;
     text-align: center;
-
+    
+    // Large icon for empty state
     .empty-icon {
       font-size: 48px;
       height: 48px;
@@ -92,39 +110,47 @@
       color: var(--brush-text-secondary);
     }
     
+    // Main heading with proper emphasis
     .empty-title {
       margin: 0 0 8px;
       font-size: 20px;
       font-weight: 500;
     }
     
+    // Subdued description text
     .empty-description {
       margin: 0 0 24px;
       color: var(--brush-text-secondary);
     }
   }
-
-  // Styling for editable cells
+  
+  // Styling for rows being edited
+  // Subtle background highlight to indicate edit state
   .editing-row {
     background-color: rgba(33, 150, 243, 0.05);
   }
-
+  
+  // Non-editable cell display styling
   .display-value {
     padding: 8px 0;
   }
-
+  
+  // Styling for inline editing components
+  // Combines input, validation, and action buttons
   .edit-mode {
     display: flex;
     align-items: center;
     gap: 8px;
-
+    
+    // Form field takes most space while keeping buttons visible
     .inline-editor {
       flex: 1;
-      margin-bottom: -1.34em; // Fix for form field bottom margin
+      margin-bottom: -1.34em; // Compensates for Material form field margin
       width: 100%;
       min-width: 150px;
     }
-
+    
+    // Container for save/cancel buttons
     .edit-actions {
       display: flex;
       align-items: center;
@@ -133,7 +159,8 @@
         margin-left: 4px;
       }
     }
-
+    
+    // Remove extra padding from Material form fields
     mat-form-field {
       ::ng-deep .mat-form-field-wrapper {
         padding-bottom: 0;
@@ -141,18 +168,18 @@
     }
   }
 
-  // Table specific styles
+  // Table layout and column-specific styling
   .table-container {
     table {
       width: 100%;
       
-      // Specific column adjustments for currency editor table
+      // Column width distribution for optimal data display
       .mat-column-currencyName {
         min-width: 180px;
-        flex: 2;
+        flex: 2; // Takes more space as it's the primary identifier
       }
       
-      .mat-column-denominationCount {
+      .mat-column-currencyCount {
         min-width: 120px;
         flex: 0.8;
         text-align: start;
@@ -163,50 +190,36 @@
         flex: 1;
       }
       
-      .denomination-count {
+      .currency-count {
         min-width: 100px;
         text-align: start;
       }
     }
   }
-
-  // Responsive adjustments - aligned with category editor
-  @media screen and (max-width: 960px) {
-    padding: 16px;
-  }
-
-  @media screen and (max-width: 768px) {
-    .mat-column-denominationCount {
-      display: none;
-    }
-
-    .action-buttons {
-      flex-direction: column;
-      gap: 8px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .action-buttons {
-      width: 100%;
-    }
-  }
 }
 
 /* Responsive Adjustments */
-@media (max-width: 768px) {
+// Medium screens - reduce padding to utilize space better
+@media (max-width: 960px) {
   .currency-editor-container {
     padding: 16px;
+  }
+}
 
+// Small tablets and large phones - adjust layout for readability
+@media (max-width: 768px) {
+  .currency-editor-container {
     .page-header {
       min-height: 100px;
-
+      
+      // Stack header content vertically
       .header-content {
         padding: 20px;
         flex-direction: column;
         align-items: flex-start;
         gap: 16px;
-
+        
+        // Full width for action buttons
         .header-right {
           width: 100%;
           justify-content: flex-start;
@@ -214,6 +227,7 @@
       }
     }
     
+    // Expand buttons to full width for easier touch targets
     .action-buttons {
       width: 100%;
       
@@ -222,16 +236,19 @@
       }
     }
     
+    // Hide less important columns to focus on key data
     .table-container {
-      .mat-column-denominationCount {
+      .mat-column-currencyCount {
         display: none;
       }
     }
   }
 }
 
+// Small phones - maximize space for content
 @media (max-width: 480px) {
   .currency-editor-container {
+    // Stack buttons vertically for smallest screens
     .action-buttons {
       flex-direction: column;
       
@@ -240,7 +257,8 @@
       }
     }
     
-    .denominations-container {
+    // Reduce padding to maximize content area
+    .currencies-container {
       padding: 12px;
     }
   }

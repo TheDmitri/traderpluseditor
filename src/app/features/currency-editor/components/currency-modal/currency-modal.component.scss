@@ -1,4 +1,4 @@
-// Use global modal styles with specific adaptations for denominations
+// Use global modal styles with specific adaptations for currencies
 .modal-container {
     display: flex;
     flex-direction: column;
@@ -32,8 +32,8 @@
     max-height: 60vh;
     overflow-y: auto;
     
-    // Add denomination panel styling
-    .add-denomination-panel {
+    // Add currency panel styling
+    .add-currency-panel {
       margin-bottom: 24px;
       
       ::ng-deep .mat-expansion-panel-header {
@@ -72,8 +72,8 @@
       }
     }
     
-    // Current denominations section styling
-    .current-denominations {
+    // Current currencies section styling
+    .current-currencies {
       .section-title {
         margin: 0 0 16px;
         font-size: 16px;
@@ -86,7 +86,7 @@
         max-height: 330px;
         overflow-y: auto;
         
-        .denominations-table {
+        .currencies-table {
           width: 100%;
           border-collapse: collapse;
           
@@ -196,7 +196,7 @@
 // Responsive styles
 @media (max-width: 600px) {
   .modal-content {
-    .add-denomination-panel {
+    .add-currency-panel {
       .form-row {
         flex-direction: column;
         

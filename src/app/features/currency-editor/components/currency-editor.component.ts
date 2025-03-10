@@ -3,13 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms'; // Add FormsModule import
 import { RouterModule } from '@angular/router';
 import { StorageService } from '../../../core/services/storage.service';
-import { CurrencyService } from '../../../core/services/currency.service';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { CurrencyType, Currency, CurrencySettings } from '../../../core/models';
 import { Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { DenominationModalComponent } from './denomination-modal/denomination-modal.component';
+import { CurrencyModalComponent } from './currency-modal/currency-modal.component';
 
 // Material Imports
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -26,12 +25,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 /**
  * CurrencyEditorComponent handles the management of TraderPlus currencies.
  *
- * This component allows users to:
- * - View all currency types in a paginated, sortable table
- * - Manage denominations through a modal dialog
- * - Add new currency types and denominations
- * - Edit existing currency types and denominations
- * - Delete currency types and denominations
+ * This component provides a comprehensive interface for managing the in-game currency system:
+ * - View and filter currency types in a paginated, sortable table
+ * - Create, edit, and delete currency types
+ * - Manage individual currencies within each currency type
+ * 
+ * The component manages both currency types (categories of currency) and individual 
+ * currencies (specific items that have monetary value in the game).
  */
 @Component({
   selector: 'app-currency-editor',
@@ -56,61 +56,60 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   styleUrls: ['./currency-editor.component.scss'],
 })
 export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit {
-  /** Subject for handling component destruction and preventing memory leaks */
+  /** Subject for handling component destruction and unsubscribing from observables */
   private destroy$ = new Subject<void>();
 
-  /** Data source for the Material table with currency type data */
+  /** Data source for the Material table, containing all currency type entries */
   dataSource: MatTableDataSource<CurrencyType>;
 
-  /** Columns to display in the currency types table */
+  /** Defines which columns appear in the main currency types table and their order */
   displayedColumns: string[] = [
     'currencyName',
-    'denominationCount',
+    'currencyCount',
     'actions',
   ];
   
-  /** Columns to display in the denominations table */
-  denominationColumns: string[] = [
+  /** Defines which columns appear in the nested currencies table and their order */
+  currencyColumns: string[] = [
     'className',
     'value',
     'actions',
   ];
 
-  /** Reference to the Material paginator for table pagination */
+  /** Reference to the paginator component for handling table pagination */
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  /** Reference to the Material sort directive for table sorting */
+  /** Reference to the sort directive for handling column sorting */
   @ViewChild(MatSort) sort!: MatSort;
 
-  /** Flag to track if currency types are available */
+  /** Flag indicating whether any currency types exist in the system */
   hasCurrencyTypes = false;
   
-  /** Currently expanded currency type for viewing denominations */
+  /** Currently selected currency type for detailed view (null when collapsed) */
   expandedCurrencyType: CurrencyType | null = null;
   
-  /** Currency settings object that contains all currency types */
+  /** Complete currency configuration containing all currency types and settings */
   currencySettings: CurrencySettings | null = null;
 
-  /** Currently editing currency type */
+  /** Reference to the currency type currently being edited (null when not in edit mode) */
   currentlyEditing: any = null;
 
-  /** Editable name for the currency type */
+  /** Temporary storage for the name being edited to prevent direct mutation */
   editableName: string = '';
 
-  /** Flag to track if a new currency type is being created */
+  /** Flag indicating whether a new currency type is being created */
   isNewMode: boolean = false;
 
   /**
-   * Constructor initializes services and the data source
+   * Initializes the component with required services for data management,
+   * user interactions, and notifications.
    *
-   * @param storageService - Service for persisting and retrieving data
-   * @param currencyService - Service for currency-specific operations
-   * @param dialog - Material dialog service for modal dialogs
-   * @param notificationService - Service for displaying user notifications
+   * @param storageService - Handles persistent data storage and retrieval
+   * @param dialog - Manages modal dialogs for edit operations and confirmations
+   * @param notificationService - Displays user feedback messages
    */
   constructor(
     private storageService: StorageService,
-    private currencyService: CurrencyService,
     private dialog: MatDialog,
     private notificationService: NotificationService
   ) {
@@ -118,31 +117,31 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   /**
-   * OnInit lifecycle hook - Loads currency settings from storage
+   * Initializes the component by loading currency settings from storage.
+   * This is called automatically when the component is created.
    */
   ngOnInit(): void {
     this.loadCurrencySettings();
   }
 
   /**
-   * AfterViewInit lifecycle hook - Sets up table pagination and sorting
-   * Also initializes custom ripple effects for enhanced UI interaction
+   * Sets up table functionality after view initialization.
+   * Configures pagination, sorting, and custom UI enhancements.
    */
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    // Initialize ripple effects for custom buttons after a short delay
+    // Initialize ripple effects after DOM is fully rendered
     setTimeout(() => {
       this.initializeCustomRipples();
     });
   }
 
   /**
-   * Initialize custom ripple effects for icon buttons
-   *
-   * Creates an interactive ripple animation when buttons are clicked,
-   * enhancing the user experience with visual feedback
+   * Creates interactive ripple animations for custom buttons.
+   * Enhances user experience by providing visual feedback on button interactions.
+   * Uses attribute tracking to prevent duplicate initialization.
    */
   private initializeCustomRipples(): void {
     const buttons = document.querySelectorAll('.custom-icon-btn');
@@ -189,10 +188,9 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   /**
-   * Load currency settings from storage service and update data source
-   *
-   * This method retrieves the latest currency settings and refreshes the table display.
-   * Called on component initialization and after any data modification.
+   * Retrieves currency settings from storage and updates the component state.
+   * Creates default settings if none exist.
+   * Updates table data and visibility states based on loaded data.
    */
   loadCurrencySettings(): void {
     this.currencySettings = this.storageService.currencySettings();
@@ -212,11 +210,11 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   /**
-   * Apply filtering to the data table
+   * Filters the currency types table based on user input.
+   * Provides real-time search functionality across all displayed fields.
+   * Resets to first page when filter is applied and shows feedback if no results.
    *
-   * Filters currency types based on user input, enabling quick search across displayed fields
-   *
-   * @param event - Input event containing the filter text
+   * @param event - Input event containing the search text
    */
   applyFilter(event: Event): void {
     if (!this.hasCurrencyTypes) return;
@@ -237,22 +235,25 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   /**
-   * Get the count of denominations in a currency type
+   * Calculates the number of currencies in a given currency type.
+   * Safely handles cases where currencies array might be undefined.
    *
-   * @param currencyType - The currency type to count denominations for
-   * @returns The number of denominations in the currency type
+   * @param currencyType - The currency type to analyze
+   * @returns The total count of currencies in this type
    */
-  getDenominationCount(currencyType: CurrencyType): number {
+  getCurrencyCount(currencyType: CurrencyType): number {
     return currencyType.currencies ? currencyType.currencies.length : 0;
   }
 
   /**
-   * Open the denomination modal dialog for the specified currency type
+   * Opens a modal dialog for managing currencies within a specific currency type.
+   * Creates a deep clone of the currency type to prevent direct mutation.
+   * Updates the data store when changes are confirmed.
    *
-   * @param currencyType - The currency type to edit denominations for
+   * @param currencyType - The currency type whose currencies will be edited
    */
-  openDenominationModal(currencyType: CurrencyType): void {
-    const dialogRef = this.dialog.open(DenominationModalComponent, {
+  openCurrencyModal(currencyType: CurrencyType): void {
+    const dialogRef = this.dialog.open(CurrencyModalComponent, {
       width: '700px',
       data: { currencyType: structuredClone(currencyType) },
       disableClose: true,
@@ -261,7 +262,7 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
 
     dialogRef.afterClosed().subscribe((result: CurrencyType | undefined) => {
       if (result && this.currencySettings) {
-        // Update the currency type with the updated denominations
+        // Update the currency type with the updated currencies
         this.currencySettings.currencyTypes = this.currencySettings.currencyTypes.map((ct) => {
           if (ct.currencyName === result.currencyName) {
             return result;
@@ -272,40 +273,38 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
         // Save the updated currency settings
         this.storageService.saveCurrencySettings(this.currencySettings);
         this.loadCurrencySettings();
-        this.notificationService.success('Denominations updated successfully');
+        this.notificationService.success('Currencies updated successfully');
       }
     });
   }
 
   /**
-   * Add a new currency type
-   * 
-   * Creates a new currency type with a placeholder name and immediately
-   * enters edit mode for the user to customize it.
+   * Creates a new currency type and immediately enters edit mode.
+   * Inserts the new type at the beginning of the table for immediate visibility.
+   * Sets default values that can be modified by the user.
    */
   addCurrencyType(): void {
     // Create a properly typed CurrencyType object with the required properties
-    const newCurrency: CurrencyType = {
+    const newCurrencyType: CurrencyType = {
       currencyName: 'New Currency Type',
-      currencies: [] // Use 'currencies' instead of 'denominations' to match the interface
+      currencies: []
     };
     
     // Insert at beginning of data array
     const currentData = this.dataSource.data;
-    this.dataSource.data = [newCurrency, ...currentData];
+    this.dataSource.data = [newCurrencyType, ...currentData];
     
-    // Immediately start editing the new currency
-    this.currentlyEditing = newCurrency;
-    this.editableName = newCurrency.currencyName;
+    // Immediately start editing the new currency type
+    this.currentlyEditing = newCurrencyType;
+    this.editableName = newCurrencyType.currencyName;
     this.isNewMode = true;
   }
 
   /**
-   * Edit an existing currency type
+   * Enters edit mode for an existing currency type.
+   * Stores the original name to allow cancellation of changes.
    * 
-   * Note: This is a placeholder - we'll implement the modal dialog later
-   * 
-   * @param currencyType - The currency type to edit
+   * @param currencyType - The currency type to be edited
    */
   editCurrencyType(currencyType: CurrencyType): void {
     this.currentlyEditing = currencyType;
@@ -314,9 +313,11 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   /**
-   * Save currency name changes
+   * Persists changes to a currency type's name.
+   * Handles both new currency types and existing ones differently.
+   * Validates input to prevent empty names and provides user feedback.
    *
-   * @param currencyType - The currency type to save
+   * @param currencyType - The currency type being saved
    */
   saveCurrencyEdit(currencyType: CurrencyType): void {
     if (this.editableName && this.editableName.trim()) {
@@ -345,7 +346,9 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   /**
-   * Cancel editing
+   * Abandons the current edit operation.
+   * Removes newly created currency types if in new mode.
+   * Restores previous state without saving changes.
    */
   cancelEdit(): void {
     if (this.isNewMode) {
@@ -358,7 +361,8 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   /**
-   * Reset the edit state
+   * Cleans up the edit state variables.
+   * Called after save or cancel operations to reset the UI.
    */
   private resetEditState(): void {
     this.currentlyEditing = null;
@@ -367,15 +371,17 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   /**
-   * Remove a currency type after confirmation
+   * Deletes a currency type after user confirmation.
+   * Warns about cascading deletion of contained currencies.
+   * Updates the data store when confirmed.
    *
-   * @param currencyType - The currency type to remove
+   * @param currencyType - The currency type to be removed
    */
   removeCurrencyType(currencyType: CurrencyType): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Delete Currency Type',
-        message: `Are you sure you want to delete the currency type "${currencyType.currencyName}"? \nThis will also delete all denominations within this type.`,
+        message: `Are you sure you want to delete the currency type "${currencyType.currencyName}"? \nThis will also delete all currencies within this type.`,
         confirmText: 'Delete',
         cancelText: 'Cancel',
         type: 'danger',
@@ -398,38 +404,16 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   /**
-   * Add a new denomination to a currency type
-   * Opens the denomination modal dialog
-   * 
-   * @param currencyType - The currency type to add the denomination to
-   */
-  addDenomination(currencyType: CurrencyType): void {
-    // Open the denomination modal to add a new denomination
-    this.openDenominationModal(currencyType);
-  }
-
-  /**
-   * Edit an existing denomination
-   * Now handled through the denomination modal dialog
-   * 
-   * @param currencyType - The parent currency type
-   * @param currency - The denomination to edit
-   */
-  editDenomination(currencyType: CurrencyType, currency: Currency): void {
-    // This method is no longer needed as individual denominations
-    // are edited in the modal dialog, but keeping it for any external calls
-    this.openDenominationModal(currencyType);
-  }
-
-  /**
-   * Remove all currency types after confirmation
+   * Deletes all currency types after user confirmation.
+   * Presents a strong warning as this is a destructive operation.
+   * Resets the data store to initial state when confirmed.
    */
   removeAllCurrencyTypes(): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Delete All Currency Types',
         message:
-          'Are you sure you want to delete all currency types and denominations? \nThis action cannot be undone.',
+          'Are you sure you want to delete all currency types and currencies? \nThis action cannot be undone.',
         confirmText: 'Delete All',
         cancelText: 'Cancel',
         type: 'danger',
@@ -453,50 +437,32 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   /**
-   * Check if a currency type is the currently expanded one
-   * 
-   * @param row - The currency type to check
-   * @returns True if this is the expanded currency type
-   */
-  isExpanded(row: CurrencyType): boolean {
-    return this.expandedCurrencyType === row;
-  }
-
-  /**
-   * Returns a predicate function for the expandable row
-   * This approach avoids the 'Property row does not exist' compiler error
-   */
-  getExpandedRowPredicate(): (index: number, item: CurrencyType) => boolean {
-    return (index: number, item: CurrencyType) => {
-      // Compare by currencyName instead of object reference
-      return this.expandedCurrencyType?.currencyName === item.currencyName;
-    };
-  }
-
-  /**
-   * Check if a currency type is currently being edited
+   * Checks if a specific currency type is currently in edit mode.
+   * Controls the display of edit UI elements.
    * 
    * @param currencyType - The currency type to check
-   * @returns True if this currency type is being edited
+   * @returns Boolean indicating if this currency type is being edited
    */
   isEditing(currencyType: any): boolean {
     return this.currentlyEditing === currencyType;
   }
   
   /**
-   * Check if a currency type is a new one being created
+   * Checks if a specific currency type is a new one being created.
+   * Different UI and behavior applies to new versus existing items.
    * 
    * @param currencyType - The currency type to check
-   * @returns True if this is a new currency type being created
+   * @returns Boolean indicating if this is a new currency type
    */
-  isNewCurrency(currencyType: any): boolean {
+  isNewCurrencyType(currencyType: any): boolean {
     return this.isNewMode && this.currentlyEditing === currencyType;
   }
   
   /**
-   * Start editing a currency name
+   * Initiates editing of an existing currency type's name.
+   * Sets up the edit state variables and prepares the form.
    * 
-   * @param currencyType - The currency type to edit
+   * @param currencyType - The currency type whose name will be edited
    */
   editCurrencyName(currencyType: CurrencyType): void {
     this.currentlyEditing = currencyType;
@@ -505,10 +471,8 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   /**
-   * OnDestroy lifecycle hook - Clean up subscriptions and resources
-   *
-   * Completes the destroy$ subject to prevent memory leaks from any
-   * subscriptions that may be using it as a takeUntil condition
+   * Performs cleanup when the component is destroyed.
+   * Prevents memory leaks by completing observables.
    */
   ngOnDestroy(): void {
     this.destroy$.next();

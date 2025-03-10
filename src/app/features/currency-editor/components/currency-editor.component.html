@@ -1,11 +1,13 @@
 <div class="currency-editor-container">
-  <!-- Page header with standardized structure -->
+  <!-- Page header section - Contains title, description and primary actions -->
   <div class="page-header">
     <div class="header-content">
+      <!-- Left side: Main title and primary action buttons -->
       <div class="header-left">
         <h2>Currency Editor</h2>
-        <p class="subtitle">Manage your TraderPlus currency types and denominations</p>
+        <p class="subtitle">Manage your TraderPlus currencies</p>
         <div class="action-buttons">
+          <!-- Primary action: Create new currency type -->
           <button
             class="custom-stroked-button color-primary with-icon"
             (click)="addCurrencyType()"
@@ -14,6 +16,8 @@
             <mat-icon>add</mat-icon>
             Create New Currency Type
           </button>
+          
+          <!-- Secondary action: Import from file -->
           <button
             class="custom-stroked-button color-secondary with-icon"
             routerLink="/file-management"
@@ -24,6 +28,8 @@
           </button>
         </div>
       </div>
+      
+      <!-- Right side: Danger zone with destructive actions -->
       <div class="header-right">
         <button
           class="custom-stroked-button color-warn with-icon"
@@ -33,6 +39,7 @@
           <mat-icon>warning</mat-icon>
           Danger Zone
         </button>
+        <!-- Dropdown menu for destructive actions -->
         <mat-menu #dangerMenu="matMenu">
           <button
             mat-menu-item
@@ -48,11 +55,11 @@
     </div>
   </div>
 
-  <!-- Data content card with standardized styling -->
+  <!-- Main content card containing the currency data table -->
   <div class="data-card">
-    <h2 class="section-title">Currency Types Overview</h2>
+    <h2 class="section-title">Currency Overview</h2>
     <mat-card-content>
-      <!-- Search field with standardized styling -->
+      <!-- Search filter - Only shown when data exists -->
       <div class="table-container">
         <mat-form-field
           class="filter-field"
@@ -71,24 +78,24 @@
           <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
 
-        <!-- Table with proper alignment -->
+        <!-- Currency types table with sorting and pagination -->
         <table
           mat-table
           [dataSource]="dataSource"
           matSort
           class="with-border hoverable-table consistent-rows"
         >
-          <!-- Currency Name Column -->
+          <!-- Currency Name Column - Supports inline editing -->
           <ng-container matColumnDef="currencyName">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Currency Type</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Currency Name</th>
             <td mat-cell *matCellDef="let currencyType">
-              <!-- Non-edit mode -->
-              <div *ngIf="!isEditing(currencyType) && !isNewCurrency(currencyType)" class="display-value">
+              <!-- View mode - Shows the name as text -->
+              <div *ngIf="!isEditing(currencyType) && !isNewCurrencyType(currencyType)" class="display-value">
                 {{ currencyType.currencyName }}
               </div>
               
-              <!-- Edit mode -->
-              <div *ngIf="isEditing(currencyType) || isNewCurrency(currencyType)" class="edit-mode">
+              <!-- Edit mode - Shows an input field with save/cancel buttons -->
+              <div *ngIf="isEditing(currencyType) || isNewCurrencyType(currencyType)" class="edit-mode">
                 <mat-form-field appearance="outline" class="inline-editor">
                   <input matInput [(ngModel)]="editableName" placeholder="Enter currency name">
                 </mat-form-field>
@@ -106,50 +113,55 @@
             </td>
           </ng-container>
 
-          <!-- Denomination Count Column -->
-          <ng-container matColumnDef="denominationCount">
-            <th mat-header-cell *matHeaderCellDef>Denominations</th>
+          <!-- Currency Count Column - Shows number of currencies in each type -->
+          <ng-container matColumnDef="currencyCount">
+            <th mat-header-cell *matHeaderCellDef>Currencies</th>
             <td
               mat-cell
               *matCellDef="let currencyType"
-              class="denomination-count"
-              [matTooltip]="getDenominationCount(currencyType) + ' denominations in this currency type'"
+              class="currency-count"
+              [matTooltip]="getCurrencyCount(currencyType) + ' currencies in this currency type'"
             >
-              <span class="cell-highlight">{{ getDenominationCount(currencyType) }}</span>
+              <span class="cell-highlight">{{ getCurrencyCount(currencyType) }}</span>
             </td>
           </ng-container>
 
-          <!-- Actions Column -->
+          <!-- Actions Column - Contains buttons for manage, edit, and delete -->
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef class="actions-header">Actions</th>
             <td mat-cell *matCellDef="let currencyType" class="actions-cell">
               <div class="action-buttons">
+                <!-- Manage currencies button - Opens currency modal -->
                 <button
                   class="custom-icon-btn icon-btn-secondary"
-                  (click)="openDenominationModal(currencyType)"
-                  aria-label="Manage denominations"
-                  matTooltip="Manage denominations"
-                  *ngIf="!isEditing(currencyType) && !isNewCurrency(currencyType)"
+                  (click)="openCurrencyModal(currencyType)"
+                  aria-label="Manage currencies"
+                  matTooltip="Manage currencies"
+                  *ngIf="!isEditing(currencyType) && !isNewCurrencyType(currencyType)"
                 >
                   <mat-icon>monetization_on</mat-icon>
                   <div class="icon-btn-ripple"></div>
                 </button>
+                
+                <!-- Edit currency name button -->
                 <button
                   class="custom-icon-btn icon-btn-primary"
                   (click)="editCurrencyName(currencyType)"
                   aria-label="Edit currency name"
                   matTooltip="Edit currency name"
-                  *ngIf="!isEditing(currencyType) && !isNewCurrency(currencyType)"
+                  *ngIf="!isEditing(currencyType) && !isNewCurrencyType(currencyType)"
                 >
                   <mat-icon>edit</mat-icon>
                   <div class="icon-btn-ripple"></div>
                 </button>
+                
+                <!-- Delete currency type button -->
                 <button
                   class="custom-icon-btn icon-btn-warn"
                   (click)="removeCurrencyType(currencyType)"
                   aria-label="Delete currency type"
                   matTooltip="Delete this currency type"
-                  *ngIf="!isEditing(currencyType) && !isNewCurrency(currencyType)"
+                  *ngIf="!isEditing(currencyType) && !isNewCurrencyType(currencyType)"
                 >
                   <mat-icon>delete_forever</mat-icon>
                   <div class="icon-btn-ripple"></div>
@@ -158,16 +170,16 @@
             </td>
           </ng-container>
 
-          <!-- Table Rows -->
+          <!-- Table row definitions -->
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr 
             mat-row 
             *matRowDef="let row; columns: displayedColumns;" 
             class="interactive-row"
-            [class.editing-row]="isEditing(row) || isNewCurrency(row)"
+            [class.editing-row]="isEditing(row) || isNewCurrencyType(row)"
           ></tr>
 
-          <!-- No data row - updated to match category editor -->
+          <!-- Empty state - Displayed when no currency types exist -->
           <tr class="mat-row" *matNoDataRow>
             <td class="mat-cell" [attr.colspan]="displayedColumns.length">
               <div class="empty-table-message">
@@ -189,6 +201,7 @@
           </tr>
         </table>
 
+        <!-- Pagination controls for the table -->
         <mat-paginator
           [pageSizeOptions]="[10, 25, 50, 100]"
           showFirstLastButtons
