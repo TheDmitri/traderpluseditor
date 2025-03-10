@@ -1,0 +1,118 @@
+<div class="modal-container">
+  <div class="modal-header">
+    <h2>{{ data.currencyType.currencyName }} Denominations</h2>
+  </div>
+  
+  <div mat-dialog-content class="modal-content">
+    <!-- Expansion Panel for Adding New Denominations -->
+    <mat-expansion-panel 
+      [expanded]="expansionPanelOpen" 
+      (opened)="expansionPanelOpen = true"
+      (closed)="expansionPanelOpen = false"
+      class="add-denomination-panel"
+    >
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>add_circle_outline</mat-icon>
+          <span>Add New Denomination</span>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      
+      <form [formGroup]="newDenominationForm" (ngSubmit)="addNewDenomination()">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="class-name-field">
+            <mat-label>Class Name</mat-label>
+            <input matInput formControlName="className" placeholder="e.g., TraderPlus_Money_Euro100" required>
+            <mat-error *ngIf="newDenominationForm.get('className')?.hasError('required')">
+              Class name is required
+            </mat-error>
+            <mat-error *ngIf="newDenominationForm.get('className')?.hasError('duplicate')">
+              This class name already exists
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="value-field">
+            <mat-label>Value</mat-label>
+            <input matInput formControlName="value" type="number" min="0" placeholder="e.g., 100" required>
+            <mat-error *ngIf="newDenominationForm.get('value')?.hasError('required')">
+              Value is required
+            </mat-error>
+            <mat-error *ngIf="newDenominationForm.get('value')?.hasError('min')">
+              Value must be positive
+            </mat-error>
+          </mat-form-field>
+          
+          <button 
+            type="submit" 
+            class="custom-stroked-button color-secondary with-icon add-button"
+            [disabled]="newDenominationForm.invalid"
+          >
+            <mat-icon>add</mat-icon>
+            Add
+          </button>
+        </div>
+      </form>
+    </mat-expansion-panel>
+
+    <!-- Existing Denominations Section (now read-only) -->
+    <div class="current-denominations">
+      <h3 class="section-title">Current Denominations</h3>
+      
+      <div class="data-table-container" *ngIf="denominations.length > 0">
+        <table class="data-table denominations-table">
+          <thead>
+            <tr>
+              <th class="class-name-column">Class Name</th>
+              <th class="value-column">Value</th>
+              <th class="actions-column">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let denomination of denominations; let i = index" class="data-row">
+              <td class="class-name-cell">{{ denomination.className }}</td>
+              <td class="value-cell">{{ denomination.value }}</td>
+              <td class="actions-cell">
+                <button 
+                  type="button" 
+                  class="custom-icon-btn icon-btn-warn" 
+                  (click)="removeDenomination(i)" 
+                  matTooltip="Remove denomination"
+                >
+                  <mat-icon>delete</mat-icon>
+                  <div class="icon-btn-ripple"></div>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="empty-state" *ngIf="denominations.length === 0">
+        <mat-icon class="empty-icon">money_off</mat-icon>
+        <h3 class="empty-title">No denominations for this currency type</h3>
+        <p class="empty-description">Use the form above to add new denominations</p>
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="expansionPanelOpen = true"
+          class="empty-action-button"
+        >
+          <mat-icon>add</mat-icon>
+          Add Denomination
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div mat-dialog-actions class="modal-actions">
+    <button mat-button class="cancel-button" (click)="onCancel()">Cancel</button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onSave()"
+      class="save-button"
+    >
+      Save Changes
+    </button>
+  </div>
+</div>
