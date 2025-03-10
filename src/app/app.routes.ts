@@ -13,7 +13,6 @@ export const routes: Routes = [
   { path: 'products', component: ProductEditorComponent },
   { path: 'currencies', component: CurrencyEditorComponent },
   // Placeholder routes for future components
-  { path: 'currencies', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'settings', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'dashboard' }
 ];

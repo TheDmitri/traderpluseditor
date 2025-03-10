@@ -32,7 +32,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
       MatMenuModule,
       MatDialogModule,
       RouterModule,
-    ProductListComponent,
+      ProductListComponent,
   ],
   templateUrl: './product-editor.component.html',
   styleUrls: ['./product-editor.component.scss'],
