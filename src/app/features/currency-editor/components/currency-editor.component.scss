@@ -1,0 +1,247 @@
+.currency-editor-container {
+  padding: 32px;
+  max-width: 1800px;
+  margin: 0 auto;
+  display: grid;
+  gap: 32px;
+
+  // Specific overrides for the actions column in this view
+  .actions-cell {
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+  }
+
+  // Denomination count styling
+  .denomination-count {
+    text-align: start;
+  }
+
+  // Denominations container styling
+  .denominations-container {
+    padding: 16px 24px 24px;
+    
+    .denominations-title {
+      margin: 0 0 16px;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--brush-text-primary);
+    }
+    
+    .empty-denominations-message {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+      text-align: center;
+      
+      .empty-icon {
+        font-size: 48px;
+        height: 48px;
+        width: 48px;
+        margin-bottom: 16px;
+        color: var(--brush-text-secondary);
+      }
+      
+      p {
+        margin-bottom: 24px;
+        color: var(--brush-text-secondary);
+      }
+      
+      .add-denomination-btn {
+        min-width: 180px;
+      }
+    }
+    
+    .denomination-table {
+      width: 100%;
+      margin-bottom: 16px;
+      
+      .value-cell {
+        font-family: monospace;
+        color: var(--brush-success);
+        font-weight: 500;
+      }
+    }
+    
+    .denomination-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 16px;
+    }
+  }
+  
+  // Empty state enhancements
+  .empty-table-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    padding: 24px;
+    text-align: center;
+
+    .empty-icon {
+      font-size: 48px;
+      height: 48px;
+      width: 48px;
+      margin-bottom: 16px;
+      color: var(--brush-text-secondary);
+    }
+    
+    .empty-title {
+      margin: 0 0 8px;
+      font-size: 20px;
+      font-weight: 500;
+    }
+    
+    .empty-description {
+      margin: 0 0 24px;
+      color: var(--brush-text-secondary);
+    }
+  }
+
+  // Styling for editable cells
+  .editing-row {
+    background-color: rgba(33, 150, 243, 0.05);
+  }
+
+  .display-value {
+    padding: 8px 0;
+  }
+
+  .edit-mode {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .inline-editor {
+      flex: 1;
+      margin-bottom: -1.34em; // Fix for form field bottom margin
+      width: 100%;
+      min-width: 150px;
+    }
+
+    .edit-actions {
+      display: flex;
+      align-items: center;
+      
+      button {
+        margin-left: 4px;
+      }
+    }
+
+    mat-form-field {
+      ::ng-deep .mat-form-field-wrapper {
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  // Table specific styles
+  .table-container {
+    table {
+      width: 100%;
+      
+      // Specific column adjustments for currency editor table
+      .mat-column-currencyName {
+        min-width: 180px;
+        flex: 2;
+      }
+      
+      .mat-column-denominationCount {
+        min-width: 120px;
+        flex: 0.8;
+        text-align: start;
+      }
+      
+      .mat-column-actions {
+        min-width: 150px;
+        flex: 1;
+      }
+      
+      .denomination-count {
+        min-width: 100px;
+        text-align: start;
+      }
+    }
+  }
+
+  // Responsive adjustments - aligned with category editor
+  @media screen and (max-width: 960px) {
+    padding: 16px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .mat-column-denominationCount {
+      display: none;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .action-buttons {
+      width: 100%;
+    }
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .currency-editor-container {
+    padding: 16px;
+
+    .page-header {
+      min-height: 100px;
+
+      .header-content {
+        padding: 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+
+        .header-right {
+          width: 100%;
+          justify-content: flex-start;
+        }
+      }
+    }
+    
+    .action-buttons {
+      width: 100%;
+      
+      button {
+        flex: 1;
+      }
+    }
+    
+    .table-container {
+      .mat-column-denominationCount {
+        display: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .currency-editor-container {
+    .action-buttons {
+      flex-direction: column;
+      
+      button {
+        width: 100%;
+      }
+    }
+    
+    .denominations-container {
+      padding: 12px;
+    }
+  }
+}

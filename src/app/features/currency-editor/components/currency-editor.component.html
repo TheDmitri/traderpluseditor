@@ -1,0 +1,200 @@
+<div class="currency-editor-container">
+  <!-- Page header with standardized structure -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h2>Currency Editor</h2>
+        <p class="subtitle">Manage your TraderPlus currency types and denominations</p>
+        <div class="action-buttons">
+          <button
+            class="custom-stroked-button color-primary with-icon"
+            (click)="addCurrencyType()"
+            matTooltip="Create a new currency type"
+          >
+            <mat-icon>add</mat-icon>
+            Create New Currency Type
+          </button>
+          <button
+            class="custom-stroked-button color-secondary with-icon"
+            routerLink="/file-management"
+            matTooltip="Import currency settings from file"
+          >
+            <mat-icon>upload_file</mat-icon>
+            Import Currencies
+          </button>
+        </div>
+      </div>
+      <div class="header-right">
+        <button
+          class="custom-stroked-button color-warn with-icon"
+          [matMenuTriggerFor]="dangerMenu"
+          matTooltip="Dangerous operations"
+        >
+          <mat-icon>warning</mat-icon>
+          Danger Zone
+        </button>
+        <mat-menu #dangerMenu="matMenu">
+          <button
+            mat-menu-item
+            (click)="removeAllCurrencyTypes()"
+            matTooltip="Remove all currency types permanently"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon-error">delete_forever</mat-icon>
+            <span>Remove All Currency Types</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data content card with standardized styling -->
+  <div class="data-card">
+    <h2 class="section-title">Currency Types Overview</h2>
+    <mat-card-content>
+      <!-- Search field with standardized styling -->
+      <div class="table-container">
+        <mat-form-field
+          class="filter-field"
+          appearance="outline"
+          *ngIf="hasCurrencyTypes"
+        >
+          <mat-label>Filter Currency Types</mat-label>
+          <input
+            matInput
+            (keyup)="applyFilter($event)"
+            placeholder="Search currency types..."
+            #input
+            matTooltip="Filter currency types by name"
+            matTooltipPosition="below"
+          />
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <!-- Table with proper alignment -->
+        <table
+          mat-table
+          [dataSource]="dataSource"
+          matSort
+          class="with-border hoverable-table consistent-rows"
+        >
+          <!-- Currency Name Column -->
+          <ng-container matColumnDef="currencyName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Currency Type</th>
+            <td mat-cell *matCellDef="let currencyType">
+              <!-- Non-edit mode -->
+              <div *ngIf="!isEditing(currencyType) && !isNewCurrency(currencyType)" class="display-value">
+                {{ currencyType.currencyName }}
+              </div>
+              
+              <!-- Edit mode -->
+              <div *ngIf="isEditing(currencyType) || isNewCurrency(currencyType)" class="edit-mode">
+                <mat-form-field appearance="outline" class="inline-editor">
+                  <input matInput [(ngModel)]="editableName" placeholder="Enter currency name">
+                </mat-form-field>
+                <div class="edit-actions">
+                  <button mat-icon-button color="primary" (click)="saveCurrencyEdit(currencyType)" 
+                    matTooltip="Save changes">
+                    <mat-icon>check</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="cancelEdit()" 
+                    matTooltip="Cancel">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Denomination Count Column -->
+          <ng-container matColumnDef="denominationCount">
+            <th mat-header-cell *matHeaderCellDef>Denominations</th>
+            <td
+              mat-cell
+              *matCellDef="let currencyType"
+              class="denomination-count"
+              [matTooltip]="getDenominationCount(currencyType) + ' denominations in this currency type'"
+            >
+              <span class="cell-highlight">{{ getDenominationCount(currencyType) }}</span>
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="actions-header">Actions</th>
+            <td mat-cell *matCellDef="let currencyType" class="actions-cell">
+              <div class="action-buttons">
+                <button
+                  class="custom-icon-btn icon-btn-secondary"
+                  (click)="openDenominationModal(currencyType)"
+                  aria-label="Manage denominations"
+                  matTooltip="Manage denominations"
+                  *ngIf="!isEditing(currencyType) && !isNewCurrency(currencyType)"
+                >
+                  <mat-icon>monetization_on</mat-icon>
+                  <div class="icon-btn-ripple"></div>
+                </button>
+                <button
+                  class="custom-icon-btn icon-btn-primary"
+                  (click)="editCurrencyName(currencyType)"
+                  aria-label="Edit currency name"
+                  matTooltip="Edit currency name"
+                  *ngIf="!isEditing(currencyType) && !isNewCurrency(currencyType)"
+                >
+                  <mat-icon>edit</mat-icon>
+                  <div class="icon-btn-ripple"></div>
+                </button>
+                <button
+                  class="custom-icon-btn icon-btn-warn"
+                  (click)="removeCurrencyType(currencyType)"
+                  aria-label="Delete currency type"
+                  matTooltip="Delete this currency type"
+                  *ngIf="!isEditing(currencyType) && !isNewCurrency(currencyType)"
+                >
+                  <mat-icon>delete_forever</mat-icon>
+                  <div class="icon-btn-ripple"></div>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Table Rows -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr 
+            mat-row 
+            *matRowDef="let row; columns: displayedColumns;" 
+            class="interactive-row"
+            [class.editing-row]="isEditing(row) || isNewCurrency(row)"
+          ></tr>
+
+          <!-- No data row - updated to match category editor -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+              <div class="empty-table-message">
+                <mat-icon class="empty-icon">money</mat-icon>
+                <h3 class="empty-title">No currency types found</h3>
+                <p class="empty-description">
+                  Try creating a new currency type or importing from a file
+                </p>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  (click)="addCurrencyType()"
+                  class="empty-action-button"
+                >
+                  <mat-icon>add</mat-icon> Create Currency Type
+                </button>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <mat-paginator
+          [pageSizeOptions]="[10, 25, 50, 100]"
+          showFirstLastButtons
+          aria-label="Select page of currency types"
+        ></mat-paginator>
+      </div>
+    </mat-card-content>
+  </div>
+</div>
