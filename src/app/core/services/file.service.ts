@@ -25,7 +25,7 @@ export class FileService {
    * @param file The file to import
    * @returns Promise that resolves with the parsed data
    */
-  importFile(file: File): Promise<any> {
+  async importFile(file: File): Promise<any> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
@@ -66,9 +66,9 @@ export class FileService {
    * @param file The file containing category data
    * @returns Promise that resolves when import is complete
    */
-  importCategories(file: File): Promise<void> {
-    return this.importFile(file)
-      .then(data => this.categoryService.processImportedData(data));
+  async importCategories(file: File): Promise<void> {
+    const data = await this.importFile(file);
+    await this.categoryService.processImportedData(data);
   }
 
   /**
@@ -76,13 +76,12 @@ export class FileService {
    * @param files A FileList of category files
    * @returns Promise that resolves when import is complete
    */
-  importMultipleCategories(files: FileList): Promise<void> {
+  async importMultipleCategories(files: FileList): Promise<void> {
     const filesArray = Array.from(files);
-    return Promise.all(
+    const results = await Promise.all(
       filesArray.map(file => this.importFile(file))
-    ).then(results => {
-      return this.categoryService.processMultipleImports(results);
-    });
+    );
+    await this.categoryService.processMultipleImports(results);
   }
 
   /**
@@ -90,9 +89,9 @@ export class FileService {
    * @param file The file containing product data
    * @returns Promise that resolves when import is complete
    */
-  importProducts(file: File): Promise<void> {
-    return this.importFile(file)
-      .then(data => this.productService.processImportedData(data, file.name));
+  async importProducts(file: File): Promise<void> {
+    const data = await this.importFile(file);
+    await this.productService.processImportedData(data, file.name);
   }
 
   /**
@@ -100,15 +99,15 @@ export class FileService {
    * @param files A FileList of product files
    * @returns Promise that resolves when import is complete
    */
-  importMultipleProducts(files: FileList): Promise<void> {
+  async importMultipleProducts(files: FileList): Promise<void> {
     const filesArray = Array.from(files);
-    return Promise.all(
-      filesArray.map(file => 
-        this.importFile(file).then(data => ({ data, filename: file.name }))
-      )
-    ).then(results => {
-      return this.productService.processMultipleImports(results);
-    });
+    const results = await Promise.all(
+      filesArray.map(async file => {
+        const data = await this.importFile(file);
+        return { data, filename: file.name };
+      })
+    );
+    await this.productService.processMultipleImports(results);
   }
 
   /**
@@ -116,9 +115,9 @@ export class FileService {
    * @param file The file containing currency settings
    * @returns Promise that resolves when import is complete
    */
-  importCurrencySettings(file: File): Promise<void> {
-    return this.importFile(file)
-      .then(data => this.currencyService.processImportedData(data));
+  async importCurrencySettings(file: File): Promise<void> {
+    const data = await this.importFile(file);
+    await this.currencyService.processImportedData(data);
   }
 
   /**
@@ -126,9 +125,9 @@ export class FileService {
    * @param file The file containing general settings
    * @returns Promise that resolves when import is complete
    */
-  importGeneralSettings(file: File): Promise<void> {
-    return this.importFile(file)
-      .then(data => this.generalSettingsService.processImportedData(data));
+  async importGeneralSettings(file: File): Promise<void> {
+    const data = await this.importFile(file);
+    await this.generalSettingsService.processImportedData(data);
   }
 
   /**
