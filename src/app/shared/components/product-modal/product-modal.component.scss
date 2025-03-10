@@ -364,6 +364,136 @@
       color: var(--brush-text-primary);
     }
   }
+
+  // Radio button specific overrides
+  .mat-mdc-radio-button {
+    .mdc-radio {
+      padding: 10px;
+    }
+    
+    .mdc-form-field {
+      label {
+        color: var(--brush-text-primary);
+      }
+    }
+  }
+
+  // Radio button comprehensive overrides with secondary colors
+  .mat-mdc-radio-button {
+    .mdc-radio {
+      padding: 10px;
+      
+      .mdc-radio__background {
+        .mdc-radio__outer-circle {
+          border-color: var(--color-neutral-medium) !important;
+        }
+        
+        .mdc-radio__inner-circle {
+          background-color: var(--color-secondary-dark) !important; // Secondary dark color
+        }
+      }
+      
+      &:hover:not(.mdc-radio--disabled) .mdc-radio__background .mdc-radio__outer-circle {
+        border-color: var(--color-secondary-medium) !important; // Secondary hover color
+      }
+    }
+    
+    &.mat-mdc-radio-checked .mdc-radio .mdc-radio__background {
+      .mdc-radio__outer-circle {
+        border-color: var(--color-secondary-dark) !important; // Secondary dark color
+      }
+    }
+    
+    // Ensure ripples are styled correctly with secondary colors
+    .mat-ripple-element {
+      background-color: var(--color-secondary-transparent-20) !important;
+    }
+    
+    // Target focused state with secondary colors
+    &.cdk-focused .mdc-radio .mdc-radio__native-control:focus:focus-visible ~ .mdc-radio__background::before {
+      background-color: var(--color-secondary-transparent-20) !important;
+    }
+  }
+  
+  // Ensure the ripple elements are correctly themed with secondary colors
+  .mat-mdc-radio-touch-target:hover + .mdc-radio .mdc-radio__outer-circle {
+    border-color: var(--color-secondary-medium) !important;
+  }
+  
+  .mat-mdc-radio-ripple .mat-ripple-element {
+    background-color: var(--color-secondary-transparent-20) !important;
+  }
+  
+  // Group layout enhancements
+  .mat-mdc-radio-group.radio-group-horizontal {
+    .mat-mdc-radio-button {
+      margin-right: 16px;
+      margin-bottom: 8px;
+    }
+  }
+
+  // Radio button comprehensive overrides - MAXIMUM SPECIFICITY
+  .mat-mdc-radio-button {
+    .mdc-radio {
+      padding: 10px;
+      
+      .mdc-radio__background {
+        .mdc-radio__outer-circle {
+          border-color: var(--color-neutral-medium) !important;
+        }
+        
+        .mdc-radio__inner-circle {
+          background-color: white !important; // ALWAYS WHITE
+        }
+      }
+      
+      &:hover:not(.mdc-radio--disabled) .mdc-radio__background .mdc-radio__outer-circle {
+        border-color: var(--color-secondary-medium) !important; 
+      }
+    }
+    
+    // Checked state styling
+    &.mat-mdc-radio-checked .mdc-radio .mdc-radio__background {
+      .mdc-radio__outer-circle {
+        border-color: var(--color-secondary-dark) !important;
+      }
+      
+      .mdc-radio__inner-circle {
+        background-color: white !important; // ALWAYS WHITE
+      }
+    }
+    
+    // Ripple effects with secondary colors
+    .mat-ripple-element {
+      background-color: var(--color-secondary-transparent-20) !important;
+    }
+    
+    &.cdk-focused,
+    &.cdk-program-focused,
+    &.cdk-keyboard-focused {
+      .mdc-radio .mdc-radio__background::before,
+      .mdc-radio .mdc-radio__native-control:focus:focus-visible ~ .mdc-radio__background::before {
+        background-color: var(--color-secondary-transparent-20) !important;
+      }
+    }
+  }
+  
+  // Additional selectors for maximum compatibility
+  .mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__background .mdc-radio__inner-circle {
+    background-color: white !important; // ALWAYS WHITE - maximum specificity
+  }
+  
+  .mat-mdc-radio-ripple .mat-ripple-element {
+    background-color: var(--color-secondary-transparent-20) !important;
+  }
+  
+  // Group layout enhancements
+  .mat-mdc-radio-group.radio-group-horizontal {
+    .mat-mdc-radio-button {
+      margin-right: 16px;
+      margin-bottom: 8px;
+    }
+  }
 }
 
 // Responsive adjustments
@@ -390,6 +520,20 @@
         
         .radio-group {
           width: 100%;
+        }
+
+        .radio-group-wrapper {
+          flex-direction: column;
+          align-items: flex-start;
+          
+          .radio-label {
+            margin-bottom: 8px;
+            margin-right: 0;
+          }
+          
+          .mat-mdc-radio-group {
+            width: 100%;
+          }
         }
       }
     }

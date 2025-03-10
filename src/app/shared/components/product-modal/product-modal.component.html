@@ -27,22 +27,10 @@
           <div class="form-row radio-group-row">
             <div class="radio-group-wrapper">
               <label class="radio-label">Stock Type:</label>
-              <div class="radio-button-group horizontal">
-                <label class="custom-radio radio-primary">
-                  <input type="radio" formControlName="stockType" value="defined" />
-                  <div class="radio-outer-circle">
-                    <div class="radio-inner-circle"></div>
-                  </div>
-                  <span class="radio-label">Defined Stock</span>
-                </label>
-                <label class="custom-radio radio-primary">
-                  <input type="radio" formControlName="stockType" value="infinite" />
-                  <div class="radio-outer-circle">
-                    <div class="radio-inner-circle"></div>
-                  </div>
-                  <span class="radio-label">Infinite Stock</span>
-                </label>
-              </div>
+              <mat-radio-group formControlName="stockType" class="radio-group-horizontal">
+                <mat-radio-button value="defined">Defined Stock</mat-radio-button>
+                <mat-radio-button value="infinite">Infinite Stock</mat-radio-button>
+              </mat-radio-group>
             </div>
           </div>
           
@@ -131,22 +119,10 @@
           <div class="form-row radio-group-row" *ngIf="productForm.get('stockType')?.value === 'defined'">
             <div class="radio-group-wrapper">
               <label class="radio-label">Price Type:</label>
-              <div class="radio-button-group horizontal">
-                <label class="custom-radio radio-primary">
-                  <input type="radio" formControlName="priceType" value="static" />
-                  <div class="radio-outer-circle">
-                    <div class="radio-inner-circle"></div>
-                  </div>
-                  <span class="radio-label">Static Price</span>
-                </label>
-                <label class="custom-radio radio-primary">
-                  <input type="radio" formControlName="priceType" value="dynamic" />
-                  <div class="radio-outer-circle">
-                    <div class="radio-inner-circle"></div>
-                  </div>
-                  <span class="radio-label">Dynamic Price</span>
-                </label>
-              </div>
+              <mat-radio-group formControlName="priceType" class="radio-group-horizontal">
+                <mat-radio-button value="static">Static Price</mat-radio-button>
+                <mat-radio-button value="dynamic">Dynamic Price</mat-radio-button>
+              </mat-radio-group>
             </div>
           </div>
           

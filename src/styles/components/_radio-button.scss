@@ -13,59 +13,83 @@
  * Core styling for the radio button component
  */
 .mat-mdc-radio-button {
-  // Radio button outer circle
+  margin-right: 16px;
+  
+  // Radio button outer circle - increase specificity
   .mdc-radio {
     .mdc-radio__background {
       .mdc-radio__outer-circle {
-        border-color: var(--brush-radio-background) !important; // 60% - container border
+        border-color: var(--color-neutral-medium) !important;
       }
       
-      // Inner circle (selected state indicator)
+      // Inner circle - always WHITE
       .mdc-radio__inner-circle {
-        background-color: var(--brush-radio-selected) !important; // 10% - primary accent color
+        background-color: white !important;
       }
     }
     
-    // Hover state - more visible border
+    // Hover state with secondary colors
     &:hover:not(.mdc-radio--disabled) {
       .mdc-radio__background .mdc-radio__outer-circle {
-        border-color: var(--brush-input-border-hover) !important; // 30% - supporting highlight
+        border-color: var(--color-secondary-medium) !important;
       }
     }
     
-    // Disabled state - reduced visibility
+    // Disabled state
     &.mdc-radio--disabled {
       .mdc-radio__background {
         .mdc-radio__outer-circle {
-          border-color: var(--brush-input-text-disabled) !important; // 60% - muted border
+          border-color: var(--color-neutral-dark) !important;
         }
         
         .mdc-radio__inner-circle {
-          background-color: var(--brush-input-text-disabled) !important; // 60% - muted indicator
+          background-color: var(--color-neutral-dark) !important;
         }
       }
     }
   }
   
-  // Radio button label styling
+  // Label styling
   .mdc-form-field {
     label {
-      color: var(--brush-label-text) !important; // 30% - supporting text
+      color: var(--color-text-primary-light) !important;
       font-size: var(--font-size-base);
       
-      // Disabled label state
       &.mat-mdc-radio-disabled {
-        color: var(--brush-input-text-disabled) !important; // 60% - muted text
+        color: var(--color-text-disabled) !important;
       }
     }
   }
   
-  // Focus state indicator for accessibility
+  // Focus states
   &.cdk-focused .mdc-radio .mdc-radio__native-control:focus:focus-visible ~ .mdc-radio__background::before {
     opacity: 0.12;
     transform: scale(1);
-    background-color: var(--brush-focus-outline) !important; // 10% - focus indicator
   }
+  
+  .mat-ripple-element {
+    background-color: var(--color-secondary-transparent-20) !important;
+  }
+}
+
+// Checked state - outer circle with secondary color
+.mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio .mdc-radio__background .mdc-radio__outer-circle {
+  border-color: var(--color-secondary-dark) !important;
+}
+
+// Checked state - inner circle always WHITE
+.mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio .mdc-radio__background .mdc-radio__inner-circle {
+  background-color: white !important;
+}
+
+// Hover state
+.mat-mdc-radio-button:hover .mdc-radio:not(.mdc-radio--disabled) .mdc-radio__outer-circle {
+  border-color: var(--color-secondary-medium) !important;
+}
+
+// Active state
+.mat-mdc-radio-button:active .mdc-radio:not(.mdc-radio--disabled) .mdc-radio__outer-circle {
+  border-color: var(--color-secondary-dark) !important;
 }
 
 /* Radio Group Layout
@@ -81,106 +105,63 @@
   &.radio-group-horizontal {
     flex-direction: row;
     flex-wrap: wrap;
-    
-    .mat-mdc-radio-button {
-      margin-right: 16px;
-      margin-bottom: 8px;
-    }
-  }
-  
-  // Radio group within form field
-  &.in-form-field {
-    margin-top: 8px;
-    margin-bottom: 16px;
   }
 }
 
-/* Custom Radio Button Variants
+/* Radio Group within Form Row
  * ========================================================================== 
- * Additional styling for specialized radio button layouts
+ * Specific styling for radio groups in our form context
  */
-.custom-radio-tiles {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+.radio-group-row {
+  margin-bottom: 16px;
   
-  // Individual tile option
-  .radio-tile {
-    position: relative;
+  .radio-group-wrapper {
+    display: flex;
+    align-items: center;
     
-    // Hidden native radio input
-    input[type="radio"] {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
+    .radio-label {
+      flex: 0 0 auto;
+      font-size: var(--font-size-sm);
+      color: var(--brush-text-primary);
+      margin-right: 16px;
+      font-weight: var(--font-weight-medium);
     }
-    
-    // Tile label styling
-    .tile-label {
-      display: flex;
+  }
+}
+
+// Target Material's internal ripple effects
+.mat-mdc-radio-ripple .mat-ripple-element,
+.mat-mdc-radio-button.cdk-program-focused .mdc-radio .mdc-radio__ripple::before,
+.mat-mdc-radio-button.cdk-keyboard-focused .mdc-radio .mdc-radio__ripple::before {
+  background-color: var(--color-secondary-transparent-20) !important;
+}
+
+// Target hover effect
+.mat-mdc-radio-button .mdc-radio .mdc-radio__ripple:hover::before {
+  background-color: var(--color-secondary-transparent-10) !important;
+  opacity: 1;
+}
+
+// Target Material's touch target 
+.mat-mdc-radio-touch-target {
+  &:hover + .mdc-radio .mdc-radio__outer-circle {
+    border-color: var(--color-secondary-medium) !important;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 600px) {
+  .radio-group-row {
+    .radio-group-wrapper {
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 120px;
-      height: 90px;
-      border: 1px solid var(--brush-radio-background); // 60% - container border
-      border-radius: 8px;
-      padding: 12px;
-      cursor: pointer;
-      transition: all var(--transition-normal) var(--transition-timing);
-      background-color: var(--brush-background-elevated); // 60% - container background
+      align-items: flex-start;
       
-      // Icon in tile
-      .tile-icon {
-        font-size: 24px;
+      .radio-label {
         margin-bottom: 8px;
-        color: var(--brush-text-secondary); // 30% - supporting element
       }
       
-      // Text in tile
-      .tile-text {
-        font-size: var(--font-size-sm);
-        text-align: center;
-        color: var(--brush-text-primary); // 60% - primary text
-      }
-    }
-    
-    // Selected state styling
-    input[type="radio"]:checked + .tile-label {
-      border-color: var(--brush-radio-selected); // 10% - primary accent
-      background-color: var(--color-primary-transparent-10); // 10% - subtle background
-      
-      .tile-icon {
-        color: var(--brush-radio-selected); // 10% - primary accent
-      }
-      
-      .tile-text {
-        color: var(--brush-text-accent); // 10% - accent text
-      }
-    }
-    
-    // Hover state
-    &:hover .tile-label:not(.disabled) {
-      border-color: var(--brush-input-border-hover); // 30% - supporting highlight
-    }
-    
-    // Focus state
-    input[type="radio"]:focus-visible + .tile-label {
-      outline: 2px solid var(--brush-focus-outline); // 10% - focus indicator
-      outline-offset: 2px;
-    }
-    
-    // Disabled state
-    &.disabled {
-      .tile-label {
-        opacity: 0.5;
-        cursor: not-allowed;
-        border-color: var(--brush-input-text-disabled); // 60% - muted border
-        
-        .tile-icon, .tile-text {
-          color: var(--brush-input-text-disabled); // 60% - muted text
-        }
+      .mat-mdc-radio-group {
+        margin-left: 4px;
       }
     }
   }
