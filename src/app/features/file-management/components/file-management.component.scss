@@ -157,6 +157,22 @@
         transition: all var(--transition-normal) var(--transition-timing);
         position: relative;
         overflow: hidden;
+        
+        /* Add styling for the delete button */
+        .custom-icon-btn.delete-btn {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          min-width: unset;
+          padding: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: none;
+          cursor: pointer;
+          opacity: 0.7;
+          z-index: 10;
+        }
 
         &::before {
           content: "";

@@ -54,17 +54,35 @@
               <mat-icon class="arrow-icon">arrow_downward</mat-icon>
             </div>
             <h3 class="upload-title">Drag & Drop Files Here</h3>
-            <p class="upload-text">Upload JSON configuration files for TraderPlus</p>
-            
+            <p class="upload-text">
+              Upload JSON configuration files for TraderPlus
+            </p>
+
             <div class="format-hint">
               <div class="chip-container">
-                <mat-chip class="format-chip categories-chip" matTooltip="Category files format">cat_*.json</mat-chip>
-                <mat-chip class="format-chip products-chip" matTooltip="Product files format">prod_*.json</mat-chip>
-                <mat-chip class="format-chip currencies-chip" matTooltip="Currency files format">*currency*.json</mat-chip>
-                <mat-chip class="format-chip settings-chip" matTooltip="Settings files format">*settings*.json</mat-chip>
+                <mat-chip
+                  class="format-chip categories-chip"
+                  matTooltip="Category files format"
+                  >cat_*.json</mat-chip
+                >
+                <mat-chip
+                  class="format-chip products-chip"
+                  matTooltip="Product files format"
+                  >prod_*.json</mat-chip
+                >
+                <mat-chip
+                  class="format-chip currencies-chip"
+                  matTooltip="Currency files format"
+                  >*currency*.json</mat-chip
+                >
+                <mat-chip
+                  class="format-chip settings-chip"
+                  matTooltip="Settings files format"
+                  >*settings*.json</mat-chip
+                >
               </div>
             </div>
-            
+
             <mat-progress-bar
               *ngIf="isUploading"
               mode="indeterminate"
@@ -79,12 +97,22 @@
       <section class="content-panel export-section">
         <div class="panel-header">
           <h2 class="section-title">Export Configurations</h2>
-          <p class="panel-subtitle">Manage and export your configuration files</p>
+          <p class="panel-subtitle">
+            Manage and export your configuration files
+          </p>
         </div>
         <div class="panel-body">
           <div class="status-grid">
             <!-- Categories Status -->
             <div class="status-card" [class.has-data]="hasCategories">
+              <button
+                *ngIf="hasCategories"
+                class="custom-icon-btn icon-btn-warn delete-btn"
+                matTooltip="Delete all categories"
+                (click)="confirmDeleteData('categories')"
+              >
+                <mat-icon>delete_forever</mat-icon>
+              </button>
               <div class="status-icon-container">
                 <div class="app-icon-bg icon-lg categories-bg">
                   <mat-icon>category</mat-icon>
@@ -92,8 +120,12 @@
               </div>
               <div class="status-content">
                 <h3 class="card-title">Categories</h3>
-                <p class="card-text" *ngIf="hasCategories">{{ getCategoriesCount() }} categories loaded</p>
-                <p class="card-text" *ngIf="!hasCategories">No categories imported</p>
+                <p class="card-text" *ngIf="hasCategories">
+                  {{ getCategoriesCount() }} categories loaded
+                </p>
+                <p class="card-text" *ngIf="!hasCategories">
+                  No categories imported
+                </p>
                 <div class="status-actions">
                   <button
                     class="custom-stroked-button color-secondary with-icon"
@@ -110,6 +142,14 @@
 
             <!-- Products Status -->
             <div class="status-card" [class.has-data]="hasProducts">
+              <button
+                *ngIf="hasProducts"
+                class="custom-icon-btn icon-btn-warn delete-btn"
+                matTooltip="Delete all products"
+                (click)="confirmDeleteData('products')"
+              >
+                <mat-icon>delete_forever</mat-icon>
+              </button>
               <div class="status-icon-container">
                 <div class="app-icon-bg icon-lg products-bg">
                   <mat-icon>shopping_cart</mat-icon>
@@ -117,8 +157,12 @@
               </div>
               <div class="status-content">
                 <h3 class="card-title">Products</h3>
-                <p class="card-text" *ngIf="hasProducts">{{ getProductsCount() }} products loaded</p>
-                <p class="card-text" *ngIf="!hasProducts">No products imported</p>
+                <p class="card-text" *ngIf="hasProducts">
+                  {{ getProductsCount() }} products loaded
+                </p>
+                <p class="card-text" *ngIf="!hasProducts">
+                  No products imported
+                </p>
                 <div class="status-actions">
                   <button
                     class="custom-stroked-button color-secondary with-icon"
@@ -135,6 +179,14 @@
 
             <!-- Currency Status -->
             <div class="status-card" [class.has-data]="hasCurrencies">
+              <button
+                *ngIf="hasCurrencies"
+                class="custom-icon-btn icon-btn-warn delete-btn"
+                matTooltip="Delete currency settings"
+                (click)="confirmDeleteData('currencies')"
+              >
+                <mat-icon>delete_forever</mat-icon>
+              </button>
               <div class="status-icon-container">
                 <div class="app-icon-bg icon-lg currencies-bg">
                   <mat-icon>attach_money</mat-icon>
@@ -142,8 +194,12 @@
               </div>
               <div class="status-content">
                 <h3 class="card-title">Currency Settings</h3>
-                <p class="card-text" *ngIf="hasCurrencies">{{ getCurrencyTypesCount() }} currency types defined</p>
-                <p class="card-text" *ngIf="!hasCurrencies">No currency settings imported</p>
+                <p class="card-text" *ngIf="hasCurrencies">
+                  {{ getCurrencyTypesCount() }} currency types defined
+                </p>
+                <p class="card-text" *ngIf="!hasCurrencies">
+                  No currency settings imported
+                </p>
                 <div class="status-actions">
                   <button
                     class="custom-stroked-button color-secondary with-icon"
@@ -160,6 +216,14 @@
 
             <!-- General Settings Status -->
             <div class="status-card" [class.has-data]="hasSettings">
+              <button
+                *ngIf="hasSettings"
+                class="custom-icon-btn icon-btn-warn delete-btn"
+                matTooltip="Delete general settings"
+                (click)="confirmDeleteData('settings')"
+              >
+                <mat-icon>delete_forever</mat-icon>
+              </button>
               <div class="status-icon-container">
                 <div class="app-icon-bg icon-lg settings-bg">
                   <mat-icon>settings</mat-icon>
@@ -167,8 +231,12 @@
               </div>
               <div class="status-content">
                 <h3 class="card-title">General Settings</h3>
-                <p class="card-text" *ngIf="hasSettings">General configuration loaded</p>
-                <p class="card-text" *ngIf="!hasSettings">No general settings imported</p>
+                <p class="card-text" *ngIf="hasSettings">
+                  General configuration loaded
+                </p>
+                <p class="card-text" *ngIf="!hasSettings">
+                  No general settings imported
+                </p>
                 <div class="status-actions">
                   <button
                     class="custom-stroked-button color-secondary with-icon"
@@ -183,7 +251,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- Export All Option -->
           <div class="export-all-container">
             <div class="export-all-card">
@@ -192,43 +260,21 @@
               </div>
               <div class="export-content">
                 <h3 class="export-title">Export Complete Configuration</h3>
-                <p class="export-subtitle">Export all configuration files in a single ZIP archive</p>
+                <p class="export-subtitle">
+                  Export all configuration files in a single ZIP archive
+                </p>
               </div>
               <div class="export-action">
                 <button
                   class="custom-stroked-button color-primary with-icon"
-                  [matMenuTriggerFor]="exportMenu"
                   matTooltip="Export files"
                   [disabled]="!hasAnyData()"
+                  (click)="exportAllConfigs()"
                 >
                   <mat-icon>file_download</mat-icon>
-                  Export .zip
-                </button>
-              </div>
-              
-              <mat-menu #exportMenu="matMenu" class="export-menu">
-                <button mat-menu-item (click)="exportCategories()" [disabled]="!hasCategories">
-                  <mat-icon class="app-icon-color categories-color">category</mat-icon>
-                  <span>Categories</span>
-                </button>
-                <button mat-menu-item (click)="exportProducts()" [disabled]="!hasProducts">
-                  <mat-icon class="app-icon-color products-color">shopping_cart</mat-icon>
-                  <span>Products</span>
-                </button>
-                <button mat-menu-item (click)="exportCurrencySettings()" [disabled]="!hasCurrencies">
-                  <mat-icon class="app-icon-color currencies-color">attach_money</mat-icon>
-                  <span>Currency Settings</span>
-                </button>
-                <button mat-menu-item (click)="exportGeneralSettings()" [disabled]="!hasSettings">
-                  <mat-icon class="app-icon-color settings-color">settings</mat-icon>
-                  <span>General Settings</span>
-                </button>
-                <mat-divider></mat-divider>
-                <button mat-menu-item (click)="exportAllConfigs()" [disabled]="!hasAnyData()">
-                  <mat-icon class="app-icon-color export-color">inventory_2</mat-icon>
                   <span>Export All as ZIP</span>
                 </button>
-              </mat-menu>
+              </div>
             </div>
           </div>
         </div>
@@ -246,11 +292,15 @@
           <div class="activity-list" *ngIf="recentActivity.length > 0">
             <div *ngFor="let activity of recentActivity" class="activity-item">
               <div class="activity-icon-container">
-                <mat-icon class="app-icon-color {{ activity.type }}-color">{{ getActivityIcon(activity.type) }}</mat-icon>
+                <mat-icon class="app-icon-color {{ activity.type }}-color">{{
+                  getActivityIcon(activity.type)
+                }}</mat-icon>
               </div>
               <div class="activity-details">
                 <div class="activity-message">{{ activity.message }}</div>
-                <div class="activity-time">{{ activity.timestamp | date : "short" }}</div>
+                <div class="activity-time">
+                  {{ activity.timestamp | date : "short" }}
+                </div>
               </div>
             </div>
           </div>

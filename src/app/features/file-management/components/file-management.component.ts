@@ -16,9 +16,11 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatListModule } from '@angular/material/list';
+import { MatDialog } from '@angular/material/dialog';
 import { FileService, StorageService } from '../../../core/services';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { MatExpansionPanel, MatExpansionPanelHeader } from '@angular/material/expansion';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 /**
  * Interface for tracking and displaying user actions in the activity log
@@ -79,6 +81,7 @@ export class FileManagementComponent implements OnInit {
   private fileService = inject(FileService);
   private storageService = inject(StorageService);
   private notificationService = inject(NotificationService);
+  private dialog = inject(MatDialog);
 
   /**
    * References to hidden file input elements used for triggering file selection dialogs
@@ -738,6 +741,75 @@ export class FileManagementComponent implements OnInit {
         this.fileService.exportGeneralSettings();
         this.logActivity('export', 'Exported general settings (fallback)');
       }
+    }
+  }
+
+  /**
+   * Opens a confirmation dialog before deleting data
+   * 
+   * @param {string} dataType - The type of data to delete ('categories', 'products', etc.)
+   */
+  confirmDeleteData(dataType: 'categories' | 'products' | 'currencies' | 'settings'): void {
+    const typeLabel = this.getTypeLabel(dataType, true);
+    
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: `Delete ${typeLabel}`,
+        message: `Are you sure you want to delete all ${typeLabel.toLowerCase()}? This action cannot be undone.`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        destructive: true
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteData(dataType);
+      }
+    });
+  }
+
+  /**
+   * Deletes data of the specified type
+   * 
+   * @param {string} dataType - The type of data to delete ('categories', 'products', etc.)
+   */
+  deleteData(dataType: 'categories' | 'products' | 'currencies' | 'settings'): void {
+    try {
+      switch (dataType) {
+        case 'categories':
+          this.storageService.saveCategories([]);
+          this.hasCategories = false;
+          this.logActivity('categories', 'All categories deleted');
+          this.notificationService.success('All categories have been deleted');
+          break;
+        
+        case 'products':
+          this.storageService.saveProducts([]);
+          this.hasProducts = false;
+          this.logActivity('products', 'All products deleted');
+          this.notificationService.success('All products have been deleted');
+          break;
+        
+        case 'currencies':
+          this.storageService.deleteCurrencySettings();
+          this.hasCurrencies = false;
+          this.logActivity('currencies', 'Currency settings deleted');
+          this.notificationService.success('Currency settings have been deleted');
+          break;
+        
+        case 'settings':
+          this.storageService.deleteGeneralSettings();
+          this.hasSettings = false;
+          this.logActivity('settings', 'General settings deleted');
+          this.notificationService.success('General settings have been deleted');
+          break;
+      }
+    } catch (error) {
+      console.error(`Error deleting ${dataType}:`, error);
+      this.notificationService.error(`Failed to delete ${dataType}`);
+      this.logActivity('error', `Failed to delete ${dataType}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 }
