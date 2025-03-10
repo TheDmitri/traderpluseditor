@@ -31,6 +31,9 @@ export interface GeneralSettings {
     worn: boolean;
     damaged: boolean;
     badly_damaged: boolean;
+    coefficientWorn?: number;
+    coefficientDamaged?: number;
+    coefficientBadlyDamaged?: number;
   };
   traders: TraderNpc[];
   traderObjects: TraderObject[];
