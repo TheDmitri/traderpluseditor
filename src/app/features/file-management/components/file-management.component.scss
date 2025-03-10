@@ -45,9 +45,19 @@
       padding: 48px 24px;
       transition: all var(--transition-normal) var(--transition-timing);
       background-color: var(--brush-hover-overlay);
-      border: 2px dashed var(--brush-border-subtle);
+      border: 1px dashed var(--color-secondary-dark);
       border-radius: 12px;
       position: relative;
+
+      &:hover{
+        border: 2px dashed var(--color-secondary-medium);
+        background-color: var(--brush-active-overlay);
+
+        .upload-icon {
+          color: var(--brush-text-primary);
+          transform: scale(1.25);
+        }
+      }
 
       &.drag-over {
         border-color: var(--color-primary-medium);
