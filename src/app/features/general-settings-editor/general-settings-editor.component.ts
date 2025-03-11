@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { StorageService } from '../../../core/services/storage.service';
-import { GeneralSettings, License } from '../../../core/models/general-settings.model';
+import { StorageService } from '../../core/services/storage.service';
+import { GeneralSettings, License } from '../../core/models/general-settings.model';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -20,9 +21,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatMenuModule } from '@angular/material/menu';
 
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { NotificationService } from '../../../shared/services/notification.service';
-import { LicenseModalComponent } from './license-modal/license-modal.component';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { NotificationService } from '../../shared/services/notification.service';
 
 /**
  * General Settings Editor Component
@@ -37,6 +37,7 @@ import { LicenseModalComponent } from './license-modal/license-modal.component';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -71,6 +72,13 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
   
   /** Flag to track if settings exist */
   hasSettings = false;
+  
+  /** Index of the license currently being edited */
+  editingLicenseIndex: number | null = null;
+
+  /** Temporary license data during editing */
+  editLicenseName: string = '';
+  editLicenseDescription: string = '';
 
   /**
    * Constructor initializes necessary services
@@ -147,12 +155,20 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
     // Update the licenses data source if settings exist
     if (this.hasSettings && this.generalSettings!.licenses) {
       this.licensesDataSource.data = this.generalSettings!.licenses;
-    }
-    else {
+    } else {
+      // Ensure we reset the data source when no settings exist
       this.licensesDataSource.data = [];
-    }  
+    }
+    
+    // Ensure form is enabled/disabled based on settings existence
+    if (this.acceptedStatesForm) {
+      if (this.hasSettings) {
+        this.acceptedStatesForm.enable();
+      } else {
+        this.acceptedStatesForm.disable();
+      }
+    }
   }
-   
 
   /**
    * Create new general settings with default values
@@ -240,66 +256,107 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
   }
 
   /**
-   * Open dialog to add a new license
+   * Add a new license directly to the table
    */
   addLicense(): void {
-    const dialogRef = this.dialog.open(LicenseModalComponent, {
-      width: '500px',
-      data: { license: { name: '', description: '' } }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && this.generalSettings) {
-        // Create a new license with a unique ID
-        const newLicense: License = {
-          name: result.name,
-          description: result.description
-        };
-        
-        // Add to the licenses array
-        if (!this.generalSettings.licenses) {
-          this.generalSettings.licenses = [];
-        }
-        
-        this.generalSettings.licenses.push(newLicense);
-        this.storageService.saveGeneralSettings(this.generalSettings);
-        
-        // Update the data source
-        this.licensesDataSource.data = this.generalSettings.licenses;
-        
-        this.notificationService.success('License added successfully');
-      }
-    });
+    if (!this.generalSettings) {
+      return;
+    }
+    
+    // Create a new empty license
+    const newLicense: License = {
+      name: '',
+      description: ''
+    };
+    
+    // Initialize the licenses array if it doesn't exist
+    if (!this.generalSettings.licenses) {
+      this.generalSettings.licenses = [];
+    }
+    
+    // Add the new license to the beginning of the array
+    this.generalSettings.licenses.unshift(newLicense);
+    
+    // Update the data source
+    this.licensesDataSource.data = [...this.generalSettings.licenses];
+    
+    // Set it as the currently editing license
+    this.editingLicenseIndex = 0;
+    this.editLicenseName = '';
+    this.editLicenseDescription = '';
   }
 
   /**
-   * Open dialog to edit an existing license
-   * 
+   * Start editing a license
    * @param license - The license to edit
    * @param index - The index of the license in the array
    */
-  editLicense(license: License, index: number): void {
-    const dialogRef = this.dialog.open(LicenseModalComponent, {
-      width: '500px',
-      data: { license: { ...license } }
-    });
+  startEditLicense(license: License, index: number): void {
+    this.editingLicenseIndex = index;
+    this.editLicenseName = license.name;
+    this.editLicenseDescription = license.description || '';
+  }
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && this.generalSettings && this.generalSettings.licenses) {
-        // Update the license
-        this.generalSettings.licenses[index] = {
-          name: result.name,
-          description: result.description
-        };
-        
-        this.storageService.saveGeneralSettings(this.generalSettings);
-        
-        // Update the data source
-        this.licensesDataSource.data = this.generalSettings.licenses;
-        
-        this.notificationService.success('License updated successfully');
-      }
-    });
+  /**
+   * Cancel editing a license
+   */
+  cancelEditLicense(): void {
+    // If we're editing a new license with no name, remove it
+    if (
+      this.editingLicenseIndex === 0 &&
+      this.generalSettings &&
+      this.generalSettings.licenses &&
+      this.generalSettings.licenses.length > 0 &&
+      !this.generalSettings.licenses[0].name
+    ) {
+      this.generalSettings.licenses.shift();
+      this.licensesDataSource.data = [...this.generalSettings.licenses];
+    }
+    
+    this.editingLicenseIndex = null;
+  }
+
+  /**
+   * Check if the current license being edited can be saved
+   * @returns true if the license has a non-empty name and can be saved
+   */
+  canSaveLicense(): boolean {
+    return !!this.editLicenseName?.trim();
+  }
+
+  /**
+   * Save the currently edited license
+   */
+  saveLicense(): void {
+    if (
+      this.editingLicenseIndex === null || 
+      !this.generalSettings || 
+      !this.generalSettings.licenses
+    ) return;
+    
+    // Validate the license (name is required)
+    const trimmedName = this.editLicenseName.trim();
+    if (!trimmedName) {
+      this.notificationService.error('License name is required');
+      return;
+    }
+    
+    // Update the license in the array
+    this.generalSettings.licenses[this.editingLicenseIndex] = {
+      name: trimmedName,
+      description: this.editLicenseDescription.trim()
+    };
+    
+    // Save to storage
+    this.storageService.saveGeneralSettings(this.generalSettings);
+    
+    // Update the data source
+    this.licensesDataSource.data = [...this.generalSettings.licenses];
+    
+    // Reset editing state
+    this.editingLicenseIndex = null;
+    
+    this.notificationService.success('License saved successfully');
   }
 
   /**

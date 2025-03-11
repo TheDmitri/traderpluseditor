@@ -87,6 +87,7 @@
             <button
               class="custom-stroked-button color-primary with-icon"
               (click)="addLicense()"
+              [disabled]="editingLicenseIndex !== null"
               matTooltip="Add License"
             >
               <mat-icon>add</mat-icon>
@@ -96,7 +97,7 @@
             <button
               class="custom-stroked-button color-warn with-icon"
               (click)="deleteAllLicenses()"
-              [disabled]="licensesDataSource.data.length === 0"
+              [disabled]="licensesDataSource.data.length === 0 || editingLicenseIndex !== null"
               matTooltip="Delete All Licenses"
             >
               <mat-icon>delete_forever</mat-icon>
@@ -130,14 +131,49 @@
               <!-- License Name Column -->
               <ng-container matColumnDef="licenseName">
                 <th mat-header-cell *matHeaderCellDef>License Name</th>
-                <td mat-cell *matCellDef="let license">{{ license.name }}</td>
+                <td mat-cell *matCellDef="let license; let i = index">
+                  <!-- Edit mode -->
+                  <div *ngIf="editingLicenseIndex === i" class="edit-field">
+                    <mat-form-field appearance="outline">
+                      <mat-label>License Name</mat-label>
+                      <input 
+                        matInput 
+                        [(ngModel)]="editLicenseName" 
+                        required
+                        placeholder="Enter license name"
+                        (keydown.enter)="$event.preventDefault(); canSaveLicense() && saveLicense()"
+                      >
+                      <mat-error>License name is required</mat-error>
+                    </mat-form-field>
+                  </div>
+                  <!-- View mode -->
+                  <div *ngIf="editingLicenseIndex !== i">
+                    {{ license.name }}
+                  </div>
+                </td>
               </ng-container>
 
               <!-- Description Column -->
               <ng-container matColumnDef="description">
                 <th mat-header-cell *matHeaderCellDef>Description</th>
-                <td mat-cell *matCellDef="let license">
-                  {{ license.description || "No description" }}
+                <td mat-cell *matCellDef="let license; let i = index">
+                  <!-- Edit mode -->
+                  <div *ngIf="editingLicenseIndex === i" class="edit-field">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Description</mat-label>
+                      <textarea
+                        matInput
+                        [(ngModel)]="editLicenseDescription"
+                        placeholder="Enter description (optional)"
+                        rows="2"
+                        (keydown.enter)="$event.preventDefault()"
+                      ></textarea>
+                    </mat-form-field>
+                  </div>
+                  <!-- View mode -->
+                  <div *ngIf="editingLicenseIndex !== i">
+                    {{ license.description || "No description" }}
+                  </div>
                 </td>
               </ng-container>
 
@@ -151,18 +187,38 @@
                   *matCellDef="let license; let i = index"
                   class="actions-cell"
                 >
-                  <div class="action-buttons">
-                    <!-- Edit Button with consistent custom styling -->
+                  <!-- Edit mode actions -->
+                  <div *ngIf="editingLicenseIndex === i" class="action-buttons">
                     <button
                       class="custom-icon-btn icon-btn-primary"
-                      (click)="editLicense(license, i)"
+                      matTooltip="Save"
+                      (click)="saveLicense()"
+                      [disabled]="!canSaveLicense()"
+                    >
+                      <mat-icon>check</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+                    <button
+                      class="custom-icon-btn icon-btn-warn"
+                      matTooltip="Cancel"
+                      (click)="cancelEditLicense()"
+                    >
+                      <mat-icon>close</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+                  </div>
+                  
+                  <!-- View mode actions -->
+                  <div *ngIf="editingLicenseIndex !== i" class="action-buttons">
+                    <button
+                      class="custom-icon-btn icon-btn-primary"
+                      (click)="startEditLicense(license, i)"
                       matTooltip="Edit License"
                     >
                       <mat-icon>edit</mat-icon>
                       <div class="icon-btn-ripple"></div>
                     </button>
 
-                    <!-- Delete Button with consistent custom styling -->
                     <button
                       class="custom-icon-btn icon-btn-warn"
                       (click)="deleteLicense(i)"
@@ -176,7 +232,11 @@
               </ng-container>
 
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+              <tr 
+                mat-row 
+                *matRowDef="let row; columns: displayedColumns"
+                [class.editing-row]="editingLicenseIndex === licensesDataSource.data.indexOf(row)"
+              ></tr>
             </table>
           </div>
         </div>

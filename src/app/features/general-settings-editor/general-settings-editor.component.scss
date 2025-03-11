@@ -312,3 +312,17 @@
 .actions-cell {
   width: 120px;
 }
+
+/* Inline Editing Styles 
+========================================================================== */
+.edit-field {
+  padding: 8px 0;
+  
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.editing-row {
+  background-color: var(--brush-hover-overlay) !important;
+}
