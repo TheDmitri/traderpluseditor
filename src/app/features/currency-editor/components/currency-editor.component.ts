@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms'; // Add FormsModule import
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { StorageService } from '../../../core/services/storage.service';
 import { NotificationService } from '../../../shared/services/notification.service';
-import { CurrencyType, Currency, CurrencySettings } from '../../../core/models';
+import { CurrencyType, CurrencySettings } from '../../../core/models';
 import { Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -39,7 +39,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    FormsModule, // Add FormsModule to the imports
+    FormsModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
@@ -253,6 +253,11 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
    * @param currencyType - The currency type whose currencies will be edited
    */
   openCurrencyModal(currencyType: CurrencyType): void {
+    // Don't allow opening modal if already editing
+    if (this.currentlyEditing !== null) {
+      return;
+    }
+    
     const dialogRef = this.dialog.open(CurrencyModalComponent, {
       width: '700px',
       data: { currencyType: structuredClone(currencyType) },
@@ -273,6 +278,8 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
         // Save the updated currency settings
         this.storageService.saveCurrencySettings(this.currencySettings);
         this.loadCurrencySettings();
+        // Update hasCurrencyTypes flag
+        this.hasCurrencyTypes = this.currencySettings.currencyTypes.length > 0;
         this.notificationService.success('Currencies updated successfully');
       }
     });
@@ -284,9 +291,14 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
    * Sets default values that can be modified by the user.
    */
   addCurrencyType(): void {
+    // Don't add if already editing
+    if (this.currentlyEditing !== null) {
+      return;
+    }
+    
     // Create a properly typed CurrencyType object with the required properties
     const newCurrencyType: CurrencyType = {
-      currencyName: 'New Currency Type',
+      currencyName: '',
       currencies: []
     };
     
@@ -298,6 +310,10 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
     this.currentlyEditing = newCurrencyType;
     this.editableName = newCurrencyType.currencyName;
     this.isNewMode = true;
+    
+    // Always set hasCurrencyTypes to true when adding a new currency
+    // This ensures we see the table with the edit form rather than the empty state
+    this.hasCurrencyTypes = true;
   }
 
   /**
@@ -307,6 +323,11 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
    * @param currencyType - The currency type to be edited
    */
   editCurrencyType(currencyType: CurrencyType): void {
+    // Don't start editing if already editing something else
+    if (this.currentlyEditing !== null) {
+      return;
+    }
+    
     this.currentlyEditing = currencyType;
     this.editableName = currencyType.currencyName;
     this.isNewMode = false;
@@ -328,6 +349,8 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
         if (this.currencySettings) {
           this.currencySettings.currencyTypes = this.dataSource.data;
           this.storageService.saveCurrencySettings(this.currencySettings);
+          // Update hasCurrencyTypes flag when adding new currency
+          this.hasCurrencyTypes = true;
         }
         this.notificationService.success('New currency type created successfully');
         this.isNewMode = false;
@@ -335,6 +358,8 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
         // For existing currency types, update them in settings
         if (this.currencySettings) {
           this.storageService.saveCurrencySettings(this.currencySettings);
+          // Ensure hasCurrencyTypes flag is updated
+          this.hasCurrencyTypes = this.currencySettings.currencyTypes.length > 0;
         }
         this.notificationService.success('Currency name updated successfully');
       }
@@ -349,14 +374,33 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
    * Abandons the current edit operation.
    * Removes newly created currency types if in new mode.
    * Restores previous state without saving changes.
+   * Cleans up localStorage if no currencies remain.
    */
   cancelEdit(): void {
     if (this.isNewMode) {
       // Remove the new currency from the data source
-      this.dataSource.data = this.dataSource.data.filter(
+      const filteredData = this.dataSource.data.filter(
         item => item !== this.currentlyEditing
       );
+      
+      this.dataSource.data = filteredData;
+      
+      // Check if this was the last currency type
+      if (filteredData.length === 0) {
+        // If no currency types remain, remove currency settings from localStorage
+        this.storageService.deleteCurrencySettings();
+        this.hasCurrencyTypes = false;
+        this.currencySettings = {
+          version: '2.0.0',
+          currencyTypes: []
+        };
+      } else if (this.currencySettings) {
+        // Otherwise, update the currency types
+        this.currencySettings.currencyTypes = filteredData;
+        this.storageService.saveCurrencySettings(this.currencySettings);
+      }
     }
+    
     this.resetEditState();
   }
 
@@ -378,6 +422,11 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
    * @param currencyType - The currency type to be removed
    */
   removeCurrencyType(currencyType: CurrencyType): void {
+    // Don't allow deletion during edit mode
+    if (this.currentlyEditing !== null) {
+      return;
+    }
+    
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Delete Currency Type',
@@ -398,6 +447,8 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
         // Save the updated currency settings
         this.storageService.saveCurrencySettings(this.currencySettings);
         this.loadCurrencySettings();
+        // Update hasCurrencyTypes flag after deletion
+        this.hasCurrencyTypes = this.currencySettings.currencyTypes.length > 0;
         this.notificationService.success('Currency type deleted successfully');
       }
     });
@@ -409,6 +460,11 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
    * Resets the data store to initial state when confirmed.
    */
   removeAllCurrencyTypes(): void {
+    // Don't allow mass deletion during edit mode
+    if (this.currentlyEditing !== null) {
+      return;
+    }
+    
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Delete All Currency Types',
@@ -465,9 +521,56 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
    * @param currencyType - The currency type whose name will be edited
    */
   editCurrencyName(currencyType: CurrencyType): void {
+    // Don't start editing if already editing something else
+    if (this.currentlyEditing !== null) {
+      return;
+    }
+    
     this.currentlyEditing = currencyType;
     this.editableName = currencyType.currencyName;
     this.isNewMode = false;
+  }
+
+  /**
+   * Creates standard currency types and currencies based on TraderPlusCurrencySettings.json
+   * This provides a set of commonly used currencies (EUR and USD) with different denominations
+   */
+  createStandardCurrencies(): void {
+    // Create standard currency settings with EUR and USD
+    const standardCurrencySettings: CurrencySettings = {
+      version: '2.0.0',
+      currencyTypes: [
+        {
+          currencyName: 'EUR',
+          currencies: [
+            { className: 'TraderPlus_Money_Euro100', value: 100 },
+            { className: 'TraderPlus_Money_Euro50', value: 50 },
+            { className: 'TraderPlus_Money_Euro10', value: 10 },
+            { className: 'TraderPlus_Money_Euro5', value: 5 },
+            { className: 'TraderPlus_Money_Euro1', value: 1 }
+          ]
+        },
+        {
+          currencyName: 'USD',
+          currencies: [
+            { className: 'TraderPlus_Money_Dollar100', value: 100 },
+            { className: 'TraderPlus_Money_Dollar50', value: 50 },
+            { className: 'TraderPlus_Money_Dollar10', value: 10 },
+            { className: 'TraderPlus_Money_Dollar5', value: 5 },
+            { className: 'TraderPlus_Money_Dollar1', value: 1 }
+          ]
+        }
+      ]
+    };
+    
+    // Save the standard currency settings
+    this.storageService.saveCurrencySettings(standardCurrencySettings);
+    
+    // Reload the settings to update the UI
+    this.loadCurrencySettings();
+    
+    // Show success message
+    this.notificationService.success('Standard currencies created successfully');
   }
 
   /**

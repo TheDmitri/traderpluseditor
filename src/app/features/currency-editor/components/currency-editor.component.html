@@ -11,10 +11,12 @@
           <button
             class="custom-stroked-button color-primary with-icon"
             (click)="addCurrencyType()"
+            [disabled]="currentlyEditing !== null"
             matTooltip="Create a new currency type"
+            *ngIf="hasCurrencyTypes !== null"
           >
             <mat-icon>add</mat-icon>
-            Create New Currency Type
+            Create New Currency
           </button>
           
           <!-- Secondary action: Import from file -->
@@ -22,6 +24,7 @@
             class="custom-stroked-button color-secondary with-icon"
             routerLink="/file-management"
             matTooltip="Import currency settings from file"
+            [disabled]="currentlyEditing !== null"
           >
             <mat-icon>upload_file</mat-icon>
             Import Currencies
@@ -34,7 +37,9 @@
         <button
           class="custom-stroked-button color-warn with-icon"
           [matMenuTriggerFor]="dangerMenu"
+          *ngIf="hasCurrencyTypes"
           matTooltip="Dangerous operations"
+          [disabled]="currentlyEditing !== null"
         >
           <mat-icon>warning</mat-icon>
           Danger Zone
@@ -44,6 +49,7 @@
           <button
             mat-menu-item
             (click)="removeAllCurrencyTypes()"
+            [disabled]="currentlyEditing !== null"
             matTooltip="Remove all currency types permanently"
             matTooltipPosition="left"
           >
@@ -55,8 +61,26 @@
     </div>
   </div>
 
-  <!-- Main content card containing the currency data table -->
-  <div class="data-card">
+  <!-- No Currencies State - Informative message and call to action -->
+  <div class="empty-state-container" *ngIf="!hasCurrencyTypes && currentlyEditing === null">
+    <mat-icon class="empty-state-icon">attach_money</mat-icon>
+    <h2 class="empty-state-title">No Currencies Found</h2>
+    <p class="empty-state-message">
+      To get started, you can either import an existing TraderPlus currency file, create a blank new one or create the standard currencies (EUR and USD).
+    </p>
+    <div class="empty-state-actions">
+      <button
+        class="custom-stroked-button color-primary with-icon"
+        (click)="createStandardCurrencies()"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Create Standard Currencies
+      </button>
+    </div>
+  </div>
+
+  <!-- Main content card containing the currency data table - Shown when currencies exist OR when editing -->
+  <div class="data-card" *ngIf="hasCurrencyTypes || currentlyEditing !== null">
     <h2 class="section-title">Currency Overview</h2>
     <mat-card-content>
       <!-- Search filter - Only shown when data exists -->
@@ -64,13 +88,13 @@
         <mat-form-field
           class="filter-field"
           appearance="outline"
-          *ngIf="hasCurrencyTypes"
         >
           <mat-label>Filter Currency Types</mat-label>
           <input
             matInput
             (keyup)="applyFilter($event)"
             placeholder="Search currency types..."
+            [disabled]="currentlyEditing !== null"
             #input
             matTooltip="Filter currency types by name"
             matTooltipPosition="below"
@@ -97,7 +121,7 @@
               <!-- Edit mode - Shows an input field with save/cancel buttons -->
               <div *ngIf="isEditing(currencyType) || isNewCurrencyType(currencyType)" class="edit-mode">
                 <mat-form-field appearance="outline" class="inline-editor">
-                  <input matInput [(ngModel)]="editableName" placeholder="Enter currency name">
+                  <input matInput [(ngModel)]="editableName" placeholder="Enter new currency_className">
                 </mat-form-field>
                 <div class="edit-actions">
                   <button mat-icon-button color="primary" (click)="saveCurrencyEdit(currencyType)" 
@@ -137,6 +161,7 @@
                   (click)="openCurrencyModal(currencyType)"
                   aria-label="Manage currencies"
                   matTooltip="Manage currencies"
+                  [disabled]="currentlyEditing !== null"
                   *ngIf="!isEditing(currencyType) && !isNewCurrencyType(currencyType)"
                 >
                   <mat-icon>monetization_on</mat-icon>
@@ -149,6 +174,7 @@
                   (click)="editCurrencyName(currencyType)"
                   aria-label="Edit currency name"
                   matTooltip="Edit currency name"
+                  [disabled]="currentlyEditing !== null"
                   *ngIf="!isEditing(currencyType) && !isNewCurrencyType(currencyType)"
                 >
                   <mat-icon>edit</mat-icon>
@@ -161,6 +187,7 @@
                   (click)="removeCurrencyType(currencyType)"
                   aria-label="Delete currency type"
                   matTooltip="Delete this currency type"
+                  [disabled]="currentlyEditing !== null"
                   *ngIf="!isEditing(currencyType) && !isNewCurrencyType(currencyType)"
                 >
                   <mat-icon>delete_forever</mat-icon>
