@@ -67,8 +67,6 @@ interface ActivityLog {
     MatDividerModule,
     MatTooltipModule,
     MatProgressBarModule,
-    MatExpansionPanel,
-    MatExpansionPanelHeader,
     MatMenuModule,
     MatChipsModule,
     MatListModule,
