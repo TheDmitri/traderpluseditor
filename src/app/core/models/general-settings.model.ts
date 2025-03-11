@@ -2,8 +2,9 @@
  * General settings models based on TraderPlusGeneralSettings.c
  */
 export interface License {
-  name: string;
-  description: string;
+  licenseId?: string;  // The unique identifier for the license
+  licenseName: string; // The display name of the license
+  description: string; // Description of the license
 }
 
 export interface Vector {

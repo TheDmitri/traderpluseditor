@@ -265,7 +265,8 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
     
     // Create a new empty license
     const newLicense: License = {
-      name: '',
+      licenseId: this.generateGUID(),  // Generate a new GUID for license ID
+      licenseName: '',
       description: ''
     };
     
@@ -293,7 +294,7 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
    */
   startEditLicense(license: License, index: number): void {
     this.editingLicenseIndex = index;
-    this.editLicenseName = license.name;
+    this.editLicenseName = license.licenseName || '';
     this.editLicenseDescription = license.description || '';
   }
 
@@ -307,7 +308,7 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
       this.generalSettings &&
       this.generalSettings.licenses &&
       this.generalSettings.licenses.length > 0 &&
-      !this.generalSettings.licenses[0].name
+      !this.generalSettings.licenses[0].licenseName
     ) {
       this.generalSettings.licenses.shift();
       this.licensesDataSource.data = [...this.generalSettings.licenses];
@@ -341,9 +342,12 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
       return;
     }
     
+    const currentLicense = this.generalSettings.licenses[this.editingLicenseIndex];
+    
     // Update the license in the array
     this.generalSettings.licenses[this.editingLicenseIndex] = {
-      name: trimmedName,
+      licenseId: currentLicense.licenseId || this.generateGUID(),
+      licenseName: trimmedName,
       description: this.editLicenseDescription.trim()
     };
     
