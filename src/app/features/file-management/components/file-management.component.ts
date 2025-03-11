@@ -751,12 +751,12 @@ export class FileManagementComponent implements OnInit {
     const typeLabel = this.getTypeLabel(dataType, true);
     
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
       data: {
         title: `Delete ${typeLabel}`,
-        message: `Are you sure you want to delete all ${typeLabel.toLowerCase()}? This action cannot be undone.`,
+        message: `Are you sure you want to delete all ${typeLabel.toLowerCase()}? \n\nThis action cannot be undone.`,
         confirmText: 'Delete',
         cancelText: 'Cancel',
+        type: 'danger',
         destructive: true
       }
     });
