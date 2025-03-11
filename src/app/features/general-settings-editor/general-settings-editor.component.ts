@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { StorageService } from '../../core/services/storage.service';
 import { GeneralSettings, License } from '../../core/models/general-settings.model';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -20,6 +19,11 @@ import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatMenuModule } from '@angular/material/menu';
+
+// Services
+import { GeneralSettingsService } from '../../core/services/general-settings.service';
+import { LicenseService } from '../../core/services/license.service';
+import { AcceptedStatesService } from '../../core/services/accepted-states.service';
 
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { NotificationService } from '../../shared/services/notification.service';
@@ -82,15 +86,11 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
 
   /**
    * Constructor initializes necessary services
-   * 
-   * @param storageService - Service for storing and retrieving data
-   * @param formBuilder - Angular form builder
-   * @param dialog - Material dialog service
-   * @param notificationService - Service for displaying notifications
    */
   constructor(
-    private storageService: StorageService,
-    private formBuilder: FormBuilder,
+    private generalSettingsService: GeneralSettingsService,
+    private licenseService: LicenseService,
+    private acceptedStatesService: AcceptedStatesService,
     private dialog: MatDialog,
     private notificationService: NotificationService
   ) { }
@@ -107,29 +107,21 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
    * Initialize the form for accepted states
    */
   initAcceptedStatesForm(): void {
-    this.acceptedStatesForm = this.formBuilder.group({
-      worn: [false],
-      damaged: [false],
-      badly_damaged: [false],
-      coefficientWorn: [0.0, [Validators.min(0), Validators.max(1)]],
-      coefficientDamaged: [0.0, [Validators.min(0), Validators.max(1)]],
-      coefficientBadlyDamaged: [0.0, [Validators.min(0), Validators.max(1)]]
-    });
+    // Create the form using the service
+    this.acceptedStatesForm = this.acceptedStatesService.createAcceptedStatesForm();
 
     // If settings exist, populate the form
-    if (this.generalSettings && this.generalSettings.acceptedStates) {
-      this.acceptedStatesForm.patchValue({
-        worn: this.generalSettings.acceptedStates.worn,
-        damaged: this.generalSettings.acceptedStates.damaged,
-        badly_damaged: this.generalSettings.acceptedStates.badly_damaged,
-        coefficientWorn: this.generalSettings.acceptedStates.coefficientWorn || 0.0,
-        coefficientDamaged: this.generalSettings.acceptedStates.coefficientDamaged || 0.0,
-        coefficientBadlyDamaged: this.generalSettings.acceptedStates.coefficientBadlyDamaged || 0.0
-      });
-    }
-
-    // Only subscribe to form changes if settings exist
     if (this.hasSettings) {
+      this.acceptedStatesService.initFormFromSettings(this.acceptedStatesForm);
+      
+      // Set up listeners to reset coefficients when states are toggled off
+      this.acceptedStatesService.setupStateToggleListeners(this.acceptedStatesForm, () => {
+        if (this.acceptedStatesForm.valid) {
+          this.saveAcceptedStates();
+        }
+      });
+      
+      // Save settings when form changes
       this.acceptedStatesForm.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe(() => {
@@ -144,20 +136,18 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
   }
 
   /**
-   * Load general settings from storage
+   * Load general settings
    */
   loadSettings(): void {
-    this.generalSettings = this.storageService.generalSettings();
-    
-    // Check if settings exist or have been imported
-    this.hasSettings = !!this.generalSettings;
+    this.generalSettings = this.generalSettingsService.getGeneralSettings();
+    this.hasSettings = this.generalSettingsService.hasSettings();
     
     // Update the licenses data source if settings exist
-    if (this.hasSettings && this.generalSettings!.licenses) {
-      this.licensesDataSource.data = this.generalSettings!.licenses;
+    if (this.hasSettings) {
+      this.licensesDataSource = this.licenseService.getLicensesDataSource();
     } else {
       // Ensure we reset the data source when no settings exist
-      this.licensesDataSource.data = [];
+      this.licensesDataSource = new MatTableDataSource<License>([]);
     }
     
     // Ensure form is enabled/disabled based on settings existence
@@ -174,39 +164,25 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
    * Create new general settings with default values
    */
   createGeneralSettings(): void {
-    // Create default settings
-    this.generalSettings = {
-      version: '2.0.0',
-      serverID: this.generateGUID(),
-      licenses: [],
-      acceptedStates: {
-        worn: false,
-        damaged: false,
-        badly_damaged: false,
-        coefficientWorn: 0.0,
-        coefficientDamaged: 0.0,
-        coefficientBadlyDamaged: 0.0
-      },
-      traders: [],
-      traderObjects: []
-    };
+    // Create default settings using the service
+    this.generalSettings = this.generalSettingsService.createDefaultGeneralSettings();
     
     // Save the new settings
-    this.storageService.saveGeneralSettings(this.generalSettings);
+    this.generalSettingsService.saveGeneralSettings(this.generalSettings);
     
     // Update state
     this.hasSettings = true;
     
-    // Reset and enable form
-    this.acceptedStatesForm.reset({
-      worn: false,
-      damaged: false,
-      badly_damaged: false,
-      coefficientWorn: 0.0,
-      coefficientDamaged: 0.0,
-      coefficientBadlyDamaged: 0.0
-    });
+    // Recreate and enable the form
+    this.acceptedStatesForm = this.acceptedStatesService.createAcceptedStatesForm();
     this.acceptedStatesForm.enable();
+    
+    // Set up state toggle listeners
+    this.acceptedStatesService.setupStateToggleListeners(this.acceptedStatesForm, () => {
+      if (this.acceptedStatesForm.valid) {
+        this.saveAcceptedStates();
+      }
+    });
     
     // Subscribe to form changes
     this.acceptedStatesForm.valueChanges
@@ -218,68 +194,31 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
       });
     
     // Update UI
-    this.licensesDataSource.data = [];
+    this.licensesDataSource = new MatTableDataSource<License>([]);
     
     // Show success message
     this.notificationService.success('General settings created successfully');
   }
 
   /**
-   * Generate a GUID string for the server ID
-   */
-  private generateGUID(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = Math.random() * 16 | 0,
-        v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    }).toUpperCase();
-  }
-
-  /**
    * Save accepted states from form to settings
    */
   saveAcceptedStates(): void {
-    if (!this.acceptedStatesForm.valid || !this.generalSettings) return;
-    
-    const formValue = this.acceptedStatesForm.value;
-    
-    this.generalSettings.acceptedStates = {
-      worn: formValue.worn,
-      damaged: formValue.damaged,
-      badly_damaged: formValue.badly_damaged,
-      coefficientWorn: parseFloat(formValue.coefficientWorn),
-      coefficientDamaged: parseFloat(formValue.coefficientDamaged),
-      coefficientBadlyDamaged: parseFloat(formValue.coefficientBadlyDamaged)
-    };
-    
-    this.storageService.saveGeneralSettings(this.generalSettings);
+    if (this.acceptedStatesService.saveAcceptedStates(this.acceptedStatesForm)) {
+      // Refresh the settings object reference
+      this.generalSettings = this.generalSettingsService.getGeneralSettings();
+    }
   }
 
   /**
    * Add a new license directly to the table
    */
   addLicense(): void {
-    if (!this.generalSettings) {
-      return;
-    }
-    
-    // Create a new empty license
-    const newLicense: License = {
-      licenseId: this.generateGUID(),  // Generate a new GUID for license ID
-      licenseName: '',
-      description: ''
-    };
-    
-    // Initialize the licenses array if it doesn't exist
-    if (!this.generalSettings.licenses) {
-      this.generalSettings.licenses = [];
-    }
-    
-    // Add the new license to the beginning of the array
-    this.generalSettings.licenses.unshift(newLicense);
+    const newLicense = this.licenseService.addLicense();
+    if (!newLicense) return;
     
     // Update the data source
-    this.licensesDataSource.data = [...this.generalSettings.licenses];
+    this.licensesDataSource = this.licenseService.getLicensesDataSource();
     
     // Set it as the currently editing license
     this.editingLicenseIndex = 0;
@@ -305,13 +244,14 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
     // If we're editing a new license with no name, remove it
     if (
       this.editingLicenseIndex === 0 &&
-      this.generalSettings &&
-      this.generalSettings.licenses &&
+      this.generalSettings?.licenses &&
       this.generalSettings.licenses.length > 0 &&
       !this.generalSettings.licenses[0].licenseName
     ) {
-      this.generalSettings.licenses.shift();
-      this.licensesDataSource.data = [...this.generalSettings.licenses];
+      // Delete the empty license
+      this.licenseService.deleteLicense(0);
+      // Update data source
+      this.licensesDataSource = this.licenseService.getLicensesDataSource();
     }
     
     this.editingLicenseIndex = null;
@@ -322,18 +262,14 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
    * @returns true if the license has a non-empty name and can be saved
    */
   canSaveLicense(): boolean {
-    return !!this.editLicenseName?.trim();
+    return this.licenseService.canSaveLicense(this.editLicenseName);
   }
 
   /**
    * Save the currently edited license
    */
   saveLicense(): void {
-    if (
-      this.editingLicenseIndex === null || 
-      !this.generalSettings || 
-      !this.generalSettings.licenses
-    ) return;
+    if (this.editingLicenseIndex === null) return;
     
     // Validate the license (name is required)
     const trimmedName = this.editLicenseName.trim();
@@ -342,25 +278,21 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
       return;
     }
     
-    const currentLicense = this.generalSettings.licenses[this.editingLicenseIndex];
-    
-    // Update the license in the array
-    this.generalSettings.licenses[this.editingLicenseIndex] = {
-      licenseId: currentLicense.licenseId || this.generateGUID(),
-      licenseName: trimmedName,
-      description: this.editLicenseDescription.trim()
-    };
-    
-    // Save to storage
-    this.storageService.saveGeneralSettings(this.generalSettings);
-    
-    // Update the data source
-    this.licensesDataSource.data = [...this.generalSettings.licenses];
-    
-    // Reset editing state
-    this.editingLicenseIndex = null;
-    
-    this.notificationService.success('License saved successfully');
+    // Save the license
+    if (this.licenseService.saveLicense(this.editingLicenseIndex, trimmedName, this.editLicenseDescription)) {
+      // Update data source
+      this.licensesDataSource = this.licenseService.getLicensesDataSource();
+      
+      // Reset editing state
+      this.editingLicenseIndex = null;
+      
+      // Refresh the settings object reference
+      this.generalSettings = this.generalSettingsService.getGeneralSettings();
+      
+      this.notificationService.success('License saved successfully');
+    } else {
+      this.notificationService.error('Failed to save license');
+    }
   }
 
   /**
@@ -380,15 +312,18 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result && this.generalSettings && this.generalSettings.licenses) {
-        // Remove the license
-        this.generalSettings.licenses.splice(index, 1);
-        this.storageService.saveGeneralSettings(this.generalSettings);
-        
-        // Update the data source
-        this.licensesDataSource.data = this.generalSettings.licenses;
-        
-        this.notificationService.success('License deleted successfully');
+      if (result) {
+        if (this.licenseService.deleteLicense(index)) {
+          // Update data source
+          this.licensesDataSource = this.licenseService.getLicensesDataSource();
+          
+          // Refresh the settings object reference
+          this.generalSettings = this.generalSettingsService.getGeneralSettings();
+          
+          this.notificationService.success('License deleted successfully');
+        } else {
+          this.notificationService.error('Failed to delete license');
+        }
       }
     });
   }
@@ -408,15 +343,18 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result && this.generalSettings) {
-        // Clear all licenses
-        this.generalSettings.licenses = [];
-        this.storageService.saveGeneralSettings(this.generalSettings);
-        
-        // Update the data source
-        this.licensesDataSource.data = [];
-        
-        this.notificationService.success('All licenses deleted successfully');
+      if (result) {
+        if (this.licenseService.deleteAllLicenses()) {
+          // Update data source
+          this.licensesDataSource = new MatTableDataSource<License>([]);
+          
+          // Refresh the settings object reference
+          this.generalSettings = this.generalSettingsService.getGeneralSettings();
+          
+          this.notificationService.success('All licenses deleted successfully');
+        } else {
+          this.notificationService.error('Failed to delete licenses');
+        }
       }
     });
   }
@@ -438,12 +376,12 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         // Clear all settings
-        this.storageService.removeGeneralSettings();
+        this.generalSettingsService.deleteGeneralSettings();
         
         // Reset state
         this.generalSettings = null;
         this.hasSettings = false;
-        this.licensesDataSource.data = [];
+        this.licensesDataSource = new MatTableDataSource<License>([]);
         
         // Disable form
         this.acceptedStatesForm.disable();
@@ -479,15 +417,11 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
 
         button.addEventListener('click', (event: Event) => {
           const mouseEvent = event as MouseEvent;
-          const rippleContainer = button.querySelector(
-            '.icon-btn-ripple'
-          ) as HTMLElement;
+          const rippleContainer = button.querySelector('.icon-btn-ripple') as HTMLElement;
           if (!rippleContainer) return;
 
           // Remove existing ripples
-          const existingRipples = rippleContainer.querySelectorAll(
-            '.icon-btn-ripple-effect'
-          );
+          const existingRipples = rippleContainer.querySelectorAll('.icon-btn-ripple-effect');
           existingRipples.forEach((ripple) => ripple.remove());
 
           // Create new ripple

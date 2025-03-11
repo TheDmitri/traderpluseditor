@@ -39,7 +39,7 @@ export class GeneralSettingsService {
             data.acceptedStates = this.transformAcceptedStates(data.acceptedStates);
           }
           
-          this.storageService.saveGeneralSettings(data as GeneralSettings);
+          this.saveGeneralSettings(data as GeneralSettings);
           resolve();
         } else {
           reject(new Error('Invalid TraderPlus general settings format'));
@@ -69,14 +69,18 @@ export class GeneralSettingsService {
    * @returns Transformed accepted states object
    */
   private transformAcceptedStates(states: any): any {
-    // Convert numeric values to booleans
+    // Convert numeric values to booleans and ensure coefficients are 0 when state is inactive
+    const worn = states.acceptWorn === 1;
+    const damaged = states.acceptDamaged === 1;
+    const badly_damaged = states.acceptBadlyDamaged === 1;
+    
     return {
-      worn: states.acceptWorn === 1,
-      damaged: states.acceptDamaged === 1,
-      badly_damaged: states.acceptBadlyDamaged === 1,
-      coefficientWorn: states.coefficientWorn || 0.0,
-      coefficientDamaged: states.coefficientDamaged || 0.0,
-      coefficientBadlyDamaged: states.coefficientBadlyDamaged || 0.0
+      worn: worn,
+      damaged: damaged,
+      badly_damaged: badly_damaged,
+      coefficientWorn: worn ? (states.coefficientWorn || 0.0) : 0.0,
+      coefficientDamaged: damaged ? (states.coefficientDamaged || 0.0) : 0.0,
+      coefficientBadlyDamaged: badly_damaged ? (states.coefficientBadlyDamaged || 0.0) : 0.0
     };
   }
 
@@ -85,6 +89,71 @@ export class GeneralSettingsService {
    * @returns General settings object for export
    */
   getExportData(): GeneralSettings | null {
+    return this.getGeneralSettings();
+  }
+  
+  /**
+   * Get general settings from storage
+   * @returns General settings object or null if none exist
+   */
+  getGeneralSettings(): GeneralSettings | null {
     return this.storageService.generalSettings();
+  }
+  
+  /**
+   * Check if general settings exist
+   * @returns True if general settings exist
+   */
+  hasSettings(): boolean {
+    return !!this.getGeneralSettings();
+  }
+  
+  /**
+   * Save general settings to storage
+   * @param settings The settings to save
+   */
+  saveGeneralSettings(settings: GeneralSettings): void {
+    this.storageService.saveGeneralSettings(settings);
+  }
+  
+  /**
+   * Delete all general settings
+   */
+  deleteGeneralSettings(): void {
+    this.storageService.removeGeneralSettings();
+  }
+  
+  /**
+   * Create new general settings with default values
+   * @returns New general settings object
+   */
+  createDefaultGeneralSettings(): GeneralSettings {
+    return {
+      version: '2.0.0',
+      serverID: this.generateGUID(),
+      licenses: [],
+      acceptedStates: {
+        worn: false,
+        damaged: false,
+        badly_damaged: false,
+        coefficientWorn: 0.0,
+        coefficientDamaged: 0.0,
+        coefficientBadlyDamaged: 0.0
+      },
+      traders: [],
+      traderObjects: []
+    };
+  }
+  
+  /**
+   * Generate a GUID string
+   * @returns A GUID string
+   */
+  generateGUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0,
+        v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    }).toUpperCase();
   }
 }
