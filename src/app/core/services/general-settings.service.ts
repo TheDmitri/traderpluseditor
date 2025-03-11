@@ -131,12 +131,23 @@ export class GeneralSettingsService {
     return {
       version: '2.0.0',
       serverID: this.generateGUID(),
-      licenses: [],
+      licenses: [
+        {
+            "licenseId": "26EE5BF3-DA9D-4CDE-A6C6-76B0AAF073E9",
+            "licenseName": "Car Licence",
+            "description": ""
+        },
+        {
+            "licenseId": "5DB2827C-E409-4637-9EC3-0DCCEC4699C4",
+            "licenseName": "Admin Licence",
+            "description": ""
+        }
+      ],
       acceptedStates: {
-        worn: false,
+        worn: true,
         damaged: false,
         badly_damaged: false,
-        coefficientWorn: 0.0,
+        coefficientWorn: 0.8,
         coefficientDamaged: 0.0,
         coefficientBadlyDamaged: 0.0
       },

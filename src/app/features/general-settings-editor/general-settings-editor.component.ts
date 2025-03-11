@@ -84,6 +84,12 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
   editLicenseName: string = '';
   editLicenseDescription: string = '';
 
+  /** Temporary license for adding new licenses */
+  private newLicense: License | null = null;
+  
+  /** Flag to track if we're adding a new license vs editing an existing one */
+  private isAddingNewLicense = false;
+
   /**
    * Constructor initializes necessary services
    */
@@ -193,8 +199,11 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
         }
       });
     
-    // Update UI
-    this.licensesDataSource = new MatTableDataSource<License>([]);
+    // Initialize accepted states form with values from new settings
+    this.acceptedStatesService.initFormFromSettings(this.acceptedStatesForm);
+    
+    // Update the license data source to display default licenses
+    this.licensesDataSource = this.licenseService.getLicensesDataSource();
     
     // Show success message
     this.notificationService.success('General settings created successfully');
@@ -211,46 +220,34 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
   }
 
   /**
-   * Add a new license directly to the table
+   * Add a new license for editing (but don't save it yet)
    */
   addLicense(): void {
-    const newLicense = this.licenseService.addLicense();
-    if (!newLicense) return;
+    // Create a new license but don't save it to settings yet
+    this.newLicense = this.licenseService.createLicense();
+    this.isAddingNewLicense = true;
     
-    // Update the data source
-    this.licensesDataSource = this.licenseService.getLicensesDataSource();
-    
-    // Set it as the currently editing license
+    // Update the temporary data for editing
     this.editingLicenseIndex = 0;
     this.editLicenseName = '';
     this.editLicenseDescription = '';
-  }
-
-  /**
-   * Start editing a license
-   * @param license - The license to edit
-   * @param index - The index of the license in the array
-   */
-  startEditLicense(license: License, index: number): void {
-    this.editingLicenseIndex = index;
-    this.editLicenseName = license.licenseName || '';
-    this.editLicenseDescription = license.description || '';
+    
+    // Create a temporary datasource with the new license at the top
+    const currentLicenses = [...this.licensesDataSource.data];
+    currentLicenses.unshift(this.newLicense);
+    this.licensesDataSource = new MatTableDataSource<License>(currentLicenses);
   }
 
   /**
    * Cancel editing a license
    */
   cancelEditLicense(): void {
-    // If we're editing a new license with no name, remove it
-    if (
-      this.editingLicenseIndex === 0 &&
-      this.generalSettings?.licenses &&
-      this.generalSettings.licenses.length > 0 &&
-      !this.generalSettings.licenses[0].licenseName
-    ) {
-      // Delete the empty license
-      this.licenseService.deleteLicense(0);
-      // Update data source
+    if (this.isAddingNewLicense) {
+      // If we're adding a new license, just remove it from the UI
+      this.isAddingNewLicense = false;
+      this.newLicense = null;
+      
+      // Reset the datasource to remove the temporary license
       this.licensesDataSource = this.licenseService.getLicensesDataSource();
     }
     
@@ -271,28 +268,77 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
   saveLicense(): void {
     if (this.editingLicenseIndex === null) return;
     
-    // Validate the license (name is required)
-    const trimmedName = this.editLicenseName.trim();
-    if (!trimmedName) {
-      this.notificationService.error('License name is required');
-      return;
+    // Check if we're adding a new license
+    if (this.isAddingNewLicense && this.newLicense) {
+      // Update the temporary license object
+      this.newLicense.licenseName = this.editLicenseName.trim();
+      this.newLicense.description = this.editLicenseDescription.trim();
+      
+      // Validate the license name
+      if (!this.newLicense.licenseName) {
+        this.notificationService.error('License name is required');
+        return;
+      }
+      
+      // Add the license to the settings
+      if (this.licenseService.addLicenseToSettings(this.newLicense)) {
+        // Reset state
+        this.isAddingNewLicense = false;
+        this.newLicense = null;
+        this.editingLicenseIndex = null;
+        
+        // Update the data source with the actual saved licenses
+        this.licensesDataSource = this.licenseService.getLicensesDataSource();
+        
+        // Refresh the settings object reference
+        this.generalSettings = this.generalSettingsService.getGeneralSettings();
+        
+        this.notificationService.success('License saved successfully');
+      } else {
+        this.notificationService.error('Failed to save license');
+      }
+    } else {
+      // We're editing an existing license, use the service method
+      const result = this.licenseService.validateAndSaveLicense(
+        this.editingLicenseIndex, 
+        this.editLicenseName, 
+        this.editLicenseDescription
+      );
+      
+      if (result.success) {
+        // Update data source
+        this.licensesDataSource = this.licenseService.getLicensesDataSource();
+        
+        // Reset editing state
+        this.editingLicenseIndex = null;
+        
+        // Refresh the settings object reference
+        this.generalSettings = this.generalSettingsService.getGeneralSettings();
+        
+        this.notificationService.success('License saved successfully');
+      } else {
+        this.notificationService.error(result.error || 'Failed to save license');
+      }
+    }
+  }
+
+  /**
+   * Start editing a license
+   * @param license - The license to edit
+   * @param index - The index of the license in the array
+   */
+  startEditLicense(license: License, index: number): void {
+    // If we were adding a new license and now want to edit something else,
+    // discard the new license
+    if (this.isAddingNewLicense) {
+      this.isAddingNewLicense = false;
+      this.newLicense = null;
+      this.licensesDataSource = this.licenseService.getLicensesDataSource();
     }
     
-    // Save the license
-    if (this.licenseService.saveLicense(this.editingLicenseIndex, trimmedName, this.editLicenseDescription)) {
-      // Update data source
-      this.licensesDataSource = this.licenseService.getLicensesDataSource();
-      
-      // Reset editing state
-      this.editingLicenseIndex = null;
-      
-      // Refresh the settings object reference
-      this.generalSettings = this.generalSettingsService.getGeneralSettings();
-      
-      this.notificationService.success('License saved successfully');
-    } else {
-      this.notificationService.error('Failed to save license');
-    }
+    this.editingLicenseIndex = index;
+    this.editLicenseName = license.licenseName || '';
+    this.editLicenseDescription = license.description || '';
   }
 
   /**
@@ -452,6 +498,12 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
    * Cleanup on component destruction
    */
   ngOnDestroy(): void {
+    // Discard any unsaved new license
+    if (this.isAddingNewLicense && this.newLicense) {
+      this.isAddingNewLicense = false;
+      this.newLicense = null;
+    }
+    
     this.destroy$.next();
     this.destroy$.complete();
   }

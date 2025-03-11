@@ -207,6 +207,7 @@
                       class="custom-icon-btn icon-btn-primary"
                       (click)="startEditLicense(license, i)"
                       matTooltip="Edit License"
+                      [disabled]="editingLicenseIndex !== null"
                     >
                       <mat-icon>edit</mat-icon>
                       <div class="icon-btn-ripple"></div>
@@ -216,6 +217,7 @@
                       class="custom-icon-btn icon-btn-warn"
                       (click)="deleteLicense(i)"
                       matTooltip="Delete License"
+                      [disabled]="editingLicenseIndex !== null"
                     >
                       <mat-icon>delete_forever</mat-icon>
                       <div class="icon-btn-ripple"></div>
