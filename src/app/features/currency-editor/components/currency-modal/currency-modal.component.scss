@@ -1,36 +1,36 @@
-// Use global modal styles with specific adaptations for currencies
-.modal-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-height: 80vh;
-    box-sizing: border-box;
-
-    // Header styling using global dialog header variables
-    .modal-header {
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      flex: 0 0 64px;
-      height: 64px;
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid var(--brush-divider);
-      background: var(--brush-dialog-header);
+.currency-modal {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 80vh;
+  box-sizing: border-box;
   
-      h2 {
-        margin: 0;
-        font-size: var(--font-size-xl);
-        color: var(--brush-text-primary);
-        font-weight: var(--font-weight-medium);
-      }
+  // Dialog title - matching other modal components
+  .mdc-dialog__title {
+    background-color: var(--brush-dialog-header);
+    color: var(--brush-text-primary);
+    padding: 16px 24px;
+    margin: 0;
+    border-bottom: 1px solid var(--brush-divider);
+    flex: 0 0 auto; // Don't allow flex to shrink this
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    
+    h2 {
+      margin: 0;
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-medium);
     }
-  
-  .modal-content {
+  }
+
+  // Dialog content
+  .mdc-dialog__content {
     padding: 24px;
-    max-height: 60vh;
-    overflow-y: auto;
+    margin: 0;
+    overflow-y: auto; // Enable vertical scrolling
+    flex: 1 1 auto; // Allow this to grow and shrink as needed
+    min-height: 0; // Required for proper flex child scrolling
     
     // Add currency panel styling
     .add-currency-panel {
@@ -82,7 +82,7 @@
       }
       
       .data-table-container {
-          width: 100%;
+        width: 100%;
         max-height: 330px;
         overflow-y: auto;
         
@@ -93,7 +93,7 @@
           th, td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid var(--brush-divider);
             
             &.class-name-column {
               width: 60%;
@@ -130,14 +130,14 @@
             font-weight: 500;
             font-size: 14px;
             color: var(--brush-text-secondary);
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: var(--brush-surface-secondary);
           }
           
           .data-row {
             transition: background-color 0.2s ease;
             
             &:hover {
-              background-color: rgba(255, 255, 255, 0.03);
+              background-color: var(--brush-hover-overlay);
             }
           }
         }
@@ -150,7 +150,7 @@
         justify-content: center;
         padding: 40px 0;
         text-align: center;
-        background-color: rgba(0, 0, 0, 0.03);
+        background-color: var(--brush-surface-secondary);
         border-radius: 4px;
         
         .empty-icon {
@@ -172,43 +172,43 @@
           margin: 0 0 24px;
           color: var(--brush-text-secondary);
         }
-        
-        .empty-action-button {
-          min-width: 160px;
-        }
       }
     }
   }
-  
-  .modal-actions {
+
+  // Dialog actions - matching other modal components
+  .mdc-dialog__actions {
+    border-top: 1px solid var(--brush-divider);
+    padding: 12px 24px;
     display: flex;
     justify-content: flex-end;
-    padding: 16px 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    margin: 0;
-    
-    .cancel-button {
-      margin-right: 8px;
-    }
+    gap: 8px;
+    background-color: var(--brush-dialog-header);
+    flex: 0 0 auto; // Don't allow flex to shrink this
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
   }
 }
 
 // Responsive styles
 @media (max-width: 600px) {
-  .modal-content {
-    .add-currency-panel {
-      .form-row {
-        flex-direction: column;
-        
-        .class-name-field,
-        .value-field {
-          width: 100%;
-          flex: auto;
-        }
-        
-        .add-button {
-          width: 100%;
-          margin-top: 0;
+  .currency-modal {
+    .mdc-dialog__content {
+      .add-currency-panel {
+        .form-row {
+          flex-direction: column;
+          
+          .class-name-field,
+          .value-field {
+            width: 100%;
+            flex: auto;
+          }
+          
+          .add-button {
+            width: 100%;
+            margin-top: 0;
+          }
         }
       }
     }
