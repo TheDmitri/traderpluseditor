@@ -185,15 +185,6 @@ export class StorageService {
   }
 
   /**
-   * Delete general settings from storage
-   * This method is deprecated, use removeGeneralSettings instead
-   * @deprecated
-   */
-  deleteGeneralSettings(): void {
-    this.removeGeneralSettings();
-  }
-
-  /**
    * Removes general settings from storage
    */
   removeGeneralSettings(): void {

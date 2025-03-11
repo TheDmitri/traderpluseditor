@@ -798,7 +798,7 @@ export class FileManagementComponent implements OnInit {
           break;
         
         case 'settings':
-          this.storageService.deleteGeneralSettings();
+          this.storageService.removeGeneralSettings();
           this.hasSettings = false;
           this.logActivity('settings', 'General settings deleted');
           this.notificationService.success('General settings have been deleted');
