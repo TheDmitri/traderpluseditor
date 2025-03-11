@@ -180,13 +180,24 @@ export class StorageService {
    * Delete currency settings from storage
    */
   deleteCurrencySettings(): void {
-    localStorage.removeItem('traderplus_currency_settings');
+    localStorage.removeItem(StorageKey.CURRENCY_SETTINGS);
+    this.currencySettings.set(null);
   }
 
   /**
    * Delete general settings from storage
+   * This method is deprecated, use removeGeneralSettings instead
+   * @deprecated
    */
   deleteGeneralSettings(): void {
-    localStorage.removeItem('traderplus_general_settings');
+    this.removeGeneralSettings();
+  }
+
+  /**
+   * Removes general settings from storage
+   */
+  removeGeneralSettings(): void {
+    localStorage.removeItem(StorageKey.GENERAL_SETTINGS);
+    this.generalSettings.set(null);
   }
 }

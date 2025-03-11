@@ -22,6 +22,7 @@
       </div>
       <div class="header-right">
         <button
+          *ngIf="hasSettings"
           class="custom-stroked-button color-warn with-icon"
           [matMenuTriggerFor]="dangerMenu"
           matTooltip="Dangerous operations"
@@ -33,6 +34,7 @@
         <mat-menu #dangerMenu="matMenu">
           <button
             mat-menu-item
+            (click)="deleteAllSettings()"
             matTooltip="Remove all General Settings permanently"
             matTooltipPosition="left"
           >
@@ -44,7 +46,32 @@
     </div>
   </header>
 
-  <!-- Main Content Area -->
+  <!-- No Settings State - Informative message and call to action -->
+  <div class="empty-state-container" *ngIf="!hasSettings">
+    <mat-icon class="empty-state-icon">settings</mat-icon>
+    <h2 class="empty-state-title">No General Settings Found</h2>
+    <p class="empty-state-message">
+      To get started, you can either import an existing TraderPlus general settings file or create a new one.
+    </p>
+    <div class="empty-state-actions">
+      <button
+        class="custom-stroked-button color-primary with-icon"
+        (click)="createGeneralSettings()"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Create General Settings
+      </button>
+      <button
+        class="custom-stroked-button color-secondary with-icon"
+        routerLink="/file-management"
+      >
+        <mat-icon>upload_file</mat-icon>
+        Import From File
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Area - Only shown when settings exist -->
   <div class="main-content-area" *ngIf="hasSettings">
     <!-- Two-column grid layout for settings sections -->
     <div class="settings-grid">

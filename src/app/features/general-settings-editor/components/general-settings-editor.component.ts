@@ -120,14 +120,19 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
       });
     }
 
-    // Monitor form changes to auto-save
-    this.acceptedStatesForm.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        if (this.acceptedStatesForm.valid) {
-          this.saveAcceptedStates();
-        }
-      });
+    // Only subscribe to form changes if settings exist
+    if (this.hasSettings) {
+      this.acceptedStatesForm.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          if (this.acceptedStatesForm.valid) {
+            this.saveAcceptedStates();
+          }
+        });
+    } else {
+      // Disable the form if no settings exist
+      this.acceptedStatesForm.disable();
+    }
   }
 
   /**
@@ -136,32 +141,71 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
   loadSettings(): void {
     this.generalSettings = this.storageService.generalSettings();
     
-    if (!this.generalSettings) {
-      // Create default settings if none exist
-      this.generalSettings = {
-        version: '2.0.0',
-        serverID: this.generateGUID(),
-        licenses: [],
-        acceptedStates: {
-          worn: false,
-          damaged: false,
-          badly_damaged: false,
-          coefficientWorn: 0.0,
-          coefficientDamaged: 0.0,
-          coefficientBadlyDamaged: 0.0
-        },
-        traders: [],
-        traderObjects: []
-      };
-      this.storageService.saveGeneralSettings(this.generalSettings);
-    }
+    // Check if settings exist or have been imported
+    this.hasSettings = !!this.generalSettings;
     
+    // Update the licenses data source if settings exist
+    if (this.hasSettings && this.generalSettings!.licenses) {
+      this.licensesDataSource.data = this.generalSettings!.licenses;
+    }
+    else {
+      this.licensesDataSource.data = [];
+    }  
+  }
+   
+
+  /**
+   * Create new general settings with default values
+   */
+  createGeneralSettings(): void {
+    // Create default settings
+    this.generalSettings = {
+      version: '2.0.0',
+      serverID: this.generateGUID(),
+      licenses: [],
+      acceptedStates: {
+        worn: false,
+        damaged: false,
+        badly_damaged: false,
+        coefficientWorn: 0.0,
+        coefficientDamaged: 0.0,
+        coefficientBadlyDamaged: 0.0
+      },
+      traders: [],
+      traderObjects: []
+    };
+    
+    // Save the new settings
+    this.storageService.saveGeneralSettings(this.generalSettings);
+    
+    // Update state
     this.hasSettings = true;
     
-    // Update the licenses data source
-    if (this.generalSettings.licenses) {
-      this.licensesDataSource.data = this.generalSettings.licenses;
-    }
+    // Reset and enable form
+    this.acceptedStatesForm.reset({
+      worn: false,
+      damaged: false,
+      badly_damaged: false,
+      coefficientWorn: 0.0,
+      coefficientDamaged: 0.0,
+      coefficientBadlyDamaged: 0.0
+    });
+    this.acceptedStatesForm.enable();
+    
+    // Subscribe to form changes
+    this.acceptedStatesForm.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.acceptedStatesForm.valid) {
+          this.saveAcceptedStates();
+        }
+      });
+    
+    // Update UI
+    this.licensesDataSource.data = [];
+    
+    // Show success message
+    this.notificationService.success('General settings created successfully');
   }
 
   /**
@@ -312,6 +356,39 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
         this.licensesDataSource.data = [];
         
         this.notificationService.success('All licenses deleted successfully');
+      }
+    });
+  }
+
+  /**
+   * Delete all general settings after confirmation
+   */
+  deleteAllSettings(): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete All Settings',
+        message: 'Are you sure you want to delete all general settings? This action cannot be undone.',
+        confirmText: 'Delete All',
+        cancelText: 'Cancel',
+        type: 'danger'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Clear all settings
+        this.storageService.removeGeneralSettings();
+        
+        // Reset state
+        this.generalSettings = null;
+        this.hasSettings = false;
+        this.licensesDataSource.data = [];
+        
+        // Disable form
+        this.acceptedStatesForm.disable();
+        
+        // Notification
+        this.notificationService.success('All general settings deleted successfully');
       }
     });
   }
