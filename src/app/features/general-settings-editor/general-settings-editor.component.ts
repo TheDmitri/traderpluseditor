@@ -304,7 +304,7 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Delete License',
-        message: 'Are you sure you want to delete this license? This action cannot be undone.',
+        message: 'Are you sure you want to delete this license? \n\nThis action cannot be undone.',
         confirmText: 'Delete',
         cancelText: 'Cancel',
         type: 'danger'
@@ -335,7 +335,7 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Delete All Licenses',
-        message: 'Are you sure you want to delete all licenses? This action cannot be undone.',
+        message: 'Are you sure you want to delete all licenses? \n\nThis action cannot be undone.',
         confirmText: 'Delete All',
         cancelText: 'Cancel',
         type: 'danger'
@@ -366,7 +366,7 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Delete All Settings',
-        message: 'Are you sure you want to delete all general settings? This action cannot be undone.',
+        message: 'Are you sure you want to delete all general settings? \n\nThis action cannot be undone.',
         confirmText: 'Delete All',
         cancelText: 'Cancel',
         type: 'danger'
