@@ -1,0 +1,309 @@
+<div class="general-settings-container">
+  <!-- Page header with standardized structure -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h1 class="page-title">General Settings</h1>
+        <p class="subtitle">
+          Configure general settings for the TraderPlus system
+        </p>
+
+        <div class="action-buttons">
+          <!-- Secondary action: Import from file -->
+          <button
+            class="custom-stroked-button color-secondary with-icon"
+            routerLink="/file-management"
+            matTooltip="Import general settings from file"
+          >
+            <mat-icon>upload_file</mat-icon>
+            Import General Settings
+          </button>
+        </div>
+      </div>
+      <div class="header-right">
+        <button
+          class="custom-stroked-button color-warn with-icon"
+          [matMenuTriggerFor]="dangerMenu"
+          matTooltip="Dangerous operations"
+        >
+          <mat-icon>warning</mat-icon>
+          Danger Zone
+        </button>
+        <!-- Dropdown menu for destructive actions -->
+        <mat-menu #dangerMenu="matMenu">
+          <button
+            mat-menu-item
+            matTooltip="Remove all General Settings permanently"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon-error">delete_forever</mat-icon>
+            <span>Remove All Settings</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <div class="main-content-area" *ngIf="hasSettings">
+    <!-- Two-column grid layout for settings sections -->
+    <div class="settings-grid">
+      <!-- Licenses Section -->
+      <div class="data-card licenses-section">
+        <div class="panel-header">
+          <div class="panel-title-area">
+            <h2 class="section-title">Licenses</h2>
+            <p class="panel-subtitle">Manage trader license requirements</p>
+          </div>
+
+          <div class="panel-actions">
+            <button
+              class="custom-stroked-button color-primary with-icon"
+              (click)="addLicense()"
+              matTooltip="Add License"
+            >
+              <mat-icon>add</mat-icon>
+              <span>Add License</span>
+            </button>
+
+            <button
+              class="custom-stroked-button color-warn with-icon"
+              (click)="deleteAllLicenses()"
+              [disabled]="licensesDataSource.data.length === 0"
+              matTooltip="Delete All Licenses"
+            >
+              <mat-icon>delete_forever</mat-icon>
+              <span>Delete All</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <!-- Empty state consistent with other editors -->
+          <div
+            class="no-data-container"
+            *ngIf="licensesDataSource.data.length === 0"
+          >
+            <mat-icon class="no-data-icon">assignment</mat-icon>
+            <p class="no-data-text">
+              No licenses found. Add a license to get started.
+            </p>
+          </div>
+
+          <!-- Licenses Table with styling consistent with other tables -->
+          <div
+            class="table-container"
+            *ngIf="licensesDataSource.data.length > 0"
+          >
+            <table
+              mat-table
+              [dataSource]="licensesDataSource"
+              class="data-table with-border hoverable-table consistent-rows"
+            >
+              <!-- License Name Column -->
+              <ng-container matColumnDef="licenseName">
+                <th mat-header-cell *matHeaderCellDef>License Name</th>
+                <td mat-cell *matCellDef="let license">{{ license.name }}</td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef>Description</th>
+                <td mat-cell *matCellDef="let license">
+                  {{ license.description || "No description" }}
+                </td>
+              </ng-container>
+
+              <!-- Actions Column -->
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef class="actions-header">
+                  Actions
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let license; let i = index"
+                  class="actions-cell"
+                >
+                  <div class="action-buttons">
+                    <!-- Edit Button with consistent custom styling -->
+                    <button
+                      class="custom-icon-btn icon-btn-primary"
+                      (click)="editLicense(license, i)"
+                      matTooltip="Edit License"
+                    >
+                      <mat-icon>edit</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+
+                    <!-- Delete Button with consistent custom styling -->
+                    <button
+                      class="custom-icon-btn icon-btn-warn"
+                      (click)="deleteLicense(i)"
+                      matTooltip="Delete License"
+                    >
+                      <mat-icon>delete_forever</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+                  </div>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accepted States Section -->
+      <div class="data-card states-section">
+        <div class="panel-header">
+          <div class="panel-title-area">
+            <h2 class="section-title">Accepted Item States</h2>
+            <p class="panel-subtitle">
+              Configure which item states traders will accept and their price
+              coefficients
+            </p>
+          </div>
+        </div>
+
+        <div class="panel-body" *ngIf="acceptedStatesForm">
+          <form [formGroup]="acceptedStatesForm" class="form-container">
+            <div class="states-grid">
+              <!-- Worn State Row -->
+              <div class="state-row">
+                <div class="state-toggle">
+                  <mat-checkbox
+                    color="primary"
+                    formControlName="worn"
+                    class="state-checkbox"
+                  >
+                    <span class="state-label">
+                      <span class="state-indicator worn"></span>
+                      Accept Worn
+                    </span>
+                  </mat-checkbox>
+                </div>
+                <div
+                  class="state-coefficient"
+                  [class.active]="acceptedStatesForm.get('worn')?.value"
+                >
+                  <div
+                    *ngIf="!acceptedStatesForm.get('worn')?.value"
+                    class="inactive-state-message"
+                  >
+                    <mat-icon class="hint-icon">info_outline</mat-icon>
+                    <span>Activate state to set price coefficient</span>
+                  </div>
+                  <mat-form-field
+                    appearance="outline"
+                    *ngIf="acceptedStatesForm.get('worn')?.value"
+                  >
+                    <mat-label>Price Coefficient</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="1"
+                      formControlName="coefficientWorn"
+                    />
+                    <mat-hint>Value between 0 and 1</mat-hint>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <!-- Damaged State Row -->
+              <div class="state-row">
+                <div class="state-toggle">
+                  <mat-checkbox
+                    color="primary"
+                    formControlName="damaged"
+                    class="state-checkbox"
+                  >
+                    <span class="state-label">
+                      <span class="state-indicator damaged"></span>
+                      Accept Damaged
+                    </span>
+                  </mat-checkbox>
+                </div>
+                <div
+                  class="state-coefficient"
+                  [class.active]="acceptedStatesForm.get('damaged')?.value"
+                >
+                  <div
+                    *ngIf="!acceptedStatesForm.get('damaged')?.value"
+                    class="inactive-state-message"
+                  >
+                    <mat-icon class="hint-icon">info_outline</mat-icon>
+                    <span>Activate state to set price coefficient</span>
+                  </div>
+                  <mat-form-field
+                    appearance="outline"
+                    *ngIf="acceptedStatesForm.get('damaged')?.value"
+                  >
+                    <mat-label>Price Coefficient</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="1"
+                      formControlName="coefficientDamaged"
+                    />
+                    <mat-hint>Value between 0 and 1</mat-hint>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <!-- Badly Damaged State Row -->
+              <div class="state-row">
+                <div class="state-toggle">
+                  <mat-checkbox
+                    color="primary"
+                    formControlName="badly_damaged"
+                    class="state-checkbox"
+                  >
+                    <span class="state-label">
+                      <span class="state-indicator badly-damaged"></span>
+                      Accept Badly Damaged
+                    </span>
+                  </mat-checkbox>
+                </div>
+                <div
+                  class="state-coefficient"
+                  [class.active]="
+                    acceptedStatesForm.get('badly_damaged')?.value
+                  "
+                >
+                  <div
+                    *ngIf="!acceptedStatesForm.get('badly_damaged')?.value"
+                    class="inactive-state-message"
+                  >
+                    <mat-icon class="hint-icon">info_outline</mat-icon>
+                    <span>Activate state to set price coefficient</span>
+                  </div>
+                  <mat-form-field
+                    appearance="outline"
+                    *ngIf="acceptedStatesForm.get('badly_damaged')?.value"
+                  >
+                    <mat-label>Price Coefficient</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="1"
+                      formControlName="coefficientBadlyDamaged"
+                    />
+                    <mat-hint>Value between 0 and 1</mat-hint>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

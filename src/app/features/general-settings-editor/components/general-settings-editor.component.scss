@@ -1,0 +1,266 @@
+/* General Settings Container Layout
+========================================================================== */
+.general-settings-container {
+  padding: 32px;
+  max-width: 1800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+/* Main Content Area
+========================================================================== */
+.main-content-area {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Two-column Grid Layout
+========================================================================== */
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+  
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Panel Header Layout
+========================================================================== */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  
+  .panel-title-area {
+    flex: 1;
+    
+    .section-title {
+      margin: 0 0 8px 0;
+    }
+    
+    .panel-subtitle {
+      margin: 0;
+      color: var(--brush-text-secondary);
+    }
+  }
+  
+  .panel-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    
+    @media (max-width: 480px) {
+      flex-direction: column;
+      width: 100%;
+      
+      button {
+        width: 100%;
+        margin-left: 0 !important;
+        margin-top: 8px;
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    
+    .panel-actions {
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+}
+
+/* States Grid Styling
+========================================================================== */
+.states-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  
+  .state-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2rem;
+    border-radius: 8px;
+    background-color: var(--brush-hover-overlay);
+    transition: background-color var(--transition-quick) var(--transition-timing);
+  
+    &:hover {
+      background-color: var(--brush-active-overlay);
+    }
+  
+    .state-toggle {
+      flex: 1;
+      min-width: 180px;
+      display: flex;
+      align-items: center;
+      
+      .state-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      
+      .state-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 4px;
+        transition: opacity var(--transition-normal) var(--transition-timing);
+        opacity: 0.5;
+        
+        &.worn {
+          background-color: var(--brush-text-success); // Green
+        }
+        
+        &.damaged {
+          background-color: var(--brush-text-warning); // Yellow
+        }
+        
+        &.badly-damaged {
+          background-color: var(--brush-text-error); // Red
+        }
+      }
+      
+      // Make indicator more visible when state is active
+      mat-checkbox.mat-checkbox-checked {
+        .state-indicator {
+          opacity: 1;
+          box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+      }
+    }
+  
+    .state-coefficient {
+      flex: 2;
+      max-width: 300px;
+      margin-top: 16px;
+      margin-right: 16px;
+      margin-left: 16px;
+      margin-bottom: -8px;
+      display: flex;
+      align-items: center; // Fix vertical alignment
+      height: 80px; // Fixed height to prevent layout shifts during transition
+      transition: all var(--transition-normal) var(--transition-timing);
+      
+      &.active {
+        opacity: 1;
+      }
+      
+      // Styling for the inactive state message
+      .inactive-state-message {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--brush-text-secondary);
+        font-size: var(--font-size-sm);
+        font-style: italic;
+        opacity: 0.7;
+        padding-bottom: 8px;
+        border-radius: 4px;
+        background-color: rgba(255, 255, 255, 0.03);
+        width: 100%;
+        
+        .hint-icon {
+          font-size: 18px;
+          height: 18px;
+          width: 18px;
+          color: var(--brush-text-info);
+        }
+      }
+      
+      mat-form-field {
+        width: 100%;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    }
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      
+      .state-coefficient {
+        width: 100%;
+        max-width: none;
+        height: auto; // Allow height to be dynamic on mobile
+        
+        .inactive-state-message {
+        padding-bottom: 8px;
+        margin-top: -24px;
+        }
+      }
+    }
+  }
+}
+
+/* Empty State Styling
+========================================================================== */
+.no-data-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 24px;
+  text-align: center;
+  color: var(--brush-text-secondary);
+  
+  .no-data-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-bottom: 16px;
+  }
+  
+  .no-data-text {
+    font-size: var(--font-size-base);
+    margin: 0;
+  }
+}
+
+/* Table & Action Button Styling
+========================================================================== */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    
+    button {
+      flex: 1;
+    }
+  }
+}
+
+.actions-cell {
+  width: 120px;
+}
