@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit, QueryList, ViewChildren, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -82,6 +82,9 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   /** Reference to the sort directive for handling column sorting */
   @ViewChild(MatSort) sort!: MatSort;
 
+  /** Reference to the current active input field for editing currency names */
+  @ViewChildren('currencyNameInput') currencyNameInputs!: QueryList<ElementRef>;
+
   /** Flag indicating whether any currency types exist in the system */
   hasCurrencyTypes = false;
   
@@ -99,6 +102,12 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
 
   /** Flag indicating whether a new currency type is being created */
   isNewMode: boolean = false;
+
+  /** Flag indicating if the current edit has a name error */
+  hasNameError = false;
+
+  /** Error message for name validation */
+  nameErrorMessage = '';
 
   /**
    * Initializes the component with required services for data management,
@@ -314,6 +323,11 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
     // Always set hasCurrencyTypes to true when adding a new currency
     // This ensures we see the table with the edit form rather than the empty state
     this.hasCurrencyTypes = true;
+    
+    // Focus on the input field after Angular has updated the view
+    setTimeout(() => {
+      this.focusOnInput();
+    });
   }
 
   /**
@@ -334,6 +348,90 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   /**
+   * Checks if a currency type name already exists in the current dataset.
+   * Used to prevent duplicate currency type names.
+   * 
+   * @param name - The name to check
+   * @param excludeCurrencyType - Optional currency type to exclude from the check (for edit mode)
+   * @returns True if the name is already in use, false otherwise
+   */
+  isCurrencyTypeNameDuplicate(name: string, excludeCurrencyType?: CurrencyType): boolean {
+    if (!name || !this.currencySettings) return false;
+    
+    const normalizedName = name.trim().toLowerCase();
+    return this.currencySettings.currencyTypes.some(ct => 
+      ct !== excludeCurrencyType && 
+      ct.currencyName.toLowerCase() === normalizedName
+    );
+  }
+
+  /**
+   * Checks if the current editable name is valid (not empty, no spaces, not a duplicate)
+   * Used to enable/disable the save button
+   * 
+   * @returns Boolean indicating if the name is valid and can be saved
+   */
+  isValidName(): boolean {
+    if (!this.editableName || this.editableName.trim() === '') {
+      this.nameErrorMessage = 'Currency name cannot be empty';
+      this.hasNameError = true;
+      return false;
+    }
+    
+    if (this.editableName.includes(' ')) {
+      this.nameErrorMessage = 'Currency name cannot contain spaces';
+      this.hasNameError = true;
+      return false;
+    }
+    
+    if (this.isCurrencyTypeNameDuplicate(this.editableName, this.isNewMode ? undefined : this.currentlyEditing)) {
+      this.nameErrorMessage = `Currency type "${this.editableName}" already exists`;
+      this.hasNameError = true;
+      return false;
+    }
+    
+    this.hasNameError = false;
+    this.nameErrorMessage = '';
+    return true;
+  }
+
+  /**
+   * Validates currency type name before saving.
+   * Shows appropriate error messages for empty or duplicate names.
+   * 
+   * @param name - The name to validate
+   * @param currencyType - The currency type being edited (null for new currency types)
+   * @returns True if the name is valid, false otherwise
+   */
+  validateCurrencyName(name: string, currencyType?: CurrencyType): boolean {
+    this.nameErrorMessage = '';
+    this.hasNameError = false;
+
+    if (!name || name.trim() === '') {
+      this.nameErrorMessage = 'Currency name cannot be empty';
+      this.hasNameError = true;
+      this.notificationService.error(this.nameErrorMessage);
+      return false;
+    }
+    
+    if (name.includes(' ')) {
+      this.nameErrorMessage = 'Currency name cannot contain spaces';
+      this.hasNameError = true;
+      this.notificationService.error(this.nameErrorMessage);
+      return false;
+    }
+
+    if (this.isCurrencyTypeNameDuplicate(name, currencyType)) {
+      this.nameErrorMessage = `Currency type "${name}" already exists`;
+      this.hasNameError = true;
+      this.notificationService.error(this.nameErrorMessage);
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
    * Persists changes to a currency type's name.
    * Handles both new currency types and existing ones differently.
    * Validates input to prevent empty names and provides user feedback.
@@ -341,33 +439,35 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
    * @param currencyType - The currency type being saved
    */
   saveCurrencyEdit(currencyType: CurrencyType): void {
-    if (this.editableName && this.editableName.trim()) {
-      currencyType.currencyName = this.editableName.trim();
-      
-      if (this.isNewMode) {
-        // For new currency types, make sure they're added to the settings
-        if (this.currencySettings) {
-          this.currencySettings.currencyTypes = this.dataSource.data;
-          this.storageService.saveCurrencySettings(this.currencySettings);
-          // Update hasCurrencyTypes flag when adding new currency
-          this.hasCurrencyTypes = true;
-        }
-        this.notificationService.success('New currency type created successfully');
-        this.isNewMode = false;
-      } else {
-        // For existing currency types, update them in settings
-        if (this.currencySettings) {
-          this.storageService.saveCurrencySettings(this.currencySettings);
-          // Ensure hasCurrencyTypes flag is updated
-          this.hasCurrencyTypes = this.currencySettings.currencyTypes.length > 0;
-        }
-        this.notificationService.success('Currency name updated successfully');
-      }
-      
-      this.resetEditState();
-      // Refresh the table
-      this.dataSource.data = [...this.dataSource.data];
+    if (!this.isValidName()) {
+      return;
     }
+
+    currencyType.currencyName = this.editableName;
+    
+    if (this.isNewMode) {
+      // For new currency types, make sure they're added to the settings
+      if (this.currencySettings) {
+        this.currencySettings.currencyTypes = this.dataSource.data;
+        this.storageService.saveCurrencySettings(this.currencySettings);
+        // Update hasCurrencyTypes flag when adding new currency
+        this.hasCurrencyTypes = true;
+      }
+      this.notificationService.success('New currency type created successfully');
+      this.isNewMode = false;
+    } else {
+      // For existing currency types, update them in settings
+      if (this.currencySettings) {
+        this.storageService.saveCurrencySettings(this.currencySettings);
+        // Ensure hasCurrencyTypes flag is updated
+        this.hasCurrencyTypes = this.currencySettings.currencyTypes.length > 0;
+      }
+      this.notificationService.success('Currency name updated successfully');
+    }
+    
+    this.resetEditState();
+    // Refresh the table
+    this.dataSource.data = [...this.dataSource.data];
   }
 
   /**
@@ -412,6 +512,8 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
     this.currentlyEditing = null;
     this.editableName = '';
     this.isNewMode = false;
+    this.hasNameError = false;
+    this.nameErrorMessage = '';
   }
 
   /**
@@ -529,6 +631,21 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
     this.currentlyEditing = currencyType;
     this.editableName = currencyType.currencyName;
     this.isNewMode = false;
+    
+    // Focus on the input field after Angular has updated the view
+    setTimeout(() => {
+      this.focusOnInput();
+    });
+  }
+
+  /**
+   * Sets focus on the currency name input field
+   * This improves UX by allowing immediate typing after adding or editing
+   */
+  private focusOnInput(): void {
+    if (this.currencyNameInputs && this.currencyNameInputs.first) {
+      this.currencyNameInputs.first.nativeElement.focus();
+    }
   }
 
   /**

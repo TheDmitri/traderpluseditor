@@ -121,15 +121,28 @@
               <!-- Edit mode - Shows an input field with save/cancel buttons -->
               <div *ngIf="isEditing(currencyType) || isNewCurrencyType(currencyType)" class="edit-mode">
                 <mat-form-field appearance="outline" class="inline-editor">
-                  <input matInput [(ngModel)]="editableName" placeholder="Enter new currency_className">
+                  <input 
+                    matInput 
+                    [(ngModel)]="editableName" 
+                    placeholder="Enter new currency_className"
+                    [ngClass]="{'error-input': hasNameError}"
+                    #currencyNameInput
+                    (keydown.enter)="$event.preventDefault(); isValidName() && saveCurrencyEdit(currencyType)"
+                  >
+                  <mat-error *ngIf="hasNameError">{{nameErrorMessage}}</mat-error>
                 </mat-form-field>
                 <div class="edit-actions">
-                  <button mat-icon-button color="primary" (click)="saveCurrencyEdit(currencyType)" 
-                    matTooltip="Save changes">
+                  <button class="custom-icon-btn icon-btn-primary"
+                    (click)="saveCurrencyEdit(currencyType)" 
+                    matTooltip="Save changes"
+                    [disabled]="!isValidName()"
+                  >
                     <mat-icon>check</mat-icon>
                   </button>
-                  <button mat-icon-button color="warn" (click)="cancelEdit()" 
-                    matTooltip="Cancel">
+                  <button class="custom-icon-btn icon-btn-warn"
+                    (click)="cancelEdit()" 
+                    matTooltip="Cancel"
+                  >
                     <mat-icon>close</mat-icon>
                   </button>
                 </div>
