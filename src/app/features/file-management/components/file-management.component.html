@@ -33,7 +33,7 @@
   <div class="main-content-area">
     <div class="content-grid">
       <!-- Left Column -->
-      <section class="content-panel upload-section">
+      <div class="data-card upload-section">
         <div class="panel-header">
           <h2 class="section-title">Import Configurations</h2>
           <p class="panel-subtitle">Drag & drop files to import</p>
@@ -41,7 +41,7 @@
         <div class="panel-body">
           <!-- Custom File Upload Area -->
           <div
-            class="custom-file-upload drag-drop-zone"
+            class="data-card custom-file-upload drag-drop-zone"
             [class.drag-over]="isDragging"
             [class.uploading]="isUploading"
             (dragover)="onDragOver($event)"
@@ -91,10 +91,10 @@
             ></mat-progress-bar>
           </div>
         </div>
-      </section>
+      </div>
 
       <!-- Right Column - Status & Export -->
-      <section class="content-panel export-section">
+      <div class="data-card export-section">
         <div class="panel-header">
           <h2 class="section-title">Export Configurations</h2>
           <p class="panel-subtitle">
@@ -278,11 +278,11 @@
             </div>
           </div>
         </div>
-      </section>
+      </div>
     </div>
 
     <!-- Activity Log -->
-    <section class="content-panel activity-section">
+    <div class="data-card activity-section">
       <div class="panel-header">
         <h2 class="section-title">Recent Activity</h2>
         <p class="panel-subtitle">Tracking import and export operations</p>
@@ -310,6 +310,6 @@
           </div>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 </div>
