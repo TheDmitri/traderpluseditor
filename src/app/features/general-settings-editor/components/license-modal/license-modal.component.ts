@@ -21,37 +21,8 @@ import { License } from '../../../../core/models/general-settings.model';
     MatInputModule,
     MatButtonModule
   ],
-  template: `
-    <h2 mat-dialog-title>{{ isEditMode ? 'Edit' : 'Add' }} License</h2>
-    <div mat-dialog-content>
-      <form [formGroup]="licenseForm">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>License Name</mat-label>
-          <input matInput formControlName="name" placeholder="Enter license name">
-          <mat-error *ngIf="licenseForm.get('name')?.hasError('required')">
-            License name is required
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Description</mat-label>
-          <textarea matInput formControlName="description" placeholder="Enter license description" rows="3"></textarea>
-        </mat-form-field>
-      </form>
-    </div>
-    <div mat-dialog-actions align="end">
-      <button mat-button (click)="onCancel()">Cancel</button>
-      <button mat-raised-button color="primary" [disabled]="licenseForm.invalid" (click)="onSave()">
-        {{ isEditMode ? 'Update' : 'Add' }}
-      </button>
-    </div>
-  `,
-  styles: [`
-    .full-width {
-      width: 100%;
-      margin-bottom: 1rem;
-    }
-  `]
+  templateUrl: './license-modal.component.html',
+  styleUrls: ['./license-modal.component.scss']
 })
 export class LicenseModalComponent implements OnInit {
   /** Form group for license data */
