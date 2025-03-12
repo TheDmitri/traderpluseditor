@@ -29,6 +29,13 @@
     font-weight: var(--font-weight-medium) !important;
     margin: 0 !important;
     border-bottom: 1px solid var(--brush-divider);
+    display: flex !important;
+    align-items: center !important;
+    padding-bottom: 12px !important;
+
+    .dialog-icon {
+      margin-right: 16px;
+    }
   }
 
   // Dialog content - Main content uses 60% color (text on neutral), details use 30% (secondary)
@@ -63,6 +70,11 @@
     display: flex;
     justify-content: flex-end;
     gap: 8px;
+    background-color: var(--brush-dialog-header);
+    flex: 0 0 auto; // Don't allow flex to shrink this
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
     
     // Cancel button should be less prominent
     .mat-mdc-button:not(.mat-primary):not(.mat-accent):not(.mat-warn) {

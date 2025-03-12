@@ -5,50 +5,6 @@
   max-height: 80vh;
   min-width: 40vw;
   box-sizing: border-box;
-  
-  // Dialog title - matching other modal components
-  .mdc-dialog__title {
-    background-color: var(--brush-dialog-header);
-    color: var(--brush-text-primary);
-    padding: 16px 24px;
-    margin: 0;
-    border-bottom: 1px solid var(--brush-divider);
-    flex: 0 0 auto; // Don't allow flex to shrink this
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    
-    h2 {
-      margin: 0;
-      font-size: var(--font-size-lg);
-      font-weight: var(--font-weight-medium);
-    }
-  }
-
-  // Dialog filter section
-  .dialog-filter-section {
-    flex: 0 0 auto; // Don't allow flex to shrink this
-
-    .dialog-primary-text {
-      margin-top: 0;
-      margin-bottom: 16px;
-      color: var(--brush-text-primary);
-    }
-
-    mat-form-field {
-      width: 100%;
-      margin-bottom: 8px;
-    }
-  }
-
-  // Dialog content
-  .mdc-dialog__content {
-    padding: 0 24px 20px;
-    margin: 0;
-    overflow-y: auto; // Enable vertical scrolling
-    flex: 1 1 auto; // Allow this to grow and shrink as needed
-    min-height: 0; // Required for proper flex child scrolling
-  }
 
   .lists-container {
     display: flex;
@@ -63,13 +19,6 @@
       display: flex;
       flex-direction: column;
       min-width: 40%; // Set minimum width
-
-      h3 {
-        margin: 0 0 12px 0;
-        font-size: var(--font-size-md);
-        font-weight: var(--font-weight-medium);
-        color: var(--brush-text-primary);
-      }
 
       // Container for the scrollable list
       .list-container {
@@ -132,8 +81,8 @@
       }
     }
 
-    // Action buttons between lists
-    .action-buttons {
+    // Move buttons between lists
+    .move-buttons {
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -141,19 +90,5 @@
       padding: 0 8px;
       flex: 0 0 auto; // Prevent this from growing or shrinking
     }
-  }
-
-  // Dialog actions - matching other modal components
-  .mdc-dialog__actions {
-    border-top: 1px solid var(--brush-divider);
-    padding: 12px 24px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    background-color: var(--brush-dialog-header);
-    flex: 0 0 auto; // Don't allow flex to shrink this
-    position: sticky;
-    bottom: 0;
-    z-index: 1;
   }
 }
