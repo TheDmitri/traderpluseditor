@@ -18,15 +18,23 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
-import { Category, Product } from '../../../../core/models';
+import { Category, Product, License } from '../../../../core/models';
 import { StorageService } from '../../../../core/services/storage.service';
+import { GeneralSettingsService } from '../../../../core/services/general-settings.service';
 import { ProductListComponent } from '../../../../shared/components/product-list/product-list.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ProductModalComponent } from '../../../../shared/components/product-modal/product-modal.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { AssignProductsDialogComponent } from '../../../../shared/components/assign-products-dialog/assign-products-dialog.component';
+
+// Interface for tracking license display status
+interface DisplayLicense extends License {
+  isInGeneralSettings: boolean; // Whether this license exists in general settings
+}
 
 @Component({
   selector: 'app-category-modal',
@@ -43,6 +51,8 @@ import { AssignProductsDialogComponent } from '../../../../shared/components/ass
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
+    MatCheckboxModule,
+    MatTooltipModule,
     ProductListComponent,
   ],
   templateUrl: './category-modal.component.html',
@@ -53,9 +63,11 @@ export class CategoryModalComponent implements OnInit {
   categoryProducts: Product[] = [];
   isEditMode: boolean;
   
-  // Properties for license management
-  currentLicense: string = '';
-  licenses: string[] = [];
+  // Available licenses from all sources (general settings + category)
+  displayLicenses: DisplayLicense[] = [];
+  
+  // Selected license IDs for the category
+  selectedLicenseIds: string[] = [];
   
   // Property to store product IDs for new categories
   selectedProductIds: string[] = [];
@@ -64,6 +76,7 @@ export class CategoryModalComponent implements OnInit {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CategoryModalComponent>,
     private storageService: StorageService,
+    private generalSettingsService: GeneralSettingsService,
     private dialog: MatDialog,
     private notificationService: NotificationService,
     @Inject(MAT_DIALOG_DATA) public data: { category?: Category }
@@ -81,8 +94,8 @@ export class CategoryModalComponent implements OnInit {
     // Initialize selected product IDs if we're editing
     if (this.isEditMode && this.data.category) {
       this.selectedProductIds = [...this.data.category.productIds];
-      // Initialize licenses array if editing
-      this.licenses = [...this.data.category.licensesRequired];
+      // Initialize selected license IDs if editing
+      this.selectedLicenseIds = [...this.data.category.licensesRequired || []];
     }
     
     this.categoryForm = this.fb.group({
@@ -93,6 +106,9 @@ export class CategoryModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Load available licenses from general settings AND category
+    this.loadAllLicenses();
+    
     if (this.isEditMode && this.data.category) {
       this.loadCategoryProducts();
 
@@ -107,23 +123,68 @@ export class CategoryModalComponent implements OnInit {
     }
   }
 
-  // Add a new license to the list
-  addLicense(): void {
-    const license = this.currentLicense?.trim();
-    if (license) {
-      if (!this.licenses.includes(license)) {
-        this.licenses.push(license);
-        this.currentLicense = '';
-      } else {
-        this.notificationService.warning('License already added');
+  /**
+   * Load licenses from both general settings and the category
+   */
+  loadAllLicenses(): void {
+    // Get licenses from general settings
+    const settings = this.generalSettingsService.getGeneralSettings();
+    const generalSettingsLicenses = settings?.licenses || [];
+    
+    // Map of license IDs to avoid duplicates
+    const licenseMap = new Map<string, DisplayLicense>();
+    
+    // First add licenses from general settings
+    generalSettingsLicenses.forEach(license => {
+      if (license.licenseId) {
+        licenseMap.set(license.licenseId, {
+          ...license,
+          isInGeneralSettings: true
+        });
       }
+    });
+    
+    // If editing a category, add any licenses from the category that don't exist in general settings
+    if (this.isEditMode && this.data.category && this.data.category.licensesRequired) {
+      this.data.category.licensesRequired.forEach(licenseId => {
+        if (!licenseMap.has(licenseId)) {
+          // Add missing license with warning
+          licenseMap.set(licenseId, {
+            licenseId: licenseId,
+            licenseName: licenseId, // Use ID as name since we don't have actual name
+            description: 'This license is not defined in general settings',
+            isInGeneralSettings: false
+          });
+        }
+      });
     }
+    
+    // Convert map to array
+    this.displayLicenses = Array.from(licenseMap.values());
   }
 
-  // Remove a license from the list
-  removeLicense(index: number): void {
-    if (index >= 0 && index < this.licenses.length) {
-      this.licenses.splice(index, 1);
+  /**
+   * Check if a license is selected for this category
+   * @param licenseId The ID of the license to check
+   * @returns True if the license is selected
+   */
+  isLicenseSelected(licenseId: string): boolean {
+    return this.selectedLicenseIds.includes(licenseId);
+  }
+
+  /**
+   * Toggle a license selection for this category
+   * @param license The license to toggle
+   */
+  toggleLicense(license: DisplayLicense): void {
+    if (!license.licenseId) return;
+    
+    if (this.isLicenseSelected(license.licenseId)) {
+      // Remove the license if it's already selected
+      this.selectedLicenseIds = this.selectedLicenseIds.filter(id => id !== license.licenseId);
+    } else {
+      // Add the license if it's not selected
+      this.selectedLicenseIds.push(license.licenseId);
     }
   }
 
@@ -283,8 +344,8 @@ export class CategoryModalComponent implements OnInit {
         categoryName: formValue.categoryName,
         icon: formValue.icon,
         isVisible: formValue.isVisible,
-        // Use the licenses array instead of parsing from a string
-        licensesRequired: this.licenses,
+        // Use selected license IDs
+        licensesRequired: this.selectedLicenseIds,
         // Use selectedProductIds for both new and existing categories
         productIds: this.selectedProductIds,
       };

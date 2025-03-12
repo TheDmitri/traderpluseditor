@@ -48,52 +48,50 @@
           </div>
         </div>
 
-        <!-- License Section -->
+        <!-- License Section - Updated to handle missing licenses -->
         <div class="form-section">
           <h4 class="section-title">Required Licenses</h4>
-
-          <div class="license-input-row">
-            <mat-form-field appearance="fill" class="license-input">
-              <mat-label>License Name</mat-label>
-              <input
-                matInput
-                [(ngModel)]="currentLicense"
-                [ngModelOptions]="{ standalone: true }"
-                placeholder="e.g., license_weapons"
-                (keyup.enter)="addLicense()"
-              />
-              <mat-hint *ngIf="licenses.length === 0">
-                No licenses required. Add licenses if players need specific
-                permissions.
-              </mat-hint>
-            </mat-form-field>
-
-            <button
-              class="custom-stroked-button color-secondary with-icon license-add-button"
-              type="button"
-              color="primary"
-              (click)="addLicense()"
-              [disabled]="!currentLicense.trim()"
-            >
-              <mat-icon>add</mat-icon>
-              Add License
-            </button>
-          </div>
-
-          <!-- License chips list - moved closer to input -->
-          <div class="license-chips" *ngIf="licenses.length > 0">
-            <div class="chip" *ngFor="let license of licenses; let i = index">
-              <span class="chip-text">{{ license }}</span>
-              <button
-                type="button"
-                class="custom-icon-btn icon-btn-sm icon-btn-warn"
-                (click)="removeLicense(i)"
-                aria-label="Remove license"
-              >
-                <mat-icon>close</mat-icon>
-                <div class="icon-btn-ripple"></div>
-              </button>
+          
+          <!-- License selection list - Updated to show display licenses with warnings -->
+          <div class="license-list-container" *ngIf="displayLicenses.length > 0">
+            <div class="license-item" 
+                 *ngFor="let license of displayLicenses" 
+                 (click)="toggleLicense(license)"
+                 [class.license-missing]="!license.isInGeneralSettings">
+              <mat-checkbox 
+                color="primary"
+                [checked]="isLicenseSelected(license.licenseId || '')" 
+                (click)="$event.stopPropagation(); toggleLicense(license)">
+                <span class="license-name">{{ license.licenseName }}</span>
+              </mat-checkbox>
+              
+              <!-- Warning icon for licenses not in general settings -->
+              <mat-icon *ngIf="!license.isInGeneralSettings" 
+                        class="license-warning-icon" 
+                        matTooltip="This license is not defined in general settings and may not work properly">
+                warning_amber
+              </mat-icon>
+              
+              <span class="license-id" *ngIf="license.licenseId">{{ license.licenseId }}</span>
+              <span class="license-description" *ngIf="license.description">
+                {{ license.description }}
+              </span>
             </div>
+          </div>
+          
+          <!-- No licenses message - Only shown when no licenses available at all -->
+          <div class="no-licenses" *ngIf="displayLicenses.length === 0">
+            <div class="empty-state">
+              <mat-icon class="empty-state-icon">vpn_key</mat-icon>
+              <p>No licenses available.</p>
+              <p>Add licenses in General Settings first.</p>
+            </div>
+          </div>
+          
+          <!-- Selected licenses summary -->
+          <div class="selected-licenses-summary" *ngIf="selectedLicenseIds.length > 0">
+            <mat-icon>check_circle</mat-icon>
+            <span>{{ selectedLicenseIds.length }} license(s) required for this category</span>
           </div>
         </div>
 
