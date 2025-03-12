@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { StorageService } from './storage.service';
-import { GeneralSettings, License } from '../models';
+import { StorageService } from '../../../core/services/storage.service';
+import { GeneralSettings, License } from '../../../core/models';
 
 /**
  * Service for handling TraderPlus general settings operations

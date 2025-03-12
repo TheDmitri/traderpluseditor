@@ -21,9 +21,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatMenuModule } from '@angular/material/menu';
 
 // Services
-import { GeneralSettingsService } from '../../../core/services/general-settings.service';
-import { LicenseService } from '../../../core/services/license.service';
-import { AcceptedStatesService } from '../../../core/services/accepted-states.service';
+import { GeneralSettingsService } from '../services/general-settings.service';
+import { LicenseService } from '../services/license.service';
+import { AcceptedStatesService } from '../services/accepted-states.service';
 
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { NotificationService } from '../../../shared/services/notification.service';

@@ -23,7 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
 import { Category, Product, License } from '../../../../core/models';
 import { StorageService } from '../../../../core/services/storage.service';
-import { GeneralSettingsService } from '../../../../core/services/general-settings.service';
+import { GeneralSettingsService } from '../../../general-settings-editor/services/general-settings.service';
 import { ProductListComponent } from '../../../../shared/components/product-list/product-list.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ProductModalComponent } from '../../../../shared/components/product-modal/product-modal.component';
