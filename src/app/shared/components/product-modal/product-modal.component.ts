@@ -68,6 +68,36 @@ export class ProductModalComponent implements OnInit {
   attachmentProducts: Product[] = [];
   variantProducts: Product[] = [];
 
+  /** Define TraderPlus quantity modes according to documentation */
+  // Sell modes
+  readonly SELL_NO_MATTER = 0;
+  readonly SELL_EMPTY = 1;
+  readonly SELL_FULL = 2;
+  readonly SELL_COEFFICIENT = 3;
+  readonly SELL_STATIC = 4;
+
+  // Buy modes
+  readonly BUY_EMPTY = 0;
+  readonly BUY_FULL = 2;
+  readonly BUY_COEFFICIENT = 3;
+  readonly BUY_STATIC = 4;
+
+  /** Options for the trade quantity modes */
+  sellModeOptions = [
+    { value: 0, label: 'As-Is (No Change)' },
+    { value: 1, label: 'Empty (0%)' },
+    { value: 2, label: 'Full (100%)' },
+    { value: 3, label: 'Percentage of Maximum' },
+    { value: 4, label: 'Specific Amount' },
+  ];
+
+  buyModeOptions = [
+    { value: 0, label: 'Empty (0%)' },
+    { value: 2, label: 'Full (100%)' },
+    { value: 3, label: 'Percentage of Maximum' },
+    { value: 4, label: 'Specific Amount' },
+  ];
+
   /** Available options for behavior at restart */
   behaviorOptions = [
     { value: 0, label: 'No change to stock' },
@@ -125,7 +155,13 @@ export class ProductModalComponent implements OnInit {
       // Stock configuration
       stockType: ['defined'], // 'infinite' or 'defined'
       maxStock: [100, [Validators.required, this.maxStockValidator]],
+      
+      // Trade Quantity configuration
       tradeQuantity: [1, [Validators.required, Validators.min(1)]],
+      buyQuantityMode: [this.BUY_FULL],
+      sellQuantityMode: [this.SELL_NO_MATTER],
+      buyQuantityValue: [0, [Validators.min(0)]],
+      sellQuantityValue: [0, [Validators.min(0)]],
       
       // Price configuration
       priceType: ['static'], // 'static' or 'dynamic'
@@ -214,6 +250,52 @@ export class ProductModalComponent implements OnInit {
     // Listen for changes to dynamic price inputs
     this.productForm.get('minPrice')?.valueChanges.subscribe(() => this.updateDynamicPricing());
     this.productForm.get('maxPrice')?.valueChanges.subscribe(() => this.updateDynamicPricing());
+
+    // When buy quantity mode changes
+    this.productForm.get('buyQuantityMode')?.valueChanges.subscribe(mode => {
+      const buyQuantityValue = this.productForm.get('buyQuantityValue');
+      
+      if (mode === this.BUY_COEFFICIENT || mode === this.BUY_STATIC) {
+        buyQuantityValue?.enable();
+        
+        // Add validators based on mode
+        if (mode === this.BUY_COEFFICIENT) {
+          buyQuantityValue?.setValidators([Validators.required, Validators.min(0), Validators.max(100)]);
+        } else {
+          buyQuantityValue?.setValidators([Validators.required, Validators.min(0)]);
+        }
+      } else {
+        buyQuantityValue?.disable();
+      }
+      
+      buyQuantityValue?.updateValueAndValidity();
+      this.updateTradeQuantityValue();
+    });
+
+    // When sell quantity mode changes
+    this.productForm.get('sellQuantityMode')?.valueChanges.subscribe(mode => {
+      const sellQuantityValue = this.productForm.get('sellQuantityValue');
+      
+      if (mode === this.SELL_COEFFICIENT || mode === this.SELL_STATIC) {
+        sellQuantityValue?.enable();
+        
+        // Add validators based on mode
+        if (mode === this.SELL_COEFFICIENT) {
+          sellQuantityValue?.setValidators([Validators.required, Validators.min(0), Validators.max(100)]);
+        } else {
+          sellQuantityValue?.setValidators([Validators.required, Validators.min(0)]);
+        }
+      } else {
+        sellQuantityValue?.disable();
+      }
+      
+      sellQuantityValue?.updateValueAndValidity();
+      this.updateTradeQuantityValue();
+    });
+
+    // When buy or sell quantity values change
+    this.productForm.get('buyQuantityValue')?.valueChanges.subscribe(() => this.updateTradeQuantityValue());
+    this.productForm.get('sellQuantityValue')?.valueChanges.subscribe(() => this.updateTradeQuantityValue());
   }
   
   /**
@@ -270,6 +352,48 @@ export class ProductModalComponent implements OnInit {
     };
   }
   
+  /**
+   * Calculate the tradeQuantity value from the individual components
+   * using bit-packing as described in the TraderPlus documentation
+   */
+  private updateTradeQuantityValue(): void {
+    const buyMode = +this.productForm.get('buyQuantityMode')?.value || 0;
+    const sellMode = +this.productForm.get('sellQuantityMode')?.value || 0;
+    const buyQuantity = +this.productForm.get('buyQuantityValue')?.value || 0;
+    const sellQuantity = +this.productForm.get('sellQuantityValue')?.value || 0;
+    
+    // Pack the bits according to the documentation:
+    // - Sell mode: 3 bits (0-2)
+    // - Buy mode: 3 bits (3-5)
+    // - Sell quantity: 13 bits (6-18)
+    // - Buy quantity: remaining bits (19+)
+    const tradeQuantityValue = 
+      (sellMode & 0x7) |             // Sell mode in bits 0-2
+      ((buyMode & 0x7) << 3) |       // Buy mode in bits 3-5
+      ((sellQuantity & 0x1FFF) << 6) | // Sell quantity in bits 6-18
+      ((buyQuantity & 0xFFFFFFFF) << 19); // Buy quantity in bits 19+
+    
+    this.productForm.get('tradeQuantity')?.setValue(tradeQuantityValue);
+  }
+  
+  /**
+   * Extract the individual components from a tradeQuantity value
+   * @param tradeQuantity The packed trade quantity value
+   */
+  private extractTradeQuantityComponents(tradeQuantity: number): {
+    sellMode: number;
+    buyMode: number;
+    sellQuantity: number;
+    buyQuantity: number;
+  } {
+    return {
+      sellMode: tradeQuantity & 0x7,                // Extract bits 0-2
+      buyMode: (tradeQuantity >> 3) & 0x7,          // Extract bits 3-5
+      sellQuantity: (tradeQuantity >> 6) & 0x1FFF,  // Extract bits 6-18
+      buyQuantity: (tradeQuantity >> 19) & 0xFFFFFFFF, // Extract bits 19+
+    };
+  }
+
   /**
    * Validator for maxStock field
    * - Only -1 (infinite) or values > 0 are allowed
@@ -334,6 +458,10 @@ export class ProductModalComponent implements OnInit {
       const { destockCoefficient, behaviorAtRestart } = 
         this.extractStockSettings(this.data.product.stockSettings);
       
+      // Extract trade quantity components
+      const { sellMode, buyMode, sellQuantity, buyQuantity } = 
+        this.extractTradeQuantityComponents(this.data.product.tradeQuantity);
+      
       // Determine price type based on coefficient value
       // This is a heuristic - if coefficient is significant, assume dynamic pricing
       const priceType = this.data.product.coefficient > 0.05 ? 'dynamic' : 'static';
@@ -352,6 +480,10 @@ export class ProductModalComponent implements OnInit {
         stockType: stockType,
         maxStock: this.data.product.maxStock,
         tradeQuantity: this.data.product.tradeQuantity,
+        buyQuantityMode: buyMode,
+        sellQuantityMode: sellMode,
+        buyQuantityValue: buyQuantity,
+        sellQuantityValue: sellQuantity,
         priceType: priceType,
         buyPrice: this.data.product.buyPrice,
         sellPrice: this.data.product.sellPrice,
@@ -378,11 +510,29 @@ export class ProductModalComponent implements OnInit {
         this.productForm.get('minPrice')?.disable();
         this.productForm.get('maxPrice')?.disable();
       }
+
+      // Apply conditional disabling based on trade quantity modes
+      if (sellMode !== this.SELL_COEFFICIENT && sellMode !== this.SELL_STATIC) {
+        this.productForm.get('sellQuantityValue')?.disable();
+      }
+      
+      if (buyMode !== this.BUY_COEFFICIENT && buyMode !== this.BUY_STATIC) {
+        this.productForm.get('buyQuantityValue')?.disable();
+      }
     } else {
       // Initialize for new product
       // Default: start with defined stock and static pricing
       this.productForm.get('minPrice')?.disable();
       this.productForm.get('maxPrice')?.disable();
+      
+      // Default trade quantity settings
+      this.productForm.get('buyQuantityMode')?.setValue(this.BUY_FULL);
+      this.productForm.get('sellQuantityMode')?.setValue(this.SELL_NO_MATTER);
+      this.productForm.get('buyQuantityValue')?.disable();
+      this.productForm.get('sellQuantityValue')?.disable();
+      
+      // Initialize with default packed trade quantity value
+      this.updateTradeQuantityValue();
     }
   }
 
@@ -535,6 +685,9 @@ export class ProductModalComponent implements OnInit {
       this.productForm.get('minPrice')?.enable();
       this.productForm.get('maxPrice')?.enable();
     }
+    
+    // Ensure trade quantity value is calculated from the components
+    this.updateTradeQuantityValue();
     
     if (this.productForm.valid) {
       const formValue = this.productForm.value;

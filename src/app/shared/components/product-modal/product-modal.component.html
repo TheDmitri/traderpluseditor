@@ -75,6 +75,111 @@
           </div>
         </div>
         
+        <!-- Trade Quantity Section -->
+        <div class="form-section">
+          <h4 class="section-title">Trade Quantity</h4>
+          
+          <!-- Buy Quantity Mode -->
+          <div class="form-row">
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Buy Quantity Mode</mat-label>
+                <mat-select formControlName="buyQuantityMode">
+                  <mat-option *ngFor="let option of buyModeOptions" [value]="option.value">
+                    {{ option.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>How to determine quantity when player buys</mat-hint>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-col" *ngIf="productForm.get('buyQuantityMode')?.value === BUY_COEFFICIENT || 
+                                       productForm.get('buyQuantityMode')?.value === BUY_STATIC">
+              <mat-form-field appearance="fill">
+                <mat-label>
+                  {{ productForm.get('buyQuantityMode')?.value === BUY_COEFFICIENT ? 'Buy Percentage (%)' : 'Buy Amount' }}
+                </mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="buyQuantityValue"
+                  [min]="0"
+                  [max]="productForm.get('buyQuantityMode')?.value === BUY_COEFFICIENT ? 100 : null"
+                />
+                <mat-hint *ngIf="productForm.get('buyQuantityMode')?.value === BUY_COEFFICIENT">
+                  Percentage of maximum capacity (0-100)
+                </mat-hint>
+                <mat-hint *ngIf="productForm.get('buyQuantityMode')?.value === BUY_STATIC">
+                  Specific number of units
+                </mat-hint>
+                <mat-error *ngIf="productForm.get('buyQuantityValue')?.hasError('min')">
+                  Must be at least 0
+                </mat-error>
+                <mat-error *ngIf="productForm.get('buyQuantityValue')?.hasError('max')">
+                  Must not exceed 100%
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          
+          <!-- Sell Quantity Mode -->
+          <div class="form-row">
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Sell Quantity Mode</mat-label>
+                <mat-select formControlName="sellQuantityMode">
+                  <mat-option *ngFor="let option of sellModeOptions" [value]="option.value">
+                    {{ option.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>How to determine quantity when player sells</mat-hint>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-col" *ngIf="productForm.get('sellQuantityMode')?.value === SELL_COEFFICIENT || 
+                                       productForm.get('sellQuantityMode')?.value === SELL_STATIC">
+              <mat-form-field appearance="fill">
+                <mat-label>
+                  {{ productForm.get('sellQuantityMode')?.value === SELL_COEFFICIENT ? 'Sell Percentage (%)' : 'Sell Amount' }}
+                </mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="sellQuantityValue"
+                  [min]="0"
+                  [max]="productForm.get('sellQuantityMode')?.value === SELL_COEFFICIENT ? 100 : null"
+                />
+                <mat-hint *ngIf="productForm.get('sellQuantityMode')?.value === SELL_COEFFICIENT">
+                  Percentage of maximum capacity (0-100)
+                </mat-hint>
+                <mat-hint *ngIf="productForm.get('sellQuantityMode')?.value === SELL_STATIC">
+                  Specific number of units
+                </mat-hint>
+                <mat-error *ngIf="productForm.get('sellQuantityValue')?.hasError('min')">
+                  Must be at least 0
+                </mat-error>
+                <mat-error *ngIf="productForm.get('sellQuantityValue')?.hasError('max')">
+                  Must not exceed 100%
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          
+          <!-- Info box explaining trade quantity system -->
+          <div class="info-box">
+            <mat-icon class="info-icon">info</mat-icon>
+            <div class="info-content">
+              <p>The trade quantity settings control how items are bought and sold:</p>
+              <ul>
+                <li><strong>As-Is:</strong> Uses the current quantity of the item (sell only)</li>
+                <li><strong>Empty/Full:</strong> Sets quantity to 0% or 100% of capacity</li>
+                <li><strong>Percentage:</strong> Uses a percentage of the maximum capacity</li>
+                <li><strong>Specific Amount:</strong> Uses an exact number of units</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
         <!-- Stock Configuration (only for defined stock) -->
         <div class="form-section" *ngIf="productForm.get('stockType')?.value === 'defined'">
           <h4 class="section-title">Stock Configuration</h4>

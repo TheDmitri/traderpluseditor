@@ -417,7 +417,7 @@
   
   // Ensure the ripple elements are correctly themed with secondary colors
   .mat-mdc-radio-touch-target:hover + .mdc-radio .mdc-radio__outer-circle {
-    border-color: var(--color-secondary-medium) !important;
+    border-color: var (--color-secondary-medium) !important;
   }
   
   .mat-mdc-radio-ripple .mat-ripple-element {
@@ -534,6 +534,49 @@
           .mat-mdc-radio-group {
             width: 100%;
           }
+        }
+      }
+    }
+  }
+}
+
+.info-box {
+  display: flex;
+  background-color: rgba(66, 133, 244, 0.08);
+  border: 1px solid rgba(66, 133, 244, 0.2);
+  border-radius: 4px;
+  padding: 12px;
+  margin-top: 16px;
+  
+  .info-icon {
+    color: #4285F4;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+  
+  .info-content {
+    p {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: var(--font-size-sm);
+      color: var(--brush-text-primary);
+    }
+    
+    ul {
+      margin: 0;
+      padding-left: 16px;
+      
+      li {
+        font-size: var(--font-size-sm);
+        color: var(--brush-text-secondary);
+        margin-bottom: 4px;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        strong {
+          color: var(--brush-text-primary);
         }
       }
     }
