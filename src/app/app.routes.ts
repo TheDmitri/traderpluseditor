@@ -4,7 +4,7 @@ import { FileManagementComponent } from './features/file-management/components/f
 import { CategoryEditorComponent } from './features/category-editor/components/category-editor.component';
 import { ProductEditorComponent } from './features/product-editor/components/product-editor.component';
 import { CurrencyEditorComponent } from './features/currency-editor/components/currency-editor.component';
-import { GeneralSettingsEditorComponent } from './features/general-settings-editor/general-settings-editor.component';
+import { GeneralSettingsEditorComponent } from './features/general-settings-editor/components/general-settings-editor.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
