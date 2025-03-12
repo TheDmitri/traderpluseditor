@@ -139,8 +139,13 @@
                       <mat-error>License name is required</mat-error>
                     </mat-form-field>
                   </div>
-                  <!-- View mode -->
-                  <div *ngIf="editingLicenseIndex !== i">
+                  <!-- View mode with tooltip showing license ID -->
+                  <div 
+                    *ngIf="editingLicenseIndex !== i"
+                    [matTooltip]="'License ID: ' + (license.licenseId || 'Not assigned')"
+                    matTooltipPosition="below"
+                    matTooltipClass="license-tooltip"
+                  >
                     {{ license.licenseName }}
                   </div>
                 </td>
