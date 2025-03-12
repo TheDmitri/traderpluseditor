@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { StorageService } from './storage.service';
-import { Product } from '../models';
+import { StorageService } from '../../../core/services/storage.service';
+import { Product } from '../../../core/models';
 
 /**
  * Service for handling TraderPlus product operations
