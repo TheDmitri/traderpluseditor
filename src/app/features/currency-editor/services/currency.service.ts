@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { StorageService } from './storage.service';
-import { CurrencySettings } from '../models';
+import { StorageService } from '../../../core/services/storage.service';
+import { CurrencySettings } from '../../../core/models';
 
 /**
  * Service for handling TraderPlus currency settings operations
