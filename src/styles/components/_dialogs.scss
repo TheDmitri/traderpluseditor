@@ -99,58 +99,6 @@
       color: var(--brush-text-primary) !important;
     }
   }
-
-  /**
-   * Light Dialog Variant
-   * 
-   * Used for confirmation dialogs, important messages,
-   * or when the dialog content needs higher visibility
-   */
-  &.light-dialog {
-    .mdc-dialog__surface {
-      background-color: var(--color-neutral-lightest) !important;
-    }
-
-    .mdc-dialog__title {
-      color: var(--brush-text-primary-on-light) !important;
-      background-color: white;
-      border-bottom-color: var(--color-neutral-light);
-    }
-
-    .mdc-dialog__content {
-      color: var(--brush-text-secondary-on-light) !important;
-      
-      .dialog-primary-text {
-        color: var(--brush-text-primary-on-light);
-      }
-      
-      .dialog-secondary-text {
-        color: var(--brush-text-secondary-on-light);
-      }
-    }
-    
-    .mdc-dialog__actions {
-      border-top-color: var(--color-neutral-light);
-    }
-    
-    .mat-mdc-dialog-close {
-      color: var(--color-neutral-dark) !important;
-      
-      &:hover {
-        background-color: var(--brush-hover-overlay-light) !important;
-      }
-    }
-  }
-}
-
-// Global positioning override
-.custom-snackbar {
-  position: fixed !important;
-  top: 80px !important;
-  right: 16px !important;
-  left: unset !important;
-  bottom: unset !important;
-  margin: 0 !important;
 }
 
 /* Overlay Backdrop
@@ -161,37 +109,4 @@
  */
 .cdk-overlay-dark-backdrop {
   background-color: var(--brush-overlay-background) !important;
-}
-
-/* Bottom Sheet
-========================================================================== */
-/**
- * Bottom sheet styling for mobile interfaces
- * Similar to dialogs but slides up from the bottom
- */
-.mat-bottom-sheet-container {
-  background-color: var(--brush-dialog-background) !important;
-  color: var(--brush-text-primary) !important;
-  border-top-left-radius: 16px !important;
-  border-top-right-radius: 16px !important;
-  padding: 20px 24px !important;
-  
-  &::before {
-    content: '';
-    width: 40px;
-    height: 4px;
-    border-radius: 2px;
-    background-color: var(--brush-border-subtle);
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  
-  .bottom-sheet-title {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-medium);
-    margin-bottom: 16px;
-    margin-top: 16px;
-  }
 }

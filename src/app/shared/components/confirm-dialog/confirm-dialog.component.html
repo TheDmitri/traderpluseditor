@@ -1,6 +1,8 @@
-<div class="confirm-dialog" [class]="data.type || 'info'">
+<div [class]="data.type || 'info'">
   <h2 mat-dialog-title class="dialog-title">
-    <mat-icon class="dialog-icon" [ngClass]="data.type || 'info'">{{ getIcon() }}</mat-icon>
+    <mat-icon class="dialog-icon" [ngClass]="data.type || 'info'">
+      {{getIcon()}}
+    </mat-icon>
     <span>{{ data.title }}</span>
   </h2>
 
@@ -11,15 +13,11 @@
     </div>
   </mat-dialog-content>
 
-  <mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()"
-    cdkFocusInitial>
+  <mat-dialog-actions>
+    <button mat-button (click)="onCancel()" cdkFocusInitial>
       {{ data.cancelText || "Cancel" }}
     </button>
-    <button 
-      mat-raised-button 
-      [color]="getButtonColor()" 
-      (click)="onConfirm()">
+    <button mat-raised-button [color]="getButtonColor()" (click)="onConfirm()">
       {{ data.confirmText || "Confirm" }}
     </button>
   </mat-dialog-actions>

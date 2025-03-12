@@ -88,3 +88,13 @@
     }
   }
 }
+
+// Global positioning override
+.custom-snackbar {
+  position: fixed !important;
+  top: 68px !important;
+  right: 24px !important;
+  left: unset !important;
+  bottom: unset !important;
+  margin: 0 !important;
+}

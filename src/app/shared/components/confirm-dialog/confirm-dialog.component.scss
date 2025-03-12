@@ -1,28 +1,11 @@
-:host {
-  display: block;
-  width: 100%;
-
-  // Dialog sizing
-  ::ng-deep .mat-mdc-dialog-surface {
-    min-width: 320px;
-    max-width: 500px;
-    border-radius: 8px;
-  }
-}
-
-// Dialog title with icon
 .dialog-title {
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important;
   padding-bottom: 12px !important;
   
   .dialog-icon {
-    font-size: 24px;
-    height: 24px;
-    width: 24px;
-    flex-shrink: 0;
-    
+    margin-right: 16px;
+
     // Type-specific icon colors
     &.info {
       color: var(--color-info);
@@ -40,154 +23,14 @@
       color: var(--color-success);
     }
   }
-  
-  span {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.2;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 }
 
-// Dialog content
 .dialog-content {
-  min-height: 60px;
-  max-height: 500px;
-  overflow-y: auto;
-  
   .dialog-primary-text {
     white-space: pre-line;
-    color: var(--brush-text-primary);
-    font-size: var(--font-size-base);
-    line-height: 1.5;
-    margin-bottom: 12px;
   }
   
   .dialog-secondary-text {
     white-space: pre-line;
-    color: var(--brush-text-secondary);
-    font-size: var(--font-size-sm);
-    line-height: 1.4;
-  }
-}
-
-// Dialog actions (buttons)
-::ng-deep mat-dialog-actions {
-  padding: 16px 24px !important;
-  margin-bottom: 0 !important;
-  
-  button + button {
-    margin-left: 8px !important;
-  }
-}
-
-// Animation for dialog appearance
-:host ::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
-  animation: dialogFadeIn 0.2s ease-out;
-}
-
-@keyframes dialogFadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-// Media queries for smaller screens
-@media (max-width: 480px) {
-  ::ng-deep .mat-mdc-dialog-surface {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-  }
-  
-  .dialog-title {
-    padding: 16px 16px 12px !important;
-  }
-  
-  .dialog-content {
-    padding: 0 16px 16px !important;
-    max-height: 60vh;
-  }
-  
-  ::ng-deep mat-dialog-actions {
-    padding: 12px 16px !important;
-  }
-}
-
-.confirm-dialog {
-  min-width: 320px;
-
-  &.warning .dialog-header mat-icon {
-    color: #ffa726;
-  }
-
-  &.danger .dialog-header mat-icon {
-    color: #f44336;
-  }
-
-  &.info .dialog-header mat-icon {
-    color: #2196f3;
-  }
-
-  .dialog-header {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    flex: 0 0 64px;
-    padding: 24px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    background: #424242;
-
-    mat-icon {
-      margin-top: 7px;
-      font-size: 24px;
-      width: 24px;
-    }
-
-    h2 {
-      margin: 0;
-      color: rgba(255, 255, 255, 0.87);
-      font-size: 1.5rem;
-      font-weight: 500;
-    }
-  }
-
-  .dialog-content {
-    flex: 1 1 auto;
-    overflow: hidden;
-    padding: 24px;
-    min-height: 80px;
-
-    p {
-      white-space: pre-line;
-      margin: 0;
-      color: rgba(255, 255, 255, 0.87);
-      font-size: 16px;
-      line-height: 1.5;
-    }
-  }
-
-  .dialog-actions {
-    position: sticky;
-    bottom: 0;
-    z-index: 1;
-    flex: 0 0 64px;
-    height: 64px;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    background: #424242;
   }
 }
