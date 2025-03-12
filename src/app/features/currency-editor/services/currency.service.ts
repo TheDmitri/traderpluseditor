@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { StorageService } from '../../../core/services/storage.service';
+import { StorageService } from '../../../core/services';
 import { CurrencySettings } from '../../../core/models';
 
 /**

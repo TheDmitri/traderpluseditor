@@ -16,13 +16,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
-import { StorageService } from '../../../core/services/storage.service';
+import { StorageService } from '../../../core/services';
 import { Category } from '../../../core/models';
 import { Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { CategoryModalComponent } from './category-modal/category-modal.component';
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { NotificationService } from '../../../shared/services/notification.service';
+import { ConfirmDialogComponent } from '../../../shared/components';
+import { NotificationService } from '../../../shared/services';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 /**

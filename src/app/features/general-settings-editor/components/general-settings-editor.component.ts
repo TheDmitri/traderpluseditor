@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { GeneralSettings, License } from '../../../core/models/general-settings.model';
+import { GeneralSettings, License } from '../../../core/models';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -21,12 +21,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatMenuModule } from '@angular/material/menu';
 
 // Services
-import { GeneralSettingsService } from '../services/general-settings.service';
-import { LicenseService } from '../services/license.service';
-import { AcceptedStatesService } from '../services/accepted-states.service';
+import { GeneralSettingsService, LicenseService, AcceptedStatesService } from '../services';
 
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { NotificationService } from '../../../shared/services/notification.service';
+import { ConfirmDialogComponent } from '../../../shared/components';
+import { NotificationService } from '../../../shared/services';
 
 /**
  * General Settings Editor Component

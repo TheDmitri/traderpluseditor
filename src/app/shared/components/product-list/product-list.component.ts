@@ -16,8 +16,8 @@ import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Product } from '../../../core/models';
-import { StorageService } from '../../../core/services/storage.service';
-import { NotificationService } from '../../services/notification.service';
+import { StorageService } from '../../../core/services';
+import { NotificationService } from '../../services';
 import { MatTooltip } from '@angular/material/tooltip';
 
 export interface ProductWithCategories extends Product {

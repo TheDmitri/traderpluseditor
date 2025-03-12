@@ -2,11 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { StorageService } from '../../../core/services/storage.service';
+import { StorageService } from '../../../core/services';
 import { Product } from '../../../core/models';
 import { Subject } from 'rxjs';
-import { ProductListComponent } from '../../../shared/components/product-list/product-list.component';
-import { ProductModalComponent } from '../../../shared/components/product-modal/product-modal.component';
+import { ProductListComponent } from '../../../shared/components';
+import { ProductModalComponent } from '../../../shared/components';
 
 // Material Imports
 import { MatButtonModule } from '@angular/material/button';
@@ -14,8 +14,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { NotificationService } from '../../../shared/services/notification.service';
+import { ConfirmDialogComponent } from '../../../shared/components';
+import { NotificationService } from '../../../shared/services';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 

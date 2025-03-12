@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { License } from '../../../core/models';
-import { GeneralSettingsService } from './general-settings.service';
+import { GeneralSettingsService } from '.';
 
 /**
  * Service for managing licenses in TraderPlus general settings

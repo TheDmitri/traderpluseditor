@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { NavigationService } from '../../../core/services/navigation.service';
+import { NavigationService } from '../../../core/services';
 
 interface NavItem {
   label: string;
