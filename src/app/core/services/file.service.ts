@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CategoryService } from './category.service';
+import { CategoryService } from '../../features/category-editor/services/category.service';
 import { ProductService } from './product.service';
 import { CurrencyService } from './currency.service';
 import { GeneralSettingsService } from './general-settings.service';
