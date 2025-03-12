@@ -7,54 +7,62 @@
   max-width: 85vw;
   overflow: hidden;
 
-  // Header styling using global dialog header variables
-  .modal-header {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    flex: 0 0 64px;
-    height: 64px;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid var(--brush-divider);
-    background: var(--brush-dialog-header);
-
-    h2 {
-      margin: 0;
-      font-size: var(--font-size-xl);
-      color: var(--brush-text-primary);
-      font-weight: var(--font-weight-medium);
-    }
-  }
-
-  // Form layout
-  form {
+  .form-container {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    overflow: hidden;
-  }
+    gap: 16px;
+    width: 100%;
 
-  .modal-content {
-    flex: 1 1 auto;
-    overflow-y: auto;
-    padding: 24px;
-    background-color: var(--brush-dialog-background);
-    
-    .form-container {
+    .info-box {
       display: flex;
-      flex-direction: column;
-      gap: 24px;
-      width: 100%;
+      background: var(--color-info-transparent-20);
+      border: 1px solid var(--brush-status-info-subtle);
+      border-radius: 4px;
+      padding: 12px;
+      margin-top: 16px;
+      margin-bottom: 16px;
+
+      .info-icon {
+        color: var(--brush-status-info-background);
+        margin-right: 12px;
+        flex-shrink: 0;
+      }
+
+      .info-content {
+        p {
+          margin-top: 0;
+          margin-bottom: 8px;
+          font-size: var(--font-size-sm);
+          color: var(--brush-text-primary);
+        }
+
+        ul {
+          margin: 0;
+          padding-left: 16px;
+
+          li {
+            font-size: var(--font-size-sm);
+            color: var(--brush-text-secondary);
+            margin-bottom: 4px;
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+
+            strong {
+              color: var(--brush-text-primary);
+            }
+          }
+        }
+      }
     }
-    
+
     // Section styling with consistent spacing and appearance
     .form-section {
       display: flex;
       flex-direction: column;
       width: 100%;
-      
+
       // Consistent section titles using the global styles
       .section-title {
         font-size: var(--font-size-base);
@@ -64,7 +72,7 @@
         padding: 0 0 8px 0;
         border-bottom: 1px solid var(--brush-divider);
       }
-      
+
       // Fix spacing between elements
       > * + * {
         margin-top: 16px;
@@ -76,20 +84,20 @@
       display: flex;
       gap: 16px;
       width: 100%;
-      
+
       &.radio-group-row {
         align-items: center;
         padding: 0 0 16px; // Entferne oberes Padding
         margin-top: -8px; // Negativer Abstand nach oben, um den Abstand zum Input zu verringern
         margin-left: 0; // Entferne Versatz
-        
+
         // Füge eine Wrapper-Klasse hinzu, um das gleiche Padding wie mat-form-field zu simulieren
         .radio-group-wrapper {
           display: flex;
           align-items: center;
           width: 100%;
           padding-left: 4px; // Angleichung an mat-form-field internes Padding
-          
+
           .radio-label {
             flex: 0 0 auto;
             font-size: var(--font-size-sm);
@@ -99,25 +107,25 @@
           }
         }
       }
-      
+
       .form-col {
         flex: 1;
-        
+
         &-full {
           flex: 1 1 100%;
           width: 100%;
         }
-        
+
         @media (max-width: 600px) {
           flex: 1 1 100%;
         }
       }
-      
+
       @media (max-width: 600px) {
         flex-direction: column;
         gap: 0;
       }
-      
+
       // Radio group styling
       .radio-label {
         flex: 0 0 auto;
@@ -126,18 +134,18 @@
         margin-right: 16px;
         font-weight: var(--font-weight-medium);
       }
-      
+
       .radio-group {
         display: flex;
         flex-wrap: wrap;
         gap: 16px;
-        
+
         .mat-radio-button {
           margin-right: 16px;
         }
       }
     }
-    
+
     // Validation error messages
     .validation-error {
       display: flex;
@@ -150,14 +158,14 @@
       color: #f44336;
       margin-top: 8px;
       font-size: var(--font-size-sm);
-      
+
       mat-icon {
         font-size: 18px;
         width: 18px;
         height: 18px;
       }
     }
-    
+
     // Product lists styling (attachments & variants)
     .product-lists-container {
       display: flex;
@@ -165,26 +173,26 @@
       gap: 24px;
       margin-top: 24px;
     }
-    
+
     .mat-expansion-panel {
       background-color: var(--brush-background-elevated);
       border: 1px solid var(--brush-border-subtle);
       margin-bottom: 16px;
-      
+
       &:last-child {
         margin-bottom: 0;
       }
-      
+
       .mat-expansion-panel-header {
         height: 56px;
-        
+
         .mat-expansion-panel-header-title {
           display: flex;
           align-items: center;
           gap: 16px;
           color: var(--brush-text-primary);
           margin-right: 0;
-          
+
           button.custom-icon-btn {
             min-width: 32px;
             width: 32px;
@@ -192,16 +200,16 @@
             line-height: 32px;
             padding: 0;
             margin: 0;
-            
+
             &[disabled] {
               opacity: 0.5;
               cursor: not-allowed;
-              
+
               &:hover {
                 background-color: transparent;
               }
             }
-            
+
             mat-icon {
               font-size: 20px;
               width: 20px;
@@ -217,34 +225,34 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      
+
       .product-list {
         max-height: 200px;
         overflow-y: auto;
         border-radius: 4px;
         background: var(--brush-background-subtle);
-        
+
         &.slim-scrollbar {
           @extend .dark-scrollbar !optional;
-          
+
           &::-webkit-scrollbar {
             width: 6px;
             height: 6px;
           }
-          
+
           &::-webkit-scrollbar-track {
             background: transparent;
           }
-          
+
           &::-webkit-scrollbar-thumb {
             background-color: var(--brush-scrollbar-thumb, #444444);
             border-radius: 3px;
           }
-          
+
           &::-webkit-scrollbar-thumb:hover {
             background-color: var(--brush-scrollbar-thumb-hover, #666666);
           }
-          
+
           scrollbar-width: thin;
           scrollbar-color: var(--brush-scrollbar-thumb, #444444) transparent;
         }
@@ -289,7 +297,7 @@
             transition: opacity 0.2s ease;
           }
         }
-        
+
         // Empty state styling - improved to ensure full visibility
         .empty-state {
           min-height: 120px;
@@ -301,7 +309,7 @@
           color: var(--brush-text-secondary);
           padding: 24px 16px;
           margin: 0;
-          
+
           .empty-state-icon {
             font-size: 32px;
             height: 32px;
@@ -309,274 +317,12 @@
             margin-bottom: 12px;
             opacity: 0.6;
           }
-          
+
           p {
             margin: 4px 0;
             font-size: var(--font-size-xs);
             line-height: 1.4;
           }
-        }
-      }
-    }
-  }
-
-  // Footer styling using global dialog footer variables
-  .modal-footer {
-    position: sticky;
-    bottom: 0;
-    z-index: 2;
-    flex: 0 0 64px;
-    height: 64px;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 12px;
-    border-top: 1px solid var(--brush-divider);
-    background: var(--brush-dialog-header);
-  }
-}
-
-// Ensure consistent material styling using global variables
-:host ::ng-deep {
-  // Apply consistent form field styling
-  .mat-mdc-form-field {
-    width: 100%;
-    
-    .mat-mdc-text-field-wrapper {
-      background-color: var(--brush-input-background);
-    }
-    
-    .mat-mdc-form-field-hint {
-      font-size: var(--font-size-xs);
-      color: var(--brush-text-secondary);
-    }
-    
-    // Reduziere den Bottom-Margin der Form-Field, wenn gefolgt von radio-group-row
-    & + .radio-group-row {
-      margin-top: -12px; // Stärkerer negativer Abstand
-    }
-  }
-  
-  // Select dropdown styling
-  .mat-mdc-select {
-    .mat-mdc-select-value {
-      color: var(--brush-text-primary);
-    }
-  }
-
-  // Radio button specific overrides
-  .mat-mdc-radio-button {
-    .mdc-radio {
-      padding: 10px;
-    }
-    
-    .mdc-form-field {
-      label {
-        color: var(--brush-text-primary);
-      }
-    }
-  }
-
-  // Radio button comprehensive overrides with secondary colors
-  .mat-mdc-radio-button {
-    .mdc-radio {
-      padding: 10px;
-      
-      .mdc-radio__background {
-        .mdc-radio__outer-circle {
-          border-color: var(--color-neutral-medium) !important;
-        }
-        
-        .mdc-radio__inner-circle {
-          background-color: var(--color-secondary-dark) !important; // Secondary dark color
-        }
-      }
-      
-      &:hover:not(.mdc-radio--disabled) .mdc-radio__background .mdc-radio__outer-circle {
-        border-color: var(--color-secondary-medium) !important; // Secondary hover color
-      }
-    }
-    
-    &.mat-mdc-radio-checked .mdc-radio .mdc-radio__background {
-      .mdc-radio__outer-circle {
-        border-color: var(--color-secondary-dark) !important; // Secondary dark color
-      }
-    }
-    
-    // Ensure ripples are styled correctly with secondary colors
-    .mat-ripple-element {
-      background-color: var(--color-secondary-transparent-20) !important;
-    }
-    
-    // Target focused state with secondary colors
-    &.cdk-focused .mdc-radio .mdc-radio__native-control:focus:focus-visible ~ .mdc-radio__background::before {
-      background-color: var(--color-secondary-transparent-20) !important;
-    }
-  }
-  
-  // Ensure the ripple elements are correctly themed with secondary colors
-  .mat-mdc-radio-touch-target:hover + .mdc-radio .mdc-radio__outer-circle {
-    border-color: var (--color-secondary-medium) !important;
-  }
-  
-  .mat-mdc-radio-ripple .mat-ripple-element {
-    background-color: var(--color-secondary-transparent-20) !important;
-  }
-  
-  // Group layout enhancements
-  .mat-mdc-radio-group.radio-group-horizontal {
-    .mat-mdc-radio-button {
-      margin-right: 16px;
-      margin-bottom: 8px;
-    }
-  }
-
-  // Radio button comprehensive overrides - MAXIMUM SPECIFICITY
-  .mat-mdc-radio-button {
-    .mdc-radio {
-      padding: 10px;
-      
-      .mdc-radio__background {
-        .mdc-radio__outer-circle {
-          border-color: var(--color-neutral-medium) !important;
-        }
-        
-        .mdc-radio__inner-circle {
-          background-color: white !important; // ALWAYS WHITE
-        }
-      }
-      
-      &:hover:not(.mdc-radio--disabled) .mdc-radio__background .mdc-radio__outer-circle {
-        border-color: var(--color-secondary-medium) !important; 
-      }
-    }
-    
-    // Checked state styling
-    &.mat-mdc-radio-checked .mdc-radio .mdc-radio__background {
-      .mdc-radio__outer-circle {
-        border-color: var(--color-secondary-dark) !important;
-      }
-      
-      .mdc-radio__inner-circle {
-        background-color: white !important; // ALWAYS WHITE
-      }
-    }
-    
-    // Ripple effects with secondary colors
-    .mat-ripple-element {
-      background-color: var(--color-secondary-transparent-20) !important;
-    }
-    
-    &.cdk-focused,
-    &.cdk-program-focused,
-    &.cdk-keyboard-focused {
-      .mdc-radio .mdc-radio__background::before,
-      .mdc-radio .mdc-radio__native-control:focus:focus-visible ~ .mdc-radio__background::before {
-        background-color: var(--color-secondary-transparent-20) !important;
-      }
-    }
-  }
-  
-  // Additional selectors for maximum compatibility
-  .mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__background .mdc-radio__inner-circle {
-    background-color: white !important; // ALWAYS WHITE - maximum specificity
-  }
-  
-  .mat-mdc-radio-ripple .mat-ripple-element {
-    background-color: var(--color-secondary-transparent-20) !important;
-  }
-  
-  // Group layout enhancements
-  .mat-mdc-radio-group.radio-group-horizontal {
-    .mat-mdc-radio-button {
-      margin-right: 16px;
-      margin-bottom: 8px;
-    }
-  }
-}
-
-// Responsive adjustments
-@media (max-width: 600px) {
-  .product-modal {
-    max-height: 95vh;
-    
-    .modal-content {
-      padding: 16px;
-    }
-    
-    .modal-footer {
-      padding: 0 16px;
-    }
-    
-    .form-row {
-      &.radio-group-row {
-        flex-direction: column;
-        align-items: flex-start;
-        
-        .radio-label {
-          margin-bottom: 8px;
-        }
-        
-        .radio-group {
-          width: 100%;
-        }
-
-        .radio-group-wrapper {
-          flex-direction: column;
-          align-items: flex-start;
-          
-          .radio-label {
-            margin-bottom: 8px;
-            margin-right: 0;
-          }
-          
-          .mat-mdc-radio-group {
-            width: 100%;
-          }
-        }
-      }
-    }
-  }
-}
-
-.info-box {
-  display: flex;
-  background-color: rgba(66, 133, 244, 0.08);
-  border: 1px solid rgba(66, 133, 244, 0.2);
-  border-radius: 4px;
-  padding: 12px;
-  margin-top: 16px;
-  
-  .info-icon {
-    color: #4285F4;
-    margin-right: 12px;
-    flex-shrink: 0;
-  }
-  
-  .info-content {
-    p {
-      margin-top: 0;
-      margin-bottom: 8px;
-      font-size: var(--font-size-sm);
-      color: var(--brush-text-primary);
-    }
-    
-    ul {
-      margin: 0;
-      padding-left: 16px;
-      
-      li {
-        font-size: var(--font-size-sm);
-        color: var(--brush-text-secondary);
-        margin-bottom: 4px;
-        
-        &:last-child {
-          margin-bottom: 0;
-        }
-        
-        strong {
-          color: var(--brush-text-primary);
         }
       }
     }
