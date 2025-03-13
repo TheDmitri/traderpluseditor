@@ -182,17 +182,6 @@
         *matRowDef="let row; columns: displayedColumns"
         class="interactive-row"
       ></tr>
-
-      <!-- No data row -->
-      <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-          <div class="empty-table-message">
-            <mat-icon class="empty-icon">inventory</mat-icon>
-            <h3 class="empty-title">No products found</h3>
-            <p class="empty-description">Try creating a new product or importing from a file</p>
-          </div>
-        </td>
-      </tr>
     </table>
 
     <mat-paginator

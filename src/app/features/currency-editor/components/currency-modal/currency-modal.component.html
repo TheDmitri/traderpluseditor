@@ -88,10 +88,13 @@
         </table>
       </div>
       
-      <div class="empty-state" *ngIf="currencies.length === 0">
-        <mat-icon class="empty-icon">money_off</mat-icon>
-        <h3 class="empty-title">No currencies for this currency type</h3>
-        <p class="empty-description">Use the form above to add new currencies</p>
+      <!-- No Data State - Informative message and call to action -->
+      <div class="empty-state-container" *ngIf="currencies.length === 0">
+        <mat-icon class="empty-state-icon">money_off</mat-icon>
+        <h2 class="empty-state-title">No currencies for this currency type</h2>
+        <p class="empty-state-message">
+          Use the form above to add new currencies
+        </p>
       </div>
     </div>
   </div>

@@ -100,14 +100,12 @@
         </div>
 
         <div class="panel-body">
-          <!-- Empty state consistent with other editors -->
-          <div
-            class="no-data-container"
-            *ngIf="licensesDataSource.data.length === 0"
-          >
-            <mat-icon class="no-data-icon">assignment</mat-icon>
-            <p class="no-data-text">
-              No licenses found. Add a license to get started.
+          <!-- No Data State - Informative message and call to action -->
+          <div class="empty-state-container" *ngIf="licensesDataSource.data.length === 0">
+            <mat-icon class="empty-state-icon">vpn_key</mat-icon>
+            <h2 class="empty-state-title">No Licenses Available</h2>
+            <p class="empty-state-message">
+              Create licenses that players must have to use the trader
             </p>
           </div>
 

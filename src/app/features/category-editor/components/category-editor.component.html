@@ -1,6 +1,6 @@
 <div class="category-editor-container">
   <!-- Page header with standardized structure -->
-  <div class="page-header">
+  <header class="page-header">
     <div class="header-content">
       <div class="header-left">
         <h2>Category Editor</h2>
@@ -29,6 +29,7 @@
           class="custom-stroked-button color-warn with-icon"
           [matMenuTriggerFor]="dangerMenu"
           matTooltip="Dangerous operations"
+          *ngIf="hasCategories"
         >
           <mat-icon>warning</mat-icon>
           Danger Zone
@@ -55,10 +56,28 @@
         </mat-menu>
       </div>
     </div>
+  </header>
+
+  <!-- No Data State - Informative message and call to action -->
+  <div class="empty-state-container" *ngIf="!hasCategories">
+    <mat-icon class="empty-state-icon">settings</mat-icon>
+    <h2 class="empty-state-title">No Categories Found</h2>
+    <p class="empty-state-message">
+      To get started, you can either import an existing TraderPlus Catgegory file or create a new default one.
+    </p>
+    <div class="empty-state-actions">
+      <button
+        class="custom-stroked-button color-primary with-icon"
+        (click)="addCategory()"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Create default Categories
+      </button>
+    </div>
   </div>
 
   <!-- Data content card with standardized styling -->
-  <div class="data-card">
+  <div class="data-card" *ngIf="hasCategories">
     <h2 class="section-title">Categories Overview</h2>
     <mat-card-content>
       <!-- Search field with standardized styling and proper containment -->
@@ -187,19 +206,6 @@
             *matRowDef="let row; columns: displayedColumns"
             class="interactive-row"
           ></tr>
-
-          <!-- No data row -->
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-              <div class="empty-table-message">
-                <mat-icon class="empty-icon">category</mat-icon>
-                <h3 class="empty-title">No categories found</h3>
-                <p class="empty-description">
-                  Try creating a new category or importing from a file
-                </p>
-              </div>
-            </td>
-          </tr>
         </table>
 
         <mat-paginator

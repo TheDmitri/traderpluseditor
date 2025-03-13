@@ -297,33 +297,6 @@
             transition: opacity 0.2s ease;
           }
         }
-
-        // Empty state styling - improved to ensure full visibility
-        .empty-state {
-          min-height: 120px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          color: var(--brush-text-secondary);
-          padding: 24px 16px;
-          margin: 0;
-
-          .empty-state-icon {
-            font-size: 32px;
-            height: 32px;
-            width: 32px;
-            margin-bottom: 12px;
-            opacity: 0.6;
-          }
-
-          p {
-            margin: 4px 0;
-            font-size: var(--font-size-xs);
-            line-height: 1.4;
-          }
-        }
       }
     }
   }

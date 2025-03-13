@@ -36,37 +36,6 @@
       color: var(--brush-text-primary);
     }
     
-    // Empty state styling for when no currencies exist
-    // Centers content with a clear call to action
-    .empty-currencies-message {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 16px;
-      text-align: center;
-      
-      // Large icon for visual emphasis
-      .empty-icon {
-        font-size: 48px;
-        height: 48px;
-        width: 48px;
-        margin-bottom: 16px;
-        color: var(--brush-text-secondary);
-      }
-      
-      // Description text with reduced emphasis
-      p {
-        margin-bottom: 24px;
-        color: var(--brush-text-secondary);
-      }
-      
-      // Prominent CTA button
-      .add-currency-btn {
-        min-width: 180px;
-      }
-    }
-    
     // Table for displaying individual currencies
     // Consistent with main table styling but emphasizes value field
     .currency-table {
@@ -87,88 +56,6 @@
       display: flex;
       justify-content: flex-end;
       margin-top: 16px;
-    }
-  }
-
-  /* Empty State Container Styling
-  ========================================================================== */
-  .empty-state-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 48px 24px;
-    margin: 24px 0;
-    border-radius: 8px;
-    background-color: var(--brush-card-background);
-    border: 1px dashed var(--brush-border);
-    
-    .empty-state-icon {
-      font-size: 64px;
-      height: 64px;
-      width: 64px;
-      color: var(--brush-text-secondary);
-      margin-bottom: 24px;
-    }
-    
-    .empty-state-title {
-      font-size: var(--font-size-xl);
-      font-weight: 500;
-      margin: 0 0 16px 0;
-      color: var(--brush-text-primary);
-    }
-    
-    .empty-state-message {
-      font-size: var(--font-size-base);
-      margin: 0 0 32px 0;
-      max-width: 540px;
-      color: var(--brush-text-secondary);
-    }
-    
-    .empty-state-actions {
-      display: flex;
-      gap: 16px;
-      
-      @media (max-width: 768px) {
-        flex-direction: column;
-        width: 100%;
-        max-width: 320px;
-      }
-    }
-  }
-  
-  // Empty state styling for when no currency types exist
-  // Centered layout with icon, text and action button
-  .empty-table-message {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-    padding: 24px;
-    text-align: center;
-    
-    // Large icon for empty state
-    .empty-icon {
-      font-size: 48px;
-      height: 48px;
-      width: 48px;
-      margin-bottom: 16px;
-      color: var(--brush-text-secondary);
-    }
-    
-    // Main heading with proper emphasis
-    .empty-title {
-      margin: 0 0 8px;
-      font-size: 20px;
-      font-weight: 500;
-    }
-    
-    // Subdued description text
-    .empty-description {
-      margin: 0 0 24px;
-      color: var(--brush-text-secondary);
     }
   }
   

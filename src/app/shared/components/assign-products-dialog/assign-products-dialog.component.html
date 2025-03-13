@@ -31,7 +31,7 @@
         <h3>Available Products</h3>
         <div class="list-container">
           <div *ngIf="availableProducts.length === 0" class="empty-list">
-            <mat-icon>info</mat-icon>
+            <mat-icon>warning_amber</mat-icon>
             <span>No products available</span>
           </div>
           <mat-list *ngIf="availableProducts.length > 0">

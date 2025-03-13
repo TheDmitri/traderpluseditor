@@ -638,37 +638,6 @@
   }
 }
 
-/* Empty Table State
- * ========================================================================== 
- * Styling for tables with no data
- */
-.empty-table-message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 24px;
-  color: var(--brush-text-secondary); // 30% - supporting text
-  text-align: center;
-
-  .empty-icon {
-    font-size: 48px;
-    opacity: 0.5;
-    margin-bottom: 16px;
-  }
-
-  .empty-title {
-    font-size: var(--font-size-lg);
-    margin: 0 0 8px;
-  }
-
-  .empty-description {
-    font-size: var(--font-size-base);
-    max-width: 400px;
-    margin: 0 0 16px;
-  }
-}
-
 /* Table Selection Controls
  * ========================================================================== 
  * Styling for selection checkboxes and bulk actions

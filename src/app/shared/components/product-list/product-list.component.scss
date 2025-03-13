@@ -142,25 +142,6 @@
   }
 }
 
-/* Specific enhancements for empty state */
-.empty-table-message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-  padding: 24px;
-  text-align: center;
-
-  .empty-icon {
-    font-size: 48px;
-    height: 48px;
-    width: 48px;
-    margin-bottom: 16px;
-    color: var(--brush-text-secondary);
-  }
-}
-
 /* Custom color for buy price column */
 .buy-price-highlight {
   color: var(--color-secondary-medium);

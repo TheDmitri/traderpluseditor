@@ -26,6 +26,7 @@
         <button class="custom-stroked-button color-warn with-icon"
           [matMenuTriggerFor]="dangerMenu"
           matTooltip="Dangerous operations"
+          *ngIf="products?.length"
         >
           <mat-icon>warning</mat-icon>
           Danger Zone
@@ -45,8 +46,26 @@
     </div>
   </div>
 
+  <!-- No Data State - Informative message and call to action -->
+  <div class="empty-state-container" *ngIf="!products?.length">
+    <mat-icon class="empty-state-icon">shopping_cart</mat-icon>
+    <h2 class="empty-state-title">No Products Found</h2>
+    <p class="empty-state-message">
+      To get started, you can either import an existing TraderPlus Products file or create a new default one.
+    </p>
+    <div class="empty-state-actions">
+      <button
+        class="custom-stroked-button color-primary with-icon"
+        (click)="addProduct()"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Create default Products
+      </button>
+    </div>
+  </div>
+
   <!-- Data content card with standardized styling -->
-  <div class="data-card">
+  <div class="data-card" *ngIf="products?.length">
     <h2 class="section-title">Products Overview</h2>
     <mat-card-content>
       <app-product-list

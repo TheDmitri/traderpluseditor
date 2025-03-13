@@ -142,37 +142,6 @@
           }
         }
       }
-      
-      .empty-state {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 40px 0;
-        text-align: center;
-        background-color: var(--brush-surface-secondary);
-        border-radius: 4px;
-        
-        .empty-icon {
-          font-size: 48px;
-          height: 48px;
-          width: 48px;
-          margin-bottom: 16px;
-          color: var(--brush-text-secondary);
-        }
-        
-        .empty-title {
-          margin: 0 0 8px;
-          font-size: 18px;
-          font-weight: 500;
-          color: var(--brush-text-primary);
-        }
-        
-        .empty-description {
-          margin: 0 0 24px;
-          color: var(--brush-text-secondary);
-        }
-      }
     }
   }
 

@@ -218,19 +218,6 @@
             class="interactive-row"
             [class.editing-row]="isEditing(row) || isNewCurrencyType(row)"
           ></tr>
-
-          <!-- Empty state - Displayed when no currency types exist -->
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-              <div class="empty-table-message">
-                <mat-icon class="empty-icon">money</mat-icon>
-                <h3 class="empty-title">No currency types found</h3>
-                <p class="empty-description">
-                  Try creating a new currency type or importing from a file
-                </p>
-              </div>
-            </td>
-          </tr>
         </table>
 
         <!-- Pagination controls for the table -->

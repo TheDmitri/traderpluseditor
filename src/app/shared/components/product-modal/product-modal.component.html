@@ -492,11 +492,13 @@
                   <!-- Empty state when no attachments -->
                   <div
                     *ngIf="attachmentProducts.length === 0"
-                    class="empty-state"
+                    class="empty-list"
                   >
-                    <mat-icon class="empty-state-icon">extension</mat-icon>
-                    <p>No attachments assigned to this product.</p>
-                    <p>Click the '+' button to add attachments.</p>
+                    <mat-icon>extension</mat-icon>
+                    <span
+                      >No attachments assigned to this product<br />Click the
+                      '+' button to add attachments</span
+                    >
                   </div>
 
                   <!-- List of attachments -->
@@ -549,10 +551,15 @@
               <div class="product-list-container">
                 <div class="product-list slim-scrollbar">
                   <!-- Empty state when no variants -->
-                  <div *ngIf="variantProducts.length === 0" class="empty-state">
-                    <mat-icon class="empty-state-icon">style</mat-icon>
-                    <p>No variants assigned to this product.</p>
-                    <p>Click the '+' button to add variants.</p>
+                  <div
+                    *ngIf="attachmentProducts.length === 0"
+                    class="empty-list"
+                  >
+                    <mat-icon>style</mat-icon>
+                    <span
+                      >No variants assigned to this product<br />Click the '+'
+                      button to add variants</span
+                    >
                   </div>
 
                   <!-- List of variants -->

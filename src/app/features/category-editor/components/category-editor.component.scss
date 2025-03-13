@@ -19,25 +19,6 @@
     text-align: start;
   }
 
-  // Empty state enhancements
-  .empty-table-message {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-    padding: 24px;
-    text-align: center;
-
-    .empty-icon {
-      font-size: 48px;
-      height: 48px;
-      width: 48px;
-      margin-bottom: 16px;
-      color: var(--brush-text-secondary);
-    }
-  }
-
   .table-container {
     table {
       // Specific column adjustments for category editor table
