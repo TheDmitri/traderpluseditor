@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CurrencySettings, GeneralSettings } from '../models';
+import { GeneralSettings, Category } from '../models';
+import { getDefaultCategories } from '../data/default-categories';
+import { getDefaultGeneralSettings } from '../data/default-general-settings';
+import { getDefaultCurrencySettings } from '../data/default-currency-settings';
 import { StorageService } from './storage.service';
 
 /**
@@ -78,32 +81,8 @@ export class InitializationService {
    * This provides a set of commonly used currencies (EUR and USD) with different denominations
    */
   createStandardCurrencies(): void {
-    // Create standard currency settings with EUR and USD
-    const standardCurrencySettings: CurrencySettings = {
-      version: '2.0.0',
-      currencyTypes: [
-        {
-          currencyName: 'EUR',
-          currencies: [
-            { className: 'TraderPlus_Money_Euro100', value: 100 },
-            { className: 'TraderPlus_Money_Euro50', value: 50 },
-            { className: 'TraderPlus_Money_Euro10', value: 10 },
-            { className: 'TraderPlus_Money_Euro5', value: 5 },
-            { className: 'TraderPlus_Money_Euro1', value: 1 }
-          ]
-        },
-        {
-          currencyName: 'USD',
-          currencies: [
-            { className: 'TraderPlus_Money_Dollar100', value: 100 },
-            { className: 'TraderPlus_Money_Dollar50', value: 50 },
-            { className: 'TraderPlus_Money_Dollar10', value: 10 },
-            { className: 'TraderPlus_Money_Dollar5', value: 5 },
-            { className: 'TraderPlus_Money_Dollar1', value: 1 }
-          ]
-        }
-      ]
-    };
+    // Get default currency settings from the externalized data file
+    const standardCurrencySettings = getDefaultCurrencySettings();
     
     // Save the standard currency settings
     this.storageService.saveCurrencySettings(standardCurrencySettings);
@@ -114,31 +93,15 @@ export class InitializationService {
    * @returns New general settings object
    */
   createDefaultGeneralSettings(): GeneralSettings {
-    return {
-      version: '2.0.0',
-      serverID: this.generateGUID(),
-      licenses: [
-        {
-            "licenseId": "license_car_licence_001",
-            "licenseName": "Car Licence",
-            "description": ""
-        },
-        {
-            "licenseId": "license_admin_license_001",
-            "licenseName": "Admin Licence",
-            "description": ""
-        }
-      ],
-      acceptedStates: {
-        worn: true,
-        damaged: false,
-        badly_damaged: false,
-        coefficientWorn: 0.8,
-        coefficientDamaged: 0.0,
-        coefficientBadlyDamaged: 0.0
-      },
-      traders: [],
-      traderObjects: []
-    };
+    return getDefaultGeneralSettings(this.generateGUID.bind(this));
+  }
+
+  /**
+   * Create default categories for starting a new configuration
+   * @returns Array of default categories
+   */
+  createDefaultCategories(): Category[] {
+    // Get a deep copy of the default categories from the externalized data file
+    return getDefaultCategories();
   }
 }
