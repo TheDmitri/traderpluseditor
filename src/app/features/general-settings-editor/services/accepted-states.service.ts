@@ -42,9 +42,9 @@ export class AcceptedStatesService {
     if (!settings || !settings.acceptedStates) return;
     
     form.patchValue({
-      worn: settings.acceptedStates.worn,
-      damaged: settings.acceptedStates.damaged,
-      badly_damaged: settings.acceptedStates.badly_damaged,
+      worn: settings.acceptedStates.acceptWorn,
+      damaged: settings.acceptedStates.acceptDamaged,
+      badly_damaged: settings.acceptedStates.acceptBadlyDamaged,
       coefficientWorn: settings.acceptedStates.coefficientWorn || 0.0,
       coefficientDamaged: settings.acceptedStates.coefficientDamaged || 0.0,
       coefficientBadlyDamaged: settings.acceptedStates.coefficientBadlyDamaged || 0.0
@@ -66,9 +66,9 @@ export class AcceptedStatesService {
     
     // Set coefficients to 0 for inactive states
     settings.acceptedStates = {
-      worn: formValue.worn,
-      damaged: formValue.damaged,
-      badly_damaged: formValue.badly_damaged,
+      acceptWorn: formValue.worn,
+      acceptDamaged: formValue.damaged,
+      acceptBadlyDamaged: formValue.badly_damaged,
       coefficientWorn: formValue.worn ? parseFloat(formValue.coefficientWorn) : 0.0,
       coefficientDamaged: formValue.damaged ? parseFloat(formValue.coefficientDamaged) : 0.0,
       coefficientBadlyDamaged: formValue.badly_damaged ? parseFloat(formValue.coefficientBadlyDamaged) : 0.0

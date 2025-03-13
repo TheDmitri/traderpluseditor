@@ -1,4 +1,4 @@
-import { GeneralSettings, License } from '../models';
+import { GeneralSettings, License, TraderNpc, TraderObject } from '../models';
 
 /**
  * Default licenses for TraderPlus
@@ -18,22 +18,323 @@ export const DEFAULT_LICENSES: License[] = [
 ];
 
 /**
+ * Default categories for TraderPlus
+ */
+export const DEFAULT_TRADERNPCS: TraderNpc[] = [
+  {
+    npcId: 0,
+    className: 'TraderPlusSign',
+    givenName: 'Marie',
+    role: 'Food Trader',
+    position: [11622.5, 58.7400016784668, 14678.9501953125],
+    orientation: [54, 0, 0],
+    categoriesId: ['cat_vegetables_001', 'cat_packaged_food_001', 'cat_meat_001', 'cat_animal_parts_001', 'cat_drinks_001', 'cat_medical_supplies_001', 'cat_medications_001', 'cat_money_exchange_001'],
+    currenciesAccepted: [],
+    loadouts: [
+
+    ]
+  },
+  {
+    npcId: 1,
+    className: 'SurvivorM_Jose',
+    givenName: 'Kevin',
+    role: 'Weapon Trader',
+    position: [11620.6298828125, 59.040000915527344, 14656.830078125],
+    orientation: [325, 0, 0],
+    categoriesId: ['cat_melee_001', 'cat_sidearms_001', 'cat_rifles_001', 'cat_shotguns_001', 'cat_submachine_guns_001', 'cat_assault_rifles_001', 'cat_sniper_rifles_001', 'cat_grenades_001', 'cat_ammunition_001', 'cat_magazines_001', 'cat_handguards_001', 'cat_buttstocks_001', 'cat_optics_001', 'cat_supressors_001', 'cat_compensators_001', 'cat_bayonets_001', 'cat_flashlights_001'],
+    currenciesAccepted: [],
+    loadouts: [
+      {
+        className: 'FirefighterAxe',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'SVD',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'M4A1',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'M4_RISHndgrd',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'Universallight',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'M4_OEBttstck',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'OMNOGloves_Brown',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'GorkaHelmet',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'PlateCarrierVest',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'GorkaEJacket_Autumn',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'GorkaPants_Autumn',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'CombatBoots_Black',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'Balaclava3Holes_Black',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'AliceBag_Black',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      }
+    ]
+  },
+  {
+    npcId: 2,
+    className: 'TraderPlusSign',
+    givenName: 'Bob',
+    role: 'Tool Trader',
+    position: [11623.1103515625, 59.040000915527344, 14658.91015625],
+    orientation: [145, 0, 0],
+    categoriesId: ['cat_tools_001', 'cat_heavy_tools_001', 'cat_electronics_001', 'cat_fire_&_lights_001', 'cat_cooking_&_hunting_supplies_001', 'cat_hardware_supplies_001', 'cat_seeds_&_lime_001'],
+    currenciesAccepted: [],
+    loadouts: [
+
+    ]
+  },
+  {
+    npcId: 3,
+    className: 'SurvivorM_Peter',
+    givenName: 'John',
+    role: 'Clothes Trader',
+    position: [11596.5498046875, 58.7400016784668, 14674.5400390625],
+    orientation: [65, 0, 0],
+    categoriesId: ['cat_glasses_001', 'cat_armbands_001', 'cat_gloves_001', 'cat_hats_&_caps_001', 'cat_helmets_001', 'cat_masks_001', 'cat_shirts_001', 'cat_hoodies_&_sweater_001', 'cat_vests_001', 'cat_jackets_&_coats_001', 'cat_skirts_&_dresses_001', 'cat_pants_001', 'cat_shoes_&_boots_001', 'cat_ghillie_001', 'cat_holster_&_pouches_001', 'cat_belt_001', 'cat_bags_001'],
+    currenciesAccepted: [],
+    loadouts: [
+      {
+        className: 'ManSuit_DarkGrey',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'DressShoes_Black',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'SlacksPants_Black',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      },
+      {
+        className: 'SportGlasses_Black',
+        quantity: -1,
+        slotName: '',
+        attachments: []
+      }
+    ]
+  },
+  {
+    npcId: 4,
+    className: 'TraderPlusSign',
+    givenName: 'Pablo',
+    role: 'Car Trader',
+    position: [11617.349609375, 58.7400016784668, 14686.9501953125],
+    orientation: [54, 0, 0],
+    categoriesId: ['cat_vehicles_001', 'cat_vehicle_parts_001'],
+    currenciesAccepted: [],
+    loadouts: [
+
+    ]
+  },
+  {
+    npcId: -2,
+    className: 'TraderPlus_BANK_ATM',
+    givenName: 'ATM',
+    role: 'ATM',
+    position: [11623, 57.90999984741211, 14676],
+    orientation: [-37, 0, 0],
+    categoriesId: [],
+    currenciesAccepted: [],
+    loadouts: [
+
+    ]
+  }
+];
+
+/**
+ * Default products for TraderPlus
+ */
+export const DEFAULT_TRADEROBJECT: TraderObject[] = [
+  {
+    className: 'bldr_Misc_CrashBarrier',
+    position: [11636, 58, 14646],
+    orientation: [-33, 0, 0]
+  },
+  {
+    className: 'bldr_Misc_CrashBarrier',
+    position: [11631, 58.099998474121094, 14653],
+    orientation: [147, 0, 0]
+  },
+  {
+    className: 'bldr_Misc_RoadBarrier',
+    position: [11537.2001953125, 59, 14726.08984375],
+    orientation: [55, 0, 0]
+  },
+  {
+    className: 'bldr_Wall_Barricade1_10',
+    position: [11590.5400390625, 58.220001220703125, 14760.669921875],
+    orientation: [144, 0, 0]
+  },
+  {
+    className: 'bldr_Wall_Barricade1_4',
+    position: [11615.189453125, 57.636619567871094, 14626.82421875],
+    orientation: [153, 0, 0]
+  },
+  {
+    className: 'bldr_Misc_Barricade',
+    position: [11613.2607421875, 57.99546432495117, 14622.95703125],
+    orientation: [54, 0, 0]
+  },
+  {
+    className: 'Land_Wreck_S1023_Blue',
+    position: [11596.6044921875, 58.728797912597656, 14630.3427734375],
+    orientation: [-135, 0, 0]
+  },
+  {
+    className: 'Land_Wreck_Lada_Red',
+    position: [11598.5400390625, 58.41791915893555, 14628.796875],
+    orientation: [171.99954223632812, 0, 0]
+  },
+  {
+    className: 'bldr_Wall_Barricade1_4',
+    position: [11593.5087890625, 57.81910705566406, 14632.2060546875],
+    orientation: [63, 0, 0]
+  },
+  {
+    className: 'bldr_Wall_Barricade1_10',
+    position: [11609.3408203125, 58.077457427978516, 14766.326171875],
+    orientation: [54, 0, 0]
+  },
+  {
+    className: 'bldr_Wall_Barricade1_4',
+    position: [11593.5087890625, 57.81910705566406, 14632.2060546875],
+    orientation: [63, 0, 0]
+  },
+  {
+    className: 'bldr_hbarrier_4m',
+    position: [11664.1875, 57.7883186340332, 14659.564453125],
+    orientation: [-36.00001525878906, 0, 0]
+  },
+  {
+    className: 'bldr_hbarrier_4m',
+    position: [11654.0380859375, 58.30573272705078, 14652.6845703125],
+    orientation: [-36.00001525878906, 0, 0]
+  },
+  {
+    className: 'bldr_hbarrier_4m',
+    position: [11656.80078125, 58.16636657714844, 14653.1533203125],
+    orientation: [53.900001525878906, 0, 0]
+  },
+  {
+    className: 'bldr_hbarrier_4m',
+    position: [11662.8837890625, 57.84144973754883, 14657.0732421875],
+    orientation: [53.900001525878906, 0, 0]
+  },
+  {
+    className: 'Land_City_Stand_FastFood',
+    position: [11594.310546875, 59.78278350830078, 14673.0546875],
+    orientation: [-117, 0, 0]
+  },
+  {
+    className: 'Land_Misc_TrailRoof_Small',
+    position: [11598.7998046875, 59.28260040283203, 14669.2001953125],
+    orientation: [62, 0, 0]
+  },
+  {
+    className: 'Land_Misc_TrailRoof_Small',
+    position: [11600.9658203125, 59.28261184692383, 14665.07421875],
+    orientation: [62, 0, 0]
+  },
+  {
+    className: 'Land_Misc_Well_Pump_Yellow',
+    position: [11610.8466796875, 58.61098861694336, 14674.2265625],
+    orientation: [126, 0, 0]
+  },
+  {
+    className: 'Land_Garage_Office',
+    position: [11627.701171875, 67.97467041015625, 14805.9326171875],
+    orientation: [0, 0, 0]
+  },
+  {
+    className: 'Land_Garage_Small',
+    position: [11615.798828125, 59.178348541259766, 14687.2724609375],
+    orientation: [50, 0, 0]
+  }
+];
+
+/**
  * Default settings template for TraderPlus general configuration
- * (without serverID which needs to be generated)
+ * (without serverID which be generated on creation)
  */
 export const DEFAULT_GENERAL_SETTINGS_TEMPLATE = {
-  version: '2.0.0',
+  version: '2.5',
   licenses: DEFAULT_LICENSES,
   acceptedStates: {
-    worn: true,
-    damaged: false,
-    badly_damaged: false,
+    acceptWorn: 1,
+    acceptDamaged: 0,
+    acceptBadlyDamaged: 0,
     coefficientWorn: 0.8,
-    coefficientDamaged: 0.0,
-    coefficientBadlyDamaged: 0.0
+    coefficientDamaged: 0,
+    coefficientBadlyDamaged: 0
   },
-  traders: [],
-  traderObjects: []
+  traders: DEFAULT_TRADERNPCS,
+  traderObjects: DEFAULT_TRADEROBJECT
 };
 
 /**
@@ -44,8 +345,16 @@ export const DEFAULT_GENERAL_SETTINGS_TEMPLATE = {
  * @returns A new GeneralSettings object with default values
  */
 export function getDefaultGeneralSettings(generateGUID: () => string): GeneralSettings {
+  // Create a deep copy of the template and explicitly order properties
+  const template = JSON.parse(JSON.stringify(DEFAULT_GENERAL_SETTINGS_TEMPLATE));
+  
+  // Create new object with explicit property order to ensure serverID appears after version in JSON
   return {
-    ...JSON.parse(JSON.stringify(DEFAULT_GENERAL_SETTINGS_TEMPLATE)),
-    serverID: generateGUID()
+    version: template.version,
+    serverID: generateGUID(),
+    licenses: template.licenses,
+    acceptedStates: template.acceptedStates,
+    traders: template.traders,
+    traderObjects: template.traderObjects
   };
 }
