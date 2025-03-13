@@ -1,11 +1,10 @@
 .loader-container {
     position: relative;
-    width: 48px;
-    height: 48px;
+    width: 96px;
+    height: 96px;
     display: inline-block;
   }
   
-  /* Variante 1 */
   .loader-v1 {
     position: absolute;
     top: 0;
@@ -13,9 +12,9 @@
     transform: rotateZ(45deg);
     perspective: 1000px;
     border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    color: #fff;
+    width: 96px;
+    height: 96px;
+    color: var(--color-secondary-dark);
   }
   
   .loader-v1:before,
@@ -29,28 +28,27 @@
     height: inherit;
     border-radius: 50%;
     transform: rotateX(70deg);
-    animation: 1s spin linear infinite;
+    animation: 2s spin linear infinite;
   }
   
   .loader-v1:after {
-    color: #FF3D00;
+    color: var(--color-primary-dark);
     transform: rotateY(70deg);
-    animation-delay: .4s;
+    animation-delay: .2s;
   }
   
-  /* Variante 2 */
   .loader-v2 {
     position: absolute;
     top: 0;
     left: 0;
-    width: 48px;
-    height: 48px;
+    width: 96px;
+    height: 96px;
     border-radius: 50%;
     display: inline-block;
-    border-top: 4px solid rgba(255, 255, 255, 0.7);
-    border-right: 4px solid transparent;
+    border-top: 3px solid var(--color-secondary-medium);
+    border-right: 3px solid transparent;
     box-sizing: border-box;
-    animation: rotation 1s linear infinite;
+    animation: rotation 2s linear infinite;
   }
   
   .loader-v2::after {
@@ -59,12 +57,12 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: 48px;
-    height: 48px;
+    width: 96px;
+    height: 96px;
     border-radius: 50%;
-    border-left: 4px solid rgba(255, 61, 0, 0.7);
-    border-bottom: 4px solid transparent;
-    animation: rotation 0.5s linear infinite reverse;
+    border-left: 3px solid var(--color-primary-medium);
+    border-bottom: 3px solid transparent;
+    animation: rotation 1s linear infinite reverse;
   }
   
   @keyframes rotate {

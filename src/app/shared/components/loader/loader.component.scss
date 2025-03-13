@@ -15,7 +15,7 @@
     right: 0;
     bottom: 0;
     z-index: 9999;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--brush-overlay-background);
     min-height: 100vh;
   }
 }
@@ -30,7 +30,9 @@
 .loader-text {
   margin-top: 20px;
   text-align: center;
-  font-size: 1rem;
-  color: #fff;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+  color: var(--brush-text-primary);
   max-width: 90%;
 }
