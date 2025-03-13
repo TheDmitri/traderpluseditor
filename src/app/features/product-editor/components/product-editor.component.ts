@@ -14,7 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Application imports
 import { Product } from '../../../core/models';
-import { StorageService } from '../../../core/services';
+import { InitializationService, StorageService } from '../../../core/services';
 import { ConfirmDialogComponent, ProductListComponent, ProductModalComponent } from '../../../shared/components';
 import { NotificationService } from '../../../shared/services';
 
@@ -43,7 +43,8 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
   constructor(
     private storageService: StorageService,
     private dialog: MatDialog,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private initializationService: InitializationService,
   ) {}
 
   ngOnInit(): void {
@@ -129,6 +130,19 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
         this.notificationService.success('Product updated successfully');
       }
     });
+  }
+
+  /**
+   * Create default products for quick startup
+   * 
+   * This method creates a set of standard products with one pre-populated
+   * ammunition product and several empty products for common trader types.
+   */
+  createDefaultProducts(): void {
+    const defaultProducts = this.initializationService.createDefaultProducts();
+    this.storageService.saveProducts(defaultProducts);
+    this.loadProducts();
+    this.notificationService.success('Default products created successfully');
   }
 
   ngOnDestroy(): void {

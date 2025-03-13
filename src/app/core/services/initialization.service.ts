@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { GeneralSettings, Category } from '../models';
+import { GeneralSettings, Category, Product } from '../models';
 import { getDefaultCategories } from '../data/default-categories';
 import { getDefaultGeneralSettings } from '../data/default-general-settings';
 import { getDefaultCurrencySettings } from '../data/default-currency-settings';
 import { StorageService } from './storage.service';
+import { getDefaultProducts } from '../data/default-products';
 
 /**
  * Service for initializing standard application data
@@ -103,5 +104,14 @@ export class InitializationService {
   createDefaultCategories(): Category[] {
     // Get a deep copy of the default categories from the externalized data file
     return getDefaultCategories();
+  }
+
+  /**
+   * Create default categories for starting a new configuration
+   * @returns Array of default categories
+   */
+  createDefaultProducts(): Product[] {
+    // Get a deep copy of the default categories from the externalized data file
+    return getDefaultProducts();
   }
 }
