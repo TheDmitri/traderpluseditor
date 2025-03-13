@@ -15,7 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 // Application imports
 import { Product } from '../../../core/models';
 import { InitializationService, StorageService } from '../../../core/services';
-import { ConfirmDialogComponent, ProductListComponent, ProductModalComponent } from '../../../shared/components';
+import { ConfirmDialogComponent, ProductListComponent, ProductModalComponent, LoaderComponent } from '../../../shared/components';
 import { NotificationService } from '../../../shared/services';
 
 @Component({
@@ -32,6 +32,7 @@ import { NotificationService } from '../../../shared/services';
       MatDialogModule,
       RouterModule,
       ProductListComponent,
+      LoaderComponent,
   ],
   templateUrl: './product-editor.component.html',
   styleUrls: ['./product-editor.component.scss'],
@@ -39,6 +40,7 @@ import { NotificationService } from '../../../shared/services';
 export class ProductEditorComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   products: Product[] = [];
+  isCreatingDefaultProducts = false;
 
   constructor(
     private storageService: StorageService,
@@ -135,14 +137,23 @@ export class ProductEditorComponent implements OnInit, OnDestroy {
   /**
    * Create default products for quick startup
    * 
-   * This method creates a set of standard products with one pre-populated
-   * ammunition product and several empty products for common trader types.
+   * This method creates a set of standard products.
    */
   createDefaultProducts(): void {
-    const defaultProducts = this.initializationService.createDefaultProducts();
-    this.storageService.saveProducts(defaultProducts);
-    this.loadProducts();
-    this.notificationService.success('Default products created successfully');
+    this.isCreatingDefaultProducts = true;
+    
+    // Use setTimeout to allow the UI to update and show the loader
+    setTimeout(() => {
+      const defaultProducts = this.initializationService.createDefaultProducts();
+      this.storageService.saveProducts(defaultProducts);
+      
+      // Simulate some processing time to show the loader
+      setTimeout(() => {
+        this.loadProducts();
+        this.isCreatingDefaultProducts = false;
+        this.notificationService.success('Default products created successfully');
+      }, 800);
+    }, 100);
   }
 
   ngOnDestroy(): void {

@@ -46,8 +46,13 @@
     </div>
   </div>
 
+  <!-- Loading state while creating default products -->
+  <div class="empty-state-container" *ngIf="isCreatingDefaultProducts">
+    <app-loader loadingText="Creating default products..."></app-loader>
+  </div>
+
   <!-- No Data State - Informative message and call to action -->
-  <div class="empty-state-container" *ngIf="!products?.length">
+  <div class="empty-state-container" *ngIf="!products?.length && !isCreatingDefaultProducts">
     <mat-icon class="empty-state-icon">shopping_cart</mat-icon>
     <h2 class="empty-state-title">No Products Found</h2>
     <p class="empty-state-message">
@@ -65,7 +70,7 @@
   </div>
 
   <!-- Data content card with standardized styling -->
-  <div class="data-card" *ngIf="products?.length">
+  <div class="data-card" *ngIf="products?.length && !isCreatingDefaultProducts">
     <h2 class="section-title">Products Overview</h2>
     <mat-card-content>
       <app-product-list
