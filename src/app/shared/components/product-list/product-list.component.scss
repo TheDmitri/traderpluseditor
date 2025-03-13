@@ -65,15 +65,6 @@
         text-align: center;
       }
 
-      // Actions-Spalte mit konsistenter Darstellung
-      .actions-cell {
-        .action-buttons {
-          display: flex;
-          gap: 8px;
-          justify-content: flex-end;
-        }
-      }
-
       // Cell styles
       .mat-mdc-header-cell,
       .mat-mdc-cell {

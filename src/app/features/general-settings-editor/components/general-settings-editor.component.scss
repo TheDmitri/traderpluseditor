@@ -33,57 +33,6 @@
   }
 }
 
-/* Panel Header Layout
-========================================================================== */
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
-  padding-bottom: 16px;
-  
-  .panel-title-area {
-    flex: 1;
-    
-    .section-title {
-      margin: 0 0 8px 0;
-    }
-    
-    .panel-subtitle {
-      margin: 0;
-      color: var(--brush-text-secondary);
-    }
-  }
-  
-  .panel-actions {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    
-    @media (max-width: 480px) {
-      flex-direction: column;
-      width: 100%;
-      
-      button {
-        width: 100%;
-        margin-left: 0 !important;
-        margin-top: 8px;
-      }
-    }
-  }
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    
-    .panel-actions {
-      width: 100%;
-      justify-content: flex-start;
-    }
-  }
-}
-
 /* States Grid Styling
 ========================================================================== */
 .states-grid {
@@ -220,20 +169,6 @@
 .table-container {
   width: 100%;
   overflow-x: auto;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  
-  @media (max-width: 768px) {
-    flex-wrap: wrap;
-    
-    button {
-      flex: 1;
-    }
-  }
 }
 
 .actions-cell {

@@ -177,6 +177,11 @@
       flex-direction: column;
       align-items: flex-start;
       gap: 16px;
+      
+      .page-title {
+        font-size: var(--font-size-3xl);
+        line-height: 1.3; // Etwas größere Zeilenhöhe für kleinere Bildschirme
+      }
 
       .header-right,
       .header-actions {

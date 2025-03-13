@@ -5,15 +5,6 @@
   display: grid;
   gap: 32px;
 
-  // Specific overrides for the actions column in this view
-  .actions-cell {
-    .action-buttons {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-  }
-
   // Product count styling
   .product-count {
     text-align: start;
@@ -76,57 +67,6 @@
     .mat-column-icon {
       display: none;
     }
-
-    .action-buttons {
-      flex-direction: column;
-      gap: 8px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .action-buttons {
-      width: 100%;
-    }
   }
 }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .category-editor-container {
-    padding: 16px;
-
-    .page-header {
-      min-height: 100px; // Slightly smaller on mobile
-
-      .header-content {
-        padding: 20px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-
-        .header-right {
-          width: 100%;
-          justify-content: flex-start;
-        }
-      }
-    }
-  }
-
-  .action-buttons {
-    width: 100%;
-
-    button {
-      flex: 1;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .action-buttons {
-    flex-direction: column;
-
-    button {
-      width: 100%;
-    }
-  }
-}

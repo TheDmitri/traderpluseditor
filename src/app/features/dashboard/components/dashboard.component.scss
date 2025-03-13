@@ -26,8 +26,8 @@
       font-size: var(--font-size-4xl);
       font-weight: 300;
       margin-bottom: 12px;
-      line-height: 1.2; // Kontrollierte Zeilenhöhe statt fester Höhe
-      padding: 4px 0; // Etwas Polsterung für bessere Sichtbarkeit
+      line-height: 1.2;
+      padding: 4px 0;
       background: linear-gradient(
         90deg,
         var(--color-primary-medium),
@@ -36,8 +36,8 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      display: block; // Sicherstellen, dass der Text als Block angezeigt wird
-      width: 100%; // Volle Breite nutzen
+      display: block;
+      width: 100%;
     }
     
     .subtitle {
@@ -314,25 +314,6 @@
   }
 }
 
-/* Panel Header Styling
-========================================================================== */
-.panel-header {
-  margin-bottom: 24px;
-  
-  .section-title {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-medium);
-    color: var(--brush-text-primary);
-    margin: 0 0 8px;
-  }
-  
-  .panel-subtitle {
-    color: var(--brush-text-secondary);
-    font-size: var(--font-size-base);
-    margin: 0;
-  }
-}
-
 /* Responsive Adjustments
 ========================================================================== */
 @media (max-width: 1200px) {
@@ -399,10 +380,5 @@
   
   .info-section .info-grid {
     grid-template-columns: 1fr;
-  }
-  
-  .page-header .header-content .page-title {
-    font-size: var(--font-size-3xl);
-    line-height: 1.3; // Etwas größere Zeilenhöhe für kleinere Bildschirme
   }
 }

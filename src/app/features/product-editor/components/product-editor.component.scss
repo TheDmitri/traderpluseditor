@@ -11,22 +11,4 @@
   .product-editor-container {
     padding: 16px;
   }
-
-  .action-buttons {
-    width: 100%;
-
-    button {
-      flex: 1;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .action-buttons {
-    flex-direction: column;
-
-    button {
-      width: 100%;
-    }
-  }
 }
