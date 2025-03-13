@@ -46,8 +46,13 @@
     </div>
   </header>
 
+  <!-- Loading state while creating default settings -->
+  <div class="empty-state-container" *ngIf="isCreatingDefaultSettings">
+    <app-loader loadingText="Creating general settings..."></app-loader>
+  </div>
+
   <!-- No Settings State - Informative message and call to action -->
-  <div class="empty-state-container" *ngIf="!hasSettings">
+  <div class="empty-state-container" *ngIf="!hasSettings && !isCreatingDefaultSettings">
     <mat-icon class="empty-state-icon">settings</mat-icon>
     <h2 class="empty-state-title">No General Settings Found</h2>
     <p class="empty-state-message">
@@ -65,7 +70,7 @@
   </div>
 
   <!-- Main Content Area - Only shown when settings exist -->
-  <div class="main-content-area" *ngIf="hasSettings">
+  <div class="main-content-area" *ngIf="hasSettings && !isCreatingDefaultSettings">
     <!-- Two-column grid layout for settings sections -->
     <div class="settings-grid">
       <!-- Licenses Section -->

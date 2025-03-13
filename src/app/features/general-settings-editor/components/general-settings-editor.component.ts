@@ -22,6 +22,7 @@ import { GeneralSettings, License } from '../../../core/models';
 import { InitializationService } from '../../../core/services';
 import { NotificationService } from '../../../shared/services';
 import { AcceptedStatesService, GeneralSettingsService, LicenseService } from '../services';
+import { LoaderComponent } from '../../../shared/components';
 
 /**
  * General Settings Editor Component
@@ -48,7 +49,8 @@ import { AcceptedStatesService, GeneralSettingsService, LicenseService } from '.
     MatTooltipModule,
     MatSlideToggleModule,
     MatMenuModule,
-    RouterModule
+    RouterModule,
+    LoaderComponent
   ],
   templateUrl: './general-settings-editor.component.html',
   styleUrls: ['./general-settings-editor.component.scss']
@@ -78,6 +80,9 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
   /** Temporary license data during editing */
   editLicenseName: string = '';
   editLicenseDescription: string = '';
+
+  /** Flag to track if default settings are being created */
+  isCreatingDefaultSettings = false;
 
   /**
    * Constructor initializes necessary services
@@ -133,17 +138,29 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
    * Create new general settings with default values
    */
   createGeneralSettings(): void {
-    // Create and save default settings using the service
-    this.generalSettings = this.generalSettingsService.createAndSaveDefaultGeneralSettings();
+    this.isCreatingDefaultSettings = true;
     
-    // Update component state
-    this.hasSettings = true;
-    
-    // Reinitialize the form for accepted states
-    this.initializeAcceptedStatesForm();
-    
-    // Update the license data source to display default licenses
-    this.licensesDataSource = this.licenseService.getLicensesDataSource();
+    // Use setTimeout to allow the UI to update and show the loader
+    setTimeout(() => {
+      // Create and save default settings using the service
+      this.generalSettings = this.generalSettingsService.createAndSaveDefaultGeneralSettings();
+      
+      // Simulate some processing time to show the loader
+      setTimeout(() => {
+        // Update component state
+        this.hasSettings = true;
+        
+        // Reinitialize the form for accepted states
+        this.initializeAcceptedStatesForm();
+        
+        // Update the license data source to display default licenses
+        this.licensesDataSource = this.licenseService.getLicensesDataSource();
+        
+        this.isCreatingDefaultSettings = false;
+        
+        this.notificationService.success('General settings created successfully');
+      }, 800);
+    }, 100);
   }
 
   /**
