@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 // Application imports
 import { GeneralSettingsService } from './general-settings.service';
@@ -109,5 +111,60 @@ export class AcceptedStatesService {
         if (onStateToggle) onStateToggle();
       }
     });
+  }
+
+  /**
+   * Initialize a fully functional form for accepted states
+   * Sets up state toggles, validators, value listeners
+   * @param hasSettings Whether settings exist
+   * @param destroy$ Observable for unsubscribing on component destruction
+   * @returns The configured form group
+   */
+  initializeAcceptedStatesForm(hasSettings: boolean, destroy$: Subject<void>): FormGroup {
+    // Create the form
+    const form = this.createAcceptedStatesForm();
+
+    if (hasSettings) {
+      // Populate the form with values from settings
+      this.initFormFromSettings(form);
+      
+      // Set up listeners to reset coefficients when states are toggled off
+      this.setupStateToggleListeners(form, () => {
+        if (form.valid) {
+          this.saveAcceptedStates(form);
+        }
+      });
+      
+      // Save settings when form changes
+      form.valueChanges
+        .pipe(takeUntil(destroy$))
+        .subscribe(() => {
+          if (form.valid) {
+            this.saveAcceptedStates(form);
+          }
+        });
+      
+      // Enable the form
+      form.enable();
+    } else {
+      // Disable the form if no settings exist
+      form.disable();
+    }
+    
+    return form;
+  }
+  
+  /**
+   * Update form state based on settings existence
+   * @param form The form to update
+   * @param hasSettings Whether settings exist
+   */
+  updateFormState(form: FormGroup, hasSettings: boolean): void {
+    if (hasSettings) {
+      form.enable();
+      this.initFormFromSettings(form);
+    } else {
+      form.disable();
+    }
   }
 }

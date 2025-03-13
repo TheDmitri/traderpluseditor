@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CurrencySettings } from '../models';
+import { CurrencySettings, GeneralSettings } from '../models';
 import { StorageService } from './storage.service';
 
 /**
@@ -60,6 +60,18 @@ export class InitializationService {
       }
     });
   }
+  
+  /**
+   * Generate a GUID string
+   * @returns A GUID string
+   */
+  generateGUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0,
+        v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    }).toUpperCase();
+  }
 
   /**
    * Creates standard currency types and currencies based on TraderPlusCurrencySettings.json
@@ -95,5 +107,38 @@ export class InitializationService {
     
     // Save the standard currency settings
     this.storageService.saveCurrencySettings(standardCurrencySettings);
+  }
+
+  /**
+   * Create new general settings with default values
+   * @returns New general settings object
+   */
+  createDefaultGeneralSettings(): GeneralSettings {
+    return {
+      version: '2.0.0',
+      serverID: this.generateGUID(),
+      licenses: [
+        {
+            "licenseId": "license_car_licence_001",
+            "licenseName": "Car Licence",
+            "description": ""
+        },
+        {
+            "licenseId": "license_admin_license_001",
+            "licenseName": "Admin Licence",
+            "description": ""
+        }
+      ],
+      acceptedStates: {
+        worn: true,
+        damaged: false,
+        badly_damaged: false,
+        coefficientWorn: 0.8,
+        coefficientDamaged: 0.0,
+        coefficientBadlyDamaged: 0.0
+      },
+      traders: [],
+      traderObjects: []
+    };
   }
 }

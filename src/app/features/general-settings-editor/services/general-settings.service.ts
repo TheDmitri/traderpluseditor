@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 
 // Application imports
 import { GeneralSettings, License } from '../../../core/models';
-import { StorageService } from '../../../core/services';
+import { StorageService, InitializationService } from '../../../core/services';
+import { ConfirmDialogComponent } from '../../../shared/components';
+import { NotificationService } from '../../../shared/services';
 
 /**
  * Service for handling TraderPlus general settings operations
@@ -11,7 +14,12 @@ import { StorageService } from '../../../core/services';
   providedIn: 'root',
 })
 export class GeneralSettingsService {
-  constructor(private storageService: StorageService) {}
+  constructor(
+    private storageService: StorageService,
+    private initializationService: InitializationService,
+    private dialog: MatDialog,
+    private notificationService: NotificationService
+  ) {}
 
   /**
    * Validates if data is valid general settings
@@ -124,49 +132,52 @@ export class GeneralSettingsService {
   deleteGeneralSettings(): void {
     this.storageService.removeGeneralSettings();
   }
-  
+
   /**
-   * Create new general settings with default values
-   * @returns New general settings object
+   * Create and save new general settings with default values
+   * @returns The newly created general settings
    */
-  createDefaultGeneralSettings(): GeneralSettings {
-    return {
-      version: '2.0.0',
-      serverID: this.generateGUID(),
-      licenses: [
-        {
-            "licenseId": "license_car_licence_001",
-            "licenseName": "Car Licence",
-            "description": ""
-        },
-        {
-            "licenseId": "license_admin_license_001",
-            "licenseName": "Admin Licence",
-            "description": ""
-        }
-      ],
-      acceptedStates: {
-        worn: true,
-        damaged: false,
-        badly_damaged: false,
-        coefficientWorn: 0.8,
-        coefficientDamaged: 0.0,
-        coefficientBadlyDamaged: 0.0
-      },
-      traders: [],
-      traderObjects: []
-    };
+  createAndSaveDefaultGeneralSettings(): GeneralSettings {
+    // Create default settings using the initialization service
+    const generalSettings = this.initializationService.createDefaultGeneralSettings();
+    
+    // Save the new settings
+    this.saveGeneralSettings(generalSettings);
+    
+    // Notification
+    this.notificationService.success('General settings created successfully');
+    
+    return generalSettings;
   }
   
   /**
-   * Generate a GUID string
-   * @returns A GUID string
+   * Delete all general settings after confirmation
+   * @returns Promise that resolves to true if settings were deleted, false otherwise
    */
-  generateGUID(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = Math.random() * 16 | 0,
-        v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    }).toUpperCase();
+  deleteGeneralSettingsWithConfirmation(): Promise<boolean> {
+    return new Promise((resolve) => {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        data: {
+          title: 'Delete All Settings',
+          message: 'Are you sure you want to delete all general settings? \n\nThis action cannot be undone.',
+          confirmText: 'Delete All',
+          cancelText: 'Cancel',
+          type: 'danger'
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          // Clear all settings
+          this.deleteGeneralSettings();
+          
+          // Notification
+          this.notificationService.success('All general settings deleted successfully');
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      });
+    });
   }
 }

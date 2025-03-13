@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
 
 // Application imports
 import { License } from '../../../core/models';
 import { GeneralSettingsService } from '.';
+import { ConfirmDialogComponent } from '../../../shared/components';
+import { NotificationService } from '../../../shared/services';
 
 /**
  * Service for managing licenses in TraderPlus general settings
@@ -12,7 +15,22 @@ import { GeneralSettingsService } from '.';
   providedIn: 'root',
 })
 export class LicenseService {
-  constructor(private generalSettingsService: GeneralSettingsService) {}
+  // Temporary license for adding new licenses
+  private newLicense: License | null = null;
+  
+  // Flag to track if we're adding a new license vs editing an existing one
+  private isAddingNewLicense = false;
+  
+  // Current license being edited (UI state)
+  private editingLicenseIndex: number | null = null;
+  private editLicenseName: string = '';
+  private editLicenseDescription: string = '';
+
+  constructor(
+    private generalSettingsService: GeneralSettingsService,
+    private dialog: MatDialog,
+    private notificationService: NotificationService
+  ) {}
   
   /**
    * Generates a license ID based on the license name
@@ -250,5 +268,270 @@ export class LicenseService {
    */
   canSaveLicense(name: string): boolean {
     return !!name?.trim();
+  }
+
+  /**
+   * Add a new license for editing (but don't save it yet)
+   * @returns Object with the updated datasource and license editing state
+   */
+  addLicense(): {
+    dataSource: MatTableDataSource<License>;
+    editingIndex: number;
+    editName: string;
+    editDescription: string;
+  } {
+    // Create a new license but don't save it to settings yet
+    this.newLicense = this.createLicense();
+    this.isAddingNewLicense = true;
+    
+    // Update the temporary data for editing
+    this.editingLicenseIndex = 0;
+    this.editLicenseName = '';
+    this.editLicenseDescription = '';
+    
+    // Create a temporary datasource with the new license at the top
+    const currentLicenses = [...this.getLicensesDataSource().data];
+    currentLicenses.unshift(this.newLicense);
+    
+    return {
+      dataSource: new MatTableDataSource<License>(currentLicenses),
+      editingIndex: this.editingLicenseIndex,
+      editName: this.editLicenseName,
+      editDescription: this.editLicenseDescription
+    };
+  }
+
+  /**
+   * Cancel editing a license
+   * @returns The updated datasource after cancellation
+   */
+  cancelEditLicense(): MatTableDataSource<License> {
+    if (this.isAddingNewLicense) {
+      // If we're adding a new license, just remove it from the UI
+      this.isAddingNewLicense = false;
+      this.newLicense = null;
+    }
+    
+    this.editingLicenseIndex = null;
+    
+    // Return the updated datasource
+    return this.getLicensesDataSource();
+  }
+
+  /**
+   * Start editing a license
+   * @param license - The license to edit
+   * @param index - The index of the license in the array
+   * @returns Object with the editing state information
+   */
+  startEditLicense(license: License, index: number): {
+    dataSource: MatTableDataSource<License>;
+    editingIndex: number;
+    editName: string;
+    editDescription: string;
+    isAdding: boolean;
+  } {
+    // If we were adding a new license and now want to edit something else,
+    // discard the new license
+    if (this.isAddingNewLicense) {
+      this.isAddingNewLicense = false;
+      this.newLicense = null;
+    }
+    
+    this.editingLicenseIndex = index;
+    this.editLicenseName = license.licenseName || '';
+    this.editLicenseDescription = license.description || '';
+    
+    return {
+      dataSource: this.getLicensesDataSource(),
+      editingIndex: this.editingLicenseIndex,
+      editName: this.editLicenseName,
+      editDescription: this.editLicenseDescription,
+      isAdding: this.isAddingNewLicense
+    };
+  }
+
+  /**
+   * Save the currently edited license
+   * @param editingIndex - The index of the license being edited
+   * @param editName - The name of the license being edited
+   * @param editDescription - The description of the license being edited
+   * @returns Object with the result of the operation and updated datasource
+   */
+  saveLicenseWithUIState(
+    editingIndex: number | null,
+    editName: string,
+    editDescription: string
+  ): {
+    success: boolean;
+    error?: string;
+    dataSource: MatTableDataSource<License>;
+  } {
+    if (editingIndex === null) {
+      return {
+        success: false,
+        error: 'No license is being edited',
+        dataSource: this.getLicensesDataSource()
+      };
+    }
+    
+    // Check if we're adding a new license
+    if (this.isAddingNewLicense && this.newLicense) {
+      // Update the temporary license object
+      this.newLicense.licenseName = editName.trim();
+      this.newLicense.description = editDescription.trim();
+      
+      // Validate the license name
+      if (!this.newLicense.licenseName) {
+        return {
+          success: false,
+          error: 'License name is required',
+          dataSource: this.getLicensesDataSource()
+        };
+      }
+      
+      // Add the license to the settings
+      if (this.addLicenseToSettings(this.newLicense)) {
+        // Reset state
+        this.isAddingNewLicense = false;
+        this.newLicense = null;
+        this.editingLicenseIndex = null;
+        
+        return {
+          success: true,
+          dataSource: this.getLicensesDataSource()
+        };
+      } else {
+        return {
+          success: false,
+          error: 'Failed to save license',
+          dataSource: this.getLicensesDataSource()
+        };
+      }
+    } else {
+      // We're editing an existing license
+      const result = this.validateAndSaveLicense(
+        editingIndex, 
+        editName, 
+        editDescription
+      );
+      
+      if (result.success) {
+        // Reset editing state
+        this.editingLicenseIndex = null;
+        
+        return {
+          success: true,
+          dataSource: this.getLicensesDataSource()
+        };
+      } else {
+        return {
+          success: false,
+          error: result.error || 'Failed to save license',
+          dataSource: this.getLicensesDataSource()
+        };
+      }
+    }
+  }
+
+  /**
+   * Get the current license editing state
+   * @returns Object with the current license editing state
+   */
+  getLicenseEditingState(): {
+    editingIndex: number | null;
+    editName: string;
+    editDescription: string;
+    isAdding: boolean;
+  } {
+    return {
+      editingIndex: this.editingLicenseIndex,
+      editName: this.editLicenseName,
+      editDescription: this.editLicenseDescription,
+      isAdding: this.isAddingNewLicense
+    };
+  }
+
+  /**
+   * Set license edit state manually
+   * @param editName - The name to set
+   * @param editDescription - The description to set
+   */
+  setLicenseEditState(editName: string, editDescription: string): void {
+    this.editLicenseName = editName;
+    this.editLicenseDescription = editDescription;
+  }
+
+  /**
+   * Clear license edit state
+   */
+  clearLicenseEditState(): void {
+    this.editingLicenseIndex = null;
+    this.editLicenseName = '';
+    this.editLicenseDescription = '';
+    this.isAddingNewLicense = false;
+    this.newLicense = null;
+  }
+
+  /**
+   * Delete a license after confirmation
+   * @param index - The index of the license to delete
+   * @returns Promise resolving to the updated license datasource
+   */
+  deleteLicenseWithConfirmation(index: number): Promise<MatTableDataSource<License>> {
+    return new Promise((resolve) => {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        data: {
+          title: 'Delete License',
+          message: 'Are you sure you want to delete this license? \n\nThis action cannot be undone.',
+          confirmText: 'Delete',
+          cancelText: 'Cancel',
+          type: 'danger'
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          if (this.deleteLicense(index)) {
+            this.notificationService.success('License deleted successfully');
+          } else {
+            this.notificationService.error('Failed to delete license');
+          }
+        }
+        resolve(this.getLicensesDataSource());
+      });
+    });
+  }
+
+  /**
+   * Delete all licenses after confirmation
+   * @returns Promise resolving to the updated license datasource
+   */
+  deleteAllLicensesWithConfirmation(): Promise<MatTableDataSource<License>> {
+    return new Promise((resolve) => {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        data: {
+          title: 'Delete All Licenses',
+          message: 'Are you sure you want to delete all licenses? \n\nThis action cannot be undone.',
+          confirmText: 'Delete All',
+          cancelText: 'Cancel',
+          type: 'danger'
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          if (this.deleteAllLicenses()) {
+            this.notificationService.success('All licenses deleted successfully');
+            resolve(new MatTableDataSource<License>([]));
+          } else {
+            this.notificationService.error('Failed to delete licenses');
+            resolve(this.getLicensesDataSource());
+          }
+        } else {
+          resolve(this.getLicensesDataSource());
+        }
+      });
+    });
   }
 }
