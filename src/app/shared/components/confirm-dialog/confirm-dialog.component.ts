@@ -27,9 +27,9 @@ interface ConfirmDialogData {
     A11yModule
   ],
   templateUrl:
-    '../../../shared/components/confirm-dialog/confirm-dialog.component.html',
+    './confirm-dialog.component.html',
   styleUrls: [
-    '../../../shared/components/confirm-dialog/confirm-dialog.component.scss',
+    './confirm-dialog.component.scss',
   ],
 })
 export class ConfirmDialogComponent {

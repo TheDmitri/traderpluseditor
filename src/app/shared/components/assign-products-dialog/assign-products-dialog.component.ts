@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -8,7 +8,7 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule, MatSelectionList } from '@angular/material/list';
+import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -31,9 +31,9 @@ import { Product } from '../../../core/models';
     MatTooltipModule
   ],
   templateUrl:
-    '../../../shared/components/assign-products-dialog/assign-products-dialog.component.html',
+    './assign-products-dialog.component.html',
   styleUrls: [
-    '../../../shared/components/assign-products-dialog/assign-products-dialog.component.scss',
+    './assign-products-dialog.component.scss',
   ],
 })
 export class AssignProductsDialogComponent implements OnInit {
