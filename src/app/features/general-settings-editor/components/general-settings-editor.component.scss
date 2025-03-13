@@ -19,6 +19,20 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
+
+  // Panel header section with title and actions
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    
+    // Container for action buttons in header
+    .panel-actions {
+      display: flex;
+      gap: 8px; // Consistent spacing between action buttons
+    }
+  }
 }
 
 /* Two-column Grid Layout
