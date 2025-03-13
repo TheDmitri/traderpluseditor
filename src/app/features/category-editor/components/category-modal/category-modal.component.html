@@ -174,8 +174,9 @@
     <button
       mat-raised-button
       color="primary"
-      type="submit"
+      type="button"
       [disabled]="categoryForm.invalid"
+      (click)="onSubmit()"
     >
       {{ isEditMode ? "Save" : "Create" }}
     </button>

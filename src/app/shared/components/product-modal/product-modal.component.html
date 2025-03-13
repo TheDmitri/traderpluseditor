@@ -596,8 +596,9 @@
     <button
       mat-raised-button
       color="primary"
-      type="submit"
+      type="button"
       [disabled]="productForm.invalid"
+      (click)="onSubmit()"
     >
       {{ isEditMode ? "Save" : "Create" }}
     </button>
