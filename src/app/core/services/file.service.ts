@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import JSZip from 'jszip';
+import { NotificationService } from '../../shared/services';
 
 // Application imports
 import { CategoryService } from '../../features/category-editor/services';
@@ -19,7 +20,8 @@ export class FileService {
     private categoryService: CategoryService,
     private productService: ProductService,
     private currencyService: CurrencyService,
-    private generalSettingsService: GeneralSettingsService
+    private generalSettingsService: GeneralSettingsService,
+    private notificationService: NotificationService
   ) {}
 
   /**
@@ -157,49 +159,67 @@ export class FileService {
 
   /**
    * Export categories to a JSON file
+   * @returns {boolean} Whether the export was successful
    */
-  exportCategories(): void {
-    this.exportAsJson(
-      this.categoryService.getExportData(),
-      'TraderPlusCategories.json'
-    );
+  exportCategories(): boolean {
+    const categories = this.categoryService.getExportData();
+    if (!categories || categories.length === 0) {
+      return false;
+    }
+    
+    this.exportAsJson(categories, 'TraderPlusCategories.json');
+    return true;
   }
 
   /**
    * Export products to a JSON file
+   * @returns {boolean} Whether the export was successful
    */
-  exportProducts(): void {
-    this.exportAsJson(
-      this.productService.getExportData(),
-      'TraderPlusProducts.json'
-    );
+  exportProducts(): boolean {
+    const products = this.productService.getExportData();
+    if (!products || products.length === 0) {
+      return false;
+    }
+    
+    this.exportAsJson(products, 'TraderPlusProducts.json');
+    return true;
   }
 
   /**
    * Export currency settings to a JSON file
+   * @returns {boolean} Whether the export was successful
    */
-  exportCurrencySettings(): void {
-    this.exportAsJson(
-      this.currencyService.getExportData(),
-      'TraderPlusCurrencySettings.json'
-    );
+  exportCurrencySettings(): boolean {
+    const currencySettings = this.currencyService.getExportData();
+    if (!currencySettings) {
+      return false;
+    }
+    
+    this.exportAsJson(currencySettings, 'TraderPlusCurrencySettings.json');
+    return true;
   }
 
   /**
    * Export general settings to a JSON file
+   * @returns {boolean} Whether the export was successful
    */
-  exportGeneralSettings(): void {
-    this.exportAsJson(
-      this.generalSettingsService.getExportData(),
-      'TraderPlusGeneralSettings.json'
-    );
+  exportGeneralSettings(): boolean {
+    const generalSettings = this.generalSettingsService.getExportData();
+    if (!generalSettings) {
+      return false;
+    }
+    
+    this.exportAsJson(generalSettings, 'TraderPlusGeneralSettings.json');
+    return true;
   }
 
   /**
    * Export all configurations as a ZIP archive
+   * @returns {Promise<boolean>} Whether the export was successful
    */
-  exportAllAsZip(): void {
+  async exportAllAsZip(): Promise<boolean> {
     const zip = new JSZip();
+    let hasData = false;
 
     // Get all configurations from their respective services
     const categories = this.categoryService.getExportData();
@@ -213,10 +233,12 @@ export class FileService {
         'TraderPlusCategories.json',
         JSON.stringify(categories, null, 2)
       );
+      hasData = true;
     }
 
     if (products && products.length > 0) {
       zip.file('TraderPlusProducts.json', JSON.stringify(products, null, 2));
+      hasData = true;
     }
 
     if (currencySettings) {
@@ -224,6 +246,7 @@ export class FileService {
         'TraderPlusCurrencySettings.json',
         JSON.stringify(currencySettings, null, 2)
       );
+      hasData = true;
     }
 
     if (generalSettings) {
@@ -231,10 +254,17 @@ export class FileService {
         'TraderPlusGeneralSettings.json',
         JSON.stringify(generalSettings, null, 2)
       );
+      hasData = true;
     }
 
-    // Generate the ZIP file and download it
-    zip.generateAsync({ type: 'blob' }).then((content) => {
+    // If no data was added to the ZIP, return false
+    if (!hasData) {
+      return false;
+    }
+
+    try {
+      // Generate the ZIP file and download it
+      const content = await zip.generateAsync({ type: 'blob' });
       const url = URL.createObjectURL(content);
       const a = document.createElement('a');
       a.href = url;
@@ -247,6 +277,11 @@ export class FileService {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       }, 0);
-    });
+      
+      return true;
+    } catch (error) {
+      console.error('Error generating ZIP file:', error);
+      return false;
+    }
   }
 }

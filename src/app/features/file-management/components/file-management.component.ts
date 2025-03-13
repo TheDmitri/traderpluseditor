@@ -7,7 +7,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatExpansionPanel } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
@@ -16,29 +15,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Application imports
-import { FileService, StorageService } from '../../../core/services';
+import { FileService } from '../../../core/services';
 import { ConfirmDialogComponent } from '../../../shared/components';
 import { NotificationService } from '../../../shared/services';
-
-/**
- * Interface for tracking and displaying user actions in the activity log
- *
- * @property {string} type - The category of activity (import, export, error, etc.)
- * @property {string} message - Descriptive text about what happened
- * @property {Date} timestamp - When the activity occurred
- */
-interface ActivityLog {
-  type:
-    | 'import' // File import operations
-    | 'export' // File export operations
-    | 'error' // Error conditions
-    | 'categories' // Category-specific operations
-    | 'products' // Product-specific operations
-    | 'currencies' // Currency settings operations
-    | 'settings'; // General settings operations
-  message: string;
-  timestamp: Date;
-}
+import { ActivityLog } from '../../../shared/models/activity-log.model';
+import { ActivityLogService } from '../../../shared/services/activity-log.service';
+import { FileProcessingService, ImportStats } from '../services/file-processing.service';
 
 /**
  * FileManagementComponent provides functionality to import and export TraderPlus configuration files.
@@ -75,9 +57,10 @@ interface ActivityLog {
 export class FileManagementComponent implements OnInit {
   /** Services injected using the inject pattern for better tree-shaking */
   private fileService = inject(FileService);
-  private storageService = inject(StorageService);
   private notificationService = inject(NotificationService);
   private dialog = inject(MatDialog);
+  private fileProcessingService = inject(FileProcessingService);
+  private activityLogService = inject(ActivityLogService);
 
   /**
    * References to hidden file input elements used for triggering file selection dialogs
@@ -106,25 +89,14 @@ export class FileManagementComponent implements OnInit {
   isActivityExpanded: boolean = false;
 
   /**
-   * Array of recent activities for displaying in the activity log
-   * Most recent activities are added to the beginning of the array
+   * Reference to activity log from service for template binding
    */
   recentActivity: ActivityLog[] = [];
 
   /**
    * Detailed statistics about import operations for providing user feedback
-   * Tracks counts of processed, successful, failed, and skipped files by type
    */
-  importStats = {
-    processed: 0, // Total number of files processed
-    successful: 0, // Files successfully imported
-    failed: 0, // Files that failed to import
-    skipped: 0, // Files skipped (not matching any known format)
-    categories: 0, // Number of category files successfully processed
-    products: 0, // Number of product files successfully processed
-    currencies: 0, // Number of currency settings files successfully processed
-    settings: 0, // Number of general settings files successfully processed
-  };
+  importStats: ImportStats = this.fileProcessingService.createEmptyImportStats();
 
   /**
    * Initializes the component when it is first created
@@ -133,23 +105,25 @@ export class FileManagementComponent implements OnInit {
    */
   ngOnInit(): void {
     // Check for existing data in storage
-    this.checkExistingData();
-
-    // Add initial log entry
-    this.logActivity('import', 'Application initialized');
+    this.updateDataStatus();
+    
+    // Subscribe to activity log updates for UI display
+    this.activityLogService.getActivityLog().subscribe(log => {
+      this.recentActivity = log;
+    });
   }
 
   // ----- Data Status Management Methods ----- //
 
   /**
-   * Checks storage services for existing data and updates status flags
-   * These flags control which UI elements are enabled/disabled and display appropriate messages
+   * Updates the local data status flags from the service
    */
-  private checkExistingData(): void {
-    this.hasCategories = this.storageService.categories()?.length > 0;
-    this.hasProducts = this.storageService.products()?.length > 0;
-    this.hasCurrencies = !!this.storageService.currencySettings();
-    this.hasSettings = !!this.storageService.generalSettings();
+  private updateDataStatus(): void {
+    const dataStatus = this.fileProcessingService.checkExistingData();
+    this.hasCategories = dataStatus.hasCategories;
+    this.hasProducts = dataStatus.hasProducts;
+    this.hasCurrencies = dataStatus.hasCurrencies;
+    this.hasSettings = dataStatus.hasSettings;
   }
 
   /**
@@ -158,7 +132,7 @@ export class FileManagementComponent implements OnInit {
    * @returns {number} The count of categories, or 0 if none exist
    */
   getCategoriesCount(): number {
-    return this.storageService.categories()?.length || 0;
+    return this.fileProcessingService.getCategoriesCount();
   }
 
   /**
@@ -167,7 +141,7 @@ export class FileManagementComponent implements OnInit {
    * @returns {number} The count of products, or 0 if none exist
    */
   getProductsCount(): number {
-    return this.storageService.products()?.length || 0;
+    return this.fileProcessingService.getProductsCount();
   }
 
   /**
@@ -176,8 +150,7 @@ export class FileManagementComponent implements OnInit {
    * @returns {number} The count of currency types, or 0 if none exist
    */
   getCurrencyTypesCount(): number {
-    const settings = this.storageService.currencySettings();
-    return settings?.currencyTypes?.length || 0;
+    return this.fileProcessingService.getCurrencyTypesCount();
   }
 
   /**
@@ -198,26 +171,6 @@ export class FileManagementComponent implements OnInit {
   // ----- Activity Logging Methods ----- //
 
   /**
-   * Logs an activity for display in the recent activity section
-   * Keeps a limited history of the most recent operations
-   *
-   * @param {ActivityLog['type']} type - The type of activity being logged
-   * @param {string} message - A descriptive message about the activity
-   */
-  private logActivity(type: ActivityLog['type'], message: string): void {
-    this.recentActivity.unshift({
-      type,
-      message,
-      timestamp: new Date(),
-    });
-
-    // Limit the activity log to 10 entries to prevent memory issues with very long sessions
-    if (this.recentActivity.length > 10) {
-      this.recentActivity.pop();
-    }
-  }
-
-  /**
    * Returns the appropriate Material icon name for each activity type
    * Used to visually distinguish different types of activities in the log
    *
@@ -225,24 +178,7 @@ export class FileManagementComponent implements OnInit {
    * @returns {string} The name of the Material icon to display
    */
   getActivityIcon(type: string): string {
-    switch (type) {
-      case 'import':
-        return 'file_upload';
-      case 'export':
-        return 'file_download';
-      case 'error':
-        return 'error';
-      case 'categories':
-        return 'category';
-      case 'products':
-        return 'inventory_2';
-      case 'currencies':
-        return 'payments';
-      case 'settings':
-        return 'settings';
-      default:
-        return 'circle';
-    }
+    return this.activityLogService.getActivityIcon(type);
   }
 
   // ----- File Input Handling Methods ----- //
@@ -284,14 +220,8 @@ export class FileManagementComponent implements OnInit {
     }
 
     // Reset statistics for each new import session
-    this.resetImportStats();
+    this.importStats = this.fileProcessingService.createEmptyImportStats();
     this.isUploading = true;
-
-    // Log the number of files being processed
-    this.logActivity(
-      'import',
-      `Processing ${input.files.length} selected files`
-    );
 
     // Process files with automatic type detection
     this.processFiles(input.files);
@@ -341,10 +271,8 @@ export class FileManagementComponent implements OnInit {
     if (!files || files.length === 0) return;
 
     // Reset statistics
-    this.resetImportStats();
+    this.importStats = this.fileProcessingService.createEmptyImportStats();
     this.isUploading = true;
-
-    this.logActivity('import', `Processing ${files.length} dropped files`);
 
     // Process each file individually for better error handling
     this.processFiles(files);
@@ -353,352 +281,113 @@ export class FileManagementComponent implements OnInit {
   // ----- File Processing Methods ----- //
 
   /**
-   * Resets the import statistics to their initial state
-   * Called before starting a new import operation
+   * Processes files using the file processing service
+   * 
+   * @param files Files to process
+   * @param typeHint Optional type hint
    */
-  private resetImportStats(): void {
-    this.importStats = {
-      processed: 0,
-      successful: 0,
-      failed: 0,
-      skipped: 0,
-      categories: 0,
-      products: 0,
-      currencies: 0,
-      settings: 0,
-    };
-  }
-
-  /**
-   * Returns a user-friendly label for each data type, with pluralization support
-   *
-   * @param {string} type - The data type ('categories', 'products', etc.)
-   * @param {boolean} plural - Whether to use the plural form
-   * @returns {string} The formatted label
-   */
-  private getTypeLabel(type: string, plural: boolean = false): string {
-    switch (type) {
-      case 'categories':
-        return plural ? 'Categories' : 'Category';
-      case 'products':
-        return plural ? 'Products' : 'Product';
-      case 'currencies':
-        return 'Currency Settings';
-      case 'settings':
-        return 'General Settings';
-      default:
-        return type;
+  private async processFiles(files: FileList, typeHint?: string): Promise<void> {
+    try {
+      // Process the files and get the results
+      this.importStats = await this.fileProcessingService.processFiles(files, typeHint);
+      
+      // Update UI state to reflect newly imported data
+      this.updateDataStatus();
+      
+      // Show appropriate notifications
+      this.fileProcessingService.showImportResults(this.importStats);
+    } finally {
+      this.isUploading = false;
     }
-  }
-
-  /**
-   * Processes one or more files for import
-   * Core file processing logic that handles file type detection, parsing, and importing
-   *
-   * @param {FileList} files - The files to process
-   * @param {string} [typeHint] - Optional hint about the file type for better detection
-   * @returns {Promise<void>} Promise that resolves when processing is complete
-   */
-  private async processFiles(
-    files: FileList,
-    typeHint?: string
-  ): Promise<void> {
-    const filesArray = Array.from(files);
-    const totalFiles = filesArray.length;
-    this.importStats.processed = totalFiles;
-
-    // Log with type information when available
-    if (typeHint) {
-      this.logActivity(
-        'import',
-        `Processing ${totalFiles} ${this.getTypeLabel(
-          typeHint,
-          totalFiles > 1
-        )}`
-      );
-    } else {
-      this.logActivity('import', `Processing ${totalFiles} Files`);
-    }
-
-    // Process each file individually for better error handling and reporting
-    for (const file of filesArray) {
-      try {
-        // If we have a type hint (from button selection), prioritize it over filename detection
-        let dataType = typeHint
-          ? this.convertTypeHint(typeHint)
-          : this.guessTypeFromFilename(file.name);
-        let data;
-
-        try {
-          // Parse the file contents
-          data = await this.fileService.importFile(file);
-
-          // Only use content detection if we don't have a type hint
-          // This prevents mis-categorization when the user has explicitly selected a type
-          if (!typeHint) {
-            // Try to detect the type based on content structure
-            const contentType = this.fileService.detectDataType(data);
-            if (contentType) {
-              dataType = contentType;
-            }
-          }
-        } catch (parseError) {
-          console.error(`Error parsing file ${file.name}:`, parseError);
-          this.importStats.failed++;
-          this.logActivity('error', `Failed to parse file: ${file.name}`);
-          continue; // Skip to next file
-        }
-
-        // Process according to detected type
-        switch (dataType) {
-          case 'category':
-            await this.fileService.importCategories(file);
-            this.importStats.categories++;
-            this.importStats.successful++;
-            break;
-          case 'product':
-            await this.fileService.importProducts(file);
-            this.importStats.products++;
-            this.importStats.successful++;
-            break;
-          case 'currency':
-            await this.fileService.importCurrencySettings(file);
-            this.importStats.currencies++;
-            this.importStats.successful++;
-            break;
-          case 'general':
-            await this.fileService.importGeneralSettings(file);
-            this.importStats.settings++;
-            this.importStats.successful++;
-            break;
-          default:
-            // File type couldn't be determined
-            this.importStats.skipped++;
-            const skipMessage = `File ${file.name} doesn't match any TraderPlus format`;
-            console.warn(skipMessage);
-            this.logActivity('error', skipMessage);
-        }
-      } catch (error) {
-        this.importStats.failed++;
-        const errorMessage = `Error processing ${file.name}: ${
-          error instanceof Error ? error.message : 'Unknown error'
-        }`;
-        console.error(errorMessage);
-        this.logActivity('error', errorMessage);
-      }
-    }
-
-    // Update UI state to reflect newly imported data
-    this.checkExistingData();
-
-    // Show appropriate notifications
-    this.isUploading = false;
-
-    // Prepare result notifications
-    this.showImportResults();
-  }
-
-  /**
-   * Shows appropriate notifications based on import statistics
-   * Creates informative messages for successful, failed, and skipped imports
-   */
-  private showImportResults(): void {
-    if (this.importStats.successful > 0) {
-      // Create a detailed success message listing what was imported
-      const successTypes = [];
-      if (this.importStats.categories > 0)
-        successTypes.push(`${this.importStats.categories} categories`);
-      if (this.importStats.products > 0)
-        successTypes.push(`${this.importStats.products} products`);
-      if (this.importStats.currencies > 0)
-        successTypes.push('currency settings');
-      if (this.importStats.settings > 0) successTypes.push('general settings');
-
-      const successMessage = `Successfully imported ${
-        this.importStats.successful
-      } ${
-        this.importStats.successful > 1 ? 'files' : 'file'
-      } (${successTypes.join(', ')})`;
-
-      this.notificationService.success(successMessage);
-      this.logActivity('import', successMessage);
-    }
-
-    if (this.importStats.failed > 0) {
-      const errorMessage = `Failed to import ${this.importStats.failed} ${
-        this.importStats.failed > 1 ? 'files' : 'file'
-      }`;
-      this.notificationService.error(errorMessage);
-      this.logActivity('error', errorMessage);
-    }
-
-    if (this.importStats.skipped > 0) {
-      const skipMessage = `Skipped ${this.importStats.skipped} ${
-        this.importStats.skipped > 1 ? 'files' : 'file'
-      } not matching any TraderPlus format`;
-      this.notificationService.warning(skipMessage);
-      this.logActivity('error', skipMessage);
-    }
-  }
-
-  /**
-   * Converts type hints from menu selections to file type identifiers
-   * Translates UI concepts (plural, human-readable) to internal type identifiers
-   *
-   * @param {string} hint - The type hint from the UI
-   * @returns {'category' | 'product' | 'currency' | 'general' | null} The corresponding file type
-   */
-  private convertTypeHint(
-    hint: string
-  ): 'category' | 'product' | 'currency' | 'general' | null {
-    switch (hint) {
-      case 'categories':
-        return 'category';
-      case 'products':
-        return 'product';
-      case 'currencies':
-        return 'currency';
-      case 'settings':
-        return 'general';
-      default:
-        return null;
-    }
-  }
-
-  /**
-   * Attempts to determine the file type based on filename patterns
-   * Uses common naming conventions to identify file types when content analysis is ambiguous
-   *
-   * @param {string} fileName - The name of the file
-   * @returns {'category' | 'product' | 'currency' | 'general' | null} The best guess file type, or null if unknown
-   */
-  private guessTypeFromFilename(
-    fileName: string
-  ): 'category' | 'product' | 'currency' | 'general' | null {
-    const lowerName = fileName.toLowerCase();
-
-    // Check for category file pattern (starts with cat_ or contains category/categories)
-    if (
-      lowerName.startsWith('cat_') ||
-      lowerName.includes('category') ||
-      lowerName.includes('categories')
-    ) {
-      return 'category';
-    }
-
-    // Check for product file pattern (starts with prod_ or contains product/products)
-    if (
-      lowerName.startsWith('prod_') ||
-      lowerName.includes('product') ||
-      lowerName.includes('products')
-    ) {
-      return 'product';
-    }
-
-    // Check for currency settings (contains currency)
-    if (lowerName.includes('currency')) {
-      return 'currency';
-    }
-
-    // Check for general settings (contains general or settings)
-    if (lowerName.includes('general') || lowerName.includes('settings')) {
-      return 'general';
-    }
-
-    // File type couldn't be determined from filename
-    return null;
   }
 
   // ----- Export Functions ----- //
 
   /**
    * Exports category data to a JSON file
-   * Checks if categories exist before attempting export to avoid empty files
    */
   exportCategories(): void {
-    if (this.storageService.categories().length === 0) {
+    if (!this.hasCategories) {
       this.notificationService.warning('No categories to export');
-      this.logActivity(
+      this.activityLogService.logActivity(
         'error',
         'Attempted to export categories but none exist'
       );
       return;
     }
 
-    this.fileService.exportCategories();
-    this.notificationService.success('Categories exported successfully');
-    this.logActivity('export', 'Exported categories to file');
+    const success = this.fileService.exportCategories();
+    if (success) {
+      this.notificationService.success('Categories exported successfully');
+      this.activityLogService.logActivity('export', 'Exported categories to file');
+    }
   }
 
   /**
    * Exports product data to a JSON file
-   * Checks if products exist before attempting export to avoid empty files
    */
   exportProducts(): void {
-    if (this.storageService.products().length === 0) {
+    if (!this.hasProducts) {
       this.notificationService.warning('No products to export');
-      this.logActivity('error', 'Attempted to export products but none exist');
+      this.activityLogService.logActivity('error', 'Attempted to export products but none exist');
       return;
     }
 
-    this.fileService.exportProducts();
-    this.notificationService.success('Products exported successfully');
-    this.logActivity('export', 'Exported products to file');
+    const success = this.fileService.exportProducts();
+    if (success) {
+      this.notificationService.success('Products exported successfully');
+      this.activityLogService.logActivity('export', 'Exported products to file');
+    }
   }
 
   /**
    * Exports currency settings to a JSON file
-   * Checks if currency settings exist before attempting export to avoid empty files
    */
   exportCurrencySettings(): void {
-    if (!this.storageService.currencySettings()) {
+    if (!this.hasCurrencies) {
       this.notificationService.warning('No currency settings to export');
-      this.logActivity(
+      this.activityLogService.logActivity(
         'error',
         'Attempted to export currency settings but none exist'
       );
       return;
     }
 
-    this.fileService.exportCurrencySettings();
-    this.notificationService.success('Currency settings exported successfully');
-    this.logActivity('export', 'Exported currency settings to file');
+    const success = this.fileService.exportCurrencySettings();
+    if (success) {
+      this.notificationService.success('Currency settings exported successfully');
+      this.activityLogService.logActivity('export', 'Exported currency settings to file');
+    }
   }
 
   /**
    * Exports general settings to a JSON file
-   * Checks if general settings exist before attempting export to avoid empty files
    */
   exportGeneralSettings(): void {
-    if (!this.storageService.generalSettings()) {
+    if (!this.hasSettings) {
       this.notificationService.warning('No general settings to export');
-      this.logActivity(
+      this.activityLogService.logActivity(
         'error',
         'Attempted to export general settings but none exist'
       );
       return;
     }
 
-    this.fileService.exportGeneralSettings();
-    this.notificationService.success('General settings exported successfully');
-    this.logActivity('export', 'Exported general settings to file');
+    const success = this.fileService.exportGeneralSettings();
+    if (success) {
+      this.notificationService.success('General settings exported successfully');
+      this.activityLogService.logActivity('export', 'Exported general settings to file');
+    }
   }
 
   /**
    * Exports all configurations as a ZIP archive
-   * Attempts to create a ZIP file containing all configuration files
-   * Falls back to individual file exports if ZIP creation fails
    */
-  exportAllConfigs(): void {
+  async exportAllConfigs(): Promise<void> {
     // Check if there's any data to export
-    if (
-      !this.hasCategories &&
-      !this.hasProducts &&
-      !this.hasCurrencies &&
-      !this.hasSettings
-    ) {
+    if (!this.hasAnyData()) {
       this.notificationService.warning('No configurations to export');
-      this.logActivity(
+      this.activityLogService.logActivity(
         'error',
         'Attempted to export all configurations but none exist'
       );
@@ -707,35 +396,36 @@ export class FileManagementComponent implements OnInit {
 
     try {
       // Attempt to create and download a ZIP archive with all configurations
-      this.fileService.exportAllAsZip();
-      this.notificationService.success(
-        'All configurations exported as ZIP archive'
-      );
-      this.logActivity('export', 'Exported all configurations as ZIP archive');
+      const success = await this.fileService.exportAllAsZip();
+      if (success) {
+        this.notificationService.success('All configurations exported as ZIP archive');
+        this.activityLogService.logActivity('export', 'Exported all configurations as ZIP archive');
+      } else {
+        throw new Error('No data was exported');
+      }
     } catch (error) {
       // If ZIP creation fails (e.g., browser limitations), fall back to individual exports
       console.error('Error exporting as ZIP:', error);
-      const errorMessage =
-        'Could not create ZIP archive. Exporting individual files instead.';
+      const errorMessage = 'Could not create ZIP archive. Exporting individual files instead.';
       this.notificationService.warning(errorMessage);
-      this.logActivity('error', errorMessage);
+      this.activityLogService.logActivity('error', errorMessage);
 
       // Fallback to individual files export
       if (this.hasCategories) {
         this.fileService.exportCategories();
-        this.logActivity('export', 'Exported categories (fallback)');
+        this.activityLogService.logActivity('export', 'Exported categories (fallback)');
       }
       if (this.hasProducts) {
         this.fileService.exportProducts();
-        this.logActivity('export', 'Exported products (fallback)');
+        this.activityLogService.logActivity('export', 'Exported products (fallback)');
       }
       if (this.hasCurrencies) {
         this.fileService.exportCurrencySettings();
-        this.logActivity('export', 'Exported currency settings (fallback)');
+        this.activityLogService.logActivity('export', 'Exported currency settings (fallback)');
       }
       if (this.hasSettings) {
         this.fileService.exportGeneralSettings();
-        this.logActivity('export', 'Exported general settings (fallback)');
+        this.activityLogService.logActivity('export', 'Exported general settings (fallback)');
       }
     }
   }
@@ -746,7 +436,7 @@ export class FileManagementComponent implements OnInit {
    * @param {string} dataType - The type of data to delete ('categories', 'products', etc.)
    */
   confirmDeleteData(dataType: 'categories' | 'products' | 'currencies' | 'settings'): void {
-    const typeLabel = this.getTypeLabel(dataType, true);
+    const typeLabel = this.fileProcessingService.getTypeLabel(dataType, true);
     
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
@@ -772,40 +462,9 @@ export class FileManagementComponent implements OnInit {
    * @param {string} dataType - The type of data to delete ('categories', 'products', etc.)
    */
   deleteData(dataType: 'categories' | 'products' | 'currencies' | 'settings'): void {
-    try {
-      switch (dataType) {
-        case 'categories':
-          this.storageService.saveCategories([]);
-          this.hasCategories = false;
-          this.logActivity('categories', 'All categories deleted');
-          this.notificationService.success('All categories have been deleted');
-          break;
-        
-        case 'products':
-          this.storageService.saveProducts([]);
-          this.hasProducts = false;
-          this.logActivity('products', 'All products deleted');
-          this.notificationService.success('All products have been deleted');
-          break;
-        
-        case 'currencies':
-          this.storageService.deleteCurrencySettings();
-          this.hasCurrencies = false;
-          this.logActivity('currencies', 'Currency settings deleted');
-          this.notificationService.success('Currency settings have been deleted');
-          break;
-        
-        case 'settings':
-          this.storageService.removeGeneralSettings();
-          this.hasSettings = false;
-          this.logActivity('settings', 'General settings deleted');
-          this.notificationService.success('General settings have been deleted');
-          break;
-      }
-    } catch (error) {
-      console.error(`Error deleting ${dataType}:`, error);
-      this.notificationService.error(`Failed to delete ${dataType}`);
-      this.logActivity('error', `Failed to delete ${dataType}: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
+    this.fileProcessingService.deleteData(dataType);
+    
+    // Update the component's data status after deletion
+    this.updateDataStatus();
   }
 }
