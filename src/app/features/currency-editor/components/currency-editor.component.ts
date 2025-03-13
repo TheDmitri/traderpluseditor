@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -88,6 +88,9 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   /** Flag indicating whether any currency types exist in the system */
   hasCurrencyTypes = false;
   
+  /** Tracks if we had currency types before the last update */
+  private hadCurrencyTypesBefore = false;
+  
   /** Currently selected currency type for detailed view (null when collapsed) */
   expandedCurrencyType: CurrencyType | null = null;
   
@@ -118,7 +121,8 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
     private dialog: MatDialog,
     private notificationService: NotificationService,
     private initializationService: InitializationService,
-    private currencyService: CurrencyService
+    private currencyService: CurrencyService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     this.dataSource = new MatTableDataSource<CurrencyType>([]);
   }
@@ -135,8 +139,7 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
    * Configures pagination, sorting, and custom UI enhancements.
    */
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this.connectTableControls();
 
     // Initialize ripple effects after DOM is fully rendered
     setTimeout(() => {
@@ -145,9 +148,23 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   /**
+   * Connect the table's paginator and sort components to the data source
+   * Should be called any time we need to re-initialize these connections
+   */
+  private connectTableControls(): void {
+    if (this.paginator && this.sort) {
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    }
+  }
+
+  /**
    * Retrieves currency settings from service and updates the component state.
    */
   loadCurrencySettings(): void {
+    // Store the previous state before loading new data
+    this.hadCurrencyTypesBefore = this.hasCurrencyTypes;
+    
     this.currencySettings = this.currencyService.loadCurrencySettings();
     
     if (this.currencySettings) {
@@ -156,6 +173,16 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
     } else {
       this.hasCurrencyTypes = false;
       this.dataSource.data = [];
+    }
+
+    // If we've transitioned from no currencies to having currencies,
+    // we need to re-initialize the table controls and trigger change detection
+    if (!this.hadCurrencyTypesBefore && this.hasCurrencyTypes) {
+      // Give Angular time to render the table before connecting controls
+      setTimeout(() => {
+        this.connectTableControls();
+        this.changeDetectorRef.detectChanges();
+      });
     }
   }
 
