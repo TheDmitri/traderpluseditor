@@ -19,7 +19,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 // Application imports
 import { CurrencySettings, CurrencyType } from '../../../core/models';
 import { InitializationService, StorageService } from '../../../core/services';
-import { ConfirmDialogComponent } from '../../../shared/components';
+import { ConfirmDialogComponent, LoaderComponent } from '../../../shared/components';
 import { NotificationService } from '../../../shared/services';
 import { CurrencyService } from '../services';
 import { CurrencyModalComponent } from './currency-modal/currency-modal.component';
@@ -50,6 +50,7 @@ import { CurrencyModalComponent } from './currency-modal/currency-modal.componen
     MatTooltipModule,
     MatDialogModule,
     RouterModule,
+    LoaderComponent,
   ],
   providers: [InitializationService, CurrencyService],
   templateUrl: './currency-editor.component.html',
@@ -111,6 +112,9 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
 
   /** Error message for name validation */
   nameErrorMessage = '';
+
+  /** Flag indicating whether standard currencies are being created */
+  isCreatingStandardCurrencies = false;
 
   /**
    * Initializes the component with required services for data management,
@@ -510,14 +514,36 @@ export class CurrencyEditorComponent implements OnInit, OnDestroy, AfterViewInit
    * Creates standard currencies via initialization service.
    */
   createStandardCurrencies(): void {
-    // Call the initialization service method to create standard currencies
-    this.initializationService.createStandardCurrencies();
+    this.isCreatingStandardCurrencies = true;
     
-    // Reload the settings to update the UI
-    this.loadCurrencySettings();
-    
-    // Show success message
-    this.notificationService.success('Standard currencies created successfully');
+    // Use setTimeout to allow the UI to update and show the loader
+    setTimeout(() => {
+      // Call the initialization service method to create standard currencies
+      this.initializationService.createStandardCurrencies();
+      
+      // Simulate some processing time to show the loader
+      setTimeout(() => {
+        // Reload the settings to update the UI
+        this.loadCurrencySettings();
+        this.isCreatingStandardCurrencies = false;
+        
+        // Important: Let Angular render the table before connecting the paginator
+        setTimeout(() => {
+          // Re-connect the table controls now that the table is visible
+          this.connectTableControls();
+          
+          // Make sure the paginator shows the correct view
+          if (this.dataSource.paginator) {
+            this.dataSource.paginator.firstPage();
+          }
+          
+          this.changeDetectorRef.detectChanges();
+        }, 0);
+        
+        // Show success message
+        this.notificationService.success('Standard currencies created successfully');
+      }, 800);
+    }, 100);
   }
 
   /**

@@ -61,8 +61,13 @@
     </div>
   </div>
 
+  <!-- Loading state while creating standard currencies -->
+  <div class="empty-state-container" *ngIf="isCreatingStandardCurrencies">
+    <app-loader loadingText="Creating standard currencies..."></app-loader>
+  </div>
+
   <!-- No Currencies State - Informative message and call to action -->
-  <div class="empty-state-container" *ngIf="!hasCurrencyTypes && currentlyEditing === null">
+  <div class="empty-state-container" *ngIf="!hasCurrencyTypes && currentlyEditing === null && !isCreatingStandardCurrencies">
     <mat-icon class="empty-state-icon">attach_money</mat-icon>
     <h2 class="empty-state-title">No Currencies Found</h2>
     <p class="empty-state-message">
@@ -80,7 +85,7 @@
   </div>
 
   <!-- Main content card containing the currency data table - Shown when currencies exist OR when editing -->
-  <div class="data-card" *ngIf="hasCurrencyTypes || currentlyEditing !== null">
+  <div class="data-card" *ngIf="(hasCurrencyTypes || currentlyEditing !== null) && !isCreatingStandardCurrencies">
     <h2 class="section-title">Currency Overview</h2>
     <mat-card-content>
       <!-- Search filter - Only shown when data exists -->
