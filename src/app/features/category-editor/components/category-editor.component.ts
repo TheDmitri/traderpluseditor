@@ -16,7 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
-import { StorageService } from '../../../core/services';
+import { StorageService, InitializationService } from '../../../core/services';
 import { Category } from '../../../core/models';
 import { Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
@@ -93,11 +93,13 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
    * @param storageService - Service for persisting and retrieving category data
    * @param dialog - Material dialog service for modal dialogs
    * @param notificationService - Service for displaying user notifications
+   * @param initializationService - Service for initializing custom ripple effects
    */
   constructor(
     private storageService: StorageService,
     private dialog: MatDialog,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private initializationService: InitializationService
   ) {
     this.dataSource = new MatTableDataSource<Category>([]);
   }
@@ -119,57 +121,7 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
 
     // Initialize ripple effects for custom buttons
     setTimeout(() => {
-      this.initializeCustomRipples();
-    });
-  }
-
-  /**
-   * Initialize custom ripple effects for icon buttons
-   *
-   * Creates an interactive ripple animation when buttons are clicked,
-   * enhancing the user experience with visual feedback
-   */
-  private initializeCustomRipples() {
-    const buttons = document.querySelectorAll('.custom-icon-btn');
-
-    buttons.forEach((button: Element) => {
-      if (!(button as HTMLElement).hasAttribute('data-ripple-initialized')) {
-        button.setAttribute('data-ripple-initialized', 'true');
-
-        button.addEventListener('click', (event: Event) => {
-          const mouseEvent = event as MouseEvent;
-          const rippleContainer = button.querySelector(
-            '.icon-btn-ripple'
-          ) as HTMLElement;
-          if (!rippleContainer) return;
-
-          // Remove existing ripples
-          const existingRipples = rippleContainer.querySelectorAll(
-            '.icon-btn-ripple-effect'
-          );
-          existingRipples.forEach((ripple) => ripple.remove());
-
-          // Create new ripple
-          const ripple = document.createElement('span');
-          ripple.classList.add('icon-btn-ripple-effect');
-
-          const rect = button.getBoundingClientRect();
-          const size = Math.max(rect.width, rect.height);
-          const x = mouseEvent.clientX - rect.left - size / 2;
-          const y = mouseEvent.clientY - rect.top - size / 2;
-
-          ripple.style.width = ripple.style.height = `${size}px`;
-          ripple.style.left = `${x}px`;
-          ripple.style.top = `${y}px`;
-
-          rippleContainer.appendChild(ripple);
-
-          // Remove ripple after animation completes
-          setTimeout(() => {
-            ripple.remove();
-          }, 500);
-        });
-      }
+      this.initializationService.initializeCustomRipples();
     });
   }
 
