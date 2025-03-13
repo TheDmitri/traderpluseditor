@@ -58,8 +58,13 @@
     </div>
   </header>
 
+  <!-- Loading state while creating default categories -->
+  <div class="empty-state-container" *ngIf="isCreatingDefaultCategories">
+    <app-loader loadingText="Creating default categories..."></app-loader>
+  </div>
+
   <!-- No Data State - Informative message and call to action -->
-  <div class="empty-state-container" *ngIf="!hasCategories">
+  <div class="empty-state-container" *ngIf="!hasCategories && !isCreatingDefaultCategories">
     <mat-icon class="empty-state-icon">settings</mat-icon>
     <h2 class="empty-state-title">No Categories Found</h2>
     <p class="empty-state-message">
@@ -77,7 +82,7 @@
   </div>
 
   <!-- Data content card with standardized styling -->
-  <div class="data-card" *ngIf="hasCategories">
+  <div class="data-card" *ngIf="hasCategories && !isCreatingDefaultCategories">
     <h2 class="section-title">Categories Overview</h2>
     <mat-card-content>
       <!-- Search field with standardized styling and proper containment -->

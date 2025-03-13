@@ -25,7 +25,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 // App imports
 import { Category } from '../../../core/models';
 import { InitializationService, StorageService } from '../../../core/services';
-import { ConfirmDialogComponent } from '../../../shared/components';
+import { ConfirmDialogComponent, LoaderComponent } from '../../../shared/components';
 import { NotificationService } from '../../../shared/services';
 import { CategoryModalComponent } from './category-modal/category-modal.component';
 
@@ -58,6 +58,7 @@ import { CategoryModalComponent } from './category-modal/category-modal.componen
     MatTooltipModule,
     MatDialogModule,
     RouterModule,
+    LoaderComponent,
   ],
   templateUrl: './category-editor.component.html',
   styleUrls: ['./category-editor.component.scss'],
@@ -93,6 +94,9 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
 
   /** Tracks if we had categories before the last update */
   private hadCategoriesBefore = false;
+
+  /** Flag to track if default categories are being created */
+  isCreatingDefaultCategories = false;
 
   /**
    * Constructor initializes services and the data source
@@ -414,10 +418,34 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
    * ammunition category and several empty categories for common trader types.
    */
   createDefaultCategories(): void {
-    const defaultCategories = this.initializationService.createDefaultCategories();
-    this.storageService.saveCategories(defaultCategories);
-    this.loadCategories();
-    this.notificationService.success('Default categories created successfully');
+    this.isCreatingDefaultCategories = true;
+    
+    // Use setTimeout to allow the UI to update and show the loader
+    setTimeout(() => {
+      const defaultCategories = this.initializationService.createDefaultCategories();
+      this.storageService.saveCategories(defaultCategories);
+      this.loadCategories();
+      
+      // Simulate some processing time to show the loader (remove in production if not needed)
+      setTimeout(() => {
+        this.isCreatingDefaultCategories = false;
+        
+        // Important: Let Angular render the table before connecting the paginator
+        setTimeout(() => {
+          // Re-connect the table controls now that the table is visible
+          this.connectTableControls();
+          
+          // Make sure the paginator shows the correct view
+          if (this.dataSource.paginator) {
+            this.dataSource.paginator.firstPage();
+          }
+          
+          this.changeDetectorRef.detectChanges();
+        }, 0);
+        
+        this.notificationService.success('Default categories created successfully');
+      }, 800);
+    }, 100);
   }
 
   /**
