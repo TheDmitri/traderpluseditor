@@ -1,6 +1,6 @@
 // Angular imports
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -91,6 +91,9 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
   /** Flag to track if categories are available */
   hasCategories = false;
 
+  /** Tracks if we had categories before the last update */
+  private hadCategoriesBefore = false;
+
   /**
    * Constructor initializes services and the data source
    *
@@ -98,12 +101,14 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
    * @param dialog - Material dialog service for modal dialogs
    * @param notificationService - Service for displaying user notifications
    * @param initializationService - Service for initializing custom ripple effects
+   * @param changeDetectorRef - Angular's ChangeDetectorRef for manual change detection
    */
   constructor(
     private storageService: StorageService,
     private dialog: MatDialog,
     private notificationService: NotificationService,
-    private initializationService: InitializationService
+    private initializationService: InitializationService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     this.dataSource = new MatTableDataSource<Category>([]);
   }
@@ -120,13 +125,23 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
    * Also initializes custom ripple effects for enhanced UI interaction
    */
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this.connectTableControls();
 
     // Initialize ripple effects for custom buttons
     setTimeout(() => {
       this.initializationService.initializeCustomRipples();
     });
+  }
+
+  /**
+   * Connect the table's paginator and sort components to the data source
+   * Should be called any time we need to re-initialize these connections
+   */
+  private connectTableControls(): void {
+    if (this.paginator && this.sort) {
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    }
   }
 
   /**
@@ -136,9 +151,22 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
    * Called on component initialization and after any data modification.
    */
   loadCategories(): void {
+    // Store the previous state before loading new data
+    this.hadCategoriesBefore = this.hasCategories;
+
     const categories = this.storageService.categories();
     this.hasCategories = categories.length > 0;
     this.dataSource.data = categories;
+
+    // If we've transitioned from no categories to having categories,
+    // we need to re-initialize the table controls and trigger change detection
+    if (!this.hadCategoriesBefore && this.hasCategories) {
+      // Give Angular time to render the table before connecting controls
+      setTimeout(() => {
+        this.connectTableControls();
+        this.changeDetectorRef.detectChanges();
+      });
+    }
   }
 
   /**
@@ -377,6 +405,19 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
     // Generate new ID with incremented suffix
     const nextSuffix = (highestSuffix + 1).toString().padStart(3, '0');
     return `cat_${baseName}_${nextSuffix}`;
+  }
+
+  /**
+   * Create default categories for quick startup
+   * 
+   * This method creates a set of standard categories with one pre-populated
+   * ammunition category and several empty categories for common trader types.
+   */
+  createDefaultCategories(): void {
+    const defaultCategories = this.initializationService.createDefaultCategories();
+    this.storageService.saveCategories(defaultCategories);
+    this.loadCategories();
+    this.notificationService.success('Default categories created successfully');
   }
 
   /**
