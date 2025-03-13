@@ -1,19 +1,19 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-} from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+
+// Material imports
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListModule, MatSelectionList } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
-import { Product } from '../../../core/models';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
+// Application imports
+import { Product } from '../../../core/models';
 
 @Component({
   selector: 'app-assign-products-dialog',

@@ -1,29 +1,33 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+// Angular imports
 import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+
+// Angular Material imports
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import {
-  MatTableModule,
   MatTable,
   MatTableDataSource,
+  MatTableModule,
 } from '@angular/material/table';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
-import { MatSortModule, MatSort } from '@angular/material/sort';
-import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatDialogModule } from '@angular/material/dialog';
-import { RouterModule } from '@angular/router';
-import { StorageService, InitializationService } from '../../../core/services';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+// App imports
 import { Category } from '../../../core/models';
-import { Subject } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
-import { CategoryModalComponent } from './category-modal/category-modal.component';
+import { InitializationService, StorageService } from '../../../core/services';
 import { ConfirmDialogComponent } from '../../../shared/components';
 import { NotificationService } from '../../../shared/services';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { CategoryModalComponent } from './category-modal/category-modal.component';
 
 /**
  * CategoryEditorComponent handles the management of TraderPlus categories.

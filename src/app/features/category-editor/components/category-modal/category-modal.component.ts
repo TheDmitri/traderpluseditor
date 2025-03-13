@@ -1,35 +1,26 @@
-import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-} from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTableModule } from '@angular/material/table';
-import { MatSortModule } from '@angular/material/sort';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
-import { Category, Product, License } from '../../../../core/models';
-import { StorageService } from '../../../../core/services/storage.service';
-import { GeneralSettingsService } from '../../../general-settings-editor/services/general-settings.service';
-import { ProductListComponent } from '../../../../shared/components/product-list/product-list.component';
-import { MatDialog } from '@angular/material/dialog';
-import { ProductModalComponent } from '../../../../shared/components/product-modal/product-modal.component';
-import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { NotificationService } from '../../../../shared/services/notification.service';
-import { AssignProductsDialogComponent } from '../../../../shared/components/assign-products-dialog/assign-products-dialog.component';
+
+// Material imports
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+// Application imports
+import { Category, License, Product } from '../../../../core/models';
+import { StorageService } from '../../../../core/services';
+import { AssignProductsDialogComponent, ConfirmDialogComponent, ProductListComponent, ProductModalComponent } from '../../../../shared/components';
+import { NotificationService } from '../../../../shared/services';
+import { GeneralSettingsService } from '../../../general-settings-editor/services';
 
 // Interface for tracking license display status
 interface DisplayLicense extends License {

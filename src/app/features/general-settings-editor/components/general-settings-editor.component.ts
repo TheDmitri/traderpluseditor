@@ -1,31 +1,29 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
+import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { GeneralSettings, License } from '../../../core/models';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-// Material Imports
-import { MatCardModule } from '@angular/material/card';
+// Material imports
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
-// Services
-import { GeneralSettingsService, LicenseService, AcceptedStatesService } from '../services';
+// Application imports
+import { GeneralSettings, License } from '../../../core/models';
 import { InitializationService } from '../../../core/services';
-
 import { ConfirmDialogComponent } from '../../../shared/components';
 import { NotificationService } from '../../../shared/services';
+import { AcceptedStatesService, GeneralSettingsService, LicenseService } from '../services';
 
 /**
  * General Settings Editor Component

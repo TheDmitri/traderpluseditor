@@ -1,23 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { StorageService } from '../../../core/services';
-import { Product } from '../../../core/models';
 import { Subject } from 'rxjs';
-import { ProductListComponent } from '../../../shared/components';
-import { ProductModalComponent } from '../../../shared/components';
 
-// Material Imports
+// Material imports
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../../shared/components';
-import { NotificationService } from '../../../shared/services';
-import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
+// Application imports
+import { Product } from '../../../core/models';
+import { StorageService } from '../../../core/services';
+import { ConfirmDialogComponent, ProductListComponent, ProductModalComponent } from '../../../shared/components';
+import { NotificationService } from '../../../shared/services';
 
 @Component({
   selector: 'app-product-editor',

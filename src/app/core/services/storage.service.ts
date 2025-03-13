@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Category, Product, CurrencySettings, GeneralSettings } from '../models';
+import { Category, CurrencySettings, GeneralSettings, Product } from '../models';
 
 /**
  * Storage keys for LocalStorage

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { StorageService } from './storage.service';
 import { CurrencySettings } from '../models';
+import { StorageService } from './storage.service';
 
 /**
  * Service for initializing standard application data

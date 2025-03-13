@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { CategoryService } from '../../features/category-editor/services/category.service';
-import { ProductService } from '../../features/product-editor/services/product.service';
-import { CurrencyService } from '../../features/currency-editor/services/currency.service';
-import { GeneralSettingsService } from '../../features/general-settings-editor/services/general-settings.service';
 import JSZip from 'jszip';
+
+// Application imports
+import { CategoryService } from '../../features/category-editor/services';
+import { CurrencyService } from '../../features/currency-editor/services';
+import { GeneralSettingsService } from '../../features/general-settings-editor/services';
+import { ProductService } from '../../features/product-editor/services';
 
 /**
  * Service for handling file import/export operations.

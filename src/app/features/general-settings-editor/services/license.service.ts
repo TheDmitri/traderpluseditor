@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+
+// Application imports
 import { License } from '../../../core/models';
 import { GeneralSettingsService } from '.';
 

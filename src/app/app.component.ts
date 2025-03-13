@@ -1,12 +1,15 @@
-import { Component, ElementRef, inject } from '@angular/core';
-import { NavigationComponent } from './shared/components/navigation/navigation.component';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigationService } from './core/services/navigation.service';
-import { InitializationService } from './core/services';
+
+// Material imports
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+// Application imports
+import { NavigationComponent } from './shared/components';
+import { InitializationService, NavigationService } from './core/services';
 
 @Component({
   selector: 'app-root',

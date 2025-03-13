@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { StorageService } from '../../../core/services';
+
+// Application imports
 import { Category } from '../../../core/models';
+import { StorageService } from '../../../core/services';
 
 /**
  * Service for handling TraderPlus category operations

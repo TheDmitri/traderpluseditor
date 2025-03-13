@@ -1,32 +1,37 @@
-import { Component, OnInit, Inject } from '@angular/core';
+// Angular imports
 import { CommonModule } from '@angular/common';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
-  Validators,
   ReactiveFormsModule,
-  AbstractControl,
   ValidationErrors,
+  Validators,
 } from '@angular/forms';
-import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialog,
-} from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
+
+// Angular Material imports
+import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatButtonModule } from '@angular/material/button';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { Product } from '../../../core/models';
-import { TextFieldModule } from '@angular/cdk/text-field';
-import { NotificationService } from '../../services/notification.service';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { AssignProductsDialogComponent } from '../assign-products-dialog/assign-products-dialog.component';
-import { StorageService } from '../../../core/services/storage.service';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
+// App imports
+import { Product } from '../../../core/models';
+import { StorageService } from '../../../core/services';
+import { NotificationService } from '../../services';
+import { AssignProductsDialogComponent } from '../assign-products-dialog/assign-products-dialog.component';
 
 /**
  * ProductModalComponent provides a dialog interface for creating and editing products.

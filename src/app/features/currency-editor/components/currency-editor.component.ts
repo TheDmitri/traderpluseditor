@@ -1,27 +1,28 @@
-import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit, QueryList, ViewChildren, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, AfterViewInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { StorageService, InitializationService } from '../../../core/services';
-import { NotificationService } from '../../../shared/services/notification.service';
-import { CurrencyService } from '../services/currency.service';
-import { CurrencyType, CurrencySettings } from '../../../core/models';
 import { Subject } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { CurrencyModalComponent } from './currency-modal/currency-modal.component';
 
-// Material Imports
-import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
-import { MatSortModule, MatSort } from '@angular/material/sort';
-import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
+// Material imports
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
+// Application imports
+import { CurrencySettings, CurrencyType } from '../../../core/models';
+import { InitializationService, StorageService } from '../../../core/services';
+import { ConfirmDialogComponent } from '../../../shared/components';
+import { NotificationService } from '../../../shared/services';
+import { CurrencyService } from '../services';
+import { CurrencyModalComponent } from './currency-modal/currency-modal.component';
 
 /**
  * CurrencyEditorComponent handles the management of TraderPlus currencies.
