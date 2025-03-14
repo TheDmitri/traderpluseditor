@@ -73,6 +73,7 @@
   <div class="main-content-area" *ngIf="hasSettings && !isCreatingDefaultSettings">
     <!-- Two-column grid layout for settings sections -->
     <div class="settings-grid">
+      
       <!-- Licenses Section -->
       <div class="data-card licenses-section">
         <div class="panel-header">
@@ -394,12 +395,12 @@
           </form>
         </div>
       </div>
-    </div>
 
-    <!-- Traders Section (Using the new TradersEditorComponent) -->
-    <app-traders-editor 
-      [hasSettings]="hasSettings" 
-      [generalSettings]="generalSettings"
-    ></app-traders-editor>
+      <!-- Traders Section (Using the new TradersEditorComponent) -->
+      <app-traders-editor 
+        [hasSettings]="hasSettings" 
+        [generalSettings]="generalSettings"
+      ></app-traders-editor>
+    </div>
   </div>
 </div>
