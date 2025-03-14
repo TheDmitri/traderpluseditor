@@ -20,7 +20,12 @@ export interface LoadoutItem {
   className: string;   // The class name of the item
   quantity: number;    // Quantity of the item (-1 for unlimited)
   slotName: string;    // Slot where the item should be placed
-  attachments: LoadoutItem[];  // Any attachments to this item (recursive)
+  attachments: LoadoutAttachments[];  // Any attachments to this item (recursive)
+}
+
+export interface LoadoutAttachments {
+  className: string;   // The class name of the attachment
+  quantity: number;    // Quantity of the attachment (-1 for unlimited)
 }
 
 /**
