@@ -15,9 +15,10 @@ import { FormsModule } from '@angular/forms'; // Add FormsModule for ngModel
 
 // Application imports
 import { TraderNpc } from '../../../../core/models/general-settings.model';
-import { Category } from '../../../../core/models'; // Import Category model
+import { Category, CurrencyType } from '../../../../core/models'; // Add CurrencyType import
 import { TraderService } from '../../services/trader.service';
 import { CategoryService } from '../../../category-editor/services/category.service'; // Import CategoryService
+import { CurrencyService } from '../../../currency-editor/services/currency.service'; // Import CurrencyService
 
 /**
  * Enum for trader types
@@ -74,11 +75,21 @@ export class TraderModalComponent implements OnInit {
   /** Unknown category IDs that exist in trader but not in available categories */
   unknownCategoryIds: string[] = [];
 
+  /** Available currency types from CurrencyService */
+  availableCurrencyTypes: CurrencyType[] = [];
+  
+  /** Selected currency names map for quick lookup and state tracking */
+  selectedCurrencyNameMap: { [currencyName: string]: boolean } = {};
+
+  /** Unknown currency names that exist in trader but not in available currency types */
+  unknownCurrencyNames: string[] = [];
+
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<TraderModalComponent>,
     private traderService: TraderService,
     private categoryService: CategoryService, // Inject CategoryService
+    private currencyService: CurrencyService, // Inject CurrencyService
     @Inject(MAT_DIALOG_DATA) public data: { trader: TraderNpc | null }
   ) {
     this.isNewTrader = !data.trader || !data.trader.className;
@@ -106,8 +117,9 @@ export class TraderModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Load available categories
+    // Load available categories and currencies
     this.loadCategories();
+    this.loadCurrencies();
     
     // If we have existing trader data, populate the form and determine type
     if (this.data.trader) {
@@ -137,8 +149,9 @@ export class TraderModalComponent implements OnInit {
         orientationZ: trader.orientation?.[2] || 0
       });
 
-      // Initialize selected categories from trader data and identify unknown categories
+      // Initialize selected categories and currencies from trader data
       this.initializeSelectedCategories(trader.categoriesId || []);
+      this.initializeSelectedCurrencies(trader.currenciesAccepted || []);
 
       // Lock fields if it's an ATM
       if (traderType === TraderType.ATM) {
@@ -166,11 +179,34 @@ export class TraderModalComponent implements OnInit {
   }
 
   /**
+   * Load currencies from the CurrencyService and identify unknown currencies
+   */
+  loadCurrencies(): void {
+    // Get currency settings from the CurrencyService
+    const currencySettings = this.currencyService.loadCurrencySettings();
+    this.availableCurrencyTypes = currencySettings?.currencyTypes || [];
+
+    // After loading currencies, check for unknown currencies if we have a trader
+    if (this.data.trader?.currenciesAccepted?.length) {
+      this.identifyUnknownCurrencies(this.data.trader.currenciesAccepted);
+    }
+  }
+
+  /**
    * Find category IDs assigned to the trader that don't exist in availableCategories
    */
   identifyUnknownCategories(categoryIds: string[]): void {
     this.unknownCategoryIds = categoryIds.filter(id => 
       !this.availableCategories.some(category => category.categoryId === id)
+    );
+  }
+
+  /**
+   * Find currency names assigned to the trader that don't exist in availableCurrencyTypes
+   */
+  identifyUnknownCurrencies(currencyNames: string[]): void {
+    this.unknownCurrencyNames = currencyNames.filter(name => 
+      !this.availableCurrencyTypes.some(currencyType => currencyType.currencyName === name)
     );
   }
 
@@ -188,6 +224,22 @@ export class TraderModalComponent implements OnInit {
 
     // Identify unknown categories
     this.identifyUnknownCategories(categoryIds);
+  }
+
+  /**
+   * Initialize selected currencies from trader data
+   */
+  initializeSelectedCurrencies(currencyNames: string[]): void {
+    // Reset map
+    this.selectedCurrencyNameMap = {};
+    
+    // Set selected state for each currency name
+    currencyNames.forEach(name => {
+      this.selectedCurrencyNameMap[name] = true;
+    });
+
+    // Identify unknown currencies
+    this.identifyUnknownCurrencies(currencyNames);
   }
 
   /**
@@ -221,6 +273,34 @@ export class TraderModalComponent implements OnInit {
   }
 
   /**
+   * Get currencies sorted with selected ones at the top
+   */
+  getSortedCurrencyTypes(): CurrencyType[] {
+    if (!this.availableCurrencyTypes || this.availableCurrencyTypes.length === 0) {
+      return [];
+    }
+    
+    // Create a copy of the currencies array to avoid modifying the original
+    return [...this.availableCurrencyTypes].sort((a, b) => {
+      const isASelected = this.isCurrencySelected(a.currencyName);
+      const isBSelected = this.isCurrencySelected(b.currencyName);
+      
+      // If A is selected and B is not, A comes first
+      if (isASelected && !isBSelected) {
+        return -1;
+      }
+      
+      // If B is selected and A is not, B comes first
+      if (!isASelected && isBSelected) {
+        return 1;
+      }
+      
+      // If both are selected or both are unselected, maintain original order
+      return 0;
+    });
+  }
+
+  /**
    * Get unknown categories formatted for display
    * Creates simplified category objects for unknown category IDs
    */
@@ -236,10 +316,27 @@ export class TraderModalComponent implements OnInit {
   }
 
   /**
+   * Get unknown currencies formatted for display
+   */
+  getUnknownCurrenciesForDisplay(): CurrencyType[] {
+    return this.unknownCurrencyNames.map(name => ({
+      currencyName: name,
+      currencies: []
+    }));
+  }
+
+  /**
    * Check if a category ID is unknown
    */
   isUnknownCategory(categoryId: string): boolean {
     return this.unknownCategoryIds.includes(categoryId);
+  }
+
+  /**
+   * Check if a currency is unknown
+   */
+  isUnknownCurrency(currencyName: string): boolean {
+    return this.unknownCurrencyNames.includes(currencyName);
   }
 
   /**
@@ -251,6 +348,13 @@ export class TraderModalComponent implements OnInit {
   }
 
   /**
+   * Toggle a currency selection
+   */
+  toggleCurrency(currencyName: string): void {
+    this.selectedCurrencyNameMap[currencyName] = !this.selectedCurrencyNameMap[currencyName];
+  }
+
+  /**
    * Check if a category is selected
    */
   isCategorySelected(categoryId: string): boolean {
@@ -258,10 +362,24 @@ export class TraderModalComponent implements OnInit {
   }
 
   /**
+   * Check if a currency is selected
+   */
+  isCurrencySelected(currencyName: string): boolean {
+    return !!this.selectedCurrencyNameMap[currencyName];
+  }
+
+  /**
    * Get the list of selected category IDs
    */
   getSelectedCategoryIds(): string[] {
     return Object.keys(this.selectedCategoryIdMap).filter(id => this.selectedCategoryIdMap[id]);
+  }
+
+  /**
+   * Get the list of selected currency names
+   */
+  getSelectedCurrencyNames(): string[] {
+    return Object.keys(this.selectedCurrencyNameMap).filter(name => this.selectedCurrencyNameMap[name]);
   }
 
   /**
@@ -334,8 +452,9 @@ export class TraderModalComponent implements OnInit {
     const formValue = this.traderForm.getRawValue();
     const traderType = formValue.type;
     
-    // Get the selected category IDs
+    // Get the selected category IDs and currency names
     const selectedCategoryIds = this.getSelectedCategoryIds();
+    const selectedCurrencyNames = this.getSelectedCurrencyNames();
     
     // Build the trader object
     const trader: TraderNpc = {
@@ -346,7 +465,7 @@ export class TraderModalComponent implements OnInit {
       position: [formValue.positionX, formValue.positionY, formValue.positionZ],
       orientation: [formValue.orientationX, formValue.orientationY, formValue.orientationZ],
       categoriesId: selectedCategoryIds, // Use the selected category IDs
-      currenciesAccepted: this.data.trader?.currenciesAccepted || [],
+      currenciesAccepted: selectedCurrencyNames, // Use the selected currency names
       // Only include loadouts for NPC type
       loadouts: traderType === TraderType.NPC ? (this.data.trader?.loadouts || []) : []
     };
