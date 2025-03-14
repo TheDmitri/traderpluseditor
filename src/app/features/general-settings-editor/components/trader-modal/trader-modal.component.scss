@@ -1,0 +1,47 @@
+.trader-modal {
+  .dialog-title {
+    margin-bottom: 16px;
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+    
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .coordinates-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    
+    @media (max-width: 500px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Trader type selection styling */
+  .trader-type-selection {
+    width: 100%;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--brush-border-subtle, rgba(255, 255, 255, 0.12));
+    
+    .trader-type-group {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: nowrap;
+      margin-bottom: 12px;
+      
+      .mat-mdc-radio-button {
+        margin-right: 32px;
+      }
+    }
+  }
+}

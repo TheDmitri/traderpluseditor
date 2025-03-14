@@ -1,0 +1,119 @@
+/* Table-Specific Styling for Traders
+========================================================================== */
+.traders-section {
+  .role-label {
+    font-size: 0.9em;
+    color: var(--brush-text-secondary);
+    font-style: italic;
+    margin-left: 4px;
+  }
+
+  // Table column widths
+  .mat-column-npcId {
+    width: 80px;
+    min-width: 80px;
+  }
+
+  .mat-column-givenName {
+    min-width: 180px;
+  }
+
+  .mat-column-className {
+    min-width: 220px;
+  }
+
+  .mat-column-position {
+    min-width: 220px;
+  }
+  
+  .mat-column-actions {
+    width: 120px;
+  }
+}
+
+// Ensure consistent paginator styling
+.consistent-paginator {
+  background-color: transparent;
+  border-top: 1px solid var(--brush-border-subtle);
+}
+
+/* Panel Layout - Consistent with other sections 
+========================================================================== */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  
+  .panel-title-area {
+    .section-title {
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .panel-subtitle {
+      color: var(--brush-text-secondary);
+      font-size: var(--font-size-sm);
+      margin: 0;
+    }
+  }
+  
+  // Container for action buttons in header
+  .panel-actions {
+    display: flex;
+    gap: 8px; // Consistent spacing between action buttons
+  }
+}
+
+/* Table & Action Button Styling - For consistency
+========================================================================== */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.actions-cell {
+  width: 120px;
+}
+
+/* Panel Body - For consistency
+========================================================================== */
+.panel-body {
+  padding: 0;
+}
+
+/* Empty State - For consistency
+========================================================================== */
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px;
+  
+  .empty-state-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    opacity: 0.6;
+    margin-bottom: 16px;
+    color: var(--brush-text-secondary);
+  }
+  
+  .empty-state-title {
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .empty-state-message {
+    max-width: 400px;
+    color: var(--brush-text-secondary);
+    margin-bottom: 24px;
+  }
+  
+  .empty-state-actions {
+    display: flex;
+    gap: 16px;
+  }
+}

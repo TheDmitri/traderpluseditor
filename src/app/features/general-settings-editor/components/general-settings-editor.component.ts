@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -16,13 +16,22 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatSortModule, MatSort } from '@angular/material/sort';
 
 // Application imports
-import { GeneralSettings, License } from '../../../core/models';
+import { GeneralSettings, License, TraderNpc } from '../../../core/models';
 import { InitializationService } from '../../../core/services';
 import { NotificationService } from '../../../shared/services';
-import { AcceptedStatesService, GeneralSettingsService, LicenseService } from '../services';
+import { 
+  AcceptedStatesService, 
+  GeneralSettingsService, 
+  LicenseService,
+  TraderService 
+} from '../services';
 import { LoaderComponent } from '../../../shared/components';
+import { TraderModalComponent } from './trader-modal/trader-modal.component';
+import { TradersEditorComponent } from "./traders-editor/traders-editor.component";
 
 /**
  * General Settings Editor Component
@@ -30,6 +39,7 @@ import { LoaderComponent } from '../../../shared/components';
  * This component provides an interface for editing general settings including:
  * - Licenses (name, description)
  * - Accepted states (worn, damaged, badly damaged and their coefficients)
+ * - Traders (NPCs that provide trading services)
  */
 @Component({
   selector: 'app-general-settings-editor',
@@ -49,9 +59,12 @@ import { LoaderComponent } from '../../../shared/components';
     MatTooltipModule,
     MatSlideToggleModule,
     MatMenuModule,
+    MatPaginatorModule,
+    MatSortModule,
     RouterModule,
-    LoaderComponent
-  ],
+    LoaderComponent,
+    TradersEditorComponent
+],
   templateUrl: './general-settings-editor.component.html',
   styleUrls: ['./general-settings-editor.component.scss']
 })
@@ -68,8 +81,14 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
   /** Data source for the licenses table */
   licensesDataSource = new MatTableDataSource<License>([]);
   
+  /** Data source for the traders table */
+  tradersDataSource = new MatTableDataSource<TraderNpc>([]);
+  
   /** Columns to display in the licenses table */
   displayedColumns: string[] = ['licenseName', 'description', 'actions'];
+  
+  /** Columns to display in the traders table */
+  traderColumns: string[] = ['npcId', 'givenName', 'className', 'position', 'actions'];
   
   /** Flag to track if settings exist */
   hasSettings = false;
@@ -81,8 +100,18 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
   editLicenseName: string = '';
   editLicenseDescription: string = '';
 
+  /** Index of the trader currently being edited */
+  editingTraderIndex: number | null = null;
+
+  /** Flag to track if we're adding a new trader */
+  isAddingTrader = false;
+
   /** Flag to track if default settings are being created */
   isCreatingDefaultSettings = false;
+
+  /** References for table pagination and sorting */
+  @ViewChild('traderPaginator') traderPaginator!: MatPaginator;
+  @ViewChild('traderSort') traderSort!: MatSort;
 
   /**
    * Constructor initializes necessary services
@@ -91,8 +120,10 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
     private generalSettingsService: GeneralSettingsService,
     private licenseService: LicenseService,
     private acceptedStatesService: AcceptedStatesService,
+    private traderService: TraderService,
     private notificationService: NotificationService,
-    private initializationService: InitializationService
+    private initializationService: InitializationService,
+    private dialog: MatDialog
   ) { }
 
   /**
@@ -124,8 +155,10 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
     // Update the licenses data source if settings exist
     if (this.hasSettings) {
       this.licensesDataSource = this.licenseService.getLicensesDataSource();
+      this.tradersDataSource = this.traderService.getTradersDataSource();
     } else {
       this.licensesDataSource = new MatTableDataSource<License>([]);
+      this.tradersDataSource = new MatTableDataSource<TraderNpc>([]);
     }
     
     // Update form state if it exists
@@ -156,6 +189,9 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
         // Update the license data source to display default licenses
         this.licensesDataSource = this.licenseService.getLicensesDataSource();
         
+        // Update the trader data source to display default traders
+        this.tradersDataSource = this.traderService.getTradersDataSource();
+        
         this.isCreatingDefaultSettings = false;
         
         this.notificationService.success('General settings created successfully');
@@ -163,9 +199,7 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
     }, 100);
   }
 
-  /**
-   * Add a new license for editing (but don't save it yet)
-   */
+  // License management methods
   addLicense(): void {
     // Use the service to handle license addition logic
     const result = this.licenseService.addLicense();
@@ -283,11 +317,97 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
       this.generalSettings = null;
       this.hasSettings = false;
       this.licensesDataSource = new MatTableDataSource<License>([]);
+      this.tradersDataSource = new MatTableDataSource<TraderNpc>([]);
       
       // Disable form
       if (this.acceptedStatesForm) {
         this.acceptedStatesForm.disable();
       }
+    }
+  }
+
+  /**
+   * Open dialog to add a new trader
+   */
+  openAddTraderDialog(): void {
+    const dialogRef = this.dialog.open(TraderModalComponent, {
+      width: '600px',
+      data: { trader: null }
+    });
+
+    dialogRef.afterClosed().subscribe((trader: TraderNpc) => {
+      if (trader) {
+        if (this.traderService.addTraderToSettings(trader)) {
+          this.tradersDataSource = this.traderService.getTradersDataSource();
+          this.notificationService.success('Trader added successfully');
+        } else {
+          this.notificationService.error('Failed to add trader');
+        }
+      }
+    });
+  }
+
+  /**
+   * Open dialog to edit an existing trader
+   * @param trader - The trader to edit
+   * @param index - The index of the trader in the array
+   */
+  openEditTraderDialog(trader: TraderNpc, index: number): void {
+    const dialogRef = this.dialog.open(TraderModalComponent, {
+      width: '600px',
+      data: { trader: {...trader} }
+    });
+
+    dialogRef.afterClosed().subscribe((updatedTrader: TraderNpc) => {
+      if (updatedTrader) {
+        if (this.traderService.updateTrader(index, updatedTrader)) {
+          this.tradersDataSource = this.traderService.getTradersDataSource();
+          this.notificationService.success('Trader updated successfully');
+        } else {
+          this.notificationService.error('Failed to update trader');
+        }
+      }
+    });
+  }
+
+  /**
+   * Delete a trader after confirmation
+   * @param index - The index of the trader to delete
+   */
+  async deleteTrader(index: number): Promise<void> {
+    this.tradersDataSource = await this.traderService.deleteTraderWithConfirmation(index);
+    
+    // Refresh the settings object reference
+    this.generalSettings = this.generalSettingsService.getGeneralSettings();
+  }
+
+  /**
+   * Delete all traders after confirmation
+   */
+  async deleteAllTraders(): Promise<void> {
+    this.tradersDataSource = await this.traderService.deleteAllTradersWithConfirmation();
+    
+    // Refresh the settings object reference
+    this.generalSettings = this.generalSettingsService.getGeneralSettings();
+  }
+
+  /**
+   * Format the position coordinates for display
+   * @param position - The position array [x, y, z]
+   * @returns Formatted position string
+   */
+  formatPosition(position: number[]): string {
+    if (!position || position.length !== 3) return 'Invalid position';
+    return `X: ${position[0].toFixed(1)}, Y: ${position[1].toFixed(1)}, Z: ${position[2].toFixed(1)}`;
+  }
+
+  /**
+   * Apply pagination and sorting to trader table
+   */
+  setupTraderTable(): void {
+    if (this.tradersDataSource && this.traderPaginator && this.traderSort) {
+      this.tradersDataSource.paginator = this.traderPaginator;
+      this.tradersDataSource.sort = this.traderSort;
     }
   }
 
@@ -299,6 +419,7 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
     // Initialize ripple effects after DOM is fully rendered
     setTimeout(() => {
       this.initializationService.initializeCustomRipples();
+      this.setupTraderTable();
     });
   }
 
@@ -308,6 +429,9 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
   ngOnDestroy(): void {
     // Clear any license edit state in the service
     this.licenseService.clearLicenseEditState();
+    
+    // Clear any trader edit state in the service
+    this.traderService.clearTraderEditState();
     
     // Complete the destroy subject to unsubscribe from all subscriptions
     this.destroy$.next();

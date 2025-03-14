@@ -4,13 +4,8 @@
   padding: 32px;
   max-width: 1800px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 32px;
-  
-  @media (max-width: 768px) {
-    padding: 16px;
-  }
 }
 
 /* Main Content Area
