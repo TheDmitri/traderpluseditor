@@ -40,7 +40,7 @@ export class NavigationComponent {
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
     { label: 'Categories', icon: 'category', route: '/categories' },
     { label: 'Products', icon: 'shopping_cart', route: '/products' },
-    { label: 'Currencies', icon: 'attach_money', route: '/currencies' },
+    { label: 'Currencies', icon: 'payments', route: '/currencies' },
     { label: 'Settings', icon: 'settings', route: '/settings' },
     { label: 'Import/Export', icon: 'import_export', route: '/file-management' }
   ];

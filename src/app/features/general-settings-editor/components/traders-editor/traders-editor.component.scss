@@ -37,34 +37,6 @@
   border-top: 1px solid var(--brush-border-subtle);
 }
 
-/* Panel Layout - Consistent with other sections 
-========================================================================== */
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  
-  .panel-title-area {
-    .section-title {
-      margin-bottom: 4px;
-      font-weight: 500;
-    }
-
-    .panel-subtitle {
-      color: var(--brush-text-secondary);
-      font-size: var(--font-size-sm);
-      margin: 0;
-    }
-  }
-  
-  // Container for action buttons in header
-  .panel-actions {
-    display: flex;
-    gap: 8px; // Consistent spacing between action buttons
-  }
-}
-
 /* Table & Action Button Styling - For consistency
 ========================================================================== */
 .table-container {
