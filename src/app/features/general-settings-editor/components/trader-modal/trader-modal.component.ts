@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -92,14 +92,17 @@ export class TraderModalComponent implements OnInit {
     private currencyService: CurrencyService, // Inject CurrencyService
     @Inject(MAT_DIALOG_DATA) public data: { trader: TraderNpc | null }
   ) {
+    // Disable closing the dialog by clicking outside or pressing ESC key
+    this.dialogRef.disableClose = true;
+    
     this.isNewTrader = !data.trader || !data.trader.className;
     this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
     
-    // Initialize form with empty values
+    // Initialize form with empty values and custom validation
     this.traderForm = this.fb.group({
       type: [TraderType.NPC, Validators.required],
       npcId: [{ value: 0, disabled: true }],
-      className: ['', Validators.required],
+      className: ['', [Validators.required, this.noSpecialCharsValidator()]],
       givenName: ['', Validators.required],
       role: [''],
       positionX: [0, Validators.required],
@@ -456,21 +459,58 @@ export class TraderModalComponent implements OnInit {
     const selectedCategoryIds = this.getSelectedCategoryIds();
     const selectedCurrencyNames = this.getSelectedCurrencyNames();
     
-    // Build the trader object
-    const trader: TraderNpc = {
+    // Build the trader object with all properties
+    let trader: TraderNpc = {
       npcId: formValue.npcId,
       className: formValue.className.trim(),
       givenName: formValue.givenName.trim(),
       role: formValue.role.trim(),
       position: [formValue.positionX, formValue.positionY, formValue.positionZ],
       orientation: [formValue.orientationX, formValue.orientationY, formValue.orientationZ],
-      categoriesId: selectedCategoryIds, // Use the selected category IDs
-      currenciesAccepted: selectedCurrencyNames, // Use the selected currency names
-      // Only include loadouts for NPC type
-      loadouts: traderType === TraderType.NPC ? (this.data.trader?.loadouts || []) : []
+      categoriesId: selectedCategoryIds,
+      currenciesAccepted: selectedCurrencyNames,
+      loadouts: this.data.trader?.loadouts || []
     };
     
+    // Clean the trader properties based on trader type
+    trader = this.sanitizeTraderByType(trader, traderType);
+    
     this.dialogRef.close({ trader, traderType });
+  }
+  
+  /**
+   * Sanitize the trader object based on trader type
+   * Remove properties that shouldn't be included for specific trader types
+   */
+  sanitizeTraderByType(trader: TraderNpc, traderType: TraderType): TraderNpc {
+    switch (traderType) {
+      case TraderType.ATM:
+        // ATMs should not have categories or loadouts, but can accept currencies
+        return {
+          ...trader,
+          // ATM specific properties
+          npcId: -2,
+          className: 'TraderPlus_BANK_ATM',
+          givenName: 'ATM',
+          role: 'ATM',
+          // Clear categories and loadouts, but keep currencies
+          categoriesId: [],
+          currenciesAccepted: trader.currenciesAccepted, // Keep currencies for ATMs
+          loadouts: []
+        };
+        
+      case TraderType.OBJECT:
+        // Objects can have categories and currencies but not loadouts
+        return {
+          ...trader,
+          loadouts: [] // Clear loadouts for objects
+        };
+        
+      case TraderType.NPC:
+      default:
+        // NPCs can have all properties, keep as is
+        return trader;
+    }
   }
 
   /**
@@ -478,5 +518,33 @@ export class TraderModalComponent implements OnInit {
    */
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  /**
+   * Custom validator to prevent spaces and special characters in className
+   */
+  noSpecialCharsValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      // Allow only alphanumeric characters and underscores
+      // Regex pattern: ^ start of string, \w alphanumeric and underscore, $ end of string
+      const validPattern = /^[\w]+$/;
+      
+      const valid = validPattern.test(control.value);
+      
+      // Skip validation if empty (will be caught by required validator)
+      if (!control.value) {
+        return null;
+      }
+      
+      return !valid ? { invalidCharacters: true } : null;
+    };
+  }
+
+  /**
+   * Check if className has space or special character error
+   */
+  hasClassNameSpecialCharError(): boolean {
+    const control = this.traderForm.get('className');
+    return control ? control.hasError('invalidCharacters') && (control.touched || control.dirty) : false;
   }
 }

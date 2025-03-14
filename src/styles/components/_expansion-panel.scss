@@ -3,7 +3,11 @@
   margin-bottom: 16px;
 
   mat-expansion-panel {
-    background-color: transparent;
+    background: linear-gradient(
+      135deg,
+      var(--brush-background-elevated),
+      var(--brush-background-body)
+    );
     margin-bottom: 8px;
 
     &:last-child {

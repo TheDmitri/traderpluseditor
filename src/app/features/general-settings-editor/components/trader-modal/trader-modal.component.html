@@ -16,13 +16,13 @@
           <mat-icon class="info-icon">info</mat-icon>
           <div class="info-content">
             <p *ngIf="traderForm.get('type')?.value === traderTypes.ATM">
-              ATMs have fixed ID (-2) and className
+              ATMs have fixed ID (-2) and className. They can accept currencies but have no categories.
             </p>
             <p *ngIf="traderForm.get('type')?.value === traderTypes.NPC">
-              NPCs can have loadouts and categories
+              NPCs can have loadouts, categories, and accept currencies.
             </p>
             <p *ngIf="traderForm.get('type')?.value === traderTypes.OBJECT">
-              Objects can have categories but no loadouts
+              Objects can have categories and accept currencies but no loadouts.
             </p>
           </div>
         </div>
@@ -44,6 +44,10 @@
           <mat-error *ngIf="traderForm.get('className')?.hasError('required')">
             Class name is required
           </mat-error>
+          <mat-error *ngIf="hasClassNameSpecialCharError()">
+            Class name can only contain letters, numbers, and underscores
+          </mat-error>
+          <mat-hint>Only letters, numbers, and underscores are allowed</mat-hint>
         </mat-form-field>
         
         <!-- Given Name -->
@@ -123,7 +127,7 @@
           </div>
         </mat-expansion-panel>
         
-        <!-- Categories Section - Using Expansion Panel -->
+        <!-- Categories Section - Using Expansion Panel - Not for ATMs -->
         <mat-expansion-panel *ngIf="traderForm.get('type')?.value !== traderTypes.ATM">
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -131,9 +135,17 @@
               Categories
             </mat-panel-title>
             <mat-panel-description>
-              Choose the categories of items the trader will trade
+              Choose the available categories for this trader
             </mat-panel-description>
           </mat-expansion-panel-header>
+          
+          <!-- Note added about property cleanup on type change - only shown for new traders -->
+          <div *ngIf="traderForm.get('type')?.value !== traderTypes.ATM && isNewTrader" class="info-box">
+            <mat-icon class="info-icon">info</mat-icon>
+            <div class="info-content">
+              <span>If you change the trader type, selections made here will only be saved if appropriate for the selected type.</span>
+            </div>
+          </div>
           
           <div class="categories-panel-content">
             <!-- Warning about unknown categories -->
@@ -194,8 +206,8 @@
           </div>
         </mat-expansion-panel>
         
-        <!-- Currencies Section - Using Expansion Panel -->
-        <mat-expansion-panel *ngIf="traderForm.get('type')?.value !== traderTypes.ATM">
+        <!-- Currencies Section - Using Expansion Panel - For all trader types including ATMs -->
+        <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
               <mat-icon>payments</mat-icon>
@@ -205,6 +217,14 @@
               Choose the currencies the trader will accept
             </mat-panel-description>
           </mat-expansion-panel-header>
+          
+          <!-- Note added about property cleanup on type change - only shown for new traders -->
+          <div *ngIf="isNewTrader" class="info-box">
+            <mat-icon class="info-icon">info</mat-icon>
+            <div class="info-content">
+              <span>If you change the trader type, selections made here will only be saved if appropriate for the selected type.</span>
+            </div>
+          </div>
           
           <div class="currencies-panel-content">
             <!-- Warning about unknown currencies -->
@@ -278,6 +298,14 @@
               Choose the loadouts the trader will carry
             </mat-panel-description>
           </mat-expansion-panel-header>
+          
+          <!-- Note added about property cleanup on type change - only shown for new traders -->
+          <div *ngIf="traderForm.get('type')?.value !== traderTypes.ATM && isNewTrader" class="info-box">
+            <mat-icon class="info-icon">info</mat-icon>
+            <div class="info-content">
+              <span>If you change the trader type, selections made here will only be saved if appropriate for the selected type.</span>
+            </div>
+          </div>
           
           <div class="loadouts-panel-content">
             <p class="panel-info-text">
