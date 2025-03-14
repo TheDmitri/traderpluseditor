@@ -331,7 +331,6 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
    */
   openAddTraderDialog(): void {
     const dialogRef = this.dialog.open(TraderModalComponent, {
-      width: '600px',
       data: { trader: null }
     });
 
@@ -354,7 +353,6 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
    */
   openEditTraderDialog(trader: TraderNpc, index: number): void {
     const dialogRef = this.dialog.open(TraderModalComponent, {
-      width: '600px',
       data: { trader: {...trader} }
     });
 

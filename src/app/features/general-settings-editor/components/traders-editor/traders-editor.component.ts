@@ -111,7 +111,6 @@ export class TradersEditorComponent implements OnInit, OnDestroy, AfterViewInit 
    */
   openAddTraderDialog(): void {
     const dialogRef = this.dialog.open(TraderModalComponent, {
-      width: '600px',
       data: { trader: null }
     });
 
@@ -137,7 +136,6 @@ export class TradersEditorComponent implements OnInit, OnDestroy, AfterViewInit 
    */
   openEditTraderDialog(trader: TraderNpc, index: number): void {
     const dialogRef = this.dialog.open(TraderModalComponent, {
-      width: '600px',
       data: { trader: {...trader} }
     });
 

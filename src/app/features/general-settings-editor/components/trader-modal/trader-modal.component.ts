@@ -14,9 +14,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 
 // Application imports
-import { TraderNpc } from '../../../../core/models/general-settings.model';
+import { TraderNpc, LoadoutItem } from '../../../../core/models/general-settings.model';
 import { CategorySelectionComponent } from '../category-selection/category-selection.component';
 import { CurrencySelectionComponent } from '../currency-selection/currency-selection.component';
+import { TraderLoadoutComponent } from '../trader-loadout/trader-loadout.component';
 
 /**
  * Enum for trader types
@@ -48,7 +49,8 @@ export enum TraderType {
     MatExpansionModule,
     MatCheckboxModule,
     CategorySelectionComponent,
-    CurrencySelectionComponent
+    CurrencySelectionComponent,
+    TraderLoadoutComponent // Add the import for the new component
   ],
   templateUrl: './trader-modal.component.html',
   styleUrls: ['./trader-modal.component.scss']
@@ -71,6 +73,9 @@ export class TraderModalComponent implements OnInit {
 
   /** Selected currency names */
   selectedCurrencyNames: string[] = [];
+  
+  /** Trader loadout items */
+  traderLoadouts: LoadoutItem[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -133,9 +138,10 @@ export class TraderModalComponent implements OnInit {
         orientationZ: trader.orientation?.[2] || 0
       });
 
-      // Initialize selected categories and currencies from trader data
+      // Initialize selected categories, currencies, and loadouts from trader data
       this.selectedCategoryIds = trader.categoriesId || [];
       this.selectedCurrencyNames = trader.currenciesAccepted || [];
+      this.traderLoadouts = trader.loadouts ? [...trader.loadouts] : [];
 
       // Lock fields if it's an ATM
       if (traderType === TraderType.ATM) {
@@ -219,6 +225,14 @@ export class TraderModalComponent implements OnInit {
   }
 
   /**
+   * Handle changes to loadout items from the child component
+   * @param loadoutItems The updated loadout items
+   */
+  onLoadoutsChange(loadoutItems: LoadoutItem[]): void {
+    this.traderLoadouts = loadoutItems;
+  }
+
+  /**
    * Submit the form data and close the dialog
    */
   onSubmit(): void {
@@ -240,7 +254,7 @@ export class TraderModalComponent implements OnInit {
       orientation: [formValue.orientationX, formValue.orientationY, formValue.orientationZ],
       categoriesId: this.selectedCategoryIds,
       currenciesAccepted: this.selectedCurrencyNames,
-      loadouts: this.data.trader?.loadouts || []
+      loadouts: this.traderLoadouts // Use the updated loadouts
     };
     
     // Clean the trader properties based on trader type

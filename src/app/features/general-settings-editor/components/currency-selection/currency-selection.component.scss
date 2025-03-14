@@ -5,12 +5,12 @@
     display: flex;
     align-items: center;
     padding: 16px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--brush-hover-overlay);
     border-radius: 4px;
     
     .empty-icon {
       margin-right: 12px;
-      color: var(--brush-warning);
+      color: var(--brush-status-warning-background);
     }
     
     .empty-message {
@@ -24,13 +24,13 @@
     display: flex;
     align-items: flex-start;
     padding: 12px;
-    background-color: rgba(255, 193, 7, 0.1);
+    background-color: var(--color-warning-transparent-10);
     border-radius: 4px;
     margin-bottom: 16px;
     
     .warning-icon {
       margin-right: 12px;
-      color: var(--brush-warning, #ffc107);
+      color: var(--brush-status-warning-background);
     }
     
     .warning-message {
@@ -53,7 +53,7 @@
       color: var(--brush-text-secondary);
       
       .unknown-count {
-        color: var(--brush-warning, #ffc107);
+        color: var(--brush-status-warning-background);
         margin-left: 8px;
         font-size: 0.85em;
         font-style: italic;
@@ -73,7 +73,7 @@
         
         &.selected-currency {
           // Visual indicator for selected currencies
-          background-color: rgba(var(--brush-primary-rgb), 0.08);
+          background-color: var(--color-primary-transparent-10);
           border-radius: 4px;
           
           .currency-info {
@@ -95,19 +95,19 @@
           left: 0;
           right: 0;
           height: 1px;
-          background-color: rgba(255, 255, 255, 0.12);
+          background-color: var(--brush-border-subtle);
         }
         
         /* Unknown currency styling */
         &.unknown-currency {
-          background-color: rgba(255, 193, 7, 0.05);
+          background-color: var(--color-warning-transparent-10);
           border-radius: 4px;
-          border-left: 3px solid var(--brush-warning, #ffc107);
+          border-left: 3px solid var(--brush-status-warning-background);
           padding-left: 4px;
           
           .currency-info {
             .currency-name {
-              color: var(--brush-warning, #ffc107);
+              color: var(--brush-status-warning-background);
               font-weight: 500;
             }
             
@@ -116,7 +116,7 @@
               height: 16px;
               width: 16px;
               margin-left: 8px;
-              color: var(--brush-warning, #ffc107);
+              color: var(--brush-status-warning-background);
             }
           }
         }

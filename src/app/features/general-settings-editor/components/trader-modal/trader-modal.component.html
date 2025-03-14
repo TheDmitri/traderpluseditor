@@ -201,11 +201,11 @@
             </div>
           </div>
           
-          <div class="loadouts-panel-content">
-            <p class="panel-info-text">
-              Loadouts can be configured after creating the trader.
-            </p>
-          </div>
+          <!-- Using the new loadout selection component -->
+          <app-trader-loadout 
+            [loadoutItems]="traderLoadouts" 
+            (loadoutItemsChange)="onLoadoutsChange($event)"
+          ></app-trader-loadout>
         </mat-expansion-panel>
       </mat-accordion>
       
