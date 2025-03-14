@@ -1,0 +1,142 @@
+.currencies-panel-content {
+  padding: 8px 0;
+  
+  .empty-currencies {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    
+    .empty-icon {
+      margin-right: 12px;
+      color: var(--brush-warning);
+    }
+    
+    .empty-message {
+      margin: 0;
+      color: var(--brush-text-secondary);
+    }
+  }
+  
+  /* Warning for unknown currencies */
+  .unknown-currencies-warning {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px;
+    background-color: rgba(255, 193, 7, 0.1);
+    border-radius: 4px;
+    margin-bottom: 16px;
+    
+    .warning-icon {
+      margin-right: 12px;
+      color: var(--brush-warning, #ffc107);
+    }
+    
+    .warning-message {
+      p {
+        margin: 0;
+        font-size: 0.9em;
+        color: var(--brush-text-secondary);
+        
+        &:not(:last-child) {
+          margin-bottom: 4px;
+        }
+      }
+    }
+  }
+  
+  .currencies-selection {
+    .selected-summary {
+      margin-bottom: 12px;
+      font-size: 0.9em;
+      color: var(--brush-text-secondary);
+      
+      .unknown-count {
+        color: var(--brush-warning, #ffc107);
+        margin-left: 8px;
+        font-size: 0.85em;
+        font-style: italic;
+      }
+    }
+    
+    .currencies-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 8px 0;
+      
+      .currency-checkbox {
+        position: relative;
+        
+        &.selected-currency {
+          // Visual indicator for selected currencies
+          background-color: rgba(var(--brush-primary-rgb), 0.08);
+          border-radius: 4px;
+          
+          .currency-info {
+            .currency-name {
+              color: var(--brush-primary);
+            }
+            
+            .currency-count {
+              opacity: 0.9;
+            }
+          }
+        }
+        
+        // Add a subtle divider between selected and non-selected currencies
+        &:last-of-type.selected-currency::after {
+          content: "";
+          position: absolute;
+          bottom: -4px;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background-color: rgba(255, 255, 255, 0.12);
+        }
+        
+        /* Unknown currency styling */
+        &.unknown-currency {
+          background-color: rgba(255, 193, 7, 0.05);
+          border-radius: 4px;
+          border-left: 3px solid var(--brush-warning, #ffc107);
+          padding-left: 4px;
+          
+          .currency-info {
+            .currency-name {
+              color: var(--brush-warning, #ffc107);
+              font-weight: 500;
+            }
+            
+            .unknown-icon {
+              font-size: 16px;
+              height: 16px;
+              width: 16px;
+              margin-left: 8px;
+              color: var(--brush-warning, #ffc107);
+            }
+          }
+        }
+        
+        .currency-info {
+          display: flex;
+          align-items: center;
+          
+          .currency-name {
+            font-weight: 500;
+          }
+          
+          .currency-count {
+            margin-left: 8px;
+            font-size: 0.85em;
+            color: var(--brush-text-secondary);
+            opacity: 0.7;
+          }
+        }
+      }
+    }
+  }
+}

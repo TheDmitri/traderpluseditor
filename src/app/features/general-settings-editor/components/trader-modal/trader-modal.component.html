@@ -147,63 +147,11 @@
             </div>
           </div>
           
-          <div class="categories-panel-content">
-            <!-- Warning about unknown categories -->
-            <div *ngIf="unknownCategoryIds.length > 0" class="unknown-categories-warning">
-              <mat-icon class="warning-icon">warning</mat-icon>
-              <div class="warning-message">
-                <p>This trader has {{ unknownCategoryIds.length }} unknown {{ unknownCategoryIds.length === 1 ? 'category' : 'categories' }} that {{ unknownCategoryIds.length === 1 ? 'does' : 'do' }} not exist in the Category Editor.</p>
-                <p>These categories may not work correctly in-game.</p>
-              </div>
-            </div>
-            
-            <!-- No categories available message -->
-            <div *ngIf="availableCategories.length === 0 && unknownCategoryIds.length === 0" class="empty-categories">
-              <mat-icon class="empty-icon">warning</mat-icon>
-              <p class="empty-message">No categories are available. Create categories in the Category Editor first.</p>
-            </div>
-            
-            <!-- Categories list -->
-            <div *ngIf="availableCategories.length > 0 || unknownCategoryIds.length > 0" class="categories-selection">
-              <!-- Selected categories summary -->
-              <div class="selected-summary">
-                <span class="selected-count">{{ getSelectedCategoryIds().length }} {{ unknownCategoryIds.length > 0 ? 'total' : 'of ' + availableCategories.length }} selected</span>
-                <span *ngIf="unknownCategoryIds.length > 0" class="unknown-count">(including {{ unknownCategoryIds.length }} unknown)</span>
-              </div>
-              
-              <!-- List of categories with checkboxes - starting with unknown categories -->
-              <div class="categories-list">
-                <!-- Unknown categories -->
-                <mat-checkbox 
-                  *ngFor="let category of getUnknownCategoriesForDisplay()"
-                  color="warn"
-                  [checked]="isCategorySelected(category.categoryId)"
-                  (change)="toggleCategory(category.categoryId)"
-                  class="category-checkbox unknown-category"
-                >
-                  <div class="category-info">
-                    <span class="category-id">{{ category.categoryId }}</span>
-                    <mat-icon class="unknown-icon" matTooltip="This category does not exist in the Category Editor">help_outline</mat-icon>
-                  </div>
-                </mat-checkbox>
-                
-                <!-- Known categories -->
-                <mat-checkbox 
-                  color="primary"
-                  *ngFor="let category of getSortedCategories()"
-                  [checked]="isCategorySelected(category.categoryId)"
-                  (change)="toggleCategory(category.categoryId)"
-                  class="category-checkbox"
-                  [ngClass]="{'selected-category': isCategorySelected(category.categoryId)}"
-                >
-                  <div class="category-info">
-                    <span class="category-name">{{ category.categoryName }}</span>
-                    <span class="category-id">{{ category.categoryId }}</span>
-                  </div>
-                </mat-checkbox>
-              </div>
-            </div>
-          </div>
+          <!-- Using the new category selection component -->
+          <app-category-selection 
+            [categoryIds]="selectedCategoryIds" 
+            (categoriesChange)="onCategoriesChange($event)">
+          </app-category-selection>
         </mat-expansion-panel>
         
         <!-- Currencies Section - Using Expansion Panel - For all trader types including ATMs -->
@@ -226,65 +174,11 @@
             </div>
           </div>
           
-          <div class="currencies-panel-content">
-            <!-- Warning about unknown currencies -->
-            <div *ngIf="unknownCurrencyNames.length > 0" class="unknown-currencies-warning">
-              <mat-icon class="warning-icon">warning</mat-icon>
-              <div class="warning-message">
-                <p>This trader has {{ unknownCurrencyNames.length }} unknown {{ unknownCurrencyNames.length === 1 ? 'currency' : 'currencies' }} that {{ unknownCurrencyNames.length === 1 ? 'does' : 'do' }} not exist in the Currency Editor.</p>
-                <p>These currencies may not work correctly in-game.</p>
-              </div>
-            </div>
-            
-            <!-- No currencies available message -->
-            <div *ngIf="availableCurrencyTypes.length === 0 && unknownCurrencyNames.length === 0" class="empty-currencies">
-              <mat-icon class="empty-icon">warning</mat-icon>
-              <p class="empty-message">No currencies are available. Create currencies in the Currency Editor first.</p>
-            </div>
-            
-            <!-- Currencies list -->
-            <div *ngIf="availableCurrencyTypes.length > 0 || unknownCurrencyNames.length > 0" class="currencies-selection">
-              <!-- Selected currencies summary -->
-              <div class="selected-summary">
-                <span class="selected-count">{{ getSelectedCurrencyNames().length }} {{ unknownCurrencyNames.length > 0 ? 'total' : 'of ' + availableCurrencyTypes.length }} selected</span>
-                <span *ngIf="unknownCurrencyNames.length > 0" class="unknown-count">(including {{ unknownCurrencyNames.length }} unknown)</span>
-              </div>
-              
-              <!-- List of currencies with checkboxes - starting with unknown currencies -->
-              <div class="currencies-list">
-                <!-- Unknown currencies -->
-                <mat-checkbox 
-                  *ngFor="let currency of getUnknownCurrenciesForDisplay()"
-                  color="warn"
-                  [checked]="isCurrencySelected(currency.currencyName)"
-                  (change)="toggleCurrency(currency.currencyName)"
-                  class="currency-checkbox unknown-currency"
-                >
-                  <div class="currency-info">
-                    <span class="currency-name">{{ currency.currencyName }}</span>
-                    <mat-icon class="unknown-icon" matTooltip="This currency does not exist in the Currency Editor">help_outline</mat-icon>
-                  </div>
-                </mat-checkbox>
-                
-                <!-- Known currencies -->
-                <mat-checkbox 
-                  color="primary"
-                  *ngFor="let currency of getSortedCurrencyTypes()"
-                  [checked]="isCurrencySelected(currency.currencyName)"
-                  (change)="toggleCurrency(currency.currencyName)"
-                  class="currency-checkbox"
-                  [ngClass]="{'selected-currency': isCurrencySelected(currency.currencyName)}"
-                >
-                  <div class="currency-info">
-                    <span class="currency-name">{{ currency.currencyName }}</span>
-                    <span class="currency-count" *ngIf="currency.currencies">
-                      ({{ currency.currencies.length }} currencies)
-                    </span>
-                  </div>
-                </mat-checkbox>
-              </div>
-            </div>
-          </div>
+          <!-- Using the new currency selection component -->
+          <app-currency-selection 
+            [currencyNames]="selectedCurrencyNames" 
+            (currenciesChange)="onCurrenciesChange($event)">
+          </app-currency-selection>
         </mat-expansion-panel>
         
         <!-- Loadouts Section - Using Expansion Panel -->
