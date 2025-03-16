@@ -36,7 +36,18 @@ export class TraderService {
    */
   getTradersDataSource(): MatTableDataSource<TraderNpc> {
     const settings = this.generalSettingsService.getGeneralSettings();
-    const traders = settings?.traders || [];
+    let traders = settings?.traders || [];
+    
+    // Sort traders so that ATMs (ID -2) appear at the bottom
+    traders = [...traders].sort((a, b) => {
+      // If a is an ATM and b is not, a comes after b
+      if (a.npcId === -2 && b.npcId !== -2) return 1;
+      // If b is an ATM and a is not, b comes after a
+      if (a.npcId !== -2 && b.npcId === -2) return -1;
+      // For regular traders (or both are ATMs), sort by ID
+      return a.npcId - b.npcId;
+    });
+    
     return new MatTableDataSource<TraderNpc>(traders);
   }
   
@@ -218,8 +229,9 @@ export class TraderService {
     // Update the temporary data for editing
     this.editingTraderIndex = 0;
     
-    // Create a temporary datasource with the new trader at the top
+    // Get current traders (already sorted by getTradersDataSource)
     const currentTraders = [...this.getTradersDataSource().data];
+    // Insert the new trader at the beginning
     currentTraders.unshift(this.newTrader);
     
     return {
