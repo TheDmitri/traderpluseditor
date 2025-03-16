@@ -153,8 +153,8 @@ export class TraderModalComponent implements OnInit {
       // Lock fields if it's an ATM
       if (traderType === TraderType.ATM) {
         this.traderForm.get('givenName')?.disable();
-        this.traderForm.get('role')?.disable();
         this.traderForm.get('className')?.disable();
+        // Don't disable role anymore - we want to allow editing it
       }
     } 
     // If this is a new trader and we haven't set the ID yet, do it now
@@ -176,7 +176,7 @@ export class TraderModalComponent implements OnInit {
     // Reset to enabled state
     classnameControl?.enable();
     givenNameControl?.enable();
-    roleControl?.enable();
+    roleControl?.enable(); // Always enable role field
 
     switch (type) {
       case TraderType.ATM:
@@ -184,12 +184,16 @@ export class TraderModalComponent implements OnInit {
         idControl?.setValue(-2);
         classnameControl?.setValue('TraderPlus_BANK_ATM');
         givenNameControl?.setValue('ATM');
-        roleControl?.setValue('ATM');
+        
+        // For ATMs, we'll set a default role but still allow editing
+        if (this.isNewTrader || roleControl?.value === '') {
+          roleControl?.setValue('Banking');
+        }
         
         // Disable fields that shouldn't be changed for ATM
         classnameControl?.disable();
         givenNameControl?.disable();
-        roleControl?.disable();
+        // Note: Not disabling the role field anymore
         break;
 
       case TraderType.NPC:
@@ -198,7 +202,7 @@ export class TraderModalComponent implements OnInit {
         if (this.isNewTrader || givenNameControl?.value === 'ATM') {
           givenNameControl?.setValue('');
         }
-        if (this.isNewTrader || roleControl?.value === 'ATM') {
+        if (this.isNewTrader || roleControl?.value === 'Banking') {
           roleControl?.setValue('');
         }
         if (this.isNewTrader || classnameControl?.value === 'TraderPlus_BANK_ATM') {
@@ -292,7 +296,7 @@ export class TraderModalComponent implements OnInit {
           npcId: -2,
           className: 'TraderPlus_BANK_ATM',
           givenName: 'ATM',
-          role: 'ATM',
+          role: trader.role, // Keep the user-defined role value
           // Clear categories and loadouts, but keep currencies
           categoriesId: [],
           currenciesAccepted: trader.currenciesAccepted, // Keep currencies for ATMs
