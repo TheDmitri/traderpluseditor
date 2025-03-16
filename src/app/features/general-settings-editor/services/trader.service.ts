@@ -148,8 +148,16 @@ export class TraderService {
       return false;
     }
     
+    // Get the deleted trader's ID to check if re-indexing is needed
+    const deletedTraderId = settings.traders[index].npcId;
+    
     // Remove the trader
     settings.traders.splice(index, 1);
+    
+    // Re-index remaining traders to ensure sequential IDs without gaps
+    if (deletedTraderId >= 0) {
+      this.reindexTraderIds(settings.traders);
+    }
     
     // Save the updated settings
     this.generalSettingsService.saveGeneralSettings(settings);
@@ -157,6 +165,26 @@ export class TraderService {
     return true;
   }
   
+  /**
+   * Re-index trader IDs to ensure they are sequential without gaps
+   * @param traders The array of traders to re-index
+   */
+  private reindexTraderIds(traders: TraderNpc[]): void {
+    // Skip if traders array is empty
+    if (!traders || traders.length === 0) return;
+    
+    // First, collect all regular traders (non-ATMs) with positive IDs
+    const regularTraders = traders.filter(trader => trader.npcId >= 0);
+    
+    // Sort them by ID for sequential reassignment
+    regularTraders.sort((a, b) => a.npcId - b.npcId);
+    
+    // Assign sequential IDs starting from 0
+    for (let i = 0; i < regularTraders.length; i++) {
+      regularTraders[i].npcId = i;
+    }
+  }
+
   /**
    * Delete all traders
    * @returns True if deleted successfully, false otherwise
@@ -350,10 +378,14 @@ export class TraderService {
    */
   deleteTraderWithConfirmation(index: number): Promise<MatTableDataSource<TraderNpc>> {
     return new Promise((resolve) => {
+      // Get the trader to display its name in the confirmation message
+      const trader = this.generalSettingsService.getGeneralSettings()?.traders?.[index];
+      const traderName = trader ? `${trader.givenName} (ID: ${trader.npcId})` : 'this trader';
+      
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         data: {
           title: 'Delete Trader',
-          message: 'Are you sure you want to delete this trader? \n\nThis action cannot be undone.',
+          message: `Are you sure you want to delete ${traderName}?\n\nTrader IDs will be re-indexed to ensure they remain sequential.\n\nThis action cannot be undone. `,
           confirmText: 'Delete',
           cancelText: 'Cancel',
           type: 'danger'
@@ -363,7 +395,7 @@ export class TraderService {
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           if (this.deleteTrader(index)) {
-            this.notificationService.success('Trader deleted successfully');
+            this.notificationService.success(`Trader deleted successfully. Remaining trader IDs have been re-indexed.`);
           } else {
             this.notificationService.error('Failed to delete trader');
           }
