@@ -15,9 +15,9 @@ import { FormsModule } from '@angular/forms';
 
 // Application imports
 import { TraderNpc, LoadoutItem } from '../../../../core/models/general-settings.model';
-import { CategorySelectionComponent } from '../category-selection/category-selection.component';
-import { CurrencySelectionComponent } from '../currency-selection/currency-selection.component';
-import { TraderLoadoutComponent } from '../trader-loadout/trader-loadout.component';
+import { CategorySelectionComponent } from './components/category-selection/category-selection.component';
+import { CurrencySelectionComponent } from './components/currency-selection/currency-selection.component';
+import { TraderLoadoutComponent } from './components/trader-loadout/trader-loadout.component';
 
 /**
  * Enum for trader types

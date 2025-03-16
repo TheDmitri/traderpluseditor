@@ -12,9 +12,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 
-import { LoadoutItem, LoadoutAttachments } from '../../../../core/models/general-settings.model';
-import { TraderLoadoutService } from '../../services/trader-loadout.service';
-import { NotificationService } from '../../../../shared/services';
+import { LoadoutItem, LoadoutAttachments } from '../../../../../../core/models/general-settings.model';
+import { TraderLoadoutService } from '../../../../services/trader-loadout.service';
+import { NotificationService } from '../../../../../../shared/services';
 
 /**
  * Component for managing trader loadout items and their attachments
