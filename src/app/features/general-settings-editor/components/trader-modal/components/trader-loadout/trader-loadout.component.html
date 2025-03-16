@@ -50,6 +50,7 @@
           <div class="section-header">
             <h3>Attachments</h3>
             <button 
+              type="button"
               class="custom-stroked-button color-primary with-icon"
               (click)="addAttachment()"
               [disabled]="isEditingAttachment"
@@ -100,6 +101,7 @@
               
               <div class="form-actions">
                 <button 
+                  type="button"
                   mat-stroked-button 
                   (click)="cancelEditAttachment()"
                 >
@@ -107,6 +109,7 @@
                 </button>
                 
                 <button 
+                  type="button"
                   mat-raised-button 
                   color="primary"
                   [disabled]="attachmentForm.invalid"
@@ -130,6 +133,7 @@
               
               <div class="attachment-actions">
                 <button 
+                  type="button"
                   mat-icon-button 
                   color="primary"
                   (click)="editAttachment(attachment, i)"
@@ -140,6 +144,7 @@
                 </button>
                 
                 <button 
+                  type="button"
                   mat-icon-button 
                   color="warn"
                   (click)="removeAttachment(i)"
@@ -162,6 +167,7 @@
       
       <mat-card-actions>
         <button 
+          type="button"
           mat-stroked-button 
           (click)="cancelEditItem()"
         >
@@ -169,6 +175,7 @@
         </button>
         
         <button 
+          type="button"
           mat-raised-button 
           color="primary"
           [disabled]="itemForm.invalid"
@@ -216,6 +223,7 @@
         <!-- Remove button appears on hover -->
         <button 
           *ngIf="isSlotFilled(slot)"
+          type="button"
           mat-icon-button 
           color="warn" 
           class="remove-slot-btn"

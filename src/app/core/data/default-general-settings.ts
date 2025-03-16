@@ -18,7 +18,7 @@ export const DEFAULT_LICENSES: License[] = [
 ];
 
 /**
- * Default categories for TraderPlus
+ * Default TraderNPCs for TraderPlus
  */
 export const DEFAULT_TRADERNPCS: TraderNpc[] = [
   {
@@ -156,25 +156,25 @@ export const DEFAULT_TRADERNPCS: TraderNpc[] = [
       {
         className: 'ManSuit_DarkGrey',
         quantity: -1,
-        slotName: '',
+        slotName: 'Body',
         attachments: []
       },
       {
         className: 'DressShoes_Black',
         quantity: -1,
-        slotName: '',
+        slotName: 'Feet',
         attachments: []
       },
       {
         className: 'SlacksPants_Black',
         quantity: -1,
-        slotName: '',
+        slotName: 'Legs',
         attachments: []
       },
       {
         className: 'SportGlasses_Black',
         quantity: -1,
-        slotName: '',
+        slotName: 'Eyewear',
         attachments: []
       }
     ]
@@ -208,7 +208,7 @@ export const DEFAULT_TRADERNPCS: TraderNpc[] = [
 ];
 
 /**
- * Default products for TraderPlus
+ * Default TraderObjects for TraderPlus
  */
 export const DEFAULT_TRADEROBJECT: TraderObject[] = [
   {

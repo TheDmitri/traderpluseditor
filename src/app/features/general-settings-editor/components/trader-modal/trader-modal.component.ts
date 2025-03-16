@@ -18,6 +18,7 @@ import { TraderNpc, LoadoutItem } from '../../../../core/models/general-settings
 import { CategorySelectionComponent } from './components/category-selection/category-selection.component';
 import { CurrencySelectionComponent } from './components/currency-selection/currency-selection.component';
 import { TraderLoadoutComponent } from './components/trader-loadout/trader-loadout.component';
+import { TraderService } from '../../services/trader.service';
 
 /**
  * Enum for trader types
@@ -80,7 +81,8 @@ export class TraderModalComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<TraderModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { trader: TraderNpc | null }
+    @Inject(MAT_DIALOG_DATA) public data: { trader: TraderNpc | null },
+    private traderService: TraderService
   ) {
     // Disable closing the dialog by clicking outside or pressing ESC key
     this.dialogRef.disableClose = true;
@@ -107,6 +109,11 @@ export class TraderModalComponent implements OnInit {
     this.traderForm.get('type')?.valueChanges.subscribe((type: TraderType) => {
       this.handleTraderTypeChange(type);
     });
+    
+    // For a new trader, immediately set the next available ID based on the initial type (NPC)
+    if (this.isNewTrader) {
+      this.setNextAvailableId();
+    }
   }
 
   ngOnInit(): void {
@@ -149,6 +156,11 @@ export class TraderModalComponent implements OnInit {
         this.traderForm.get('role')?.disable();
         this.traderForm.get('className')?.disable();
       }
+    } 
+    // If this is a new trader and we haven't set the ID yet, do it now
+    else if (this.isNewTrader) {
+      // Make sure the ID is properly set based on the initially selected type
+      this.setNextAvailableId();
     }
   }
 
@@ -204,9 +216,12 @@ export class TraderModalComponent implements OnInit {
    */
   setNextAvailableId(): void {
     const type = this.traderForm.get('type')?.value;
-    if (type !== TraderType.ATM) {
-      // Using a placeholder value of 0 since we don't directly interact with TraderService here
-      this.traderForm.get('npcId')?.setValue(0);
+    if (type === TraderType.ATM) {
+      // ATMs always have ID -2
+      this.traderForm.get('npcId')?.setValue(-2);
+    } else {
+      // For NPC or OBJECT, get the next available ID from the service
+      this.traderForm.get('npcId')?.setValue(this.traderService.getNextTraderId());
     }
   }
 

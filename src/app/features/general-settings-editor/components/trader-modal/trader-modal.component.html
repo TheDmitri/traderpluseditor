@@ -214,7 +214,9 @@
     <mat-dialog-actions>
       <button type="button" mat-button (click)="onCancel()">Cancel</button>
       <button 
-        mat-raised-button color="primary" 
+        type="submit"
+        mat-raised-button 
+        color="primary" 
         [disabled]="traderForm.invalid"
       >
         {{ isNewTrader ? 'Add' : 'Save' }}
