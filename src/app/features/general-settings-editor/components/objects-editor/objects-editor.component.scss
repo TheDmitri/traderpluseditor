@@ -1,0 +1,28 @@
+.objects-section {
+  grid-column: span 2;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.empty-state-container {
+  text-align: center;
+  padding: 2rem;
+}
+
+.actions-cell {
+  width: 120px;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 8px;
+}
+
+:host ::ng-deep .mat-mdc-row {
+  &:hover {
+    background-color: var(--brush-hover-overlay);
+  }
+}

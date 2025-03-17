@@ -396,11 +396,17 @@
         </div>
       </div>
 
-      <!-- Traders Section (Using the new TradersEditorComponent) -->
+      <!-- Traders Section -->
       <app-traders-editor 
         [hasSettings]="hasSettings" 
         [generalSettings]="generalSettings"
       ></app-traders-editor>
+
+      <!-- Objects Section -->
+      <app-objects-editor
+        [hasSettings]="hasSettings"
+        [generalSettings]="generalSettings"
+      ></app-objects-editor>
     </div>
   </div>
 </div>

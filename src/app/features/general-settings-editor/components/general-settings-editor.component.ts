@@ -32,6 +32,7 @@ import {
 import { LoaderComponent } from '../../../shared/components';
 import { TraderModalComponent } from './trader-modal/trader-modal.component';
 import { TradersEditorComponent } from "./traders-editor/traders-editor.component";
+import { ObjectsEditorComponent } from "./objects-editor/objects-editor.component";
 
 /**
  * General Settings Editor Component
@@ -40,6 +41,7 @@ import { TradersEditorComponent } from "./traders-editor/traders-editor.componen
  * - Licenses (name, description)
  * - Accepted states (worn, damaged, badly damaged and their coefficients)
  * - Traders (NPCs that provide trading services)
+ * - Trader Objects (Objects placed in trader zones)
  */
 @Component({
   selector: 'app-general-settings-editor',
@@ -63,7 +65,8 @@ import { TradersEditorComponent } from "./traders-editor/traders-editor.componen
     MatSortModule,
     RouterModule,
     LoaderComponent,
-    TradersEditorComponent
+    TradersEditorComponent,
+    ObjectsEditorComponent
 ],
   templateUrl: './general-settings-editor.component.html',
   styleUrls: ['./general-settings-editor.component.scss']
