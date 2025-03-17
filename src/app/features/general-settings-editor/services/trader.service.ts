@@ -48,7 +48,15 @@ export class TraderService {
       return a.npcId - b.npcId;
     });
     
-    return new MatTableDataSource<TraderNpc>(traders);
+    const dataSource = new MatTableDataSource<TraderNpc>(traders);
+    
+    // Initialize with default page size of 5
+    if (dataSource.paginator) {
+      dataSource.paginator.pageSize = 5;
+      dataSource.paginator.firstPage();
+    }
+    
+    return dataSource;
   }
   
   /**

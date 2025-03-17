@@ -31,12 +31,6 @@
   }
 }
 
-// Ensure consistent paginator styling
-.consistent-paginator {
-  background-color: transparent;
-  border-top: 1px solid var(--brush-border-subtle);
-}
-
 /* Table & Action Button Styling - For consistency
 ========================================================================== */
 .table-container {
@@ -52,40 +46,4 @@
 ========================================================================== */
 .panel-body {
   padding: 0;
-}
-
-/* Empty State - For consistency
-========================================================================== */
-.empty-state-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 32px;
-  
-  .empty-state-icon {
-    font-size: 48px;
-    height: 48px;
-    width: 48px;
-    opacity: 0.6;
-    margin-bottom: 16px;
-    color: var(--brush-text-secondary);
-  }
-  
-  .empty-state-title {
-    margin-bottom: 8px;
-    font-weight: 500;
-  }
-  
-  .empty-state-message {
-    max-width: 400px;
-    color: var(--brush-text-secondary);
-    margin-bottom: 24px;
-  }
-  
-  .empty-state-actions {
-    display: flex;
-    gap: 16px;
-  }
 }
