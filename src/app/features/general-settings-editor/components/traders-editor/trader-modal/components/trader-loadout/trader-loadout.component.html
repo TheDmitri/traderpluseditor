@@ -1,238 +1,85 @@
 <div class="loadout-container">
-  <!-- Item edit form or empty state - will be shown above slots -->
-  <div class="item-form-section" *ngIf="selectedSlot">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>{{ editingItemIndex >= 0 ? 'Edit' : 'Add' }} Item for {{ selectedSlot }} Slot</mat-card-title>
-      </mat-card-header>
-      
-      <mat-card-content>
-        <form [formGroup]="itemForm" class="item-form">
-          <mat-form-field appearance="outline">
-            <mat-label>Class Name</mat-label>
-            <input 
-              matInput
-              formControlName="className"
-              placeholder="Enter class name (no spaces)"
-              required
-            >
-            <mat-error *ngIf="itemForm.get('className')?.hasError('required')">
-              Class name is required
-            </mat-error>
-            <mat-error *ngIf="itemForm.get('className')?.hasError('hasSpaces')">
-              Class name cannot contain spaces
-            </mat-error>
-          </mat-form-field>
-          
-          <mat-form-field appearance="outline">
-            <mat-label>Quantity</mat-label>
-            <input 
-              matInput
-              formControlName="quantity"
-              type="number"
-              placeholder="Enter quantity (-1 or > 0)"
-              required
-            >
-            <mat-hint>Use -1 for unlimited quantity</mat-hint>
-            <mat-error *ngIf="itemForm.get('quantity')?.hasError('required')">
-              Quantity is required
-            </mat-error>
-            <mat-error *ngIf="itemForm.get('quantity')?.hasError('invalidQuantity')">
-              Quantity must be -1 or greater than 0
-            </mat-error>
-          </mat-form-field>
-        </form>
-        
-        <!-- Attachments section - only shown when editing an existing item -->
-        <div class="attachments-section" *ngIf="editingItem">
-          <mat-divider class="section-divider"></mat-divider>
-          
-          <div class="section-header">
-            <h3>Attachments</h3>
-            <button 
-              type="button"
-              class="custom-stroked-button color-primary with-icon"
-              (click)="addAttachment()"
-              [disabled]="isEditingAttachment"
-            >
-              <mat-icon>add</mat-icon>
-              Add Attachment
-            </button>
-          </div>
-          
-          <!-- Attachment edit form -->
-          <div class="attachment-form" *ngIf="isEditingAttachment">
-            <h4>{{ editingAttachmentIndex >= 0 ? 'Edit' : 'Add' }} Attachment</h4>
-            
-            <form [formGroup]="attachmentForm" class="attachment-form">
-              <mat-form-field appearance="outline">
-                <mat-label>Class Name</mat-label>
-                <input 
-                  matInput
-                  formControlName="className"
-                  placeholder="Enter attachment class name (no spaces)"
-                  required
-                >
-                <mat-error *ngIf="attachmentForm.get('className')?.hasError('required')">
-                  Class name is required
-                </mat-error>
-                <mat-error *ngIf="attachmentForm.get('className')?.hasError('hasSpaces')">
-                  Class name cannot contain spaces
-                </mat-error>
-              </mat-form-field>
-              
-              <mat-form-field appearance="outline">
-                <mat-label>Quantity</mat-label>
-                <input 
-                  matInput
-                  formControlName="quantity"
-                  type="number"
-                  placeholder="Enter quantity (-1 or > 0)"
-                  required
-                >
-                <mat-hint>Use -1 for unlimited quantity</mat-hint>
-                <mat-error *ngIf="attachmentForm.get('quantity')?.hasError('required')">
-                  Quantity is required
-                </mat-error>
-                <mat-error *ngIf="attachmentForm.get('quantity')?.hasError('invalidQuantity')">
-                  Quantity must be -1 or greater than 0
-                </mat-error>
-              </mat-form-field>
-              
-              <div class="form-actions">
-                <button 
-                  type="button"
-                  mat-stroked-button 
-                  (click)="cancelEditAttachment()"
-                >
-                  Cancel
-                </button>
-                
-                <button 
-                  type="button"
-                  mat-raised-button 
-                  color="primary"
-                  [disabled]="attachmentForm.invalid"
-                  (click)="saveAttachment()"
-                >
-                  Save Attachment
-                </button>
-              </div>
-            </form>
-          </div>
-          
-          <!-- List of existing attachments -->
-          <div class="attachments-list" *ngIf="editingItem && editingItem.attachments?.length">
-            <h4>Current Attachments</h4>
-            
-            <div class="attachment-item" *ngFor="let attachment of editingItem.attachments; let i = index">
-              <div class="attachment-details">
-                <span class="attachment-class">{{ attachment.className }}</span>
-                <span class="attachment-quantity">Qty: {{ attachment.quantity }}</span>
-              </div>
-              
-              <div class="attachment-actions">
-                <button 
-                  type="button"
-                  mat-icon-button 
-                  color="primary"
-                  (click)="editAttachment(attachment, i)"
-                  [disabled]="isEditingAttachment"
-                  matTooltip="Edit attachment"
-                >
-                  <mat-icon>edit</mat-icon>
-                </button>
-                
-                <button 
-                  type="button"
-                  mat-icon-button 
-                  color="warn"
-                  (click)="removeAttachment(i)"
-                  [disabled]="isEditingAttachment"
-                  matTooltip="Remove attachment"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Empty state message when no attachments -->
-          <div class="empty-attachments" *ngIf="editingItem && (!editingItem.attachments || !editingItem.attachments.length) && !isEditingAttachment">
-            <mat-icon>attachment</mat-icon>
-            <p>No attachments added yet</p>
-          </div>
-        </div>
-      </mat-card-content>
-      
-      <mat-card-actions>
-        <button 
-          type="button"
-          mat-stroked-button 
-          (click)="cancelEditItem()"
-        >
-          Cancel
-        </button>
-        
-        <button 
-          type="button"
-          mat-raised-button 
-          color="primary"
-          [disabled]="itemForm.invalid"
-          (click)="saveItem()"
-        >
-          Save Item
-        </button>
-      </mat-card-actions>
-    </mat-card>
-  </div>
-  
-  <!-- Message when no slot is selected -->
-  <div class="empty-state" *ngIf="!selectedSlot">
-    <mat-icon>touch_app</mat-icon>
-    <p>Select a slot below to add or edit an item</p>
+  <div class="panel-header">
+    <div class="panel-title-area">
+      <p class="panel-subtitle">
+        Configure the trader's loadout.</p>
+    </div>
+
+    <div class="panel-actions">
+      <button
+        type="button"
+        class="custom-stroked-button color-primary with-icon"
+        (click)="addLoadoutItem()"
+        [disabled]="getAvailableSlotsForNewItems().length === 0"
+      >
+        <mat-icon>add</mat-icon>
+        Add Loadout Item
+      </button>
+    </div>
   </div>
 
-  <!-- Slots Section - Now shown below the form -->
-  <div class="slots-section">
-    <h3>Loadout Slots</h3>
-    <p class="info-text">Click on a slot to add or edit an item</p>
-    
-    <div class="slots-grid">
-      <div 
-        *ngFor="let slot of availableSlots" 
-        class="slot-card" 
-        [class.filled]="isSlotFilled(slot)" 
-        [class.selected]="selectedSlot === slot"
-        (click)="selectSlot(slot)"
-        [matTooltip]="isSlotFilled(slot) ? 'Edit item in ' + slot + ' slot' : 'Add item to ' + slot + ' slot'"
+  <!-- Loadout Items List -->
+  <div class="loadouts-list" *ngIf="loadoutItems.length > 0">
+    <div class="loadout-item" *ngFor="let item of loadoutItems; let i = index">
+      <div class="loadout-item-header">
+        <div class="item-info">
+          <span class="slot-name">{{ item.slotName }}</span>
+          <span class="class-name">{{ item.className }}</span>
+          <span class="quantity">Qty: {{ item.quantity }}</span>
+        </div>
+
+        <div class="item-actions">
+          <button
+            type="button"
+            mat-icon-button
+            color="primary"
+            (click)="editLoadoutItem(item, i)"
+            matTooltip="Edit item and manage attachments"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button
+            type="button"
+            mat-icon-button
+            color="warn"
+            (click)="removeLoadoutItem(item.slotName)"
+            matTooltip="Remove item"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Attachments Display (read-only) -->
+      <div
+        class="attachments-display"
+        *ngIf="item.attachments && item.attachments.length > 0"
       >
-        <div class="slot-card-content">
-          <span class="slot-name">{{ slot }}</span>
-          <div class="slot-status">
-            <mat-icon *ngIf="isSlotFilled(slot)" class="filled-icon">check_circle</mat-icon>
-            <mat-icon *ngIf="!isSlotFilled(slot)" class="empty-icon">radio_button_unchecked</mat-icon>
-          </div>
-          
-          <!-- Show item class name if slot is filled -->
-          <div *ngIf="isSlotFilled(slot)" class="item-preview">
-            {{ getItemForSlot(slot)?.className }}
+        <div class="attachments-count">
+          {{ item.attachments.length }} attachment{{
+            item.attachments.length !== 1 ? "s" : ""
+          }}:
+        </div>
+        <div class="attachment-chips">
+          <div
+            class="attachment-chip"
+            *ngFor="let attachment of item.attachments"
+          >
+            <span class="attachment-class">{{ attachment.className }}</span>
+            <span class="attachment-quantity">x{{ attachment.quantity }}</span>
           </div>
         </div>
-        
-        <!-- Remove button appears on hover -->
-        <button 
-          *ngIf="isSlotFilled(slot)"
-          type="button"
-          mat-icon-button 
-          color="warn" 
-          class="remove-slot-btn"
-          (click)="$event.stopPropagation(); removeItemFromSlot(slot)"
-          matTooltip="Remove item from this slot"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
       </div>
     </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state-container" *ngIf="loadoutItems.length === 0">
+    <mat-icon class="empty-state-icon">inventory_2</mat-icon>
+    <h2 class="empty-state-title">No loadout items added yet</h2>
+    <p class="empty-state-message">
+      Click the "Add Loadout Item" button to add items to the trader's loadout
+    </p>
   </div>
 </div>
