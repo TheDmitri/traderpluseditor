@@ -88,7 +88,7 @@ export class TraderModalComponent implements OnInit {
     this.dialogRef.disableClose = true;
     
     this.isNewTrader = !data.trader || !data.trader.className;
-    this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
+this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
     
     // Initialize form with empty values and custom validation
     this.traderForm = this.fb.group({
@@ -113,6 +113,15 @@ export class TraderModalComponent implements OnInit {
     // For a new trader, immediately set the next available ID based on the initial type (NPC)
     if (this.isNewTrader) {
       this.setNextAvailableId();
+      
+      // Initialize with default title
+      this.dialogTitle = 'Add New Trader';
+      
+      // Subscribe to form changes to update title dynamically for new traders
+      this.subscribeToFormChangesForTitle();
+    } else if (data.trader) {
+      // For editing, set a more descriptive title with trader info
+      this.updateDialogTitleForEditMode(data.trader);
     }
   }
 
@@ -165,6 +174,58 @@ export class TraderModalComponent implements OnInit {
   }
 
   /**
+   * Update the dialog title for edit mode with trader details
+   */
+  private updateDialogTitleForEditMode(trader: TraderNpc): void {
+    const id = trader.npcId;
+    const name = trader.givenName || 'Unnamed';
+    const role = trader.role ? ` (${trader.role})` : '';
+    
+    this.dialogTitle = `Edit Trader: #${id} - ${name}${role}`;
+  }
+  
+  /**
+   * Subscribe to relevant form field changes to update the dialog title
+   */
+  private subscribeToFormChangesForTitle(): void {
+    // Create a merged observable from multiple form control changes
+    const idControl = this.traderForm.get('npcId');
+    const nameControl = this.traderForm.get('givenName');
+    const roleControl = this.traderForm.get('role');
+    
+    // Update title when name changes
+    nameControl?.valueChanges.subscribe(() => {
+      this.updateTitleFromFormValues();
+    });
+    
+    // Update title when role changes
+    roleControl?.valueChanges.subscribe(() => {
+      this.updateTitleFromFormValues();
+    });
+    
+    // Update title when ID changes (happens when type changes)
+    idControl?.valueChanges.subscribe(() => {
+      this.updateTitleFromFormValues();
+    });
+  }
+  
+  /**
+   * Update the dialog title based on current form values
+   */
+  private updateTitleFromFormValues(): void {
+    if (!this.isNewTrader) return;
+    
+    const id = this.traderForm.get('npcId')?.value || '?';
+    const name = this.traderForm.get('givenName')?.value || 'New Trader';
+    const role = this.traderForm.get('role')?.value;
+    
+    // Only include role if it's not empty
+    const roleText = role ? ` (${role})` : '';
+    
+    this.dialogTitle = `Add Trader: #${id} - ${name}${roleText}`;
+  }
+
+  /**
    * Handle changes to the trader type
    */
   handleTraderTypeChange(type: TraderType): void {
@@ -213,6 +274,11 @@ export class TraderModalComponent implements OnInit {
         this.setNextAvailableId();
         break;
     }
+    
+    // Update the title when type changes (which affects ID)
+    if (this.isNewTrader) {
+      this.updateTitleFromFormValues();
+    }
   }
 
   /**
@@ -226,6 +292,11 @@ export class TraderModalComponent implements OnInit {
     } else {
       // For NPC or OBJECT, get the next available ID from the service
       this.traderForm.get('npcId')?.setValue(this.traderService.getNextTraderId());
+    }
+    
+    // Update the title after ID is set
+    if (this.isNewTrader) {
+      this.updateTitleFromFormValues();
     }
   }
 
