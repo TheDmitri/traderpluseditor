@@ -158,17 +158,53 @@ export class FileService {
   }
 
   /**
-   * Export categories to a JSON file
-   * @returns {boolean} Whether the export was successful
+   * Export categories to individual JSON files in a ZIP archive
+   * Each category gets its own file named after its categoryId
+   * 
+   * @returns {Promise<boolean>} Whether the export was successful
    */
-  exportCategories(): boolean {
+  async exportCategories(): Promise<boolean> {
     const categories = this.categoryService.getExportData();
     if (!categories || categories.length === 0) {
       return false;
     }
 
-    this.exportAsJson(categories, 'TraderPlusCategories.json');
-    return true;
+    try {
+      // Create a new ZIP archive
+      const zip = new JSZip();
+      
+      // Add each category as a separate JSON file directly to the zip root
+      for (const category of categories) {
+        const fileName = `${category.categoryId}.json`;
+        
+        // Convert to JSON with proper formatting (4 spaces indentation)
+        const jsonContent = JSON.stringify(category, null, 4);
+        
+        // Add JSON file directly to the ZIP root
+        zip.file(fileName, jsonContent);
+      }
+
+      // Generate the ZIP file and offer it for download
+      const content = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(content);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Categories.zip';
+      document.body.appendChild(a);
+      a.click();
+
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 0);
+
+      return true;
+    } catch (error) {
+      console.error('Error exporting categories:', error);
+      this.notificationService.error('Failed to export categories');
+      return false;
+    }
   }
 
   /**
@@ -286,10 +322,25 @@ export class FileService {
 
     // Add categories to the TraderPlusData folder if they exist
     if (categories && categories.length > 0) {
-      dataFolder.file(
-        'TraderPlusCategories.json',
-        JSON.stringify(categories, null, 2)
-      );
+      // Create Categories folder in the TraderPlusData folder
+      const categoriesFolder = dataFolder.folder('Categories');
+      
+      if (!categoriesFolder) {
+        console.error('Failed to create Categories folder in ZIP');
+        return false;
+      }
+      
+      // Add each category as a separate JSON file
+      for (const category of categories) {
+        const fileName = `${category.categoryId}.json`;
+        
+        // Convert to JSON with proper formatting (4 spaces indentation)
+        const jsonContent = JSON.stringify(category, null, 4);
+        
+        // Add JSON file to the Categories folder
+        categoriesFolder.file(fileName, jsonContent);
+      }
+      
       hasData = true;
     }
 

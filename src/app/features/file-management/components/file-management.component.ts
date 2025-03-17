@@ -320,9 +320,10 @@ export class FileManagementComponent implements OnInit {
   // ----- Export Functions ----- //
 
   /**
-   * Exports category data to a JSON file
+   * Exports categories to individual files in a ZIP archive
+   * Each category gets its own file named after its categoryId
    */
-  exportCategories(): void {
+  async exportCategories(): Promise<void> {
     if (!this.hasCategories) {
       this.notificationService.warning('No categories to export');
       this.activityLogService.logActivity(
@@ -332,13 +333,19 @@ export class FileManagementComponent implements OnInit {
       return;
     }
 
-    const success = this.fileService.exportCategories();
-    if (success) {
-      this.notificationService.success('Categories exported successfully');
-      this.activityLogService.logActivity(
-        'export',
-        'Exported categories to file'
-      );
+    try {
+      const success = await this.fileService.exportCategories();
+      if (success) {
+        this.notificationService.success('Categories exported successfully as ZIP archive');
+        this.activityLogService.logActivity(
+          'export',
+          'Exported categories to ZIP archive'
+        );
+      }
+    } catch (error) {
+      console.error('Error exporting categories:', error);
+      this.notificationService.error('Failed to export categories');
+      this.activityLogService.logActivity('error', 'Failed to export categories');
     }
   }
 
