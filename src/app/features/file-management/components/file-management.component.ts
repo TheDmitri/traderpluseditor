@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 
 // Material imports
 import { MatButtonModule } from '@angular/material/button';
@@ -20,7 +26,10 @@ import { ConfirmDialogComponent } from '../../../shared/components';
 import { NotificationService } from '../../../shared/services';
 import { ActivityLog } from '../../../shared/models/activity-log.model';
 import { ActivityLogService } from '../../../shared/services/activity-log.service';
-import { FileProcessingService, ImportStats } from '../services/file-processing.service';
+import {
+  FileProcessingService,
+  ImportStats,
+} from '../services/file-processing.service';
 
 /**
  * FileManagementComponent provides functionality to import and export TraderPlus configuration files.
@@ -96,7 +105,8 @@ export class FileManagementComponent implements OnInit {
   /**
    * Detailed statistics about import operations for providing user feedback
    */
-  importStats: ImportStats = this.fileProcessingService.createEmptyImportStats();
+  importStats: ImportStats =
+    this.fileProcessingService.createEmptyImportStats();
 
   /**
    * Initializes the component when it is first created
@@ -106,9 +116,9 @@ export class FileManagementComponent implements OnInit {
   ngOnInit(): void {
     // Check for existing data in storage
     this.updateDataStatus();
-    
+
     // Subscribe to activity log updates for UI display
-    this.activityLogService.getActivityLog().subscribe(log => {
+    this.activityLogService.getActivityLog().subscribe((log) => {
       this.recentActivity = log;
     });
   }
@@ -282,18 +292,24 @@ export class FileManagementComponent implements OnInit {
 
   /**
    * Processes files using the file processing service
-   * 
+   *
    * @param files Files to process
    * @param typeHint Optional type hint
    */
-  private async processFiles(files: FileList, typeHint?: string): Promise<void> {
+  private async processFiles(
+    files: FileList,
+    typeHint?: string
+  ): Promise<void> {
     try {
       // Process the files and get the results
-      this.importStats = await this.fileProcessingService.processFiles(files, typeHint);
-      
+      this.importStats = await this.fileProcessingService.processFiles(
+        files,
+        typeHint
+      );
+
       // Update UI state to reflect newly imported data
       this.updateDataStatus();
-      
+
       // Show appropriate notifications
       this.fileProcessingService.showImportResults(this.importStats);
     } finally {
@@ -319,24 +335,41 @@ export class FileManagementComponent implements OnInit {
     const success = this.fileService.exportCategories();
     if (success) {
       this.notificationService.success('Categories exported successfully');
-      this.activityLogService.logActivity('export', 'Exported categories to file');
+      this.activityLogService.logActivity(
+        'export',
+        'Exported categories to file'
+      );
     }
   }
 
   /**
-   * Exports product data to a JSON file
+   * Exports products to individual files in a ZIP archive
    */
-  exportProducts(): void {
+  async exportProducts(): Promise<void> {
     if (!this.hasProducts) {
       this.notificationService.warning('No products to export');
-      this.activityLogService.logActivity('error', 'Attempted to export products but none exist');
+      this.activityLogService.logActivity(
+        'error',
+        'Attempted to export products but none exist'
+      );
       return;
     }
 
-    const success = this.fileService.exportProducts();
-    if (success) {
-      this.notificationService.success('Products exported successfully');
-      this.activityLogService.logActivity('export', 'Exported products to file');
+    try {
+      const success = await this.fileService.exportProducts();
+      if (success) {
+        this.notificationService.success(
+          'Products exported successfully as ZIP archive'
+        );
+        this.activityLogService.logActivity(
+          'export',
+          'Exported products to ZIP archive'
+        );
+      }
+    } catch (error) {
+      console.error('Error exporting products:', error);
+      this.notificationService.error('Failed to export products');
+      this.activityLogService.logActivity('error', 'Failed to export products');
     }
   }
 
@@ -355,8 +388,13 @@ export class FileManagementComponent implements OnInit {
 
     const success = this.fileService.exportCurrencySettings();
     if (success) {
-      this.notificationService.success('Currency settings exported successfully');
-      this.activityLogService.logActivity('export', 'Exported currency settings to file');
+      this.notificationService.success(
+        'Currency settings exported successfully'
+      );
+      this.activityLogService.logActivity(
+        'export',
+        'Exported currency settings to file'
+      );
     }
   }
 
@@ -375,8 +413,13 @@ export class FileManagementComponent implements OnInit {
 
     const success = this.fileService.exportGeneralSettings();
     if (success) {
-      this.notificationService.success('General settings exported successfully');
-      this.activityLogService.logActivity('export', 'Exported general settings to file');
+      this.notificationService.success(
+        'General settings exported successfully'
+      );
+      this.activityLogService.logActivity(
+        'export',
+        'Exported general settings to file'
+      );
     }
   }
 
@@ -398,46 +441,66 @@ export class FileManagementComponent implements OnInit {
       // Attempt to create and download a ZIP archive with all configurations
       const success = await this.fileService.exportAllAsZip();
       if (success) {
-        this.notificationService.success('All configurations exported as ZIP archive');
-        this.activityLogService.logActivity('export', 'Exported all configurations as ZIP archive');
+        this.notificationService.success(
+          'All configurations exported as ZIP archive'
+        );
+        this.activityLogService.logActivity(
+          'export',
+          'Exported all configurations as ZIP archive'
+        );
       } else {
         throw new Error('No data was exported');
       }
     } catch (error) {
       // If ZIP creation fails (e.g., browser limitations), fall back to individual exports
       console.error('Error exporting as ZIP:', error);
-      const errorMessage = 'Could not create ZIP archive. Exporting individual files instead.';
+      const errorMessage =
+        'Could not create ZIP archive. Exporting individual files instead.';
       this.notificationService.warning(errorMessage);
       this.activityLogService.logActivity('error', errorMessage);
 
       // Fallback to individual files export
       if (this.hasCategories) {
         this.fileService.exportCategories();
-        this.activityLogService.logActivity('export', 'Exported categories (fallback)');
+        this.activityLogService.logActivity(
+          'export',
+          'Exported categories (fallback)'
+        );
       }
       if (this.hasProducts) {
         this.fileService.exportProducts();
-        this.activityLogService.logActivity('export', 'Exported products (fallback)');
+        this.activityLogService.logActivity(
+          'export',
+          'Exported products (fallback)'
+        );
       }
       if (this.hasCurrencies) {
         this.fileService.exportCurrencySettings();
-        this.activityLogService.logActivity('export', 'Exported currency settings (fallback)');
+        this.activityLogService.logActivity(
+          'export',
+          'Exported currency settings (fallback)'
+        );
       }
       if (this.hasSettings) {
         this.fileService.exportGeneralSettings();
-        this.activityLogService.logActivity('export', 'Exported general settings (fallback)');
+        this.activityLogService.logActivity(
+          'export',
+          'Exported general settings (fallback)'
+        );
       }
     }
   }
 
   /**
    * Opens a confirmation dialog before deleting data
-   * 
+   *
    * @param {string} dataType - The type of data to delete ('categories', 'products', etc.)
    */
-  confirmDeleteData(dataType: 'categories' | 'products' | 'currencies' | 'settings'): void {
+  confirmDeleteData(
+    dataType: 'categories' | 'products' | 'currencies' | 'settings'
+  ): void {
     const typeLabel = this.fileProcessingService.getTypeLabel(dataType, true);
-    
+
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: `Delete ${typeLabel}`,
@@ -445,11 +508,11 @@ export class FileManagementComponent implements OnInit {
         confirmText: 'Delete',
         cancelText: 'Cancel',
         type: 'danger',
-        destructive: true
-      }
+        destructive: true,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.deleteData(dataType);
       }
@@ -458,12 +521,14 @@ export class FileManagementComponent implements OnInit {
 
   /**
    * Deletes data of the specified type
-   * 
+   *
    * @param {string} dataType - The type of data to delete ('categories', 'products', etc.)
    */
-  deleteData(dataType: 'categories' | 'products' | 'currencies' | 'settings'): void {
+  deleteData(
+    dataType: 'categories' | 'products' | 'currencies' | 'settings'
+  ): void {
     this.fileProcessingService.deleteData(dataType);
-    
+
     // Update the component's data status after deletion
     this.updateDataStatus();
   }

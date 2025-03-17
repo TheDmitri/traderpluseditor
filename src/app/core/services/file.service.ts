@@ -83,7 +83,7 @@ export class FileService {
   async importMultipleCategories(files: FileList): Promise<void> {
     const filesArray = Array.from(files);
     const results = await Promise.all(
-      filesArray.map(file => this.importFile(file))
+      filesArray.map((file) => this.importFile(file))
     );
     await this.categoryService.processMultipleImports(results);
   }
@@ -106,7 +106,7 @@ export class FileService {
   async importMultipleProducts(files: FileList): Promise<void> {
     const filesArray = Array.from(files);
     const results = await Promise.all(
-      filesArray.map(async file => {
+      filesArray.map(async (file) => {
         const data = await this.importFile(file);
         return { data, filename: file.name };
       })
@@ -166,23 +166,73 @@ export class FileService {
     if (!categories || categories.length === 0) {
       return false;
     }
-    
+
     this.exportAsJson(categories, 'TraderPlusCategories.json');
     return true;
   }
 
   /**
-   * Export products to a JSON file
-   * @returns {boolean} Whether the export was successful
+   * Exports products to multiple JSON files in a ZIP archive
+   * Each product gets its own file named after its productId
+   *
+   * @returns {Promise<boolean>} Whether the export was successful
    */
-  exportProducts(): boolean {
+  async exportProducts(): Promise<boolean> {
+    // Get products from the product service
     const products = this.productService.getExportData();
     if (!products || products.length === 0) {
       return false;
     }
-    
-    this.exportAsJson(products, 'TraderPlusProducts.json');
-    return true;
+
+    try {
+      // Create a new ZIP archive
+      const zip = new JSZip();
+      
+      // Add each product as a separate JSON file directly to the zip root
+      for (const product of products) {
+        const fileName = `${product.productId}.json`;
+
+        // Create a new object with properties in the correct order
+        const orderedProduct = {
+          className: product.className,
+          coefficient: product.coefficient,
+          maxStock: product.maxStock,
+          tradeQuantity: product.tradeQuantity,
+          buyPrice: product.buyPrice,
+          sellPrice: product.sellPrice,
+          stockSettings: product.stockSettings,
+          attachments: product.attachments || [],
+          variants: product.variants || [],
+        };
+
+        // Convert to JSON with proper formatting (4 spaces indentation)
+        const jsonContent = JSON.stringify(orderedProduct, null, 4);
+
+        // Add JSON file directly to the ZIP root
+        zip.file(fileName, jsonContent);
+      }
+
+      // Generate the ZIP file and offer it for download
+      const content = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(content);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Products.zip';
+      document.body.appendChild(a);
+      a.click();
+
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 0);
+
+      return true;
+    } catch (error) {
+      console.error('Error exporting products:', error);
+      this.notificationService.error('Failed to export products');
+      return false;
+    }
   }
 
   /**
@@ -194,7 +244,7 @@ export class FileService {
     if (!currencySettings) {
       return false;
     }
-    
+
     this.exportAsJson(currencySettings, 'TraderPlusCurrencySettings.json');
     return true;
   }
@@ -208,7 +258,7 @@ export class FileService {
     if (!generalSettings) {
       return false;
     }
-    
+
     this.exportAsJson(generalSettings, 'TraderPlusGeneralSettings.json');
     return true;
   }
@@ -227,20 +277,60 @@ export class FileService {
     const currencySettings = this.currencyService.getExportData();
     const generalSettings = this.generalSettingsService.getExportData();
 
-    // Add each configuration to the ZIP if it exists
+    // Create a "TraderPlusData" folder for categories and products
+    const dataFolder = zip.folder("TraderPlusData");
+    if (!dataFolder) {
+      console.error('Failed to create TraderPlusData folder in ZIP');
+      return false;
+    }
+
+    // Add categories to the TraderPlusData folder if they exist
     if (categories && categories.length > 0) {
-      zip.file(
+      dataFolder.file(
         'TraderPlusCategories.json',
         JSON.stringify(categories, null, 2)
       );
       hasData = true;
     }
 
+    // Add products to the TraderPlusData folder if they exist
     if (products && products.length > 0) {
-      zip.file('TraderPlusProducts.json', JSON.stringify(products, null, 2));
+      // Create Products folder in the TraderPlusData folder
+      const productsFolder = dataFolder.folder('Products');
+      
+      if (!productsFolder) {
+        console.error('Failed to create Products folder in ZIP');
+        return false;
+      }
+      
+      // Add each product as a separate JSON file
+      for (const product of products) {
+        const fileName = `${product.productId}.json`;
+        
+        // Create a new object with properties in the correct order
+        const orderedProduct = {
+          className: product.className,
+          coefficient: product.coefficient,
+          maxStock: product.maxStock,
+          tradeQuantity: product.tradeQuantity,
+          buyPrice: product.buyPrice,
+          sellPrice: product.sellPrice,
+          stockSettings: product.stockSettings,
+          attachments: product.attachments || [],
+          variants: product.variants || [],
+        };
+        
+        // Convert to JSON with proper formatting (4 spaces indentation)
+        const jsonContent = JSON.stringify(orderedProduct, null, 4);
+        
+        // Add JSON file to the Products folder
+        productsFolder.file(fileName, jsonContent);
+      }
+      
       hasData = true;
     }
 
+    // Keep currency and general settings files at the root of the zip
     if (currencySettings) {
       zip.file(
         'TraderPlusCurrencySettings.json',
@@ -268,7 +358,7 @@ export class FileService {
       const url = URL.createObjectURL(content);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'TraderPlusConfigs.zip';
+      a.download = 'TraderPlusConfig.zip';
       document.body.appendChild(a);
       a.click();
 
@@ -277,7 +367,7 @@ export class FileService {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       }, 0);
-      
+
       return true;
     } catch (error) {
       console.error('Error generating ZIP file:', error);
