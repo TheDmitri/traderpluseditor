@@ -53,6 +53,9 @@ export class TraderLoadoutComponent implements OnInit {
   
   /** Slots that are already filled with items */
   filledSlots: Set<string> = new Set<string>();
+  
+  /** Working copy of loadout items to avoid direct modification of input data */
+  private workingLoadoutItems: LoadoutItem[] = [];
 
   constructor(
     private traderLoadoutService: TraderLoadoutService,
@@ -64,6 +67,9 @@ export class TraderLoadoutComponent implements OnInit {
     // Get available slots from the service
     this.availableSlots = this.traderLoadoutService.getAvailableSlots();
     
+    // Create a deep copy of input loadout items to work with
+    this.workingLoadoutItems = this.deepCloneLoadoutItems(this.loadoutItems);
+    
     // Update the set of filled slots
     this.updateFilledSlots();
   }
@@ -73,11 +79,26 @@ export class TraderLoadoutComponent implements OnInit {
    */
   updateFilledSlots(): void {
     this.filledSlots = new Set<string>();
-    this.loadoutItems.forEach(item => {
+    this.workingLoadoutItems.forEach(item => {
       if (item.slotName) {
         this.filledSlots.add(item.slotName);
       }
     });
+  }
+
+  /**
+   * Create a deep clone of loadout items to avoid reference issues
+   */
+  private deepCloneLoadoutItems(items: LoadoutItem[]): LoadoutItem[] {
+    return items.map(item => ({
+      className: item.className,
+      quantity: item.quantity,
+      slotName: item.slotName,
+      attachments: item.attachments ? item.attachments.map(attachment => ({
+        className: attachment.className,
+        quantity: attachment.quantity
+      })) : []
+    }));
   }
 
   /**
@@ -127,13 +148,14 @@ export class TraderLoadoutComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Add the new item to the loadouts array
-        const updatedLoadouts = [...this.loadoutItems, result];
-        this.loadoutItems = updatedLoadouts;
-        this.loadoutItemsChange.emit(updatedLoadouts);
+        // Add the new item to the working loadouts array
+        this.workingLoadoutItems.push(result);
         
         // Update the filled slots
         this.updateFilledSlots();
+        
+        // Emit the updated loadout items to parent component
+        this.loadoutItemsChange.emit(this.deepCloneLoadoutItems(this.workingLoadoutItems));
         
         this.notificationService.success(`Item added to ${result.slotName} slot`);
       }
@@ -149,7 +171,7 @@ export class TraderLoadoutComponent implements OnInit {
     const dialogRef = this.dialog.open(LoadoutModalComponent, {
       width: '500px',
       data: {
-        item: {...item},
+        item: this.deepCloneLoadoutItems([item])[0],
         availableSlots: this.availableSlots,
         editMode: true
       } as LoadoutModalData
@@ -158,12 +180,10 @@ export class TraderLoadoutComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         // Update the item in the loadouts array
-        const updatedLoadouts = [...this.loadoutItems];
-        updatedLoadouts[index] = result;
+        this.workingLoadoutItems[index] = result;
         
-        // Update the loadout items
-        this.loadoutItems = updatedLoadouts;
-        this.loadoutItemsChange.emit(updatedLoadouts);
+        // Emit the updated loadout items to parent component
+        this.loadoutItemsChange.emit(this.deepCloneLoadoutItems(this.workingLoadoutItems));
         
         this.notificationService.success(`Item in ${result.slotName} slot updated`);
       }
@@ -175,15 +195,20 @@ export class TraderLoadoutComponent implements OnInit {
    * @param slot The slot name to remove the item from
    */
   removeLoadoutItem(slot: string): void {
-    const updatedLoadouts = this.traderLoadoutService.removeLoadoutItem([...this.loadoutItems], slot);
+    // Find the item with this slot name
+    const index = this.workingLoadoutItems.findIndex(item => item.slotName === slot);
     
-    // Update the loadout items
-    this.loadoutItems = updatedLoadouts;
-    this.loadoutItemsChange.emit(updatedLoadouts);
-    
-    // Update the filled slots
-    this.updateFilledSlots();
-    
-    this.notificationService.success(`Item removed from ${slot} slot`);
+    if (index !== -1) {
+      // Remove the item directly
+      this.workingLoadoutItems.splice(index, 1);
+      
+      // Update the filled slots
+      this.updateFilledSlots();
+      
+      // Emit the updated loadout items to parent component
+      this.loadoutItemsChange.emit(this.deepCloneLoadoutItems(this.workingLoadoutItems));
+      
+      this.notificationService.success(`Item removed from ${slot} slot`);
+    }
   }
 }

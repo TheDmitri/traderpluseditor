@@ -1,6 +1,6 @@
 <div class="trader-modal">
   <h2 mat-dialog-title class="dialog-title">{{ dialogTitle }}</h2>
-  
+
   <form [formGroup]="traderForm" (ngSubmit)="onSubmit()">
     <mat-dialog-content class="dialog-content">
       <!-- Trader Type Selection - Simplified to be at the top -->
@@ -8,15 +8,18 @@
         <mat-radio-group formControlName="type" class="trader-type-group">
           <mat-radio-button [value]="traderTypes.NPC">NPC</mat-radio-button>
           <mat-radio-button [value]="traderTypes.ATM">ATM</mat-radio-button>
-          <mat-radio-button [value]="traderTypes.OBJECT">Object</mat-radio-button>
+          <mat-radio-button [value]="traderTypes.OBJECT"
+            >Object</mat-radio-button
+          >
         </mat-radio-group>
-        
+
         <!-- Type-specific hints -->
         <div class="info-box">
           <mat-icon class="info-icon">info</mat-icon>
           <div class="info-content">
             <p *ngIf="traderForm.get('type')?.value === traderTypes.ATM">
-              ATMs have fixed ID (-2) and className. They can accept currencies but have no categories.
+              ATMs have fixed ID (-2) and className. They can accept currencies
+              but have no categories.
             </p>
             <p *ngIf="traderForm.get('type')?.value === traderTypes.NPC">
               NPCs can have loadouts, categories, and accept currencies.
@@ -28,47 +31,87 @@
         </div>
       </div>
 
-      <div class="form-grid">
-        <!-- Trader ID (disabled, auto-generated) -->
-        <mat-form-field appearance="outline">
-          <mat-label>Trader ID</mat-label>
-          <input matInput formControlName="npcId" type="number" [disabled]="true">
-          <mat-hint *ngIf="traderForm.get('type')?.value !== traderTypes.ATM">Auto-generated ID</mat-hint>
-          <mat-hint *ngIf="traderForm.get('type')?.value === traderTypes.ATM">Fixed ID for ATMs</mat-hint>
-        </mat-form-field>
-        
-        <!-- Class Name -->
-        <mat-form-field appearance="outline">
-          <mat-label>Class Name</mat-label>
-          <input matInput formControlName="className" placeholder="e.g., SurvivorM_Boris" required>
-          <mat-error *ngIf="traderForm.get('className')?.hasError('required')">
-            Class name is required
-          </mat-error>
-          <mat-error *ngIf="hasClassNameSpecialCharError()">
-            Class name can only contain letters, numbers, and underscores
-          </mat-error>
-          <mat-hint>Only letters, numbers, and underscores are allowed</mat-hint>
-        </mat-form-field>
-        
-        <!-- Given Name -->
-        <mat-form-field appearance="outline">
-          <mat-label>Given Name</mat-label>
-          <input matInput formControlName="givenName" placeholder="e.g., Weapons Trader" required>
-          <mat-error *ngIf="traderForm.get('givenName')?.hasError('required')">
-            Name is required
-          </mat-error>
-        </mat-form-field>
-                
-        <!-- Role -->
-        <mat-form-field appearance="outline">
-          <mat-label>Role</mat-label>
-          <input matInput formControlName="role" placeholder="e.g., Weapons Specialist">
-        </mat-form-field>
-      </div>
-      
       <!-- Position Section - Using Expansion Panel -->
       <mat-accordion class="custom-expansion-panel">
         <mat-expansion-panel expanded>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon>tag</mat-icon>
+              Basic Info
+            </mat-panel-title>
+            <mat-panel-description>
+              Configure Basic Trader Information
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="form-grid">
+            <!-- Trader ID (disabled, auto-generated) -->
+            <mat-form-field appearance="outline">
+              <mat-label>Trader ID</mat-label>
+              <input
+                matInput
+                formControlName="npcId"
+                type="number"
+                [disabled]="true"
+              />
+              <mat-hint
+                *ngIf="traderForm.get('type')?.value !== traderTypes.ATM"
+                >Auto-generated ID</mat-hint
+              >
+              <mat-hint
+                *ngIf="traderForm.get('type')?.value === traderTypes.ATM"
+                >Fixed ID for ATMs</mat-hint
+              >
+            </mat-form-field>
+
+            <!-- Class Name -->
+            <mat-form-field appearance="outline">
+              <mat-label>Class Name</mat-label>
+              <input
+                matInput
+                formControlName="className"
+                placeholder="e.g., SurvivorM_Boris"
+                required
+              />
+              <mat-error
+                *ngIf="traderForm.get('className')?.hasError('required')"
+              >
+                Class name is required
+              </mat-error>
+              <mat-error *ngIf="hasClassNameSpecialCharError()">
+                Class name cannot contain spaces
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Given Name -->
+            <mat-form-field appearance="outline">
+              <mat-label>Given Name</mat-label>
+              <input
+                matInput
+                formControlName="givenName"
+                placeholder="e.g., Weapons Trader"
+                required
+              />
+              <mat-error
+                *ngIf="traderForm.get('givenName')?.hasError('required')"
+              >
+                Name is required
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Role -->
+            <mat-form-field appearance="outline">
+              <mat-label>Role</mat-label>
+              <input
+                matInput
+                formControlName="role"
+                placeholder="e.g., Weapons Specialist"
+              />
+            </mat-form-field>
+          </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
               <mat-icon>place</mat-icon>
@@ -78,25 +121,43 @@
               Set the position of the trader on the map
             </mat-panel-description>
           </mat-expansion-panel-header>
-          
+
           <div class="coordinates-grid">
             <mat-form-field appearance="outline">
               <mat-label>X</mat-label>
-              <input matInput formControlName="positionX" type="number" step="0.01" required>
+              <input
+                matInput
+                formControlName="positionX"
+                type="number"
+                step="0.01"
+                required
+              />
             </mat-form-field>
-            
+
             <mat-form-field appearance="outline">
               <mat-label>Y</mat-label>
-              <input matInput formControlName="positionY" type="number" step="0.01" required>
+              <input
+                matInput
+                formControlName="positionY"
+                type="number"
+                step="0.01"
+                required
+              />
             </mat-form-field>
-            
+
             <mat-form-field appearance="outline">
               <mat-label>Z</mat-label>
-              <input matInput formControlName="positionZ" type="number" step="0.01" required>
+              <input
+                matInput
+                formControlName="positionZ"
+                type="number"
+                step="0.01"
+                required
+              />
             </mat-form-field>
           </div>
         </mat-expansion-panel>
-        
+
         <!-- Orientation Section - Using Expansion Panel -->
         <mat-expansion-panel>
           <mat-expansion-panel-header>
@@ -108,27 +169,47 @@
               The direction the trader is facing
             </mat-panel-description>
           </mat-expansion-panel-header>
-          
+
           <div class="coordinates-grid">
             <mat-form-field appearance="outline">
               <mat-label>X</mat-label>
-              <input matInput formControlName="orientationX" type="number" step="0.01" required>
+              <input
+                matInput
+                formControlName="orientationX"
+                type="number"
+                step="0.01"
+                required
+              />
             </mat-form-field>
-            
+
             <mat-form-field appearance="outline">
               <mat-label>Y</mat-label>
-              <input matInput formControlName="orientationY" type="number" step="0.01" required>
+              <input
+                matInput
+                formControlName="orientationY"
+                type="number"
+                step="0.01"
+                required
+              />
             </mat-form-field>
-            
+
             <mat-form-field appearance="outline">
               <mat-label>Z</mat-label>
-              <input matInput formControlName="orientationZ" type="number" step="0.01" required>
+              <input
+                matInput
+                formControlName="orientationZ"
+                type="number"
+                step="0.01"
+                required
+              />
             </mat-form-field>
           </div>
         </mat-expansion-panel>
-        
+
         <!-- Categories Section - Using Expansion Panel - Not for ATMs -->
-        <mat-expansion-panel *ngIf="traderForm.get('type')?.value !== traderTypes.ATM">
+        <mat-expansion-panel
+          *ngIf="traderForm.get('type')?.value !== traderTypes.ATM"
+        >
           <mat-expansion-panel-header>
             <mat-panel-title>
               <mat-icon>category</mat-icon>
@@ -138,22 +219,31 @@
               Choose the available categories for this trader
             </mat-panel-description>
           </mat-expansion-panel-header>
-          
+
           <!-- Note added about property cleanup on type change - only shown for new traders -->
-          <div *ngIf="traderForm.get('type')?.value !== traderTypes.ATM && isNewTrader" class="info-box">
+          <div
+            *ngIf="
+              traderForm.get('type')?.value !== traderTypes.ATM && isNewTrader
+            "
+            class="info-box"
+          >
             <mat-icon class="info-icon">info</mat-icon>
             <div class="info-content">
-              <span>If you change the trader type, selections made here will only be saved if appropriate for the selected type.</span>
+              <span
+                >If you change the trader type, selections made here will only
+                be saved if appropriate for the selected type.</span
+              >
             </div>
           </div>
-          
+
           <!-- Using the new category selection component -->
-          <app-category-selection 
-            [categoryIds]="selectedCategoryIds" 
-            (categoriesChange)="onCategoriesChange($event)">
+          <app-category-selection
+            [categoryIds]="selectedCategoryIds"
+            (categoriesChange)="onCategoriesChange($event)"
+          >
           </app-category-selection>
         </mat-expansion-panel>
-        
+
         <!-- Currencies Section - Using Expansion Panel - For all trader types including ATMs -->
         <mat-expansion-panel>
           <mat-expansion-panel-header>
@@ -165,24 +255,30 @@
               Choose the currencies the trader will accept
             </mat-panel-description>
           </mat-expansion-panel-header>
-          
+
           <!-- Note added about property cleanup on type change - only shown for new traders -->
           <div *ngIf="isNewTrader" class="info-box">
             <mat-icon class="info-icon">info</mat-icon>
             <div class="info-content">
-              <span>If you change the trader type, selections made here will only be saved if appropriate for the selected type.</span>
+              <span
+                >If you change the trader type, selections made here will only
+                be saved if appropriate for the selected type.</span
+              >
             </div>
           </div>
-          
+
           <!-- Using the new currency selection component -->
-          <app-currency-selection 
-            [currencyNames]="selectedCurrencyNames" 
-            (currenciesChange)="onCurrenciesChange($event)">
+          <app-currency-selection
+            [currencyNames]="selectedCurrencyNames"
+            (currenciesChange)="onCurrenciesChange($event)"
+          >
           </app-currency-selection>
         </mat-expansion-panel>
-        
+
         <!-- Loadouts Section - Using Expansion Panel -->
-        <mat-expansion-panel *ngIf="traderForm.get('type')?.value === traderTypes.NPC">
+        <mat-expansion-panel
+          *ngIf="traderForm.get('type')?.value === traderTypes.NPC"
+        >
           <mat-expansion-panel-header>
             <mat-panel-title>
               <mat-icon>inventory_2</mat-icon>
@@ -192,34 +288,41 @@
               Choose the loadouts the trader will carry
             </mat-panel-description>
           </mat-expansion-panel-header>
-          
+
           <!-- Note added about property cleanup on type change - only shown for new traders -->
-          <div *ngIf="traderForm.get('type')?.value !== traderTypes.ATM && isNewTrader" class="info-box">
+          <div
+            *ngIf="
+              traderForm.get('type')?.value !== traderTypes.ATM && isNewTrader
+            "
+            class="info-box"
+          >
             <mat-icon class="info-icon">info</mat-icon>
             <div class="info-content">
-              <span>If you change the trader type, selections made here will only be saved if appropriate for the selected type.</span>
+              <span
+                >If you change the trader type, selections made here will only
+                be saved if appropriate for the selected type.</span
+              >
             </div>
           </div>
-          
+
           <!-- Using the new loadout selection component -->
-          <app-trader-loadout 
-            [loadoutItems]="traderLoadouts" 
+          <app-trader-loadout
+            [loadoutItems]="traderLoadouts"
             (loadoutItemsChange)="onLoadoutsChange($event)"
           ></app-trader-loadout>
         </mat-expansion-panel>
       </mat-accordion>
-      
     </mat-dialog-content>
-    
+
     <mat-dialog-actions>
       <button type="button" mat-button (click)="onCancel()">Cancel</button>
-      <button 
+      <button
         type="submit"
-        mat-raised-button 
-        color="primary" 
+        mat-raised-button
+        color="primary"
         [disabled]="traderForm.invalid"
       >
-        {{ isNewTrader ? 'Add' : 'Save' }}
+        {{ isNewTrader ? "Add" : "Save" }}
       </button>
     </mat-dialog-actions>
   </form>

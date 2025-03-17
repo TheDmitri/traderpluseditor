@@ -8,7 +8,6 @@
 
     // Slot dropdown takes full width but slightly narrower
     .slot-dropdown {
-      max-width: 95%;
       margin-bottom: 8px;
     }
 
@@ -28,9 +27,9 @@
 
   // Attachments section
   .attachments-section {
-    margin-top: 8px;
+    margin-top: 32px;
     border-top: 1px solid var(--brush-border-subtle);
-    padding-top: 16px;
+    padding-top: 8px;
 
     .section-header {
       display: flex;
@@ -49,7 +48,6 @@
       background-color: var(--brush-hover-overlay);
       border-radius: 8px;
       padding: 16px;
-      margin-bottom: 16px;
 
       .attachment-form-grid {
         display: grid;
@@ -71,7 +69,6 @@
           display: flex;
           justify-content: flex-end;
           gap: 8px;
-          margin-top: 8px;
         }
 
         @media (max-width: 400px) {
@@ -90,6 +87,8 @@
     }
 
     .attachments-list {
+        margin-top: 16px;
+        
       .no-attachments {
         text-align: center;
         padding: 12px;
@@ -109,7 +108,11 @@
           display: flex;
           align-items: center;
           gap: 4px;
-          background-color: var(--brush-background-elevated);
+          background: linear-gradient(
+            135deg,
+            var(--brush-background-body),
+            var(--brush-background-elevated)
+          );
           border-radius: 16px;
           padding: 4px 8px 4px 16px;
           box-shadow: var(--brush-shadow-light);
@@ -134,10 +137,10 @@
               line-height: 24px;
 
               mat-icon {
-                font-size: 16px;
-                width: 16px;
-                height: 16px;
-                line-height: 16px;
+                font-size: 20px;
+                width: 20px;
+                height: 20px;
+                line-height: 20px;
               }
             }
           }
@@ -145,10 +148,4 @@
       }
     }
   }
-}
-
-// Add this to your component's global styles or to the styles.scss file
-.loadout-modal-dialog .mat-mdc-dialog-container {
-  max-width: 95vw !important;
-  width: 600px !important;
 }

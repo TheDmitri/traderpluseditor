@@ -69,7 +69,7 @@ export class LoadoutModalComponent implements OnInit {
   /** Flag to track showing attachment form */
   showAttachmentForm = false;
 
-  /** Current item being edited */
+  /** Current item being edited - this is a working copy */
   currentItem: LoadoutItem;
 
   /** Dialog title */
@@ -80,6 +80,9 @@ export class LoadoutModalComponent implements OnInit {
 
   /** Index of attachment being edited */
   editingAttachmentIndex = -1;
+  
+  /** Temporary copy of attachments for editing */
+  private workingAttachments: LoadoutAttachments[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -103,20 +106,35 @@ export class LoadoutModalComponent implements OnInit {
       quantity: [1, [Validators.required, this.validQuantityValidator()]],
     });
 
-    // Initialize current item
+    // Initialize current item with a deep copy to avoid modifying the original
     if (data.item) {
-      this.currentItem = { ...data.item };
-      if (!this.currentItem.attachments) {
-        this.currentItem.attachments = [];
+      // Create a deep copy of the item to avoid modifying the original
+      this.currentItem = {
+        className: data.item.className,
+        quantity: data.item.quantity,
+        slotName: data.item.slotName,
+        attachments: []
+      };
+      
+      // Deep copy any attachments
+      if (data.item.attachments && data.item.attachments.length > 0) {
+        this.workingAttachments = data.item.attachments.map(attachment => ({
+          className: attachment.className,
+          quantity: attachment.quantity
+        }));
       }
     } else {
+      // Initialize with empty values
       this.currentItem = {
         className: '',
         quantity: 1,
         slotName: '',
-        attachments: [],
+        attachments: []
       };
     }
+    
+    // Set the working attachments to the current item
+    this.currentItem.attachments = this.workingAttachments;
 
     // Set dialog title
     this.dialogTitle = data.editMode ? 'Edit Loadout Item' : 'Add Loadout Item';
@@ -144,13 +162,20 @@ export class LoadoutModalComponent implements OnInit {
     // Get form values
     const formValues = this.itemForm.getRawValue(); // Use getRawValue to get disabled controls too
 
-    // Update current item with form values
-    this.currentItem.className = formValues.className;
-    this.currentItem.quantity = formValues.quantity;
-    this.currentItem.slotName = formValues.slotName;
+    // Create a new item object to return (avoid modifying the original)
+    const savedItem: LoadoutItem = {
+      className: formValues.className,
+      quantity: formValues.quantity,
+      slotName: formValues.slotName,
+      // Create a deep copy of attachments to avoid reference issues
+      attachments: this.workingAttachments.map(attachment => ({
+        className: attachment.className,
+        quantity: attachment.quantity
+      }))
+    };
 
-    // Return the item via dialog close
-    this.dialogRef.close(this.currentItem);
+    // Return the new item via dialog close
+    this.dialogRef.close(savedItem);
   }
 
   /**
@@ -194,18 +219,21 @@ export class LoadoutModalComponent implements OnInit {
       quantity: formValues.quantity,
     };
 
-    // Add to current item
-    if (!this.currentItem.attachments) {
-      this.currentItem.attachments = [];
+    // Add to working attachments
+    if (!this.workingAttachments) {
+      this.workingAttachments = [];
     }
 
     // If editing attachment, update it
     if (this.isEditingAttachment && this.editingAttachmentIndex >= 0) {
-      this.currentItem.attachments[this.editingAttachmentIndex] = attachment;
+      this.workingAttachments[this.editingAttachmentIndex] = attachment;
     } else {
       // Otherwise add new attachment
-      this.currentItem.attachments.push(attachment);
+      this.workingAttachments.push(attachment);
     }
+    
+    // Update the current item's attachments reference to show in the UI
+    this.currentItem.attachments = this.workingAttachments;
 
     // Reset form and state
     this.attachmentForm.reset({
@@ -242,8 +270,10 @@ export class LoadoutModalComponent implements OnInit {
    * Remove an attachment
    */
   removeAttachment(index: number): void {
-    if (index >= 0 && index < (this.currentItem.attachments?.length || 0)) {
-      this.currentItem.attachments?.splice(index, 1);
+    if (index >= 0 && index < this.workingAttachments.length) {
+      this.workingAttachments.splice(index, 1);
+      // Update the current item's attachments reference to show in the UI
+      this.currentItem.attachments = this.workingAttachments;
       this.notificationService.success('Attachment removed');
     }
   }

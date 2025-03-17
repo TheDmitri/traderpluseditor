@@ -10,7 +10,10 @@
           <mat-form-field appearance="outline">
             <mat-label>Slot</mat-label>
             <mat-select formControlName="slotName" required>
-              <mat-option *ngFor="let slot of getAvailableSlots()" [value]="slot">
+              <mat-option
+                *ngFor="let slot of getAvailableSlots()"
+                [value]="slot"
+              >
                 {{ slot }}
               </mat-option>
             </mat-select>
@@ -72,8 +75,7 @@
         <h3>Attachments</h3>
         <button
           type="button"
-          mat-icon-button
-          color="primary"
+          class="custom-icon-btn icon-btn-primary"
           (click)="toggleAttachmentForm()"
           matTooltip="{{
             showAttachmentForm ? 'Hide attachment form' : 'Add attachment'
@@ -136,20 +138,18 @@
             <div class="attachment-actions">
               <button
                 type="button"
-                mat-raised-button
-                color="accent"
-                [disabled]="attachmentForm.invalid"
-                (click)="addAttachment()"
-              >
-                {{ isEditingAttachment ? "Update" : "Add" }}
-              </button>
-
-              <button
-                type="button"
                 mat-stroked-button
                 (click)="toggleAttachmentForm()"
               >
                 Cancel
+              </button>
+              <button
+                type="button"
+                class="custom-stroked-button color-primary"
+                [disabled]="attachmentForm.invalid"
+                (click)="addAttachment()"
+              >
+                {{ isEditingAttachment ? "Update" : "Add" + " Attachment" }}
               </button>
             </div>
           </div>
@@ -178,8 +178,7 @@
             <div class="attachment-actions">
               <button
                 type="button"
-                mat-icon-button
-                color="primary"
+                class="custom-icon-btn icon-btn-primary"
                 (click)="editAttachment(attachment, i)"
                 matTooltip="Edit attachment"
               >
@@ -187,8 +186,7 @@
               </button>
               <button
                 type="button"
-                mat-icon-button
-                color="warn"
+                class="custom-icon-btn icon-btn-warn"
                 (click)="removeAttachment(i)"
                 matTooltip="Remove attachment"
               >

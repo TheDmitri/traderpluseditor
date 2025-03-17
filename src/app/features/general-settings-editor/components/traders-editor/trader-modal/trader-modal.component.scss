@@ -235,25 +235,6 @@
       }
     }
   }
-
-  /* Panel styling */
-  .custom-expansion-panel {
-    margin-bottom: 16px;
-    
-    .panel-info-text {
-      color: var(--brush-text-secondary);
-      font-style: italic;
-    }
-    
-    /* Improve dialog actions on mobile */
-    ::ng-deep .mat-expansion-panel-body {
-      padding: 0 16px 16px;
-      
-      @media (max-width: 600px) {
-        padding: 0 12px 12px;
-      }
-    }
-  }
 }
 
 /* Categories and Currencies shared styling */
