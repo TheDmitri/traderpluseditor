@@ -82,7 +82,15 @@ export class TradersEditorComponent implements OnInit, OnDestroy, AfterViewInit 
    * After view is initialized, set up table pagination and sorting
    */
   ngAfterViewInit(): void {
-    this.setupTraderTable();
+    if (this.tradersDataSource) {
+      // Apply paginator and sort immediately once they're available
+      if (this.traderPaginator) {
+        this.tradersDataSource.paginator = this.traderPaginator;
+      }
+      if (this.traderSort) {
+        this.tradersDataSource.sort = this.traderSort;
+      }
+    }
   }
 
   /**
@@ -90,12 +98,18 @@ export class TradersEditorComponent implements OnInit, OnDestroy, AfterViewInit 
    */
   loadTraders(): void {
     if (this.hasSettings) {
-      this.tradersDataSource = this.traderService.getTradersDataSource();
+      // Get the traders data using the service
+      const traders = this.traderService.getTradersDataSource().data;
       
-      // Ensure paginator is applied immediately if already initialized
+      // Create a new data source and immediately apply initial pagination settings 
+      this.tradersDataSource = new MatTableDataSource<TraderNpc>(traders);
+      
+      // Set default page size before attaching the paginator
+      this.tradersDataSource._updateChangeSubscription();
+      
+      // Connect paginator if it's already initialized (could happen when refreshing data)
       if (this.traderPaginator) {
         this.tradersDataSource.paginator = this.traderPaginator;
-        // Force first page with 5 items
         this.traderPaginator.pageSize = 5;
         this.traderPaginator.firstPage();
       }
@@ -203,16 +217,14 @@ export class TradersEditorComponent implements OnInit, OnDestroy, AfterViewInit 
    * Apply pagination and sorting to trader table
    */
   setupTraderTable(): void {
-    // Use specific timeout value (300ms) to ensure DOM is fully rendered
-    setTimeout(() => {
-      if (this.tradersDataSource && this.traderPaginator && this.traderSort) {
-        this.tradersDataSource.paginator = this.traderPaginator;
-        this.tradersDataSource.sort = this.traderSort;
-        
-        // Explicitly set page size and reset to first page
-        this.traderPaginator.pageSize = 5;
-        this.traderPaginator.firstPage();
-      }
-    }, 300);
+    // Remove the timeout that causes the flash of unfiltered data
+    if (this.tradersDataSource && this.traderPaginator && this.traderSort) {
+      this.tradersDataSource.paginator = this.traderPaginator;
+      this.tradersDataSource.sort = this.traderSort;
+      
+      // Explicitly set page size and reset to first page
+      this.traderPaginator.pageSize = 5;
+      this.traderPaginator.firstPage();
+    }
   }
 }
