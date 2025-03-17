@@ -9,6 +9,7 @@
     gap: 16px;
     margin-bottom: 16px;
     
+    /* More responsive grid for smaller screens */
     @media (max-width: 700px) {
       grid-template-columns: 1fr;
     }
@@ -19,6 +20,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     
+    /* More responsive grid for very small screens */
     @media (max-width: 500px) {
       grid-template-columns: 1fr;
     }
@@ -36,11 +38,21 @@
       flex-direction: row;
       justify-content: center;
       align-items: center;
-      flex-wrap: nowrap;
+      flex-wrap: wrap; /* Allow wrapping on very small screens */
       margin-bottom: 12px;
       
       .mat-mdc-radio-button {
         margin-right: 32px;
+        margin-bottom: 8px; /* Add space when buttons wrap */
+      }
+      
+      /* Adjust spacing on small screens */
+      @media (max-width: 400px) {
+        justify-content: flex-start;
+        
+        .mat-mdc-radio-button {
+          margin-right: 16px;
+        }
       }
     }
   }
@@ -199,9 +211,15 @@
     border-radius: 4px;
     margin-top: 8px;
     
+    /* Allow better alignment on small screens */
+    @media (max-width: 400px) {
+      padding: 10px;
+    }
+    
     .info-icon {
       margin-right: 8px;
       color: var(--brush-primary);
+      flex-shrink: 0;
     }
     
     .info-content {
@@ -209,6 +227,11 @@
         margin: 0;
         font-size: 0.9em;
         color: var(--brush-text-secondary);
+        
+        /* Smaller text on very small screens */
+        @media (max-width: 400px) {
+          font-size: 0.85em;
+        }
       }
     }
   }
@@ -220,6 +243,15 @@
     .panel-info-text {
       color: var(--brush-text-secondary);
       font-style: italic;
+    }
+    
+    /* Improve dialog actions on mobile */
+    ::ng-deep .mat-expansion-panel-body {
+      padding: 0 16px 16px;
+      
+      @media (max-width: 600px) {
+        padding: 0 12px 12px;
+      }
     }
   }
 }
@@ -339,7 +371,7 @@
         /* Unknown item styling */
         &.unknown-category,
         &.unknown-currency {
-          background-color: var(--color-warning-transparent-10);
+          background-color: var (--color-warning-transparent-10);
           border-radius: 4px;
           border-left: 3px solid var(--brush-status-warning-background);
           padding-left: 4px;
