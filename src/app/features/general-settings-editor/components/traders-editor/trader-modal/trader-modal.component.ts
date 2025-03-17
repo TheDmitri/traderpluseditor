@@ -14,11 +14,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 
 // Application imports
-import { TraderNpc, LoadoutItem } from '../../../../core/models/general-settings.model';
+import { TraderNpc, LoadoutItem } from '../../../../../core/models/general-settings.model';
 import { CategorySelectionComponent } from './components/category-selection/category-selection.component';
 import { CurrencySelectionComponent } from './components/currency-selection/currency-selection.component';
 import { TraderLoadoutComponent } from './components/trader-loadout/trader-loadout.component';
-import { TraderService } from '../../services/trader.service';
+import { TraderService } from '../../../services/trader.service';
 
 /**
  * Enum for trader types

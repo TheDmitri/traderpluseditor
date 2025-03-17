@@ -13,7 +13,7 @@ import { Subject } from 'rxjs';
 import { TraderNpc, GeneralSettings } from '../../../../core/models';
 import { TraderService } from '../../services';
 import { NotificationService } from '../../../../shared/services';
-import { TraderModalComponent } from '../trader-modal/trader-modal.component';
+import { TraderModalComponent } from './trader-modal/trader-modal.component';
 
 /**
  * Traders Editor Component

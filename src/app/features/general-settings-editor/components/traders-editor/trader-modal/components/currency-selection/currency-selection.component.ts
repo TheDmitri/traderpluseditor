@@ -5,8 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Application imports
-import { CurrencyType } from '../../../../../../core/models';
-import { TraderCurrencyService } from '../../../../services/trader-currency.service';
+import { CurrencyType } from '../../../../../../../core/models';
+import { TraderCurrencyService } from '../../../../../services/trader-currency.service';
 
 @Component({
   selector: 'app-currency-selection',

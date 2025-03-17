@@ -5,8 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Application imports
-import { Category } from '../../../../../../core/models';
-import { TraderCategoryService } from '../../../../services/trader-category.service';
+import { Category } from '../../../../../../../core/models';
+import { TraderCategoryService } from '../../../../../services/trader-category.service';
 
 @Component({
   selector: 'app-category-selection',

@@ -30,7 +30,7 @@ import {
   TraderService 
 } from '../services';
 import { LoaderComponent } from '../../../shared/components';
-import { TraderModalComponent } from './trader-modal/trader-modal.component';
+import { TraderModalComponent } from './traders-editor/trader-modal/trader-modal.component';
 import { TradersEditorComponent } from "./traders-editor/traders-editor.component";
 import { ObjectsEditorComponent } from "./objects-editor/objects-editor.component";
 
