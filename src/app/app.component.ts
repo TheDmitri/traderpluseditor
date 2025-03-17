@@ -1,49 +1,44 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-// Material imports
-import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-// Application imports
-import { NavigationComponent } from './shared/components';
-import { InitializationService, NavigationService } from './core/services';
+import { NavigationComponent } from './shared/components/navigation/navigation.component';
+import { HelpPanelComponent } from './shared/components/help-panel/help-panel.component';
+import { NavigationService } from './core/services';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     CommonModule,
-    NavigationComponent,
-    MatToolbarModule,
     MatIconModule,
-    MatButtonModule,
-    MatTooltipModule
-],
+    MatToolbarModule,
+    MatTooltipModule,
+    NavigationComponent
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  private navigationService = inject(NavigationService);
+  private dialog = inject(MatDialog);
   title = 'traderpluseditor';
   
-  constructor(
-    private navigationService: NavigationService,
-    private initializationService: InitializationService
-  ) {}
-  
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.initializationService.initializeCustomRipples();
-    });
+  toggleNav(): void {
+    this.navigationService.toggleSidebar();
   }
   
   isNavExpanded(): boolean {
     return this.navigationService.isExpanded();
   }
   
-  toggleNav(): void {
-    this.navigationService.toggleSidebar();
+  openHelpPanel(): void {
+    this.dialog.open(HelpPanelComponent, {
+      panelClass: 'help-dialog',
+      autoFocus: false
+    });
   }
 }
