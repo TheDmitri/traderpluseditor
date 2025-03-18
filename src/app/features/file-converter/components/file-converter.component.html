@@ -1,1 +1,296 @@
-<p>File-Converter works!</p>
+<div class="file-converter-container">
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h1 class="page-title">File Converter</h1>
+        <p class="subtitle">
+          Convert any other Trader Mod Config to a TraderPlus v2 Config
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-content-area">
+    <mat-card appearance="outlined" class="converter-panel">
+      <mat-card-content>
+        <mat-tab-group
+          animationDuration="200ms"
+          mat-stretch-tabs="false"
+          mat-align-tabs="start"
+        >
+          <!-- TraderPlus Tab -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <div class="tab-label">
+                <mat-icon>storefront</mat-icon>
+                <span>TraderPlus v1</span>
+              </div>
+            </ng-template>
+
+            <div class="converter-tab-content">
+              <div class="file-selection-area">
+                <div
+                  class="file-info"
+                  *ngIf="!traderPlusFiles.length; else traderPlusFilesList"
+                >
+                  <mat-icon class="info-icon">info</mat-icon>
+                  <p>
+                    Select TraderPlus v1 configuration files to convert them to
+                    TraderPlus v2 format
+                  </p>
+                </div>
+
+                <ng-template #traderPlusFilesList>
+                  <div class="selected-files">
+                    <h3>Selected Files</h3>
+                    <mat-list>
+                      <mat-list-item *ngFor="let file of traderPlusFiles">
+                        <mat-icon matListItemIcon>description</mat-icon>
+                        <span matListItemTitle>{{ file.name }}</span>
+                        <span matListItemLine>{{ file.size | fileSize }}</span>
+                        <button
+                          class="custom-icon-btn icon-btn-warn"
+                          matListItemMeta
+                          (click)="removeFile(file, 'traderplus')"
+                        >
+                          <mat-icon>delete_forever</mat-icon>
+                          <div class="icon-btn-ripple"></div>
+                        </button>
+                      </mat-list-item>
+                    </mat-list>
+                  </div>
+                </ng-template>
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <div class="converter-actions">
+                <div class="status-info" *ngIf="conversionStatus.traderPlus">
+                  <mat-progress-bar
+                    mode="determinate"
+                    [value]="conversionProgress.traderPlus"
+                  ></mat-progress-bar>
+                  <p>{{ conversionStatus.traderPlus }}</p>
+                </div>
+
+                <div class="actions-row">
+                  <button
+                    class="custom-stroked-button color-secondary with-icon"
+                    (click)="selectFiles('traderplus')"
+                  >
+                    <mat-icon>add</mat-icon>
+                    Select Files
+                  </button>
+                  <button
+                    class="custom-stroked-button color-primary with-icon"
+                    [disabled]="!traderPlusFiles.length"
+                    (click)="convert('traderplus')"
+                  >
+                    <mat-icon>transform</mat-icon>
+                    Convert to TraderPlus v2
+                  </button>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Expansion Trader Tab -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <div class="tab-label">
+                <mat-icon>extension</mat-icon>
+                <span>Expansion Trader</span>
+              </div>
+            </ng-template>
+
+            <div class="converter-tab-content">
+              <div class="file-selection-area">
+                <div
+                  class="file-info"
+                  *ngIf="!expansionFiles.length; else expansionFilesList"
+                >
+                  <mat-icon class="info-icon">info</mat-icon>
+                  <p>
+                    Select Expansion Trader configuration files to convert them
+                    to TraderPlus v2 format
+                  </p>
+                </div>
+
+                <ng-template #expansionFilesList>
+                  <div class="selected-files">
+                    <h3>Selected Files</h3>
+                    <mat-list>
+                      <mat-list-item *ngFor="let file of expansionFiles">
+                        <mat-icon matListItemIcon>description</mat-icon>
+                        <span matListItemTitle>{{ file.name }}</span>
+                        <span matListItemLine>{{ file.size | fileSize }}</span>
+                        <button
+                          class="custom-icon-btn icon-btn-warn"
+                          matListItemMeta
+                          (click)="removeFile(file, 'expansion')"
+                        >
+                          <mat-icon>delete_forever</mat-icon>
+                          <div class="icon-btn-ripple"></div>
+                        </button>
+                      </mat-list-item>
+                    </mat-list>
+                  </div>
+                </ng-template>
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <div class="converter-actions">
+                <div class="status-info" *ngIf="conversionStatus.expansion">
+                  <mat-progress-bar
+                    mode="determinate"
+                    [value]="conversionProgress.expansion"
+                  ></mat-progress-bar>
+                  <p>{{ conversionStatus.expansion }}</p>
+                </div>
+
+                <div class="actions-row">
+                  <button
+                    class="custom-stroked-button color-secondary with-icon"
+                    (click)="selectFiles('expansion')"
+                  >
+                    <mat-icon>add</mat-icon>
+                    Select Files
+                  </button>
+                  <button
+                    class="custom-stroked-button color-primary with-icon"
+                    [disabled]="!expansionFiles.length"
+                    (click)="convert('expansion')"
+                  >
+                    <mat-icon>transform</mat-icon>
+                    Convert to TraderPlus v2
+                  </button>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Jones Trader Tab -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <div class="tab-label">
+                <mat-icon>local_mall</mat-icon>
+                <span>Jones Trader</span>
+              </div>
+            </ng-template>
+
+            <div class="converter-tab-content">
+              <div class="file-selection-area">
+                <div
+                  class="file-info"
+                  *ngIf="!jonesFiles.length; else jonesFilesList"
+                >
+                  <mat-icon class="info-icon">info</mat-icon>
+                  <p>
+                    Select Jones Trader configuration files to convert them to
+                    TraderPlus v2 format
+                  </p>
+                </div>
+
+                <ng-template #jonesFilesList>
+                  <div class="selected-files">
+                    <h3>Selected Files</h3>
+                    <mat-list>
+                      <mat-list-item *ngFor="let file of jonesFiles">
+                        <mat-icon matListItemIcon>description</mat-icon>
+                        <span matListItemTitle>{{ file.name }}</span>
+                        <span matListItemLine>{{ file.size | fileSize }}</span>
+                        <button
+                          class="custom-icon-btn icon-btn-warn"
+                          matListItemMeta
+                          (click)="removeFile(file, 'jones')"
+                        >
+                          <mat-icon>delete_forever</mat-icon>
+                          <div class="icon-btn-ripple"></div>
+                        </button>
+                      </mat-list-item>
+                    </mat-list>
+                  </div>
+                </ng-template>
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <div class="converter-actions">
+                <div class="status-info" *ngIf="conversionStatus.jones">
+                  <mat-progress-bar
+                    mode="determinate"
+                    [value]="conversionProgress.jones"
+                  ></mat-progress-bar>
+                  <p>{{ conversionStatus.jones }}</p>
+                </div>
+
+                <div class="actions-row">
+                  <button
+                    class="custom-stroked-button color-secondary with-icon"
+                    (click)="selectFiles('jones')"
+                  >
+                    <mat-icon>add</mat-icon>
+                    Select Files
+                  </button>
+                  <button
+                    class="custom-stroked-button color-primary with-icon"
+                    [disabled]="!jonesFiles.length"
+                    (click)="convert('jones')"
+                  >
+                    <mat-icon>transform</mat-icon>
+                    Convert to TraderPlus v2
+                  </button>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Results Section -->
+    <mat-card
+      *ngIf="convertedFiles.length"
+      appearance="outlined"
+      class="results-panel"
+    >
+      <mat-card-header>
+        <mat-card-title>Converted Files</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item *ngFor="let file of convertedFiles">
+            <span matListItemTitle>{{ file.name }}</span>
+            <span matListItemLine
+              >{{ file.type }} • {{ file.size | fileSize }}</span
+            >
+            <button
+              class="custom-icon-btn icon-btn-primary"
+              matListItemMeta
+              (click)="downloadFile(file)"
+            >
+              <mat-icon>download</mat-icon>
+            </button>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          class="custom-stroked-button color-primary with-icon"
+          (click)="downloadAllFiles()"
+        >
+          <mat-icon>download_all</mat-icon>
+          Download All
+        </button>
+        <button
+          class="custom-stroked-button color-secondary with-icon"
+          (click)="saveToProject()"
+        >
+          <mat-icon>save</mat-icon>
+          Save to Project
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

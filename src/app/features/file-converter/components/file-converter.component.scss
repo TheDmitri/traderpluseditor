@@ -1,0 +1,146 @@
+.file-converter-container {
+  padding: 32px;
+  max-width: 1800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  
+  .page-header {
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .header-left {
+        .page-title {
+          font-size: 2rem;
+          margin-bottom: 8px;
+          font-weight: 500;
+        }
+        
+        .subtitle {
+          opacity: 0.8;
+          margin: 0;
+        }
+      }
+    }
+  }
+  
+  .main-content-area {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    
+    .converter-panel {
+      border-radius: 8px;
+      
+      ::ng-deep .mat-mdc-tab-body-wrapper {
+        padding: 24px 0;
+      }
+      
+      .tab-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        
+        mat-icon {
+          margin-right: 4px;
+        }
+      }
+      
+      .converter-tab-content {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        
+        .file-selection-area {
+          min-height: 160px;
+          padding: 16px;
+          
+          .file-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 160px;
+            opacity: 0.7;
+            text-align: center;
+            
+            .info-icon {
+              font-size: 48px;
+              width: 48px;
+              height: 48px;
+              margin-bottom: 16px;
+            }
+            
+            p {
+              font-size: 1.1rem;
+              max-width: 400px;
+            }
+          }
+          
+          .selected-files {
+            h3 {
+              margin-top: 0;
+              margin-bottom: 16px;
+              font-weight: normal;
+            }
+          }
+        }
+        
+        mat-divider {
+          margin: 8px 0;
+        }
+        
+        .converter-actions {
+          padding: 16px;
+          
+          .status-info {
+            margin-bottom: 16px;
+            
+            p {
+              margin-top: 8px;
+              font-size: 0.9rem;
+              opacity: 0.9;
+            }
+          }
+          
+          .actions-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+          }
+        }
+      }
+    }
+    
+    .results-panel {
+      border-radius: 8px;
+      
+      mat-card-header {
+        padding: 16px 16px 0 16px;
+      }
+      
+      mat-card-content {
+        padding: 16px;
+      }
+      
+      mat-card-actions {
+        padding: 8px 16px 16px;
+        
+        button {
+          margin-left: 8px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          
+          mat-icon {
+            margin-right: 4px;
+          }
+        }
+      }
+    }
+  }
+}
