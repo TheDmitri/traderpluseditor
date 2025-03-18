@@ -7,14 +7,16 @@ import { CategoryEditorComponent } from './features/category-editor/components/c
 import { ProductEditorComponent } from './features/product-editor/components/product-editor.component';
 import { CurrencyEditorComponent } from './features/currency-editor/components/currency-editor.component';
 import { GeneralSettingsEditorComponent } from './features/general-settings-editor/components/general-settings-editor.component';
+import { FileConverterComponent } from './features/file-converter/components/file-converter.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent },
-  { path: 'file-management', component: FileManagementComponent },
   { path: 'categories', component: CategoryEditorComponent },
   { path: 'products', component: ProductEditorComponent },
   { path: 'currencies', component: CurrencyEditorComponent },
   { path: 'settings', component: GeneralSettingsEditorComponent },
+  { path: 'file-management', component: FileManagementComponent },
+  { path: 'converter', component: FileConverterComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];

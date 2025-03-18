@@ -42,7 +42,8 @@ export class NavigationComponent {
     { label: 'Products', icon: 'shopping_cart', route: '/products' },
     { label: 'Currencies', icon: 'payments', route: '/currencies' },
     { label: 'Settings', icon: 'settings', route: '/settings' },
-    { label: 'Import/Export', icon: 'import_export', route: '/file-management' }
+    { label: 'Import/Export', icon: 'import_export', route: '/file-management' },
+    { label: 'Converter', icon: 'auto_fix_high', route: '/converter' }
   ];
   
   getContentClass(): string {
