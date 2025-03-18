@@ -261,134 +261,210 @@
         <div class="panel-body" *ngIf="acceptedStatesForm">
           <form [formGroup]="acceptedStatesForm" class="form-container">
             <div class="states-grid">
-              <!-- Worn State Row -->
-              <div class="state-row">
-                <div class="state-toggle">
-                  <mat-checkbox
-                    color="primary"
-                    formControlName="worn"
-                    class="state-checkbox"
-                  >
+              <!-- Worn State -->
+              <div class="state-card" [class.active]="acceptedStatesForm.get('worn')?.value">
+                <div class="state-header">
+                  <mat-checkbox color="primary" formControlName="worn" class="state-checkbox">
                     <span class="state-label">
                       <span class="state-indicator worn"></span>
-                      Accept Worn
+                      Worn
                     </span>
                   </mat-checkbox>
                 </div>
-                <div
-                  class="state-coefficient"
-                  [class.active]="acceptedStatesForm.get('worn')?.value"
-                >
-                  <div
-                    *ngIf="!acceptedStatesForm.get('worn')?.value"
-                    class="inactive-state-message"
-                  >
-                    <mat-icon class="hint-icon">info_outline</mat-icon>
-                    <span>Activate state to set price coefficient</span>
+                
+                <div class="state-content">
+                  <div class="coefficient-display" *ngIf="acceptedStatesForm.get('worn')?.value && !isEditingCoefficient('worn')">
+                    <div class="coefficient-value" 
+                         matTooltip="Traders will pay this percentage of the original price for worn items"
+                         matTooltipPosition="above">
+                      {{ (acceptedStatesForm.get('coefficientWorn')?.value * 100) || 0 }}%
+                    </div>
+                    <button 
+                      class="custom-icon-btn icon-btn-primary" 
+                      (click)="toggleCoefficientEdit('worn')"
+                      matTooltip="Edit coefficient">
+                      <mat-icon>edit</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
                   </div>
-                  <mat-form-field
-                    appearance="outline"
-                    *ngIf="acceptedStatesForm.get('worn')?.value"
-                  >
-                    <mat-label>Price Coefficient</mat-label>
-                    <input
-                      matInput
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      max="1"
-                      formControlName="coefficientWorn"
-                    />
-                    <mat-hint>Value between 0 and 1</mat-hint>
-                  </mat-form-field>
+                  
+                  <div class="coefficient-edit" *ngIf="acceptedStatesForm.get('worn')?.value && isEditingCoefficient('worn')">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Price Coefficient</mat-label>
+                      <input 
+                        matInput 
+                        type="number" 
+                        step="0.01" 
+                        min="0" 
+                        max="1" 
+                        formControlName="coefficientWorn"
+                      />
+                      <mat-hint>Value between 0 and 1</mat-hint>
+                    </mat-form-field>
+                    <div class="edit-actions">
+                      <button 
+                        class="custom-icon-btn icon-btn-primary" 
+                        (click)="saveCoefficient()"
+                        [disabled]="!isValidCoefficient('worn')"
+                        matTooltip="{{ isValidCoefficient('worn') ? 'Save' : 'Value must be between 0 and 1' }}">
+                        <mat-icon>check</mat-icon>
+                        <div class="icon-btn-ripple"></div>
+                      </button>
+                      <button 
+                        class="custom-icon-btn icon-btn-warn" 
+                        (click)="toggleCoefficientEdit('worn')"
+                        matTooltip="Cancel">
+                        <mat-icon>close</mat-icon>
+                        <div class="icon-btn-ripple"></div>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="state-inactive" *ngIf="!acceptedStatesForm.get('worn')?.value">
+                    <mat-icon class="hint-icon">info_outline</mat-icon>
+                    <span>Inactive</span>
+                    <div class="inactive-coefficient" matTooltip="This value will be used when state is activated">
+                      {{ getCoefficientValue('worn') }}%
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              <!-- Damaged State Row -->
-              <div class="state-row">
-                <div class="state-toggle">
-                  <mat-checkbox
-                    color="primary"
-                    formControlName="damaged"
-                    class="state-checkbox"
-                  >
+              
+              <!-- Damaged State -->
+              <div class="state-card" [class.active]="acceptedStatesForm.get('damaged')?.value">
+                <div class="state-header">
+                  <mat-checkbox color="primary" formControlName="damaged" class="state-checkbox">
                     <span class="state-label">
                       <span class="state-indicator damaged"></span>
-                      Accept Damaged
+                      Damaged
                     </span>
                   </mat-checkbox>
                 </div>
-                <div
-                  class="state-coefficient"
-                  [class.active]="acceptedStatesForm.get('damaged')?.value"
-                >
-                  <div
-                    *ngIf="!acceptedStatesForm.get('damaged')?.value"
-                    class="inactive-state-message"
-                  >
-                    <mat-icon class="hint-icon">info_outline</mat-icon>
-                    <span>Activate state to set price coefficient</span>
+                
+                <div class="state-content">
+                  <div class="coefficient-display" *ngIf="acceptedStatesForm.get('damaged')?.value && !isEditingCoefficient('damaged')">
+                    <div class="coefficient-value"
+                         matTooltip="Traders will pay this percentage of the original price for damaged items"
+                         matTooltipPosition="above">
+                      {{ (acceptedStatesForm.get('coefficientDamaged')?.value * 100) || 0 }}%
+                    </div>
+                    <button 
+                      class="custom-icon-btn icon-btn-primary" 
+                      (click)="toggleCoefficientEdit('damaged')"
+                      matTooltip="Edit coefficient">
+                      <mat-icon>edit</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
                   </div>
-                  <mat-form-field
-                    appearance="outline"
-                    *ngIf="acceptedStatesForm.get('damaged')?.value"
-                  >
-                    <mat-label>Price Coefficient</mat-label>
-                    <input
-                      matInput
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      max="1"
-                      formControlName="coefficientDamaged"
-                    />
-                    <mat-hint>Value between 0 and 1</mat-hint>
-                  </mat-form-field>
+                  
+                  <div class="coefficient-edit" *ngIf="acceptedStatesForm.get('damaged')?.value && isEditingCoefficient('damaged')">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Price Coefficient</mat-label>
+                      <input 
+                        matInput 
+                        type="number" 
+                        step="0.01" 
+                        min="0" 
+                        max="1" 
+                        formControlName="coefficientDamaged"
+                      />
+                      <mat-hint>Value between 0 and 1</mat-hint>
+                    </mat-form-field>
+                    <div class="edit-actions">
+                      <button 
+                        class="custom-icon-btn icon-btn-primary" 
+                        (click)="saveCoefficient()"
+                        [disabled]="!isValidCoefficient('damaged')"
+                        matTooltip="{{ isValidCoefficient('damaged') ? 'Save' : 'Value must be between 0 and 1' }}">
+                        <mat-icon>check</mat-icon>
+                        <div class="icon-btn-ripple"></div>
+                      </button>
+                      <button 
+                        class="custom-icon-btn icon-btn-warn" 
+                        (click)="toggleCoefficientEdit('damaged')"
+                        matTooltip="Cancel">
+                        <mat-icon>close</mat-icon>
+                        <div class="icon-btn-ripple"></div>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="state-inactive" *ngIf="!acceptedStatesForm.get('damaged')?.value">
+                    <mat-icon class="hint-icon">info_outline</mat-icon>
+                    <span>Inactive</span>
+                    <div class="inactive-coefficient" matTooltip="This value will be used when state is activated">
+                      {{ getCoefficientValue('damaged') }}%
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              <!-- Badly Damaged State Row -->
-              <div class="state-row">
-                <div class="state-toggle">
-                  <mat-checkbox
-                    color="primary"
-                    formControlName="badly_damaged"
-                    class="state-checkbox"
-                  >
+              
+              <!-- Badly Damaged State -->
+              <div class="state-card" [class.active]="acceptedStatesForm.get('badly_damaged')?.value">
+                <div class="state-header">
+                  <mat-checkbox color="primary" formControlName="badly_damaged" class="state-checkbox">
                     <span class="state-label">
                       <span class="state-indicator badly-damaged"></span>
-                      Accept Badly Damaged
+                      Badly Damaged
                     </span>
                   </mat-checkbox>
                 </div>
-                <div
-                  class="state-coefficient"
-                  [class.active]="
-                    acceptedStatesForm.get('badly_damaged')?.value
-                  "
-                >
-                  <div
-                    *ngIf="!acceptedStatesForm.get('badly_damaged')?.value"
-                    class="inactive-state-message"
-                  >
-                    <mat-icon class="hint-icon">info_outline</mat-icon>
-                    <span>Activate state to set price coefficient</span>
+                
+                <div class="state-content">
+                  <div class="coefficient-display" *ngIf="acceptedStatesForm.get('badly_damaged')?.value && !isEditingCoefficient('badly_damaged')">
+                    <div class="coefficient-value"
+                         matTooltip="Traders will pay this percentage of the original price for badly damaged items"
+                         matTooltipPosition="above">
+                      {{ (acceptedStatesForm.get('coefficientBadlyDamaged')?.value * 100) || 0 }}%
+                    </div>
+                    <button 
+                      class="custom-icon-btn icon-btn-primary" 
+                      (click)="toggleCoefficientEdit('badly_damaged')"
+                      matTooltip="Edit coefficient">
+                      <mat-icon>edit</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
                   </div>
-                  <mat-form-field
-                    appearance="outline"
-                    *ngIf="acceptedStatesForm.get('badly_damaged')?.value"
-                  >
-                    <mat-label>Price Coefficient</mat-label>
-                    <input
-                      matInput
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      max="1"
-                      formControlName="coefficientBadlyDamaged"
-                    />
-                    <mat-hint>Value between 0 and 1</mat-hint>
-                  </mat-form-field>
+                  
+                  <div class="coefficient-edit" *ngIf="acceptedStatesForm.get('badly_damaged')?.value && isEditingCoefficient('badly_damaged')">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Price Coefficient</mat-label>
+                      <input 
+                        matInput 
+                        type="number" 
+                        step="0.1" 
+                        min="0" 
+                        max="1" 
+                        formControlName="coefficientBadlyDamaged"
+                      />
+                      <mat-hint>Value between 0 and 1</mat-hint>
+                    </mat-form-field>
+                    <div class="edit-actions">
+                      <button 
+                        class="custom-icon-btn icon-btn-primary" 
+                        (click)="saveCoefficient()"
+                        [disabled]="!isValidCoefficient('badly_damaged')"
+                        matTooltip="{{ isValidCoefficient('badly_damaged') ? 'Save' : 'Value must be between 0 and 1' }}">
+                        <mat-icon>check</mat-icon>
+                        <div class="icon-btn-ripple"></div>
+                      </button>
+                      <button 
+                        class="custom-icon-btn icon-btn-warn" 
+                        (click)="toggleCoefficientEdit('badly_damaged')"
+                        matTooltip="Cancel">
+                        <mat-icon>close</mat-icon>
+                        <div class="icon-btn-ripple"></div>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="state-inactive" *ngIf="!acceptedStatesForm.get('badly_damaged')?.value">
+                    <mat-icon class="hint-icon">info_outline</mat-icon>
+                    <span>Inactive</span>
+                    <div class="inactive-coefficient" matTooltip="This value will be used when state is activated">
+                      {{ getCoefficientValue('badly_damaged') }}%
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

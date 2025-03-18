@@ -112,6 +112,9 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
   /** Flag to track if default settings are being created */
   isCreatingDefaultSettings = false;
 
+  /** Track which coefficient is being edited */
+  editingCoefficient: 'worn' | 'damaged' | 'badly_damaged' | null = null;
+
   /** References for table pagination and sorting */
   @ViewChild('traderPaginator') traderPaginator!: MatPaginator;
   @ViewChild('traderSort') traderSort!: MatSort;
@@ -425,6 +428,83 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
   }
 
   /**
+   * Toggle editing state for a coefficient
+   * @param coefficient - The coefficient to edit ('worn', 'damaged', or 'badly_damaged')
+   */
+  toggleCoefficientEdit(coefficient: 'worn' | 'damaged' | 'badly_damaged'): void {
+    if (this.editingCoefficient === coefficient) {
+      this.editingCoefficient = null;
+    } else {
+      this.editingCoefficient = coefficient;
+    }
+  }
+
+  /**
+   * Check if a coefficient is being edited
+   * @param coefficient - The coefficient to check
+   * @returns True if the coefficient is being edited
+   */
+  isEditingCoefficient(coefficient: 'worn' | 'damaged' | 'badly_damaged'): boolean {
+    return this.editingCoefficient === coefficient;
+  }
+
+  /**
+   * Save the coefficient value and exit editing mode
+   */
+  saveCoefficient(): void {
+    this.editingCoefficient = null;
+  }
+
+  /**
+   * Get a coefficient value for display, regardless of state activation status
+   * @param coefficient - The coefficient to get ('worn', 'damaged', or 'badly_damaged')
+   * @returns The coefficient value as a percentage
+   */
+  getCoefficientValue(coefficient: 'worn' | 'damaged' | 'badly_damaged'): number {
+    let formValue = 0;
+    
+    switch (coefficient) {
+      case 'worn':
+        formValue = this.acceptedStatesForm.get('coefficientWorn')?.value || 0;
+        break;
+      case 'damaged':
+        formValue = this.acceptedStatesForm.get('coefficientDamaged')?.value || 0;
+        break;
+      case 'badly_damaged':
+        formValue = this.acceptedStatesForm.get('coefficientBadlyDamaged')?.value || 0;
+        break;
+    }
+    
+    return formValue * 100;
+  }
+
+  /**
+   * Check if a coefficient value is valid (between 0 and 1)
+   * @param coefficient - The coefficient to check ('worn', 'damaged', or 'badly_damaged')
+   * @returns True if the coefficient value is valid
+   */
+  isValidCoefficient(coefficient: 'worn' | 'damaged' | 'badly_damaged'): boolean {
+    let value: number;
+    
+    switch (coefficient) {
+      case 'worn':
+        value = this.acceptedStatesForm.get('coefficientWorn')?.value;
+        break;
+      case 'damaged':
+        value = this.acceptedStatesForm.get('coefficientDamaged')?.value;
+        break;
+      case 'badly_damaged':
+        value = this.acceptedStatesForm.get('coefficientBadlyDamaged')?.value;
+        break;
+      default:
+        return false;
+    }
+    
+    // Check if value is a number and between 0 and 1 inclusive
+    return typeof value === 'number' && value >= 0 && value <= 1;
+  }
+
+  /**
    * Cleanup on component destruction
    */
   ngOnDestroy(): void {
@@ -437,5 +517,8 @@ export class GeneralSettingsEditorComponent implements OnInit, OnDestroy, AfterV
     // Complete the destroy subject to unsubscribe from all subscriptions
     this.destroy$.next();
     this.destroy$.complete();
+
+    // Make sure to clear any editing states
+    this.editingCoefficient = null;
   }
 }
