@@ -1,9 +1,22 @@
 // Angular imports
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Subject } from 'rxjs';
+import {
+  Subject,
+  Subscription,
+  takeUntil,
+  debounceTime,
+  distinctUntilChanged,
+} from 'rxjs';
 
 // Angular Material imports
 import { MatButtonModule } from '@angular/material/button';
@@ -12,9 +25,13 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import {
+  MatPaginator,
+  MatPaginatorModule,
+  PageEvent,
+} from '@angular/material/paginator';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import {
   MatTable,
   MatTableDataSource,
@@ -24,8 +41,15 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 // App imports
 import { Category } from '../../../core/models';
-import { InitializationService, StorageService } from '../../../core/services';
-import { ConfirmDialogComponent, LoaderComponent } from '../../../shared/components';
+import {
+  InitializationService,
+  PaginatedResult,
+  StorageService,
+} from '../../../core/services';
+import {
+  ConfirmDialogComponent,
+  LoaderComponent,
+} from '../../../shared/components';
 import { NotificationService } from '../../../shared/services';
 import { CategoryModalComponent } from './category-modal/category-modal.component';
 
@@ -62,10 +86,12 @@ import { CategoryModalComponent } from './category-modal/category-modal.componen
   ],
   templateUrl: './category-editor.component.html',
   styleUrls: ['./category-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryEditorComponent implements OnInit, OnDestroy {
   /** Subject for handling component destruction and preventing memory leaks */
   private destroy$ = new Subject<void>();
+  private subscriptions: Subscription[] = [];
 
   /** Data source for the Material table with category data */
   dataSource: MatTableDataSource<Category>;
@@ -98,6 +124,22 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
   /** Flag to track if default categories are being created */
   isCreatingDefaultCategories = false;
 
+  /** Flag to track if data is currently loading */
+  isLoading = false;
+
+  /** Pagination state */
+  totalCategories = 0;
+  pageSize = 10;
+  pageIndex = 0;
+  pageSizeOptions = [10, 25, 50, 100];
+
+  /** Filter state */
+  filterValue = '';
+  private filterSubject = new Subject<string>();
+
+  /** Sorting state */
+  private currentSort: Sort = { active: '', direction: '' };
+
   /**
    * Constructor initializes services and the data source
    *
@@ -115,13 +157,25 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.dataSource = new MatTableDataSource<Category>([]);
+
+    // Set up filter debounce
+    this.filterSubject
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((filter) => {
+        this.filterValue = filter;
+        this.pageIndex = 0; // Reset to first page on filter change
+        if (this.paginator) {
+          this.paginator.pageIndex = 0;
+        }
+        this.loadCategoriesPage();
+      });
   }
 
   /**
    * OnInit lifecycle hook - Loads initial categories from storage
    */
   ngOnInit(): void {
-    this.loadCategories();
+    this.loadCategoriesPage();
   }
 
   /**
@@ -138,38 +192,93 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Handle sort changes
+   */
+  onSortChange(sort: Sort): void {
+    this.currentSort = sort;
+
+    // Reset to first page on sort change
+    this.pageIndex = 0;
+    if (this.paginator) {
+      this.paginator.pageIndex = 0;
+    }
+    this.loadCategoriesPage();
+  }
+
+  /**
+   * Handle page changes
+   */
+  onPageChange(event: PageEvent): void {
+    this.loadCategoriesPage(event.pageIndex, event.pageSize);
+  }
+
+  /**
+   * Load categories page from storage service
+   */
+  loadCategoriesPage(
+    pageIndex = this.pageIndex,
+    pageSize = this.pageSize
+  ): void {
+    this.isLoading = true;
+    this.pageIndex = pageIndex;
+    this.pageSize = pageSize;
+
+    // Subscribe to paginated categories from StorageService
+    const sub = this.storageService
+      .getPaginatedCategories(pageIndex, pageSize, this.filterValue)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (result: PaginatedResult<Category>) => {
+          // Store the previous state before loading new data
+          this.hadCategoriesBefore = this.hasCategories;
+
+          this.totalCategories = result.total;
+          this.hasCategories = result.total > 0;
+
+          if (result.items.length > 0) {
+            this.dataSource.data = result.items;
+          } else {
+            this.dataSource.data = [];
+          }
+
+          this.isLoading = false;
+          this.changeDetectorRef.markForCheck();
+
+          // If we've transitioned from no categories to having categories,
+          // we need to re-initialize the table controls
+          if (!this.hadCategoriesBefore && this.hasCategories) {
+            // Give Angular time to render the table before connecting controls
+            setTimeout(() => {
+              this.connectTableControls();
+              this.changeDetectorRef.detectChanges();
+            });
+          }
+
+          // Show notification if no categories match the filter and we have a filter
+          if (result.total === 0 && this.filterValue) {
+            this.notificationService.error(
+              'No categories match the search criteria'
+            );
+          }
+        },
+        error: (err) => {
+          console.error('Error loading categories:', err);
+          this.notificationService.error('Error loading categories');
+          this.isLoading = false;
+          this.changeDetectorRef.markForCheck();
+        },
+      });
+
+    this.subscriptions.push(sub);
+  }
+
+  /**
    * Connect the table's paginator and sort components to the data source
    * Should be called any time we need to re-initialize these connections
    */
   private connectTableControls(): void {
     if (this.paginator && this.sort) {
-      this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
-    }
-  }
-
-  /**
-   * Load categories from storage service and update data source
-   *
-   * This method retrieves the latest category data and refreshes the table display.
-   * Called on component initialization and after any data modification.
-   */
-  loadCategories(): void {
-    // Store the previous state before loading new data
-    this.hadCategoriesBefore = this.hasCategories;
-
-    const categories = this.storageService.categories();
-    this.hasCategories = categories.length > 0;
-    this.dataSource.data = categories;
-
-    // If we've transitioned from no categories to having categories,
-    // we need to re-initialize the table controls and trigger change detection
-    if (!this.hadCategoriesBefore && this.hasCategories) {
-      // Give Angular time to render the table before connecting controls
-      setTimeout(() => {
-        this.connectTableControls();
-        this.changeDetectorRef.detectChanges();
-      });
     }
   }
 
@@ -181,21 +290,8 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
    * @param event - Input event containing the filter text
    */
   applyFilter(event: Event) {
-    if (!this.hasCategories) return;
-
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-
-    if (
-      this.dataSource.filteredData.length === 0 &&
-      this.dataSource.data.length > 0
-    ) {
-      this.notificationService.error('No categories match the search criteria');
-    }
+    this.filterSubject.next(filterValue.trim().toLowerCase());
   }
 
   /**
@@ -219,7 +315,7 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.storageService.saveCategories([]);
-        this.loadCategories();
+        this.loadCategoriesPage();
         this.notificationService.success('All Categories deleted successfully');
       }
     });
@@ -232,14 +328,15 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
    * Otherwise, makes all categories visible.
    */
   toggleAllCategoriesVisibility(): void {
-    const categories = this.dataSource.data;
-    const allVisible = categories.every((cat) => cat.isVisible);
-    const updatedCategories = categories.map((cat) => ({
+    // Get complete list of categories from storage service
+    const allCategories = this.storageService.categories();
+    const allVisible = allCategories.every((cat) => cat.isVisible);
+    const updatedCategories = allCategories.map((cat) => ({
       ...cat,
       isVisible: !allVisible,
     }));
     this.storageService.saveCategories(updatedCategories);
-    this.loadCategories();
+    this.loadCategoriesPage();
   }
 
   /**
@@ -248,14 +345,14 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
    * @param category - The category for which to toggle visibility
    */
   toggleCategoryVisibility(category: Category): void {
-    const categories = this.dataSource.data;
-    const updatedCategories = categories.map((cat) =>
-      cat.categoryId === category.categoryId
-        ? { ...cat, isVisible: !cat.isVisible }
-        : cat
-    );
-    this.storageService.saveCategories(updatedCategories);
-    this.loadCategories();
+    // Get the category by ID
+    const updatedCategory = {
+      ...category,
+      isVisible: !category.isVisible,
+    };
+
+    this.storageService.saveSingleCategory(updatedCategory);
+    this.loadCategoriesPage();
   }
 
   /**
@@ -277,11 +374,12 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const categories = this.dataSource.data.filter(
-          (cat) => cat.categoryId !== categoryId
-        );
+        // Get categories without the deleted one
+        const categories = this.storageService
+          .categories()
+          .filter((cat) => cat.categoryId !== categoryId);
         this.storageService.saveCategories(categories);
-        this.loadCategories();
+        this.loadCategoriesPage();
         this.notificationService.success('Category deleted successfully');
       }
     });
@@ -317,9 +415,9 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
           ...result,
           categoryId: categoryId,
         };
-        const categories = [...this.dataSource.data, newCategory];
+        const categories = [...this.storageService.categories(), newCategory];
         this.storageService.saveCategories(categories);
-        this.loadCategories();
+        this.loadCategoriesPage();
         this.notificationService.success('Category created successfully');
       }
     });
@@ -345,11 +443,11 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
           ...category,
           ...result,
         }; // Keep existing properties including categoryId and update with new values
-        const categories = this.dataSource.data.map((cat) =>
-          cat.categoryId === category.categoryId ? updatedCategory : cat
-        );
-        this.storageService.saveCategories(categories);
-        this.loadCategories();
+
+        // Update just this specific category
+        this.storageService.saveSingleCategory(updatedCategory);
+
+        this.loadCategoriesPage();
         this.notificationService.success('Category updated successfully');
       }
     });
@@ -392,7 +490,7 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
     const baseName = this.createSafeIdBase(categoryName);
 
     // Find existing categories with the same base name and determine highest suffix
-    const categories = this.dataSource.data;
+    const categories = this.storageService.categories();
     let highestSuffix = 0;
 
     categories.forEach((cat) => {
@@ -413,39 +511,35 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
 
   /**
    * Create default categories for quick startup
-   * 
+   *
    * This method creates a set of standard categories with one pre-populated
    * ammunition category and several empty categories for common trader types.
    */
   createDefaultCategories(): void {
     this.isCreatingDefaultCategories = true;
-    
+
     // Use setTimeout to allow the UI to update and show the loader
     setTimeout(() => {
-      const defaultCategories = this.initializationService.createDefaultCategories();
+      const defaultCategories =
+        this.initializationService.createDefaultCategories();
       this.storageService.saveCategories(defaultCategories);
-      this.loadCategories();
-      
+
       // Simulate some processing time to show the loader (remove in production if not needed)
       setTimeout(() => {
         this.isCreatingDefaultCategories = false;
-        
-        // Important: Let Angular render the table before connecting the paginator
-        setTimeout(() => {
-          // Re-connect the table controls now that the table is visible
-          this.connectTableControls();
-          
-          // Make sure the paginator shows the correct view
-          if (this.dataSource.paginator) {
-            this.dataSource.paginator.firstPage();
-          }
-          
-          this.changeDetectorRef.detectChanges();
-        }, 0);
-        
-        this.notificationService.success('Default categories created successfully');
+        this.loadCategoriesPage();
+        this.notificationService.success(
+          'Default categories created successfully'
+        );
       }, 800);
     }, 100);
+  }
+
+  /**
+   * Track categories for better performance with ngFor
+   */
+  trackByCategoryId(index: number, item: Category): string {
+    return item.categoryId;
   }
 
   /**
@@ -457,5 +551,6 @@ export class CategoryEditorComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }

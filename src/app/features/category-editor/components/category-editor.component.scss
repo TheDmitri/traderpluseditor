@@ -5,6 +5,34 @@
   display: grid;
   gap: 32px;
 
+  // Loading indicator styling for category editor
+  .loader-container {
+    transform: scale(0.8);
+  }
+
+  .loading-text {
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 16px;
+    color: var(--brush-text-secondary);
+  }
+
+  // No data row styling
+  .no-data-row {
+    .no-data-message {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 20px;
+      color: var(--brush-text-secondary);
+
+      mat-icon {
+        color: var(--color-warn);
+      }
+    }
+  }
+
   // Product count styling
   .product-count {
     text-align: start;
@@ -69,4 +97,3 @@
     }
   }
 }
-

@@ -1,57 +1,87 @@
 <div class="categories-panel-content">
   <!-- Warning about unknown categories -->
-  <div *ngIf="getUnknownCategoryIds().length > 0" class="unknown-categories-warning">
+  <div
+    *ngIf="getUnknownCategoryIds().length > 0"
+    class="unknown-categories-warning"
+  >
     <mat-icon class="warning-icon">warning</mat-icon>
     <div class="warning-message">
-      <p>This trader has {{ getUnknownCategoryIds().length }} unknown {{ getUnknownCategoryIds().length === 1 ? 'category' : 'categories' }} that {{ getUnknownCategoryIds().length === 1 ? 'does' : 'do' }} not exist in the Category Editor.</p>
+      <p>
+        This trader has {{ getUnknownCategoryIds().length }} unknown
+        {{
+          getUnknownCategoryIds().length === 1 ? "category" : "categories"
+        }}
+        that {{ getUnknownCategoryIds().length === 1 ? "does" : "do" }} not
+        exist in the Category Editor.
+      </p>
       <p>These categories may not work correctly in-game.</p>
     </div>
   </div>
-  
+
   <!-- No categories available message -->
-  <div *ngIf="getAvailableCategories().length === 0 && getUnknownCategoryIds().length === 0" class="empty-categories">
+  <div
+    *ngIf="
+      getAvailableCategories().length === 0 &&
+      getUnknownCategoryIds().length === 0
+    "
+    class="empty-categories"
+  >
     <mat-icon class="empty-icon">warning</mat-icon>
-    <p class="empty-message">No categories are available. Create categories in the Category Editor first.</p>
+    <p class="empty-message">
+      No categories are available. Create categories in the Category Editor
+      first.
+    </p>
   </div>
-  
+
   <!-- Categories list -->
-  <div *ngIf="getAvailableCategories().length > 0 || getUnknownCategoryIds().length > 0" class="categories-selection">
+  <div
+    *ngIf="
+      getAvailableCategories().length > 0 || getUnknownCategoryIds().length > 0
+    "
+    class="categories-selection"
+  >
     <!-- Selected categories summary -->
     <div class="selected-summary">
-      <span class="selected-count">{{ getSelectedCategoryIds().length }} {{ getUnknownCategoryIds().length > 0 ? 'total' : 'of ' + getAvailableCategories().length }} selected</span>
-      <span *ngIf="getUnknownCategoryIds().length > 0" class="unknown-count">(including {{ getUnknownCategoryIds().length }} unknown)</span>
+      <span class="counter-text">{{ getCategoriesCountText() }}</span>
     </div>
-    
-    <!-- List of categories with checkboxes - starting with unknown categories -->
-    <div class="categories-list">
-      <!-- Unknown categories -->
-      <mat-checkbox 
-        *ngFor="let category of getUnknownCategoriesForDisplay()"
-        color="warn"
-        [checked]="isCategorySelected(category.categoryId)"
-        (change)="toggleCategory(category.categoryId)"
-        class="category-checkbox unknown-category"
-      >
-        <div class="category-info">
-          <span class="category-id">{{ category.categoryId }}</span>
-          <mat-icon class="unknown-icon" matTooltip="This category does not exist in the Category Editor">help_outline</mat-icon>
-        </div>
-      </mat-checkbox>
-      
-      <!-- Known categories -->
-      <mat-checkbox 
-        color="primary"
-        *ngFor="let category of getSortedCategories()"
+
+    <!-- List of categories with checkboxes - implementing lazy loading -->
+    <div #categoriesListContainer class="categories-list" (scroll)="onScroll()">
+      <!-- Categories (unknown + normal) -->
+      <mat-checkbox
+        *ngFor="let category of displayedCategories; trackBy: trackByCategoryId"
+        [color]="isUnknownCategory(category.categoryId) ? 'warn' : 'primary'"
         [checked]="isCategorySelected(category.categoryId)"
         (change)="toggleCategory(category.categoryId)"
         class="category-checkbox"
-        [ngClass]="{'selected-category': isCategorySelected(category.categoryId)}"
+        [ngClass]="{
+          'unknown-category': isUnknownCategory(category.categoryId),
+          'selected-category': isCategorySelected(category.categoryId)
+        }"
       >
         <div class="category-info">
-          <span class="category-name">{{ category.categoryName }}</span>
+          <span
+            *ngIf="!isUnknownCategory(category.categoryId)"
+            class="category-name"
+            >{{ category.categoryName }}</span
+          >
           <span class="category-id">{{ category.categoryId }}</span>
+          <mat-icon
+            *ngIf="isUnknownCategory(category.categoryId)"
+            class="unknown-icon"
+            matTooltip="This category does not exist in the Category Editor"
+            >help_outline</mat-icon
+          >
         </div>
       </mat-checkbox>
+
+      <!-- Loading indicator -->
+      <div *ngIf="isLoading" class="loading-indicator">
+        <div class="loader-container">
+          <div class="loader-v1"></div>
+          <div class="loader-v2"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

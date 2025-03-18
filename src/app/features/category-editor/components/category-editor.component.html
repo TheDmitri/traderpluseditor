@@ -64,11 +64,15 @@
   </div>
 
   <!-- No Data State - Informative message and call to action -->
-  <div class="empty-state-container" *ngIf="!hasCategories && !isCreatingDefaultCategories">
+  <div
+    class="empty-state-container"
+    *ngIf="!hasCategories && !isCreatingDefaultCategories && !isLoading"
+  >
     <mat-icon class="empty-state-icon">settings</mat-icon>
     <h2 class="empty-state-title">No Categories Found</h2>
     <p class="empty-state-message">
-      To get started, you can either import an existing TraderPlus Catgegory file or create a new default one.
+      To get started, you can either import an existing TraderPlus Category file
+      or create a new default one.
     </p>
     <div class="empty-state-actions">
       <button
@@ -81,8 +85,23 @@
     </div>
   </div>
 
+  <!-- Loading state for categories -->
+  <div
+    class="empty-state-container"
+    *ngIf="isLoading && !isCreatingDefaultCategories"
+  >
+    <div class="loader-container">
+      <div class="loader-v1"></div>
+      <div class="loader-v2"></div>
+    </div>
+    <span class="loading-text">Loading categories...</span>
+  </div>
+
   <!-- Data content card with standardized styling -->
-  <div class="data-card" *ngIf="hasCategories && !isCreatingDefaultCategories">
+  <div
+    class="data-card"
+    *ngIf="hasCategories && !isCreatingDefaultCategories && !isLoading"
+  >
     <h2 class="section-title">Categories Overview</h2>
     <mat-card-content>
       <!-- Search field with standardized styling and proper containment -->
@@ -109,12 +128,13 @@
           mat-table
           [dataSource]="dataSource"
           matSort
+          (matSortChange)="onSortChange($event)"
           class="with-border hoverable-table consistent-rows"
         >
           <!-- Icon Column -->
           <ng-container matColumnDef="icon">
             <th mat-header-cell *matHeaderCellDef>Icon</th>
-            <td mat-cell *matCellDef="let category">
+            <td mat-cell *matCellDef="let category; trackBy: trackByCategoryId">
               <mat-icon
                 [matTooltip]="
                   category.icon ? 'Icon: ' + category.icon : 'Default icon'
@@ -128,7 +148,7 @@
           <!-- Name Column -->
           <ng-container matColumnDef="categoryName">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-            <td mat-cell *matCellDef="let category">
+            <td mat-cell *matCellDef="let category; trackBy: trackByCategoryId">
               {{ category.categoryName }}
             </td>
           </ng-container>
@@ -136,7 +156,11 @@
           <!-- ID Column -->
           <ng-container matColumnDef="categoryId">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
-            <td mat-cell *matCellDef="let category" class="numeric-cell">
+            <td
+              mat-cell
+              *matCellDef="let category; trackBy: trackByCategoryId"
+              class="numeric-cell"
+            >
               {{ category.categoryId }}
             </td>
           </ng-container>
@@ -144,7 +168,7 @@
           <!-- Visibility Column -->
           <ng-container matColumnDef="isVisible">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Visible</th>
-            <td mat-cell *matCellDef="let category">
+            <td mat-cell *matCellDef="let category; trackBy: trackByCategoryId">
               <mat-slide-toggle
                 color="primary"
                 [checked]="category.isVisible"
@@ -164,7 +188,7 @@
             <th mat-header-cell *matHeaderCellDef>Products</th>
             <td
               mat-cell
-              *matCellDef="let category"
+              *matCellDef="let category; trackBy: trackByCategoryId"
               class="product-count"
               [matTooltip]="
                 getProductCount(category) + ' products in this category'
@@ -181,7 +205,11 @@
             <th mat-header-cell *matHeaderCellDef class="actions-header">
               Actions
             </th>
-            <td mat-cell *matCellDef="let category" class="actions-cell">
+            <td
+              mat-cell
+              *matCellDef="let category; trackBy: trackByCategoryId"
+              class="actions-cell"
+            >
               <div class="action-buttons">
                 <button
                   class="custom-icon-btn icon-btn-primary"
@@ -208,13 +236,34 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr
             mat-row
-            *matRowDef="let row; columns: displayedColumns"
+            *matRowDef="
+              let row;
+              columns: displayedColumns;
+              trackBy: trackByCategoryId
+            "
             class="interactive-row"
           ></tr>
+
+          <!-- No results row -->
+          <tr class="mat-row no-data-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+              <div class="no-data-message">
+                <mat-icon>error_outline</mat-icon>
+                <span *ngIf="filterValue"
+                  >No categories matching "{{ filterValue }}"</span
+                >
+                <span *ngIf="!filterValue">No categories available</span>
+              </div>
+            </td>
+          </tr>
         </table>
 
         <mat-paginator
-          [pageSizeOptions]="[10, 25, 50, 100]"
+          [length]="totalCategories"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          [pageIndex]="pageIndex"
+          (page)="onPageChange($event)"
           showFirstLastButtons
           aria-label="Select page of categories"
         >

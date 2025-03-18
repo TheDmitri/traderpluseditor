@@ -4,6 +4,41 @@
     min-height: 200px;
     overflow-x: auto;
 
+    .loading-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 24px;
+      color: var(--brush-text-secondary);
+
+      .loader-container {
+        transform: scale(0.6);
+        margin: -16px;
+      }
+
+      .loading-text {
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+
+    // No data row styling
+    .no-data-row {
+      .no-data-message {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 20px;
+        color: var(--brush-text-secondary);
+
+        mat-icon {
+          color: var(--color-warn);
+        }
+      }
+    }
+
     // Specific column adjustments for product list table
     table {
       width: 100%;
@@ -136,5 +171,11 @@
 /* Custom color for buy price column */
 .buy-price-highlight {
   color: var(--color-secondary-medium);
+  font-weight: 500;
+}
+
+/* Add highlight for cell values */
+.cell-highlight {
+  color: var(--color-primary-medium);
   font-weight: 500;
 }

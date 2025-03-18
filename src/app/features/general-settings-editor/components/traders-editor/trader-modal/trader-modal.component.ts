@@ -1,7 +1,18 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +25,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 
 // Application imports
-import { TraderNpc, LoadoutItem } from '../../../../../core/models/general-settings.model';
+import {
+  TraderNpc,
+  LoadoutItem,
+} from '../../../../../core/models/general-settings.model';
 import { CategorySelectionComponent } from './components/category-selection/category-selection.component';
 import { CurrencySelectionComponent } from './components/currency-selection/currency-selection.component';
 import { TraderLoadoutComponent } from './components/trader-loadout/trader-loadout.component';
@@ -26,7 +40,7 @@ import { TraderService } from '../../../services/trader.service';
 export enum TraderType {
   NPC = 'NPC',
   ATM = 'ATM',
-  OBJECT = 'OBJECT'
+  OBJECT = 'OBJECT',
 }
 
 /**
@@ -51,18 +65,18 @@ export enum TraderType {
     MatCheckboxModule,
     CategorySelectionComponent,
     CurrencySelectionComponent,
-    TraderLoadoutComponent // Add the import for the new component
+    TraderLoadoutComponent, // Add the import for the new component
   ],
   templateUrl: './trader-modal.component.html',
-  styleUrls: ['./trader-modal.component.scss']
+  styleUrls: ['./trader-modal.component.scss'],
 })
 export class TraderModalComponent implements OnInit {
   /** Form group for trader data */
   traderForm: FormGroup;
-  
+
   /** Title for the dialog */
   dialogTitle: string;
-  
+
   /** Flag to track if this is a new trader */
   isNewTrader: boolean;
 
@@ -74,9 +88,13 @@ export class TraderModalComponent implements OnInit {
 
   /** Selected currency names */
   selectedCurrencyNames: string[] = [];
-  
+
   /** Trader loadout items */
   traderLoadouts: LoadoutItem[] = [];
+
+  /** Reference to the category selection component */
+  @ViewChild(CategorySelectionComponent)
+  categorySelectionComponent!: CategorySelectionComponent;
 
   constructor(
     private fb: FormBuilder,
@@ -86,10 +104,10 @@ export class TraderModalComponent implements OnInit {
   ) {
     // Disable closing the dialog by clicking outside or pressing ESC key
     this.dialogRef.disableClose = true;
-    
+
     this.isNewTrader = !data.trader || !data.trader.className;
-this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
-    
+    this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
+
     // Initialize form with empty values and custom validation
     this.traderForm = this.fb.group({
       type: [TraderType.NPC, Validators.required],
@@ -102,21 +120,21 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
       positionZ: [0, Validators.required],
       orientationX: [0, Validators.required],
       orientationY: [0, Validators.required],
-      orientationZ: [0, Validators.required]
+      orientationZ: [0, Validators.required],
     });
 
     // React to type changes
     this.traderForm.get('type')?.valueChanges.subscribe((type: TraderType) => {
       this.handleTraderTypeChange(type);
     });
-    
+
     // For a new trader, immediately set the next available ID based on the initial type (NPC)
     if (this.isNewTrader) {
       this.setNextAvailableId();
-      
+
       // Initialize with default title
       this.dialogTitle = 'Add New Trader';
-      
+
       // Subscribe to form changes to update title dynamically for new traders
       this.subscribeToFormChangesForTitle();
     } else if (data.trader) {
@@ -129,7 +147,7 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
     // If we have existing trader data, populate the form and determine type
     if (this.data.trader) {
       const trader = this.data.trader;
-      
+
       // Determine trader type based on data
       let traderType = TraderType.NPC;
       if (trader.npcId === -2 && trader.className === 'TraderPlus_BANK_ATM') {
@@ -139,7 +157,7 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
         // This is a simple heuristic, might need refinement
         traderType = TraderType.OBJECT;
       }
-      
+
       this.traderForm.patchValue({
         type: traderType,
         npcId: trader.npcId,
@@ -151,7 +169,7 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
         positionZ: trader.position?.[2] || 0,
         orientationX: trader.orientation?.[0] || 0,
         orientationY: trader.orientation?.[1] || 0,
-        orientationZ: trader.orientation?.[2] || 0
+        orientationZ: trader.orientation?.[2] || 0,
       });
 
       // Initialize selected categories, currencies, and loadouts from trader data
@@ -165,7 +183,7 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
         this.traderForm.get('className')?.disable();
         // Don't disable role anymore - we want to allow editing it
       }
-    } 
+    }
     // If this is a new trader and we haven't set the ID yet, do it now
     else if (this.isNewTrader) {
       // Make sure the ID is properly set based on the initially selected type
@@ -180,10 +198,10 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
     const id = trader.npcId;
     const name = trader.givenName || 'Unnamed';
     const role = trader.role ? ` (${trader.role})` : '';
-    
+
     this.dialogTitle = `Edit Trader: #${id} - ${name}${role}`;
   }
-  
+
   /**
    * Subscribe to relevant form field changes to update the dialog title
    */
@@ -192,36 +210,36 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
     const idControl = this.traderForm.get('npcId');
     const nameControl = this.traderForm.get('givenName');
     const roleControl = this.traderForm.get('role');
-    
+
     // Update title when name changes
     nameControl?.valueChanges.subscribe(() => {
       this.updateTitleFromFormValues();
     });
-    
+
     // Update title when role changes
     roleControl?.valueChanges.subscribe(() => {
       this.updateTitleFromFormValues();
     });
-    
+
     // Update title when ID changes (happens when type changes)
     idControl?.valueChanges.subscribe(() => {
       this.updateTitleFromFormValues();
     });
   }
-  
+
   /**
    * Update the dialog title based on current form values
    */
   private updateTitleFromFormValues(): void {
     if (!this.isNewTrader) return;
-    
+
     const id = this.traderForm.get('npcId')?.value || '?';
     const name = this.traderForm.get('givenName')?.value || 'New Trader';
     const role = this.traderForm.get('role')?.value;
-    
+
     // Only include role if it's not empty
     const roleText = role ? ` (${role})` : '';
-    
+
     this.dialogTitle = `Add Trader: #${id} - ${name}${roleText}`;
   }
 
@@ -245,12 +263,12 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
         idControl?.setValue(-2);
         classnameControl?.setValue('TraderPlus_BANK_ATM');
         givenNameControl?.setValue('ATM');
-        
+
         // For ATMs, we'll set a default role but still allow editing
         if (this.isNewTrader || roleControl?.value === '') {
           roleControl?.setValue('Banking');
         }
-        
+
         // Disable fields that shouldn't be changed for ATM
         classnameControl?.disable();
         givenNameControl?.disable();
@@ -266,7 +284,10 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
         if (this.isNewTrader || roleControl?.value === 'Banking') {
           roleControl?.setValue('');
         }
-        if (this.isNewTrader || classnameControl?.value === 'TraderPlus_BANK_ATM') {
+        if (
+          this.isNewTrader ||
+          classnameControl?.value === 'TraderPlus_BANK_ATM'
+        ) {
           classnameControl?.setValue('');
         }
 
@@ -274,7 +295,7 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
         this.setNextAvailableId();
         break;
     }
-    
+
     // Update the title when type changes (which affects ID)
     if (this.isNewTrader) {
       this.updateTitleFromFormValues();
@@ -291,9 +312,11 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
       this.traderForm.get('npcId')?.setValue(-2);
     } else {
       // For NPC or OBJECT, get the next available ID from the service
-      this.traderForm.get('npcId')?.setValue(this.traderService.getNextTraderId());
+      this.traderForm
+        .get('npcId')
+        ?.setValue(this.traderService.getNextTraderId());
     }
-    
+
     // Update the title after ID is set
     if (this.isNewTrader) {
       this.updateTitleFromFormValues();
@@ -323,17 +346,26 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
   }
 
   /**
+   * Reset category list when the categories panel is collapsed
+   */
+  onCategoriesPanelClosed(): void {
+    if (this.categorySelectionComponent) {
+      this.categorySelectionComponent.resetDisplayedCategories();
+    }
+  }
+
+  /**
    * Submit the form data and close the dialog
    */
   onSubmit(): void {
     if (this.traderForm.invalid) {
       return;
     }
-    
+
     // Get raw value to include disabled controls
     const formValue = this.traderForm.getRawValue();
     const traderType = formValue.type;
-    
+
     // Build the trader object with all properties
     let trader: TraderNpc = {
       npcId: formValue.npcId,
@@ -341,18 +373,22 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
       givenName: formValue.givenName.trim(),
       role: formValue.role.trim(),
       position: [formValue.positionX, formValue.positionY, formValue.positionZ],
-      orientation: [formValue.orientationX, formValue.orientationY, formValue.orientationZ],
+      orientation: [
+        formValue.orientationX,
+        formValue.orientationY,
+        formValue.orientationZ,
+      ],
       categoriesId: this.selectedCategoryIds,
       currenciesAccepted: this.selectedCurrencyNames,
-      loadouts: this.traderLoadouts // Use the updated loadouts
+      loadouts: this.traderLoadouts, // Use the updated loadouts
     };
-    
+
     // Clean the trader properties based on trader type
     trader = this.sanitizeTraderByType(trader, traderType);
-    
+
     this.dialogRef.close({ trader, traderType });
   }
-  
+
   /**
    * Sanitize the trader object based on trader type
    * Remove properties that shouldn't be included for specific trader types
@@ -371,16 +407,16 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
           // Clear categories and loadouts, but keep currencies
           categoriesId: [],
           currenciesAccepted: trader.currenciesAccepted, // Keep currencies for ATMs
-          loadouts: []
+          loadouts: [],
         };
-        
+
       case TraderType.OBJECT:
         // Objects can have categories and currencies but not loadouts
         return {
           ...trader,
-          loadouts: [] // Clear loadouts for objects
+          loadouts: [], // Clear loadouts for objects
         };
-        
+
       case TraderType.NPC:
       default:
         // NPCs can have all properties, keep as is
@@ -403,14 +439,14 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
       // Allow only alphanumeric characters and underscores
       // Regex pattern: ^ start of string, \w alphanumeric and underscore, $ end of string
       const validPattern = /^[\w]+$/;
-      
+
       const valid = validPattern.test(control.value);
-      
+
       // Skip validation if empty (will be caught by required validator)
       if (!control.value) {
         return null;
       }
-      
+
       return !valid ? { invalidCharacters: true } : null;
     };
   }
@@ -420,6 +456,9 @@ this.dialogTitle = this.isNewTrader ? 'Add New Trader' : 'Edit Trader';
    */
   hasClassNameSpecialCharError(): boolean {
     const control = this.traderForm.get('className');
-    return control ? control.hasError('invalidCharacters') && (control.touched || control.dirty) : false;
+    return control
+      ? control.hasError('invalidCharacters') &&
+          (control.touched || control.dirty)
+      : false;
   }
 }

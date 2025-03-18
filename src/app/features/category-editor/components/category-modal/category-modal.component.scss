@@ -1,3 +1,4 @@
+// Main category modal container with responsive dimensions
 .category-modal {
   display: flex;
   flex-direction: column;
@@ -7,6 +8,7 @@
   max-width: 85vw;
   overflow: hidden;
 
+  // Container for form elements with vertical spacing
   .form-container {
     display: flex;
     flex-direction: column;
@@ -30,7 +32,7 @@
       border-bottom: 1px solid var(--brush-divider);
     }
 
-    // Consistent section titles using the global styles
+    // Section titles with bottom border for visual hierarchy
     .section-title {
       font-size: var(--font-size-base);
       font-weight: var(--font-weight-medium);
@@ -40,19 +42,19 @@
       border-bottom: 1px solid var(--brush-divider);
     }
 
-    // Fix spacing between elements
+    // Fix spacing between elements in a section
     > * + * {
       margin-top: 16px;
     }
 
     // Special case for license chips - override the general spacing
     > .license-input-row + .license-chips {
-      margin-top: 0 !important; // Exactly 8px below input row
-      margin-bottom: 8px !important; // Exactly 8px below input row
+      margin-top: 0 !important; // Reduce spacing directly below input row
+      margin-bottom: 8px !important; // Add consistent bottom margin
     }
   }
 
-  // Two-column layout with proper spacing
+  // Two-column layout with proper spacing for form fields
   .form-row {
     display: flex;
     gap: 16px;
@@ -67,18 +69,20 @@
         flex: 1;
       }
 
+      // Responsive behavior for small screens
       @media (max-width: 600px) {
         flex: 1 1 100%;
       }
     }
 
+    // Switch to vertical layout on small screens
     @media (max-width: 600px) {
       flex-direction: column;
       gap: 0;
     }
   }
 
-  // Toggle styling with global variables
+  // Toggle styling with global variables for visibility controls
   .visibility-toggle {
     display: flex;
     align-items: center;
@@ -88,6 +92,7 @@
       margin: 0;
     }
 
+    // Explanatory text beside toggle control
     .toggle-hint {
       margin-left: 12px;
       font-size: var(--font-size-sm);
@@ -95,7 +100,7 @@
     }
   }
 
-  // License input improved layout
+  // License input row with improved layout for input and button
   .license-input-row {
     display: flex;
     align-items: flex-start;
@@ -107,6 +112,7 @@
       flex: 1;
     }
 
+    // Add button styling for license input
     .license-add-button {
       height: 36px;
       margin-top: 4px;
@@ -117,6 +123,7 @@
       }
     }
 
+    // Responsive layout for small screens
     @media (max-width: 600px) {
       flex-direction: column;
       gap: 8px;
@@ -128,13 +135,14 @@
     }
   }
 
-  // License chips - positioned closer to input
+  // License chips container - positioned closer to input for better UX
   .license-chips {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 0; // This gets overridden by form-section > * + * unless specifically targeted
+    margin-top: 0; // Override default spacing from form-section
 
+    // Individual chip styling
     .chip {
       display: flex;
       align-items: center;
@@ -149,6 +157,7 @@
         margin-right: 8px;
       }
 
+      // Compact remove button within chip
       button {
         width: 20px;
         height: 20px;
@@ -164,13 +173,14 @@
         }
       }
 
+      // Hover effect for better interactivity
       &:hover {
         background-color: var (--brush-hover-overlay);
       }
     }
   }
 
-  // License selection styles
+  // License selection list container with scrollable area
   .license-list-container {
     max-height: 200px;
     overflow-y: auto;
@@ -179,6 +189,7 @@
     background-color: var(--brush-background-elevated);
   }
 
+  // License item in selection list
   .license-item {
     display: flex;
     flex-wrap: wrap;
@@ -196,7 +207,7 @@
       background-color: var(--brush-hover-overlay);
     }
 
-    // Styling for licenses not in general settings
+    // Styling for licenses not found in general settings - visual warning
     &.license-missing {
       background-color: var(--brush-warning-light, rgba(255, 193, 7, 0.1));
       border-left: 3px solid var(--brush-warning, #ffc107);
@@ -206,6 +217,7 @@
       }
     }
 
+    // Warning icon for problematic licenses
     .license-warning-icon {
       color: var(--brush-warning, #ffc107);
       margin-left: 8px;
@@ -214,28 +226,32 @@
       width: 18px;
     }
 
+    // License name with visual emphasis
     .license-name {
       font-weight: var(--font-weight-medium);
       margin-right: 8px;
     }
 
+    // License ID in monospace for better readability
     .license-id {
       font-size: var(--font-size-xs);
       color: var(--brush-text-secondary);
-      margin-left: auto; // Push to the right
+      margin-left: auto; // Push to the right side of container
       font-family: monospace;
     }
 
+    // License description with proper indentation
     .license-description {
       width: 100%;
       margin-top: 4px;
-      margin-left: 24px; // Align with checkbox text
+      margin-left: 24px; // Align with checkbox text for better hierarchy
       color: var(--brush-text-secondary);
       font-size: var(--font-size-sm);
       font-style: italic;
     }
   }
 
+  // Summary of selected licenses with info styling
   .selected-licenses-summary {
     display: flex;
     align-items: center;
@@ -254,7 +270,7 @@
     }
   }
 
-  // Product section styling
+  // Product section styling with scrollable container
   .product-section {
     .product-list-container {
       border: 1px solid var(--brush-border-subtle);
@@ -262,7 +278,6 @@
       background-color: var(--brush-background-elevated);
       padding: 16px;
       min-height: 250px;
-      max-height: 400px;
       overflow-y: auto;
     }
   }

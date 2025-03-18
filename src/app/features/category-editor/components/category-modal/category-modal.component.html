@@ -1,4 +1,5 @@
 <div class="category-modal">
+  <!-- Modal header with dynamic title based on mode -->
   <h2 mat-dialog-title class="dialog-title">
     <mat-icon class="dialog-icon"> category </mat-icon>
     <span>{{ isEditMode ? "Edit" : "Create" }} Category</span>
@@ -7,7 +8,7 @@
   <mat-dialog-content class="dialog-content">
     <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
       <div class="form-container">
-        <!-- Basic Category Information Section -->
+        <!-- Basic Category Information Section - Contains name, icon and visibility settings -->
         <div class="form-section">
           <h4 class="section-title">Basic Information</h4>
 
@@ -39,6 +40,7 @@
             </div>
           </div>
 
+          <!-- Toggle control for category visibility in trader menu -->
           <div class="visibility-toggle">
             <mat-slide-toggle formControlName="isVisible" color="primary">
               Category Visible
@@ -49,11 +51,11 @@
           </div>
         </div>
 
-        <!-- License Section - Updated to handle missing licenses -->
+        <!-- License Section - Handles required permissions for category access -->
         <div class="form-section">
           <h4 class="section-title">Required Licenses</h4>
 
-          <!-- License selection list - Updated to show display licenses with warnings -->
+          <!-- License selection list - Shows available licenses with validation warnings -->
           <div
             class="license-list-container"
             *ngIf="displayLicenses.length > 0"
@@ -72,7 +74,7 @@
                 <span class="license-name">{{ license.licenseName }}</span>
               </mat-checkbox>
 
-              <!-- Warning icon for licenses not in general settings -->
+              <!-- Warning indicator for licenses not defined in general settings -->
               <mat-icon
                 *ngIf="!license.isInGeneralSettings"
                 class="license-warning-icon"
@@ -90,7 +92,7 @@
             </div>
           </div>
 
-          <!-- No licenses message - Only shown when no licenses available at all -->
+          <!-- Empty state display when no licenses are available -->
           <div
             class="empty-state-container"
             *ngIf="displayLicenses.length === 0"
@@ -102,7 +104,7 @@
             </p>
           </div>
 
-          <!-- Selected licenses summary -->
+          <!-- Summary of selected licenses -->
           <div
             class="selected-licenses-summary"
             *ngIf="selectedLicenseIds.length > 0"
@@ -115,7 +117,7 @@
           </div>
         </div>
 
-        <!-- Products Section -->
+        <!-- Products Management Section - Allows adding, assigning and managing products in this category -->
         <div class="form-section product-section">
           <div class="section-header-with-actions">
             <h4 class="title">Products in Category</h4>
@@ -140,7 +142,7 @@
           </div>
 
           <div class="product-list-container scroll-y slim-scrollbar">
-            <!-- Empty state message -->
+            <!-- Empty state for categories with no products -->
             <div
               class="empty-state-container"
               *ngIf="categoryProducts.length === 0"
@@ -152,11 +154,12 @@
               </p>
             </div>
 
-            <!-- Product list when products exist -->
+            <!-- Product listing with edit/remove capabilities -->
             <ng-container *ngIf="categoryProducts.length > 0">
               <app-product-list
                 [products]="categoryProducts"
                 [showActions]="true"
+                [useExternalProducts]="true"
                 (productRemoved)="onProductRemoved($event)"
                 (productEdited)="onProductEdited($event)"
               >
@@ -168,7 +171,7 @@
     </form>
   </mat-dialog-content>
 
-  <!-- Dialog actions -->
+  <!-- Dialog action buttons -->
   <mat-dialog-actions>
     <button mat-button type="button" (click)="onCancel()">Cancel</button>
     <button

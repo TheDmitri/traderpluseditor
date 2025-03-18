@@ -1,4 +1,5 @@
 <div class="assign-products-dialog">
+  <!-- Dialog header with title and icon -->
   <h2 mat-dialog-title class="dialog-title">
     <mat-icon class="dialog-icon"> assignment_turned_in </mat-icon>
     <span>Assign Products</span>
@@ -6,7 +7,7 @@
 
   <!-- Dialog content -->
   <mat-dialog-content>
-    <!-- Filter section -->
+    <!-- Filter section for searching products -->
     <div class="dialog-filter-section">
       <p class="dialog-primary-text">
         Select products to assign them to this category.
@@ -25,11 +26,27 @@
       </mat-form-field>
     </div>
 
+    <!-- Loader for long operations -->
+    <div *ngIf="isProcessing" class="processing-overlay">
+      <div class="loader-container">
+        <div class="loader-v1"></div>
+        <div class="loader-v2"></div>
+      </div>
+    </div>
+
+    <!-- Main products selection interface with two columns -->
     <div class="lists-container">
-      <!-- Available Products -->
+      <!-- Available Products list (left column) -->
       <div class="products-list">
-        <h3>Available Products</h3>
-        <div class="list-container">
+        <h3>
+          Available Products
+          <span class="list-counter">{{ getAvailableCountText() }}</span>
+        </h3>
+        <div
+          #availableContainer
+          class="list-container"
+          (scroll)="onScroll('available')"
+        >
           <div *ngIf="availableProducts.length === 0" class="empty-list">
             <mat-icon>warning_amber</mat-icon>
             <span>No products available</span>
@@ -48,13 +65,13 @@
         </div>
       </div>
 
-      <!-- Move Buttons -->
+      <!-- Transfer buttons between the two lists -->
       <div class="move-buttons">
         <button
           class="custom-icon-btn icon-btn-primary"
           (click)="moveAllVisibleToSelected()"
           [disabled]="availableProducts.length === 0"
-          matTooltip="Add all visible products"
+          matTooltip="Add all {{ isFiltering ? 'matching' : '' }} products"
           matTooltipPosition="above"
         >
           <mat-icon>arrow_forward</mat-icon>
@@ -64,7 +81,7 @@
           class="custom-icon-btn icon-btn-primary"
           (click)="moveAllVisibleToAvailable()"
           [disabled]="selectedProducts.length === 0"
-          matTooltip="Remove all visible products"
+          matTooltip="Remove all {{ isFiltering ? 'matching' : '' }} products"
           matTooltipPosition="below"
         >
           <mat-icon>arrow_back</mat-icon>
@@ -72,10 +89,17 @@
         </button>
       </div>
 
-      <!-- Selected Products -->
+      <!-- Selected Products list (right column) -->
       <div class="products-list">
-        <h3>Selected Products</h3>
-        <div class="list-container">
+        <h3>
+          Selected Products
+          <span class="list-counter">{{ getSelectedCountText() }}</span>
+        </h3>
+        <div
+          #selectedContainer
+          class="list-container"
+          (scroll)="onScroll('selected')"
+        >
           <div *ngIf="selectedProducts.length === 0" class="empty-list">
             <mat-icon>info</mat-icon>
             <span>No products selected</span>
@@ -96,7 +120,7 @@
     </div>
   </mat-dialog-content>
 
-  <!-- Dialog actions -->
+  <!-- Dialog action buttons -->
   <mat-dialog-actions>
     <button mat-button (click)="onCancel()">Cancel</button>
     <button mat-raised-button color="primary" (click)="onSave()">Save</button>

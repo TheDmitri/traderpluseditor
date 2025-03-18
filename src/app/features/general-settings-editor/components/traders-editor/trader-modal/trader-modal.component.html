@@ -209,6 +209,7 @@
         <!-- Categories Section - Using Expansion Panel - Not for ATMs -->
         <mat-expansion-panel
           *ngIf="traderForm.get('type')?.value !== traderTypes.ATM"
+          (closed)="onCategoriesPanelClosed()"
         >
           <mat-expansion-panel-header>
             <mat-panel-title>
