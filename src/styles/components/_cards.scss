@@ -101,7 +101,8 @@
  * Main content area of the card
  */
 .mat-mdc-card-content {
-  padding: 16px;
+  padding: 0 !important; // Override any default padding
+  box-sizing: border-box;
   color: var(--brush-text-primary); /* 60% - main content */
   
   p {

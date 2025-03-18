@@ -91,6 +91,8 @@
  * More compact panel styled as a card for displaying focused data points
  */
 .data-card {
+  width: 100%;
+  box-sizing: border-box;
   padding: 24px;
   background: linear-gradient(
     135deg,
