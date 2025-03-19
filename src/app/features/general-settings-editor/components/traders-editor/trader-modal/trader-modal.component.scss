@@ -138,7 +138,7 @@
             
             .category-info {
               .category-name {
-                color: var(--brush-primary);
+                color: var(--color-primary-medium);
               }
               
               .category-id {
@@ -218,7 +218,7 @@
     
     .info-icon {
       margin-right: 8px;
-      color: var(--brush-primary);
+      color: var(--color-primary-medium);
       flex-shrink: 0;
     }
     
@@ -327,7 +327,7 @@
           .currency-info {
             .category-name,
             .currency-name {
-              color: var (--brush-primary);
+              color: var (--color-primary-medium);
             }
             
             .category-id,
