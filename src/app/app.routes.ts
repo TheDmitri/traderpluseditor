@@ -8,6 +8,7 @@ import { ProductEditorComponent } from './features/product-editor/components/pro
 import { CurrencyEditorComponent } from './features/currency-editor/components/currency-editor.component';
 import { GeneralSettingsEditorComponent } from './features/general-settings-editor/components/general-settings-editor.component';
 import { FileConverterComponent } from './features/file-converter/components/file-converter.component';
+import { StorageManagerComponent } from './shared/components/storage-manager/storage-manager.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -18,5 +19,6 @@ export const routes: Routes = [
   { path: 'settings', component: GeneralSettingsEditorComponent },
   { path: 'file-management', component: FileManagementComponent },
   { path: 'converter', component: FileConverterComponent },
+  { path: 'storage-manager', component: StorageManagerComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];

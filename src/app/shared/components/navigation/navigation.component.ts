@@ -43,7 +43,8 @@ export class NavigationComponent {
     { label: 'Currencies', icon: 'payments', route: '/currencies' },
     { label: 'Settings', icon: 'settings', route: '/settings' },
     { label: 'Import/Export', icon: 'import_export', route: '/file-management' },
-    { label: 'Converter', icon: 'auto_fix_high', route: '/converter' }
+    { label: 'Converter', icon: 'auto_fix_high', route: '/converter' },
+    { label: 'Storage', icon: 'storage', route: '/storage-manager' }
   ];
   
   getContentClass(): string {

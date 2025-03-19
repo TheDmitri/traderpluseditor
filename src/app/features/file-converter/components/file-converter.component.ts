@@ -1,12 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 // Material imports
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -21,21 +25,23 @@ import {
   ExpansionConverterService,
   JonesConverterService,
 } from '../services';
+
 // Pipe for file size formatting
 import { FileSizePipe } from '../../../shared/pipes/filesize.pipe';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { FileNode } from '../models/file-explorer.model';
-import { createStructuredZip, downloadBlob, FileEntry } from '../../../shared/utils/zip.utils';
+import { SavedFileSet } from '../../../shared/models/saved-file-set.model';
+import { StorageManagerService } from '../../../shared/services/storage-manager.service';
+import {
+  createStructuredZip,
+  downloadBlob,
+  FileEntry,
+} from '../../../shared/utils/zip.utils';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 // Define a type for converter types to ensure type safety
 type ConverterType = 'traderplus' | 'expansion' | 'jones';
-
-interface ConvertedFile {
-  name: string;
-  content: string;
-  type: string;
-  size: number;
-}
 
 // Define proper interfaces for conversion status and progress
 interface ConversionStatus {
@@ -52,11 +58,20 @@ interface ConversionProgress {
   [key: string]: number; // Add index signature to allow string indexing
 }
 
+// Define interface for converted file objects
+interface ConvertedFile {
+  name: string;
+  content: string;
+  type: string;
+  size: number;
+}
+
 @Component({
   selector: 'app-file-converter',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatCardModule,
     MatTabsModule,
     MatButtonModule,
@@ -68,13 +83,16 @@ interface ConversionProgress {
     MatChipsModule,
     MatListModule,
     MatTreeModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
     FileSizePipe,
     LoaderComponent,
   ],
   templateUrl: './file-converter.component.html',
   styleUrls: ['./file-converter.component.scss'],
 })
-export class FileConverterComponent implements OnInit {
+export class FileConverterComponent implements OnInit, OnDestroy {
   // Files arrays for each trader mod
   traderPlusFiles: File[] = [];
   expansionFiles: File[] = [];
@@ -95,14 +113,14 @@ export class FileConverterComponent implements OnInit {
 
   // Array to store converted files
   convertedFiles: ConvertedFile[] = [];
-  
+
   // New property for file structure
   fileStructure: FileNode = {
     name: 'TraderPlusConfig',
     type: 'folder',
     path: 'TraderPlusConfig',
     children: [],
-    expanded: true
+    expanded: true,
   };
 
   // New properties to track conversion state
@@ -115,15 +133,35 @@ export class FileConverterComponent implements OnInit {
     jones: false,
   };
 
+  // New properties for saved file sets
+  newFileSetName: string = '';
+  showSaveDialog: boolean = false;
+  private subscriptions: Subscription = new Subscription();
+
   constructor(
     private fileConverterService: FileConverterService,
     private traderPlusConverterService: TraderPlusConverterService,
     private expansionConverterService: ExpansionConverterService,
-    private jonesConverterService: JonesConverterService
+    private jonesConverterService: JonesConverterService,
+    private storageManagerService: StorageManagerService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    // Your initialization code
+    // Check if we should load a file set from sessionStorage
+    const fileSetId = sessionStorage.getItem('loadFileSetId');
+    if (fileSetId) {
+      // Clear the sessionStorage item to avoid reloading on page refresh
+      sessionStorage.removeItem('loadFileSetId');
+      
+      // Load the file set
+      this.loadSavedFileSetById(fileSetId);
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Clean up subscriptions
+    this.subscriptions.unsubscribe();
   }
 
   /**
@@ -317,11 +355,11 @@ export class FileConverterComponent implements OnInit {
         this.isJonesConverted = true;
         break;
     }
-    
+
     // Update file structure after conversion
     this.updateFileStructure();
   }
-  
+
   /**
    * Updates the file structure based on converted files
    */
@@ -332,15 +370,15 @@ export class FileConverterComponent implements OnInit {
       type: 'folder',
       path: 'TraderPlusConfig',
       children: [],
-      expanded: true
+      expanded: true,
     };
-    
+
     // Add each file to the structure
-    this.convertedFiles.forEach(file => {
+    this.convertedFiles.forEach((file) => {
       this.addFileToStructure(file);
     });
   }
-  
+
   /**
    * Adds a file to the file structure
    */
@@ -350,16 +388,16 @@ export class FileConverterComponent implements OnInit {
     if (normalizedPath.startsWith('TraderPlusConfig/')) {
       normalizedPath = normalizedPath.substring('TraderPlusConfig/'.length);
     }
-    
+
     const path = normalizedPath.split('/');
     let currentLevel = this.fileStructure;
-    
+
     // Process each part of the path except the last one (filename)
     for (let i = 0; i < path.length - 1; i++) {
       const part = path[i];
       // Skip empty parts
       if (!part) continue;
-      
+
       // Check if this folder already exists at the current level
       let found = false;
       if (currentLevel.children) {
@@ -371,7 +409,7 @@ export class FileConverterComponent implements OnInit {
           }
         }
       }
-      
+
       // If not found, create a new folder
       if (!found) {
         const newFolder: FileNode = {
@@ -379,30 +417,30 @@ export class FileConverterComponent implements OnInit {
           type: 'folder',
           path: `${currentLevel.path}/${part}`,
           children: [],
-          expanded: true
+          expanded: true,
         };
-        
+
         if (!currentLevel.children) {
           currentLevel.children = [];
         }
-        
+
         currentLevel.children.push(newFolder);
         currentLevel = newFolder;
       }
     }
-    
+
     // Add the actual file
     const fileName = path[path.length - 1];
     if (!currentLevel.children) {
       currentLevel.children = [];
     }
-    
+
     currentLevel.children.push({
       name: fileName,
       type: 'file',
       path: `${currentLevel.path}/${fileName}`,
       content: file.content,
-      size: file.size
+      size: file.size,
     });
   }
 
@@ -411,7 +449,7 @@ export class FileConverterComponent implements OnInit {
    */
   downloadFile(node: FileNode): void {
     if (node.type !== 'file' || !node.content) return;
-    
+
     const blob = new Blob([node.content], { type: 'application/json' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -420,19 +458,19 @@ export class FileConverterComponent implements OnInit {
     link.click();
     window.URL.revokeObjectURL(url);
   }
-  
+
   /**
    * Creates file entries for a folder and its children
    */
   private createFileEntries(node: FileNode): FileEntry[] {
     const entries: FileEntry[] = [];
-    
+
     if (node.type === 'file' && node.content) {
       // Create a path relative to the root folder
       const relativePath = node.path.replace(/^TraderPlusConfig\/?/, '');
       entries.push({
         path: relativePath,
-        content: node.content
+        content: node.content,
       });
     } else if (node.type === 'folder' && node.children) {
       // Process each child
@@ -440,7 +478,7 @@ export class FileConverterComponent implements OnInit {
         entries.push(...this.createFileEntries(child));
       }
     }
-    
+
     return entries;
   }
 
@@ -449,24 +487,24 @@ export class FileConverterComponent implements OnInit {
    */
   downloadFolder(node: FileNode): void {
     if (node.type !== 'folder') return;
-    
+
     const entries = this.createFileEntries(node);
-    
+
     // Show loading indicator if needed
     // this.isDownloading = true;
-    
+
     // Use the async createStructuredZip function with proper error handling
     createStructuredZip(entries)
-      .then(zipBlob => {
+      .then((zipBlob) => {
         downloadBlob(zipBlob, `${node.name}.zip`);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error creating ZIP file:', error);
         alert('There was an error creating the ZIP file. Please try again.');
       });
-      // .finally(() => {
-      //   this.isDownloading = false;
-      // });
+    // .finally(() => {
+    //   this.isDownloading = false;
+    // });
   }
 
   /**
@@ -482,7 +520,9 @@ export class FileConverterComponent implements OnInit {
   saveFileToProject(node: FileNode): void {
     if (node.type !== 'file' || !node.content) return;
     // In a real app, this would save the file to the current project
-    alert(`Save file "${node.name}" to project - functionality would be implemented here`);
+    alert(
+      `Save file "${node.name}" to project - functionality would be implemented here`
+    );
   }
 
   /**
@@ -491,7 +531,9 @@ export class FileConverterComponent implements OnInit {
   saveFolderToProject(node: FileNode): void {
     if (node.type !== 'folder') return;
     // In a real app, this would save all files in the folder to the current project
-    alert(`Save folder "${node.name}" to project - functionality would be implemented here`);
+    alert(
+      `Save folder "${node.name}" to project - functionality would be implemented here`
+    );
   }
 
   /**
@@ -525,6 +567,179 @@ export class FileConverterComponent implements OnInit {
       return 'code';
     } else {
       return 'insert_drive_file';
+    }
+  }
+
+  /**
+   * Opens dialog to save current converted files to localStorage
+   */
+  openSaveDialog(): void {
+    if (this.convertedFiles.length === 0) {
+      alert('No files to save. Please convert files first.');
+      return;
+    }
+
+    // Set a default name based on the conversion source
+    let source = '';
+    if (this.isTraderPlusConverted) source = 'TraderPlus';
+    if (this.isExpansionConverted) source = 'Expansion';
+    if (this.isJonesConverted) source = 'Jones';
+
+    this.newFileSetName = `${source} Conversion ${new Date().toLocaleDateString()}`;
+    this.showSaveDialog = true;
+  }
+
+  /**
+   * Cancels the save dialog
+   */
+  cancelSaveDialog(): void {
+    this.showSaveDialog = false;
+    this.newFileSetName = '';
+  }
+
+  /**
+   * Saves the current converted files to localStorage
+   */
+  saveConvertedFilesToStorage(): void {
+    if (!this.newFileSetName.trim()) {
+      alert('Please enter a name for this file set.');
+      return;
+    }
+
+    // Create a map of files
+    const fileMap: { [path: string]: string } = {};
+    this.convertedFiles.forEach((file) => {
+      fileMap[file.name] = file.content;
+    });
+
+    // Determine the source
+    let source = 'unknown';
+    if (this.isTraderPlusConverted) source = 'traderplus';
+    if (this.isExpansionConverted) source = 'expansion';
+    if (this.isJonesConverted) source = 'jones';
+
+    // Save to service
+    this.storageManagerService
+      .saveFileSet(this.newFileSetName, source, fileMap)
+      .subscribe(
+        (result) => {
+          this.showSaveDialog = false;
+          this.newFileSetName = '';
+          
+          // Show confirmation
+          const confirmed = confirm('File set saved successfully. Would you like to view your saved file sets?');
+          if (confirmed) {
+            this.router.navigate(['/storage-manager']);
+          }
+        },
+        (error) => {
+          console.error('Error saving file set:', error);
+          alert('Error saving file set. Please try again.');
+        }
+      );
+  }
+
+  /**
+   * Downloads a saved file set
+   */
+  downloadSavedFileSet(set: SavedFileSet): void {
+    this.storageManagerService
+      .downloadFileSet(set.id)
+      .then((success) => {
+        if (!success) {
+          alert('Error downloading file set. Please try again.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error downloading file set:', error);
+        alert('Error downloading file set. Please try again.');
+      });
+  }
+
+  /**
+   * Deletes a saved file set
+   */
+  deleteSavedFileSet(set: SavedFileSet, event: Event): void {
+    // Prevent event bubbling
+    event.stopPropagation();
+
+    if (
+      confirm(
+        `Are you sure you want to delete "${set.name}"? This cannot be undone.`
+      )
+    ) {
+      this.storageManagerService.deleteFileSet(set.id).subscribe(
+        (success) => {
+          if (!success) {
+            alert('Error deleting file set. Please try again.');
+          }
+        },
+        (error) => {
+          console.error('Error deleting file set:', error);
+          alert('Error deleting file set. Please try again.');
+        }
+      );
+    }
+  }
+
+  /**
+   * Loads a saved file set into the current view
+   */
+  loadSavedFileSet(set: SavedFileSet): void {
+    // First clear the current files
+    this.convertedFiles = [];
+
+    // Convert the file map to convertedFiles array
+    Object.entries(set.files).forEach(([path, content]) => {
+      this.convertedFiles.push({
+        name: path,
+        content: content,
+        type: 'TraderPlus v2',
+        size: new Blob([content]).size,
+      });
+    });
+
+    // Update file structure
+    this.updateFileStructure();
+
+    // Set appropriate conversion flags based on source
+    this.isTraderPlusConverted = set.source === 'traderplus';
+    this.isExpansionConverted = set.source === 'expansion';
+    this.isJonesConverted = set.source === 'jones';
+  }
+
+  /**
+   * Loads a saved file set by ID
+   */
+  private loadSavedFileSetById(id: string): void {
+    this.subscriptions.add(
+      this.storageManagerService.getSetById(id).subscribe(fileSet => {
+        if (fileSet) {
+          this.loadSavedFileSet(fileSet);
+        } else {
+          console.error('File set not found:', id);
+        }
+      })
+    );
+  }
+
+  /**
+   * Formats a date for display
+   */
+  formatDate(timestamp: number): string {
+    return new Date(timestamp).toLocaleString();
+  }
+
+  /**
+   * Clear all saved file sets
+   */
+  clearAllSavedFileSets(): void {
+    if (
+      confirm(
+        'Are you sure you want to delete ALL saved file sets? This cannot be undone.'
+      )
+    ) {
+      this.storageManagerService.clearAllSets().subscribe();
     }
   }
 }
