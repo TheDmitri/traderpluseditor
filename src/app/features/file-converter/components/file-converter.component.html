@@ -43,14 +43,14 @@
                 <div class="converter-actions">
                   <div class="actions-row">
                     <button
-                      class="custom-stroked-button color-secondary with-icon"
+                      class="custom-stroked-button color-primary with-icon"
                       (click)="selectFiles('traderplus')"
                     >
                       <mat-icon>add</mat-icon>
                       Select Files
                     </button>
                     <button
-                      class="custom-stroked-button color-primary with-icon"
+                      class="custom-stroked-button color-secondary with-icon"
                       [disabled]="
                         !traderPlusFiles.length || isTraderPlusConverted
                       "
@@ -129,14 +129,14 @@
                 <div class="converter-actions">
                   <div class="actions-row">
                     <button
-                      class="custom-stroked-button color-secondary with-icon"
+                      class="custom-stroked-button color-primary with-icon"
                       (click)="selectFiles('expansion')"
                     >
                       <mat-icon>add</mat-icon>
                       Select Files
                     </button>
                     <button
-                      class="custom-stroked-button color-primary with-icon"
+                      class="custom-stroked-button color-secondary with-icon"
                       [disabled]="
                         !expansionFiles.length || isExpansionConverted
                       "
@@ -215,14 +215,14 @@
                 <div class="converter-actions">
                   <div class="actions-row">
                     <button
-                      class="custom-stroked-button color-secondary with-icon"
+                      class="custom-stroked-button color-primary with-icon"
                       (click)="selectFiles('jones')"
                     >
                       <mat-icon>add</mat-icon>
                       Select Files
                     </button>
                     <button
-                      class="custom-stroked-button color-primary with-icon"
+                      class="custom-stroked-button color-secondary with-icon"
                       [disabled]="!jonesFiles.length || isJonesConverted"
                       (click)="convert('jones')"
                     >
@@ -292,19 +292,13 @@
             <mat-icon>download_all</mat-icon>
             Download All
           </button>
-          <button
-            class="custom-stroked-button color-accent with-icon"
-            (click)="openSaveDialog()"
-          >
-            <mat-icon>save_alt</mat-icon>
-            Save to LocalStorage
-          </button>
+
           <button
             class="custom-stroked-button color-secondary with-icon"
-            (click)="saveToProject()"
+            matTooltip="Save converted files" (click)="openSaveDialog()"
           >
             <mat-icon>save</mat-icon>
-            Save to Project
+            Save File Set
           </button>
         </div>
       </div>
@@ -315,7 +309,9 @@
           <div class="folder-node root-folder">
             <div class="folder-header" (click)="toggleFolder(fileStructure)">
               <button class="folder-toggle">
-                <mat-icon>{{ fileStructure.expanded ? 'expand_more' : 'chevron_right' }}</mat-icon>
+                <mat-icon>{{
+                  fileStructure.expanded ? "expand_more" : "chevron_right"
+                }}</mat-icon>
               </button>
               <mat-icon class="folder-icon">folder_open</mat-icon>
               <span class="folder-name">{{ fileStructure.name }}</span>
@@ -323,26 +319,35 @@
                 <button
                   class="custom-icon-btn icon-btn-primary"
                   matTooltip="Download as zip"
-                  (click)="downloadFolder(fileStructure); $event.stopPropagation()"
+                  (click)="
+                    downloadFolder(fileStructure); $event.stopPropagation()
+                  "
                 >
                   <mat-icon>download</mat-icon>
                 </button>
                 <button
                   class="custom-icon-btn icon-btn-secondary"
                   matTooltip="Save to project"
-                  (click)="saveFolderToProject(fileStructure); $event.stopPropagation()"
+                  (click)="
+                    saveFolderToProject(fileStructure); $event.stopPropagation()
+                  "
                 >
                   <mat-icon>save</mat-icon>
                 </button>
               </div>
             </div>
-            
+
             <!-- Recursive folder structure -->
             <div class="folder-children" *ngIf="fileStructure.expanded">
-              <ng-container *ngTemplateOutlet="folderContents; context: { $implicit: fileStructure }"></ng-container>
+              <ng-container
+                *ngTemplateOutlet="
+                  folderContents;
+                  context: { $implicit: fileStructure }
+                "
+              ></ng-container>
             </div>
           </div>
-          
+
           <!-- Template for displaying a folder's contents -->
           <ng-template #folderContents let-folder>
             <div class="folder-content" *ngIf="folder.children">
@@ -351,7 +356,9 @@
                 <div class="folder-node" *ngIf="node.type === 'folder'">
                   <div class="folder-header" (click)="toggleFolder(node)">
                     <button class="folder-toggle">
-                      <mat-icon>{{ node.expanded ? 'expand_more' : 'chevron_right' }}</mat-icon>
+                      <mat-icon>{{
+                        node.expanded ? "expand_more" : "chevron_right"
+                      }}</mat-icon>
                     </button>
                     <mat-icon class="folder-icon">folder</mat-icon>
                     <span class="folder-name">{{ node.name }}</span>
@@ -366,22 +373,33 @@
                       <button
                         class="custom-icon-btn icon-btn-secondary"
                         matTooltip="Save to project"
-                        (click)="saveFolderToProject(node); $event.stopPropagation()"
+                        (click)="
+                          saveFolderToProject(node); $event.stopPropagation()
+                        "
                       >
                         <mat-icon>save</mat-icon>
                       </button>
                     </div>
                   </div>
                   <div class="folder-children" *ngIf="node.expanded">
-                    <ng-container *ngTemplateOutlet="folderContents; context: { $implicit: node }"></ng-container>
+                    <ng-container
+                      *ngTemplateOutlet="
+                        folderContents;
+                        context: { $implicit: node }
+                      "
+                    ></ng-container>
                   </div>
                 </div>
-                
+
                 <!-- File -->
                 <div class="file-node" *ngIf="node.type === 'file'">
-                  <mat-icon class="file-icon">{{ getFileIcon(node.name) }}</mat-icon>
+                  <mat-icon class="file-icon">{{
+                    getFileIcon(node.name)
+                  }}</mat-icon>
                   <span class="file-name">{{ node.name }}</span>
-                  <span class="file-size" *ngIf="node.size">{{ node.size | fileSize }}</span>
+                  <span class="file-size" *ngIf="node.size">{{
+                    node.size | fileSize
+                  }}</span>
                   <div class="file-actions">
                     <button
                       class="custom-icon-btn icon-btn-primary"
@@ -412,15 +430,29 @@
     <div class="save-dialog">
       <h2>Save Files to LocalStorage</h2>
       <p>Enter a name for this file set:</p>
-      
+
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Name</mat-label>
-        <input matInput [(ngModel)]="newFileSetName" placeholder="My File Set" />
+        <input
+          matInput
+          [(ngModel)]="newFileSetName"
+          placeholder="My File Set"
+        />
       </mat-form-field>
-      
+
       <div class="dialog-actions">
-        <button class="custom-stroked-button color-secondary" (click)="cancelSaveDialog()">Cancel</button>
-        <button class="custom-stroked-button color-primary" (click)="saveConvertedFilesToStorage()">Save</button>
+        <button
+          class="custom-stroked-button color-warn"
+          (click)="cancelSaveDialog()"
+        >
+          Cancel
+        </button>
+        <button
+          class="custom-stroked-button color-primary"
+          (click)="saveConvertedFilesToStorage()"
+        >
+          Save
+        </button>
       </div>
     </div>
   </div>

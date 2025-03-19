@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,18 +26,21 @@ import {
   JonesConverterService,
 } from '../services';
 
-// Pipe for file size formatting
+// Components and utilities
 import { FileSizePipe } from '../../../shared/pipes/filesize.pipe';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { FileNode } from '../models/file-explorer.model';
 import { SavedFileSet } from '../../../shared/models/saved-file-set.model';
 import { StorageManagerService } from '../../../shared/services/storage-manager.service';
+import { NotificationService } from '../../../shared/services/notification.service';
 import {
   createStructuredZip,
   downloadBlob,
   FileEntry,
 } from '../../../shared/utils/zip.utils';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 // Define a type for converter types to ensure type safety
@@ -144,7 +147,9 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     private expansionConverterService: ExpansionConverterService,
     private jonesConverterService: JonesConverterService,
     private storageManagerService: StorageManagerService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -602,7 +607,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
    */
   saveConvertedFilesToStorage(): void {
     if (!this.newFileSetName.trim()) {
-      alert('Please enter a name for this file set.');
+      this.notificationService.error('Please enter a name for this file set.');
       return;
     }
 
@@ -618,25 +623,46 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     if (this.isExpansionConverted) source = 'expansion';
     if (this.isJonesConverted) source = 'jones';
 
-    // Save to service
-    this.storageManagerService
-      .saveFileSet(this.newFileSetName, source, fileMap)
-      .subscribe(
-        (result) => {
-          this.showSaveDialog = false;
-          this.newFileSetName = '';
-          
-          // Show confirmation
-          const confirmed = confirm('File set saved successfully. Would you like to view your saved file sets?');
-          if (confirmed) {
-            this.router.navigate(['/storage-manager']);
-          }
-        },
-        (error) => {
-          console.error('Error saving file set:', error);
-          alert('Error saving file set. Please try again.');
+    // First check if storage is near limit
+    this.storageManagerService.isStorageNearLimit().pipe(take(1)).subscribe(
+      isNearLimit => {
+        if (isNearLimit) {
+          this.notificationService.warning('Storage is nearly full (>90%). Please delete some saved file sets before saving new ones.');
+          return;
         }
-      );
+
+        // If not near limit, proceed with saving
+        this.storageManagerService
+          .saveFileSet(this.newFileSetName, source, fileMap)
+          .pipe(take(1))
+          .subscribe(
+            (result) => {
+              this.showSaveDialog = false;
+              this.newFileSetName = '';
+              
+              const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+                data: {
+                  title: 'File Set Saved',
+                  message: 'File set saved successfully. Would you like to view your saved file sets?',
+                  confirmText: 'View File Sets',
+                  cancelText: 'Stay Here',
+                  type: 'info'
+                }
+              });
+
+              dialogRef.afterClosed().pipe(take(1)).subscribe(navigateToSets => {
+                if (navigateToSets) {
+                  this.router.navigate(['/storage-manager']);
+                }
+              });
+            },
+            (error) => {
+              console.error('Error saving file set:', error);
+              this.notificationService.error(`Error saving file set: ${error.message}`);
+            }
+          );
+      }
+    );
   }
 
   /**
@@ -663,23 +689,33 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     // Prevent event bubbling
     event.stopPropagation();
 
-    if (
-      confirm(
-        `Are you sure you want to delete "${set.name}"? This cannot be undone.`
-      )
-    ) {
-      this.storageManagerService.deleteFileSet(set.id).subscribe(
-        (success) => {
-          if (!success) {
-            alert('Error deleting file set. Please try again.');
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete File Set',
+        message: `Are you sure you want to delete "${set.name}"?\nThis action cannot be undone.`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        type: 'danger'
+      }
+    });
+
+    dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
+      if (result) {
+        this.storageManagerService.deleteFileSet(set.id).pipe(take(1)).subscribe(
+          (success) => {
+            if (!success) {
+              this.notificationService.error('Error deleting file set. Please try again.');
+            } else {
+              this.notificationService.success('File set deleted successfully.');
+            }
+          },
+          (error) => {
+            console.error('Error deleting file set:', error);
+            this.notificationService.error('Error deleting file set. Please try again.');
           }
-        },
-        (error) => {
-          console.error('Error deleting file set:', error);
-          alert('Error deleting file set. Please try again.');
-        }
-      );
-    }
+        );
+      }
+    });
   }
 
   /**
@@ -734,12 +770,22 @@ export class FileConverterComponent implements OnInit, OnDestroy {
    * Clear all saved file sets
    */
   clearAllSavedFileSets(): void {
-    if (
-      confirm(
-        'Are you sure you want to delete ALL saved file sets? This cannot be undone.'
-      )
-    ) {
-      this.storageManagerService.clearAllSets().subscribe();
-    }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete All File Sets',
+        message: 'Are you sure you want to delete ALL saved file sets?\nThis action cannot be undone.',
+        confirmText: 'Delete All',
+        cancelText: 'Cancel',
+        type: 'danger'
+      }
+    });
+
+    dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
+      if (result) {
+        this.storageManagerService.clearAllSets().pipe(take(1)).subscribe(() => {
+          this.notificationService.success('All file sets deleted successfully.');
+        });
+      }
+    });
   }
 }
