@@ -6,87 +6,66 @@
         <p class="subtitle">
           Manage saved file sets and their associated files.
         </p>
+        <div class="action-buttons">
+          <!-- Primary action: Create new currency type -->
+          <button
+            class="custom-stroked-button color-primary with-icon"
+            (click)="createAppDataFileSet()"
+            [disabled]="!hasAnyAppData"
+            matTooltip="Create a file set from your current app data"
+          >
+          <mat-icon>add_circle</mat-icon>
+          Create new Set from App
+          </button>
+        </div>
+      </div>
+      <div class="header-right">
+        <button
+          class="custom-stroked-button color-warn with-icon"
+          [matMenuTriggerFor]="dangerMenu"
+          matTooltip="Dangerous operations"
+          [disabled]="savedFileSets.length == 0"
+        >
+          <mat-icon>warning</mat-icon>
+          Danger Zone
+        </button>
+        <mat-menu #dangerMenu="matMenu">
+          <button
+            mat-menu-item
+            (click)="clearAllSavedFileSets()"
+            matTooltip="Remove all categories permanently"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon-error">delete_forever</mat-icon>
+            <span>Clear All File Sets</span>
+          </button>
+        </mat-menu>
       </div>
     </div>
   </header>
-
+  
   <div class="main-content-area">
     <!-- Storage Usage Section -->
-    <mat-card class="data-card storage-stats-panel">
+    <div class="data-card storage-stats-panel">
       <mat-card-content>
-        <!-- Storage Usage Progress -->
+        <!-- Storage Usage Header - simplified without progress bar -->
         <div class="storage-usage-header">
-          <div class="usage-title">
-            <h2>Local Storage Usage</h2>
-            <div
-              class="storage-limit-info"
-              [ngClass]="getStoragePercentageClass()"
-            >
-              {{ storageBreakdown?.total || 0 | fileSize }} /
-              {{ storageBreakdown?.limit || 10485760 | fileSize }}
-            </div>
+          <div class="usage-info">
+            <mat-icon>storage</mat-icon>
+            <h2 class="section-title">
+              Local Storage Usage
+            </h2>
           </div>
-          <mat-progress-bar
-            mode="determinate"
-            [value]="storageBreakdown?.percentUsed || 0"
-            [color]="getStorageUsageColor()"
-            [ngClass]="getStoragePercentageClass()"
-          ></mat-progress-bar>
-        </div>
-
-        <!-- Warning Banner (Shown only when storage is critical) -->
-        <div *ngIf="storageWarningLevel === 'critical'" class="storage-warning">
-          <mat-icon>warning</mat-icon>
-          <span
-            >Warning: Local storage is nearly full (10MB limit). Some data may
-            not be saved properly.</span
+          <div class="storage-limit-info"
+          [ngClass]="getStoragePercentageClass()"
           >
+          {{ storageBreakdown?.total || 0 | fileSize }} /
+          {{ storageBreakdown?.limit || 10485760 | fileSize }}
+          </div>
         </div>
 
         <!-- Storage Breakdown -->
-        <div class="storage-breakdown">
-          <h3>Storage Breakdown</h3>
-          
-          <div class="modern-breakdown">
-            <!-- Visual Storage Chart -->
-            <div class="chart-container">
-              <div class="donut-chart">
-                <!-- File Sets segment -->
-                <svg class="donut-ring" width="100%" height="100%" viewBox="0 0 42 42">
-                  <circle class="donut-hole" cx="21" cy="21" r="15.91549430918954"></circle>
-                  <circle class="donut-background" cx="21" cy="21" r="15.91549430918954" stroke-dasharray="100 0"></circle>
-                  
-                  <!-- Background circle -->
-                  <circle class="donut-segment donut-segment-free" 
-                         cx="21" cy="21" r="15.91549430918954"
-                         stroke-dasharray="100 0" 
-                         stroke-dashoffset="0"></circle>
-                  
-                  <!-- File Sets segment -->
-                  <circle class="donut-segment donut-segment-1" 
-                         cx="21" cy="21" r="15.91549430918954" 
-                         [attr.stroke-dasharray]="getChartSegmentSize(storageBreakdown?.fileSets || 0, storageBreakdown?.limit || 1) + ' ' + (100 - getChartSegmentSize(storageBreakdown?.fileSets || 0, storageBreakdown?.limit || 1))" 
-                         stroke-dashoffset="0"></circle>
-                  
-                  <!-- App Data segment -->
-                  <circle class="donut-segment donut-segment-2" 
-                         cx="21" cy="21" r="15.91549430918954" 
-                         [attr.stroke-dasharray]="getChartSegmentSize(storageBreakdown?.appData?.total || 0, storageBreakdown?.limit || 1) + ' ' + (100 - getChartSegmentSize(storageBreakdown?.appData?.total || 0, storageBreakdown?.limit || 1))" 
-                         [attr.stroke-dashoffset]="-1 * getChartSegmentSize(storageBreakdown?.fileSets || 0, storageBreakdown?.limit || 1)"></circle>
-                  
-                  <!-- Other segment -->
-                  <circle class="donut-segment donut-segment-3" 
-                         cx="21" cy="21" r="15.91549430918954" 
-                         [attr.stroke-dasharray]="getChartSegmentSize(storageBreakdown?.other || 0, storageBreakdown?.limit || 1) + ' ' + (100 - getChartSegmentSize(storageBreakdown?.other || 0, storageBreakdown?.limit || 1))" 
-                         [attr.stroke-dashoffset]="-1 * (getChartSegmentSize(storageBreakdown?.fileSets || 0, storageBreakdown?.limit || 1) + getChartSegmentSize(storageBreakdown?.appData?.total || 0, storageBreakdown?.limit || 1))"></circle>
-                  
-                  <text class="chart-center" x="50%" y="50%" text-anchor="middle" dy=".35em">
-                    {{ ((storageBreakdown?.total || 0) / (storageBreakdown?.limit || 1) * 100) | number:'1.0-0' }}%
-                  </text>
-                </svg>
-              </div>
-            </div>
-        
+        <div class="modern-breakdown">
             <!-- Storage Type Cards -->
             <div class="storage-cards">
               <!-- File Sets Card -->
@@ -111,33 +90,13 @@
                     <div class="card-percentage">{{ getPercentage(storageBreakdown?.appData?.total || 0, storageBreakdown?.limit || 1) }}%</div>
                   </div>
                 </div>
-                
-                <!-- App Data Details (expandable) -->
-                <div class="card-details-expandable" *ngIf="hoveredCardIndex === 1 && storageBreakdown?.appData?.total">
-                  <div class="detail-item" *ngIf="storageBreakdown?.appData?.products">
-                    <span class="detail-name">Products</span>
-                    <span class="detail-value">{{ storageBreakdown?.appData?.products || 0 | fileSize }}</span>
-                  </div>
-                  <div class="detail-item" *ngIf="storageBreakdown?.appData?.categories">
-                    <span class="detail-name">Categories</span>
-                    <span class="detail-value">{{ storageBreakdown?.appData?.categories || 0 | fileSize }}</span>
-                  </div>
-                  <div class="detail-item" *ngIf="storageBreakdown?.appData?.currencySettings">
-                    <span class="detail-name">Currency Settings</span>
-                    <span class="detail-value">{{ storageBreakdown?.appData?.currencySettings || 0 | fileSize }}</span>
-                  </div>
-                  <div class="detail-item" *ngIf="storageBreakdown?.appData?.generalSettings">
-                    <span class="detail-name">General Settings</span>
-                    <span class="detail-value">{{ storageBreakdown?.appData?.generalSettings || 0 | fileSize }}</span>
-                  </div>
-                </div>
               </div>
               
               <!-- Other Storage Card -->
               <div class="storage-card" [class.active]="hoveredCardIndex === 2" (mouseenter)="hoveredCardIndex = 2" (mouseleave)="hoveredCardIndex = -1">
                 <div class="card-indicator other"></div>
                 <div class="card-content">
-                  <div class="card-title">Other Storage</div>
+                  <div class="card-title">System Data</div>
                   <div class="card-details">
                     <div class="card-size">{{ storageBreakdown?.other || 0 | fileSize }}</div>
                     <div class="card-percentage">{{ getPercentage(storageBreakdown?.other || 0, storageBreakdown?.limit || 1) }}%</div>
@@ -158,31 +117,8 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="storage-actions">
-          <button
-            [disabled]="!hasAnyAppData"
-            class="custom-stroked-button color-primary with-icon"
-            (click)="createAppDataFileSet()"
-            matTooltip="Create a file set from your current app data"
-          >
-            <mat-icon>add_circle</mat-icon>
-            Create new Set from App
-          </button>
-
-          <button
-            [disabled]="savedFileSets.length == 0"
-            class="custom-stroked-button color-warn with-icon"
-            (click)="clearAllSavedFileSets()"
-          >
-            <mat-icon>delete_sweep</mat-icon>
-            Clear All File Sets
-          </button>
-        </div>
       </mat-card-content>
-    </mat-card>
+    </div>
 
     <!-- Saved File Sets Section -->
     <ng-container *ngIf="savedFileSets.length === 0; else fileSetsList">
@@ -202,61 +138,64 @@
     </ng-container>
 
     <ng-template #fileSetsList>
-      <!-- File Sets by Type -->
-      <ng-container *ngFor="let sourceKey of getSortedKeys(groupedFileSets)">
-        <div class="data-card file-sets-panel">
-          <div class="file-sets-header">
-            <div class="source-info">
-              <mat-icon>{{ getSourceIcon(sourceKey) }}</mat-icon>
-              <h2 class="section-title">
-                {{ getSourceDisplayName(sourceKey) }} File Sets
-              </h2>
+      <!-- File Sets Grid Layout -->
+      <div class="file-sets-grid">
+        <!-- File Sets by Type -->
+        <ng-container *ngFor="let sourceKey of getSortedKeys(groupedFileSets)">
+          <div class="data-card file-sets-panel" [ngClass]="'source-' + sourceKey">
+            <div class="file-sets-header">
+              <div class="source-info">
+                <mat-icon>{{ getSourceIcon(sourceKey) }}</mat-icon>
+                <h2 class="section-title">
+                  {{ getSourceDisplayName(sourceKey) }}
+                </h2>
+              </div>
+              <div class="source-stats">
+                {{ groupedFileSets[sourceKey].length }} sets
+              </div>
             </div>
-            <div class="source-stats">
-              {{ groupedFileSets[sourceKey].length }} sets
-            </div>
-          </div>
 
-          <mat-card-content class="file-sets-content">
-            <mat-list class="file-sets-list">
-              <mat-list-item
-                *ngFor="let fileSet of groupedFileSets[sourceKey]"
-                class="file-set-item"
-              >
-                <mat-icon matListItemIcon>description</mat-icon>
-                <div matListItemTitle>{{ fileSet.name }}</div>
-                <div matListItemLine>
-                  {{ fileSet.fileCount }} files ·
-                  {{ fileSet.totalSize | fileSize }} · Saved
-                  {{ formatDate(fileSet.createdAt) }}
-                </div>
-                <div matListItemMeta>
-                  <div class="file-set-actions">
-                    <button
-                      type="button"
-                      class="custom-icon-btn icon-btn-primary"
-                      (click)="
-                        downloadSavedFileSet(fileSet); $event.stopPropagation()
-                      "
-                      matTooltip="Download"
-                    >
-                      <mat-icon>download</mat-icon>
-                    </button>
-                    <button
-                      type="button"
-                      class="custom-icon-btn icon-btn-warn"
-                      (click)="deleteSavedFileSet(fileSet, $event)"
-                      matTooltip="Delete"
-                    >
-                      <mat-icon>delete</mat-icon>
-                    </button>
+            <mat-card-content class="file-sets-content">
+              <mat-list class="file-sets-list">
+                <mat-list-item
+                  *ngFor="let fileSet of groupedFileSets[sourceKey]"
+                  class="file-set-item"
+                >
+                  <mat-icon matListItemIcon>description</mat-icon>
+                  <div matListItemTitle>{{ fileSet.name }}</div>
+                  <div matListItemLine>
+                    {{ fileSet.fileCount }} files ·
+                    {{ fileSet.totalSize | fileSize }} · Saved
+                    {{ formatDate(fileSet.createdAt) }}
                   </div>
-                </div>
-              </mat-list-item>
-            </mat-list>
-          </mat-card-content>
-        </div>
-      </ng-container>
+                  <div matListItemMeta>
+                    <div class="file-set-actions">
+                      <button
+                        type="button"
+                        class="custom-icon-btn icon-btn-primary"
+                        (click)="
+                          downloadSavedFileSet(fileSet); $event.stopPropagation()
+                        "
+                        matTooltip="Download"
+                      >
+                        <mat-icon>download</mat-icon>
+                      </button>
+                      <button
+                        type="button"
+                        class="custom-icon-btn icon-btn-warn"
+                        (click)="deleteSavedFileSet(fileSet, $event)"
+                        matTooltip="Delete"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                </mat-list-item>
+              </mat-list>
+            </mat-card-content>
+          </div>
+        </ng-container>
+      </div>
     </ng-template>
   </div>
 </div>
