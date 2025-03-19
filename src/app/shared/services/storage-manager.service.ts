@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, BehaviorSubject, map, combineLatest, defer, catchError, from } from 'rxjs';
+import { Observable, of, BehaviorSubject, map, combineLatest, defer, catchError, from, firstValueFrom } from 'rxjs';
 import { SavedFileSet } from '../models/saved-file-set.model';
 import { 
   createStructuredZip, 
@@ -53,9 +53,21 @@ export class StorageManagerService {
   // Compression flag to track if we need to migrate old data
   private isCompressionEnabled = true;
   
+  // Add a flag to track if data has been loaded
+  private dataLoaded = false;
+  
   constructor(private storageService: StorageService) {
     // Load saved file sets on initialization
     this.loadFromLocalStorage();
+    
+    // Subscribe to our own subject to know when data is fully loaded
+    this.savedFileSets$.subscribe(sets => {
+      if (sets.length > 0 || this.dataLoaded) {
+        this.dataLoaded = true;
+        // Force recalculation of storage breakdown whenever file sets change
+        this.invalidateBreakdownCache();
+      }
+    });
   }
   
   /**
@@ -67,6 +79,7 @@ export class StorageManagerService {
       const storedData = localStorage.getItem(STORAGE_KEY);
       if (!storedData) {
         this.savedFileSetsSubject.next([]);
+        this.dataLoaded = true; // Mark as loaded even if empty
         return;
       }
       
@@ -98,9 +111,13 @@ export class StorageManagerService {
         // Schedule migration to compressed format
         setTimeout(() => this.migrateToCompressedFormat(), 100);
       }
+      
+      // Mark data as loaded at the end of each successful path
+      this.dataLoaded = true;
     } catch (error) {
       console.error('Error loading saved file sets from localStorage:', error);
       this.savedFileSetsSubject.next([]);
+      this.dataLoaded = true; // Mark as loaded even if there was an error
     }
   }
   
@@ -361,6 +378,11 @@ export class StorageManagerService {
    */
   getTotalStorageUsage(): Observable<number> {
     return defer(async () => {
+      // Make sure data is loaded
+      if (!this.dataLoaded) {
+        return 0; // Return 0 if data isn't loaded yet
+      }
+      
       const sets = this.savedFileSetsSubject.getValue();
       if (sets.length === 0) return 0;
       
@@ -488,6 +510,34 @@ export class StorageManagerService {
   }
 
   /**
+   * Forces recalculation of storage breakdown by invalidating the cache
+   * This is useful when reloading the app to ensure fresh data
+   */
+  forceStorageBreakdownRecalculation(): Observable<StorageBreakdown> {
+    // Reset the cache
+    this.invalidateBreakdownCache();
+    
+    // If data hasn't been loaded yet, we need to wait
+    if (!this.dataLoaded) {
+      // Return an observable that will emit once data is loaded
+      return defer(async () => {
+        // Wait for file sets to be loaded (maximum 2 seconds)
+        for (let i = 0; i < 20; i++) {
+          if (this.dataLoaded) break;
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Return fresh calculation now that data is loaded
+        const breakdown = await firstValueFrom(this.getStorageBreakdown());
+        return breakdown;
+      });
+    }
+    
+    // Return a fresh calculation if data is already loaded
+    return this.getStorageBreakdown();
+  }
+
+  /**
    * Invalidate breakdown cache
    */
   private invalidateBreakdownCache(): void {
@@ -540,10 +590,31 @@ export class StorageManagerService {
    * Uses caching to avoid excessive calculations
    */
   getStorageBreakdown(): Observable<StorageBreakdown> {
+    // Default values in case calculation fails
+    const defaultBreakdown: StorageBreakdown = {
+      fileSets: 0,
+      appData: {
+        products: 0,
+        categories: 0,
+        currencySettings: 0,
+        generalSettings: 0,
+        total: 0
+      },
+      other: 0,
+      total: 0,
+      limit: STORAGE_LIMIT_BYTES,
+      percentUsed: 0
+    };
+    
     // Use cached value if available and recent
     const now = Date.now();
     if (this.storageBreakdownCache && now - this.lastBreakdownCheck < this.CACHE_LIFETIME) {
       return of(this.storageBreakdownCache);
+    }
+    
+    // If data hasn't loaded yet, don't try to calculate
+    if (!this.dataLoaded) {
+      return of(defaultBreakdown);
     }
     
     // Get file sets size
@@ -576,6 +647,10 @@ export class StorageManagerService {
         this.lastBreakdownCheck = now;
         
         return breakdown;
+      }),
+      catchError(error => {
+        console.error('Error calculating storage breakdown:', error);
+        return of(defaultBreakdown);
       })
     );
   }
@@ -630,5 +705,34 @@ export class StorageManagerService {
         }
       })
     );
+  }
+
+  /**
+   * Deletes all file sets of a specific source type
+   */
+  deleteFileSetsByType(sourceType: string): Observable<number> {
+    return from(this.deleteFileSetsByTypeAsync(sourceType));
+  }
+
+  /**
+   * Async implementation of deleteFileSetsByType
+   */
+  private async deleteFileSetsByTypeAsync(sourceType: string): Promise<number> {
+    const currentSets = this.savedFileSetsSubject.getValue();
+    
+    // Find all sets of the specified type
+    const setsToDelete = currentSets.filter(set => set.source === sourceType);
+    if (setsToDelete.length === 0) {
+      return 0; // Nothing to delete
+    }
+    
+    // Filter out the sets we want to delete (keep everything else)
+    const updatedSets = currentSets.filter(set => set.source !== sourceType);
+    
+    // Save the updated list (without the deleted sets)
+    await this.saveToLocalStorage(updatedSets);
+    
+    // Return the count of deleted sets
+    return setsToDelete.length;
   }
 }

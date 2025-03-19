@@ -30,10 +30,52 @@
           Danger Zone
         </button>
         <mat-menu #dangerMenu="matMenu">
+          <!-- Delete by type options -->
+          <button
+            mat-menu-item
+            (click)="deleteFileSetsByType('app-data')"
+            [disabled]="!groupedFileSets['app-data'] || groupedFileSets['app-data'].length === 0"
+            matTooltip="Delete all App Data file sets"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon-error">app_registration</mat-icon>
+            <span>Delete All App Data Sets</span>
+          </button>
+          <button
+            mat-menu-item
+            (click)="deleteFileSetsByType('traderplus')"
+            [disabled]="!groupedFileSets['traderplus'] || groupedFileSets['traderplus'].length === 0"
+            matTooltip="Delete all TraderPlus v1 file sets"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon-error">storefront</mat-icon>
+            <span>Delete All TraderPlus v1 Sets</span>
+          </button>
+          <button
+            mat-menu-item
+            (click)="deleteFileSetsByType('expansion')"
+            [disabled]="!groupedFileSets['expansion'] || groupedFileSets['expansion'].length === 0"
+            matTooltip="Delete all Expansion Trader file sets"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon-error">extension</mat-icon>
+            <span>Delete All Expansion Sets</span>
+          </button>
+          <button
+            mat-menu-item
+            (click)="deleteFileSetsByType('jones')"
+            [disabled]="!groupedFileSets['jones'] || groupedFileSets['jones'].length === 0"
+            matTooltip="Delete all Dr. Jones Trader file sets"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon-error">local_mall</mat-icon>
+            <span>Delete All Dr. Jones Sets</span>
+          </button>
+          <mat-divider></mat-divider>
           <button
             mat-menu-item
             (click)="clearAllSavedFileSets()"
-            matTooltip="Remove all categories permanently"
+            matTooltip="Remove all file sets permanently"
             matTooltipPosition="left"
           >
             <mat-icon class="icon-error">delete_forever</mat-icon>

@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { take, catchError } from 'rxjs/operators';
-import { EMPTY } from 'rxjs';
+import { EMPTY, forkJoin } from 'rxjs';
 
 // Material imports
 import { MatButtonModule } from '@angular/material/button';
@@ -24,7 +24,7 @@ import { MatTreeModule } from '@angular/material/tree';
 // Remove MatSnackBar import as we'll use NotificationService instead
 
 // Services and models
-import { StorageManagerService, StorageBreakdown } from '../../services/storage-manager.service';
+import { StorageManagerService, StorageBreakdown, STORAGE_LIMIT_BYTES } from '../../services/storage-manager.service';
 import { SavedFileSet } from '../../models/saved-file-set.model';
 import { FileSizePipe } from '../../pipes/filesize.pipe';
 import { StorageService } from '../../../core/services/storage.service';
@@ -59,7 +59,7 @@ import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-
   templateUrl: './storage-manager.component.html',
   styleUrl: './storage-manager.component.scss',
 })
-export class StorageManagerComponent implements OnInit, OnDestroy {
+export class StorageManagerComponent implements OnInit, OnDestroy, AfterViewInit {
   // Properties
   savedFileSets: SavedFileSet[] = [];
   groupedFileSets: {[key: string]: SavedFileSet[]} = {};
@@ -90,6 +90,9 @@ export class StorageManagerComponent implements OnInit, OnDestroy {
   // Track which card is hovered for highlighting in the chart
   hoveredCardIndex: number = -1;
 
+  // Add loading state
+  isLoading = true;
+
   constructor(
     private storageManagerService: StorageManagerService,
     private storageService: StorageService,
@@ -99,10 +102,25 @@ export class StorageManagerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // Initialize with default values to avoid showing "0 bytes"
+    this.storageBreakdown = {
+      fileSets: 0,
+      appData: { products: 0, categories: 0, currencySettings: 0, generalSettings: 0, total: 0 },
+      other: 0,
+      total: 9, // Small default value for better UX
+      limit: STORAGE_LIMIT_BYTES,
+      percentUsed: 0
+    };
+    
     // Subscribe to all file sets
     this.subscriptions.add(
       this.storageManagerService.getAllSets().subscribe(sets => {
         this.savedFileSets = sets;
+        // Force recalculation when file sets are loaded
+        if (sets.length > 0 && this.isLoading) {
+          this.refreshStorageBreakdown();
+          this.isLoading = false;
+        }
       })
     );
     
@@ -120,7 +138,7 @@ export class StorageManagerComponent implements OnInit, OnDestroy {
       })
     );
     
-    // Add subscription for storage breakdown
+    // Subscribe to storage breakdown changes
     this.subscriptions.add(
       this.storageManagerService.getStorageBreakdown().subscribe(breakdown => {
         this.storageBreakdown = breakdown;
@@ -144,6 +162,13 @@ export class StorageManagerComponent implements OnInit, OnDestroy {
     this.checkAppDataAvailability();
   }
   
+  ngAfterViewInit(): void {
+    // Force recalculation after view initialization to ensure data is loaded
+    setTimeout(() => {
+      this.refreshStorageBreakdown();
+    }, 300);
+  }
+
   ngOnDestroy(): void {
     // Clean up subscriptions
     this.subscriptions.unsubscribe();
@@ -282,6 +307,52 @@ export class StorageManagerComponent implements OnInit, OnDestroy {
             this.notificationService.error('Error deleting file set. Please try again.');
           }
         );
+      }
+    });
+  }
+  
+  /**
+   * Deletes all file sets of a specific source type
+   */
+  deleteFileSetsByType(sourceType: string): void {
+    // Check if there are file sets of this type
+    if (!this.groupedFileSets[sourceType] || this.groupedFileSets[sourceType].length === 0) {
+      return; // Nothing to delete
+    }
+    
+    const count = this.groupedFileSets[sourceType].length;
+    
+    // Extract just the name portion from the full display name
+    const fullName = this.getSourceDisplayName(sourceType);
+    const sourceName = fullName.includes('FileSets converted from ') 
+      ? fullName.replace('FileSets converted from ', '') 
+      : fullName;
+    
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: `Delete ${sourceName} File Sets`,
+        message: `Are you sure you want to delete all ${count} file sets from ${sourceName}?\nThis action cannot be undone.`,
+        confirmText: 'Delete All',
+        cancelText: 'Cancel',
+        type: 'danger'
+      }
+    });
+
+    dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
+      if (result) {
+        // Use the new batch delete method
+        this.storageManagerService.deleteFileSetsByType(sourceType)
+          .pipe(take(1))
+          .subscribe({
+            next: (deletedCount) => {
+              // Show success message
+              this.notificationService.success(`Successfully deleted all ${deletedCount} ${sourceName} file sets.`);
+            },
+            error: (error) => {
+              console.error('Error deleting file sets:', error);
+              this.notificationService.error('There was an error deleting some file sets.');
+            }
+          });
       }
     });
   }
@@ -473,5 +544,15 @@ export class StorageManagerComponent implements OnInit, OnDestroy {
    */
   isCompressed(fileSet: SavedFileSet): boolean {
     return !!fileSet.compressed;
+  }
+
+  /**
+   * Refreshes the storage breakdown data
+   */
+  refreshStorageBreakdown(): void {
+    this.storageManagerService.forceStorageBreakdownRecalculation().subscribe(breakdown => {
+      this.storageBreakdown = breakdown;
+      this.isLoading = false;
+    });
   }
 }
