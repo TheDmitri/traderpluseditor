@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, BehaviorSubject, map, combineLatest, defer } from 'rxjs';
+import { Observable, of, BehaviorSubject, map, combineLatest, defer, catchError } from 'rxjs';
 import { SavedFileSet } from '../models/saved-file-set.model';
 import { createStructuredZip, downloadBlob, FileEntry } from '../utils/zip.utils';
 import { StorageService, StorageKey } from '../../core/services/storage.service';
@@ -7,9 +7,10 @@ import { StorageService, StorageKey } from '../../core/services/storage.service'
 // LocalStorage key for saved file sets
 const STORAGE_KEY = 'traderplus_saved_file_sets';
 
-// Storage limit constant (typical browser limit is ~5-10MB)
-export const STORAGE_LIMIT_BYTES = 10 * 1024 * 1024; // 10MB in bytes
-export const STORAGE_WARNING_THRESHOLD = 0.9; // 90% of limit
+// Storage limit constant (typical browser limit is ~5MB)
+export const STORAGE_LIMIT_BYTES = 5 * 1024 * 1024; // 5MB in bytes
+export const STORAGE_WARNING_THRESHOLD = 0.6; // 60% of limit
+export const STORAGE_CRITICAL_THRESHOLD = 0.8; // 80% of limit
 
 // Storage breakdown interface
 export interface StorageBreakdown {
@@ -36,6 +37,11 @@ export class StorageManagerService {
   
   // Observable that components can subscribe to
   public savedFileSets$ = this.savedFileSetsSubject.asObservable();
+  
+  // Storage breakdown cache to avoid excessive recalculation
+  private storageBreakdownCache: StorageBreakdown | null = null;
+  private lastBreakdownCheck: number = 0;
+  private CACHE_LIFETIME = 30000; // 30 seconds in milliseconds
   
   constructor(private storageService: StorageService) {
     // Load saved file sets on initialization
@@ -67,11 +73,14 @@ export class StorageManagerService {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(sets));
       this.savedFileSetsSubject.next([...sets]);
+      
+      // Invalidate cache after changes
+      this.invalidateBreakdownCache();
     } catch (error) {
       console.error('Error saving file sets to localStorage:', error);
       // If localStorage is full, show an error
       if (error instanceof DOMException && error.code === 22) {
-        alert('LocalStorage is full. Please delete some saved file sets before saving new ones.');
+        throw new Error('LocalStorage is full. Please delete some saved file sets before saving new ones.');
       }
     }
   }
@@ -93,6 +102,15 @@ export class StorageManagerService {
   }
   
   /**
+   * Checks if storage is approaching its limit (>90%)
+   */
+  isStorageNearLimit(): Observable<boolean> {
+    return this.getStorageBreakdown().pipe(
+      map(breakdown => breakdown.percentUsed >= 90)
+    );
+  }
+  
+  /**
    * Saves a new file set
    */
   saveFileSet(
@@ -100,30 +118,43 @@ export class StorageManagerService {
     source: string, 
     files: { [path: string]: string }
   ): Observable<SavedFileSet> {
-    const currentSets = this.savedFileSetsSubject.getValue();
-    
-    // Calculate total size
-    let totalSize = 0;
-    Object.values(files).forEach(content => {
-      totalSize += new Blob([content]).size;
-    });
-    
-    // Create a new file set
-    const newSet: SavedFileSet = {
-      id: this.generateUniqueId(),
-      name,
-      source,
-      createdAt: Date.now(),
-      fileCount: Object.keys(files).length,
-      totalSize,
-      files
-    };
-    
-    // Add to current sets and save
-    const updatedSets = [...currentSets, newSet];
-    this.saveToLocalStorage(updatedSets);
-    
-    return of(newSet);
+    return this.isStorageNearLimit().pipe(
+      map(isNearLimit => {
+        if (isNearLimit) {
+          throw new Error('Storage is nearly full (>90%). Please delete some saved file sets before saving new ones.');
+        }
+        
+        const currentSets = this.savedFileSetsSubject.getValue();
+        
+        // Calculate total size more accurately
+        let totalSize = this.calculateFilesSize(files);
+        
+        // Create a new file set
+        const newSet: SavedFileSet = {
+          id: this.generateUniqueId(),
+          name,
+          source,
+          createdAt: Date.now(),
+          fileCount: Object.keys(files).length,
+          totalSize,
+          files
+        };
+        
+        // Add to current sets and save
+        const updatedSets = [...currentSets, newSet];
+        this.saveToLocalStorage(updatedSets);
+        
+        return newSet;
+      })
+    );
+  }
+  
+  /**
+   * Calculate size of files more accurately
+   */
+  private calculateFilesSize(files: { [path: string]: string }): number {
+    // Use JSON.stringify to get closer to actual storage size
+    return new Blob([JSON.stringify(files)]).size;
   }
   
   /**
@@ -211,7 +242,11 @@ export class StorageManagerService {
    */
   getTotalStorageUsage(): Observable<number> {
     return this.savedFileSets$.pipe(
-      map(sets => sets.reduce((total, set) => total + set.totalSize, 0))
+      map(sets => {
+        // Use the JSON stringified size for better accuracy
+        if (sets.length === 0) return 0;
+        return new Blob([JSON.stringify(sets)]).size;
+      })
     );
   }
   
@@ -221,92 +256,109 @@ export class StorageManagerService {
    * @returns Observable containing the created file set
    */
   createFileSetFromAppData(name: string): Observable<SavedFileSet> {
-    const files: { [path: string]: string } = {};
-    let fileCount = 0;
-    
-    // Get products data
-    const products = this.storageService.products();
-    if (products && products.length > 0) {
-      // Save as TraderPlusData\Products\products.json
-      files['TraderPlusData/Products/products.json'] = JSON.stringify(products, null, 2);
-      fileCount++;
-      
-      // Also save each product individually
-      products.forEach(product => {
-        // Create a new object with properties in the correct order for TraderPlus format
-        const orderedProduct = {
-          className: product.className,
-          coefficient: product.coefficient,
-          maxStock: product.maxStock,
-          tradeQuantity: product.tradeQuantity,
-          buyPrice: product.buyPrice,
-          sellPrice: product.sellPrice,
-          stockSettings: product.stockSettings,
-          attachments: product.attachments || [],
-          variants: product.variants || [],
+    return this.isStorageNearLimit().pipe(
+      map(isNearLimit => {
+        if (isNearLimit) {
+          throw new Error('Storage is nearly full (>90%). Please delete some saved file sets before saving new ones.');
+        }
+        
+        const files: { [path: string]: string } = {};
+        let fileCount = 0;
+        
+        // Get products data
+        const products = this.storageService.products();
+        if (products && products.length > 0) {
+          // Save as TraderPlusData\Products\products.json
+          files['TraderPlusData/Products/products.json'] = JSON.stringify(products, null, 2);
+          fileCount++;
+          
+          // Also save each product individually
+          products.forEach(product => {
+            // Create a new object with properties in the correct order for TraderPlus format
+            const orderedProduct = {
+              className: product.className,
+              coefficient: product.coefficient,
+              maxStock: product.maxStock,
+              tradeQuantity: product.tradeQuantity,
+              buyPrice: product.buyPrice,
+              sellPrice: product.sellPrice,
+              stockSettings: product.stockSettings,
+              attachments: product.attachments || [],
+              variants: product.variants || [],
+            };
+            
+            files[`TraderPlusData/Products/${product.productId}.json`] = JSON.stringify(orderedProduct, null, 4);
+            fileCount++;
+          });
+        }
+        
+        // Get categories data
+        const categories = this.storageService.categories();
+        if (categories && categories.length > 0) {
+          // Save as TraderPlusData\Categories\categories.json
+          files['TraderPlusData/Categories/categories.json'] = JSON.stringify(categories, null, 2);
+          fileCount++;
+          
+          // Also save each category individually
+          categories.forEach(category => {
+            files[`TraderPlusData/Categories/${category.categoryId}.json`] = JSON.stringify(category, null, 4);
+            fileCount++;
+          });
+        }
+        
+        // Get currency settings
+        const currencySettings = this.storageService.currencySettings();
+        if (currencySettings) {
+          files['TraderPlusCurrencySettings.json'] = JSON.stringify(currencySettings, null, 4);
+          fileCount++;
+        }
+        
+        // Get general settings
+        const generalSettings = this.storageService.generalSettings();
+        if (generalSettings) {
+          files['TraderPlusGeneralSettings.json'] = JSON.stringify(generalSettings, null, 4);
+          fileCount++;
+        }
+        
+        // If no data, return error
+        if (fileCount === 0) {
+          throw new Error('No app data available to create a file set');
+        }
+        
+        // Calculate total size more accurately
+        const totalSize = this.calculateFilesSize(files);
+        
+        // Create the new file set
+        const newSet: SavedFileSet = {
+          id: this.generateUniqueId(),
+          name,
+          source: 'app-data', // Special source identifier for app-created data
+          createdAt: Date.now(),
+          fileCount,
+          totalSize,
+          files
         };
         
-        files[`TraderPlusData/Products/${product.productId}.json`] = JSON.stringify(orderedProduct, null, 4);
-        fileCount++;
-      });
-    }
-    
-    // Get categories data
-    const categories = this.storageService.categories();
-    if (categories && categories.length > 0) {
-      // Save as TraderPlusData\Categories\categories.json
-      files['TraderPlusData/Categories/categories.json'] = JSON.stringify(categories, null, 2);
-      fileCount++;
-      
-      // Also save each category individually
-      categories.forEach(category => {
-        files[`TraderPlusData/Categories/${category.categoryId}.json`] = JSON.stringify(category, null, 4);
-        fileCount++;
-      });
-    }
-    
-    // Get currency settings
-    const currencySettings = this.storageService.currencySettings();
-    if (currencySettings) {
-      files['TraderPlusCurrencySettings.json'] = JSON.stringify(currencySettings, null, 4);
-      fileCount++;
-    }
-    
-    // Get general settings
-    const generalSettings = this.storageService.generalSettings();
-    if (generalSettings) {
-      files['TraderPlusGeneralSettings.json'] = JSON.stringify(generalSettings, null, 4);
-      fileCount++;
-    }
-    
-    // If no data, return error
-    if (fileCount === 0) {
-      throw new Error('No app data available to create a file set');
-    }
-    
-    // Calculate total size
-    let totalSize = 0;
-    Object.values(files).forEach(content => {
-      totalSize += new Blob([content]).size;
-    });
-    
-    // Create the new file set
-    const newSet: SavedFileSet = {
-      id: this.generateUniqueId(),
-      name,
-      source: 'app-data', // Special source identifier for app-created data
-      createdAt: Date.now(),
-      fileCount,
-      totalSize,
-      files
-    };
-    
-    // Save to localStorage
-    const currentSets = this.savedFileSetsSubject.getValue();
-    const updatedSets = [...currentSets, newSet];
-    this.saveToLocalStorage(updatedSets);
-    
-    return of(newSet);
+        // Save to localStorage
+        const currentSets = this.savedFileSetsSubject.getValue();
+        const updatedSets = [...currentSets, newSet];
+        this.saveToLocalStorage(updatedSets);
+        
+        return newSet;
+      }),
+      catchError(error => {
+        console.error('Error creating file set from app data:', error);
+        throw error;
+      })
+    );
+  }
+
+  /**
+   * Invalidate breakdown cache
+   */
+  private invalidateBreakdownCache(): void {
+    this.storageBreakdownCache = null;
+    this.lastBreakdownCheck = 0;
   }
 
   /**
@@ -321,28 +373,20 @@ export class StorageManagerService {
   }> {
     return defer(() => {
       // Calculate size of products
-      const products = this.storageService.products();
-      const productsSize = products && products.length > 0 
-        ? new Blob([JSON.stringify(products)]).size 
-        : 0;
+      const products = localStorage.getItem(StorageKey.PRODUCTS) || '';
+      const productsSize = products ? products.length * 2 : 0; // UTF-16 = 2 bytes per char
       
       // Calculate size of categories
-      const categories = this.storageService.categories();
-      const categoriesSize = categories && categories.length > 0 
-        ? new Blob([JSON.stringify(categories)]).size 
-        : 0;
+      const categories = localStorage.getItem(StorageKey.CATEGORIES) || '';
+      const categoriesSize = categories ? categories.length * 2 : 0;
       
       // Calculate size of currency settings
-      const currencySettings = this.storageService.currencySettings();
-      const currencySize = currencySettings 
-        ? new Blob([JSON.stringify(currencySettings)]).size 
-        : 0;
+      const currencySettings = localStorage.getItem(StorageKey.CURRENCY_SETTINGS) || '';
+      const currencySize = currencySettings ? currencySettings.length * 2 : 0;
       
       // Calculate size of general settings
-      const generalSettings = this.storageService.generalSettings();
-      const generalSize = generalSettings 
-        ? new Blob([JSON.stringify(generalSettings)]).size 
-        : 0;
+      const generalSettings = localStorage.getItem(StorageKey.GENERAL_SETTINGS) || '';
+      const generalSize = generalSettings ? generalSettings.length * 2 : 0;
       
       // Calculate total
       const total = productsSize + categoriesSize + currencySize + generalSize;
@@ -359,8 +403,15 @@ export class StorageManagerService {
 
   /**
    * Gets a comprehensive breakdown of storage usage
+   * Uses caching to avoid excessive calculations
    */
   getStorageBreakdown(): Observable<StorageBreakdown> {
+    // Use cached value if available and recent
+    const now = Date.now();
+    if (this.storageBreakdownCache && now - this.lastBreakdownCheck < this.CACHE_LIFETIME) {
+      return of(this.storageBreakdownCache);
+    }
+    
     // Get file sets size
     const fileSetsSize = this.getTotalStorageUsage();
     
@@ -376,7 +427,8 @@ export class StorageManagerService {
         const total = fileSets + appData.total + other;
         const percentUsed = (total / STORAGE_LIMIT_BYTES) * 100;
         
-        return {
+        // Create breakdown object
+        const breakdown: StorageBreakdown = {
           fileSets,
           appData,
           other,
@@ -384,18 +436,25 @@ export class StorageManagerService {
           limit: STORAGE_LIMIT_BYTES,
           percentUsed
         };
+        
+        // Update cache
+        this.storageBreakdownCache = breakdown;
+        this.lastBreakdownCheck = now;
+        
+        return breakdown;
       })
     );
   }
 
   /**
    * Calculate storage used by other items in localStorage
+   * Uses a more accurate method to estimate actual storage usage
    */
   private calculateOtherStorageUsage(): Observable<number> {
     return defer(() => {
       let total = 0;
       
-      // Get total localStorage usage (approximation)
+      // Get total localStorage usage (more accurate calculation)
       try {
         for (let i = 0; i < localStorage.length; i++) {
           const key = localStorage.key(i);
@@ -406,8 +465,9 @@ export class StorageManagerService {
             // Skip our app data keys (we calculate those separately)
             if (Object.values(StorageKey).includes(key as any)) continue;
             
+            // Estimate storage usage: key length + value length (2 bytes per char in UTF-16)
             const value = localStorage.getItem(key) || '';
-            total += new Blob([key, value]).size;
+            total += (key.length + value.length) * 2;
           }
         }
       } catch (error) {
@@ -427,9 +487,9 @@ export class StorageManagerService {
       map(breakdown => {
         const percentUsed = breakdown.percentUsed;
         
-        if (percentUsed >= 100) {
+        if (percentUsed >= STORAGE_CRITICAL_THRESHOLD * 100) {
           return 'critical';
-        } else if (percentUsed >= 90) {
+        } else if (percentUsed >= STORAGE_WARNING_THRESHOLD * 100) {
           return 'warning';
         } else {
           return 'safe';

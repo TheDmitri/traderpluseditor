@@ -3,6 +3,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { take, catchError } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
 
 // Material imports
 import { MatButtonModule } from '@angular/material/button';
@@ -30,6 +32,7 @@ import { NotificationService } from '../../services/notification.service';
 
 // Dialog components
 import { TextInputDialogComponent } from '../../components/text-input-dialog/text-input-dialog.component';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-storage-manager',
@@ -175,30 +178,39 @@ export class StorageManagerComponent implements OnInit, OnDestroy {
    * Creates a file set from app data
    */
   createAppDataFileSet(): void {
-    // Open dialog to get file set name
-    const dialogRef = this.dialog.open(TextInputDialogComponent, {
-      width: '350px',
-      data: {
-        title: 'Create App Data File Set',
-        label: 'File Set Name',
-        placeholder: 'Enter a name for this file set',
-        initialValue: `TraderPlus Config ${new Date().toLocaleDateString()}`,
-        confirmText: 'Create'
+    // First check if we're near the storage limit
+    this.storageManagerService.isStorageNearLimit().pipe(take(1)).subscribe(isNearLimit => {
+      if (isNearLimit) {
+        this.notificationService.warning('Storage is nearly full (>90%). Please delete some saved file sets before saving new ones.');
+        return;
       }
-    });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.storageManagerService.createFileSetFromAppData(result).subscribe(
-          fileSet => {
+      // If not near limit, proceed with showing the dialog
+      const dialogRef = this.dialog.open(TextInputDialogComponent, {
+        width: '350px',
+        data: {
+          title: 'Create App Data File Set',
+          label: 'File Set Name',
+          placeholder: 'Enter a name for this file set',
+          initialValue: `TraderPlus Config ${new Date().toLocaleDateString()}`,
+          confirmText: 'Create'
+        }
+      });
+
+      dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
+        if (result) {
+          this.storageManagerService.createFileSetFromAppData(result).pipe(
+            take(1),
+            catchError(error => {
+              console.error('Error creating file set:', error);
+              this.notificationService.error(`Error creating file set: ${error.message}`);
+              return EMPTY;
+            })
+          ).subscribe(fileSet => {
             this.notificationService.success(`File set '${fileSet.name}' created successfully`);
-          },
-          error => {
-            console.error('Error creating file set:', error);
-            this.notificationService.error(`Error creating file set: ${error.message}`);
-          }
-        );
-      }
+          });
+        }
+      });
     });
   }
   
@@ -245,19 +257,33 @@ export class StorageManagerComponent implements OnInit, OnDestroy {
     // Prevent event bubbling
     event.stopPropagation();
     
-    if (confirm(`Are you sure you want to delete "${set.name}"? This cannot be undone.`)) {
-      this.storageManagerService.deleteFileSet(set.id).subscribe(
-        success => {
-          if (!success) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete File Set',
+        message: `Are you sure you want to delete "${set.name}"?\nThis action cannot be undone.`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        type: 'danger'
+      }
+    });
+
+    dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
+      if (result) {
+        this.storageManagerService.deleteFileSet(set.id).pipe(take(1)).subscribe(
+          success => {
+            if (!success) {
+              this.notificationService.error('Error deleting file set. Please try again.');
+            } else {
+              this.notificationService.success('File set deleted successfully.');
+            }
+          },
+          error => {
+            console.error('Error deleting file set:', error);
             this.notificationService.error('Error deleting file set. Please try again.');
           }
-        },
-        error => {
-          console.error('Error deleting file set:', error);
-          this.notificationService.error('Error deleting file set. Please try again.');
-        }
-      );
-    }
+        );
+      }
+    });
   }
   
   /**
@@ -273,9 +299,23 @@ export class StorageManagerComponent implements OnInit, OnDestroy {
    * Clear all saved file sets
    */
   clearAllSavedFileSets(): void {
-    if (confirm('Are you sure you want to delete ALL saved file sets? This cannot be undone.')) {
-      this.storageManagerService.clearAllSets().subscribe();
-    }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete All File Sets',
+        message: 'Are you sure you want to delete ALL saved file sets?\nThis action cannot be undone.',
+        confirmText: 'Delete All',
+        cancelText: 'Cancel',
+        type: 'danger'
+      }
+    });
+
+    dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
+      if (result) {
+        this.storageManagerService.clearAllSets().pipe(take(1)).subscribe(() => {
+          this.notificationService.success('All file sets deleted successfully.');
+        });
+      }
+    });
   }
   
   /**
@@ -287,6 +327,11 @@ export class StorageManagerComponent implements OnInit, OnDestroy {
   
   /**
    * Get sorted keys of an object
+   * This already sorts in the order we want:
+   * 1. app-data (App Created Data)
+   * 2. traderplus (TraderPlus v1)
+   * 3. expansion (Expansion Trader)
+   * 4. jones (Dr. Jones Trader)
    */
   getSortedKeys(obj: {[key: string]: any}): string[] {
     return Object.keys(obj).sort((a, b) => {
@@ -334,18 +379,29 @@ export class StorageManagerComponent implements OnInit, OnDestroy {
    * Shows storage warning alert
    */
   showStorageWarning(): void {
-    this.notificationService.warning('WARNING: Local storage is nearly full (10MB limit). Some data may not be saved properly.');
-    this.criticalWarningShown = true;
+    // Only show the warning for critical levels (check actual percentage)
+    this.storageManagerService.getStorageBreakdown().subscribe(breakdown => {
+      if (breakdown.percentUsed >= 90) {
+        this.notificationService.warning(`WARNING: Local storage is at ${Math.round(breakdown.percentUsed)}% of its 5MB limit. Some data may not be saved properly.`);
+        this.criticalWarningShown = true;
+      }
+    });
   }
   
   /**
    * Gets the storage usage color based on warning level
    */
   getStorageUsageColor(): string {
-    switch (this.storageWarningLevel) {
-      case 'critical': return 'warn';
-      case 'warning': return 'accent';
-      default: return 'accent';
+    if (!this.storageBreakdown) return 'primary';
+    
+    const percentUsed = this.storageBreakdown.percentUsed;
+    
+    if (percentUsed >= 80) {
+      return 'warn';
+    } else if (percentUsed >= 60) {
+      return 'accent';
+    } else {
+      return 'primary';
     }
   }
   
@@ -353,7 +409,17 @@ export class StorageManagerComponent implements OnInit, OnDestroy {
    * Get color class for storage percentage
    */
   getStoragePercentageClass(): string {
-    return `storage-${this.storageWarningLevel}`;
+    if (!this.storageBreakdown) return 'storage-safe';
+    
+    const percentUsed = this.storageBreakdown.percentUsed;
+    
+    if (percentUsed >= 80) {
+      return 'storage-critical';
+    } else if (percentUsed >= 60) {
+      return 'storage-warning';
+    } else {
+      return 'storage-safe';
+    }
   }
   
   /**
