@@ -73,3 +73,61 @@ export async function createZipFromFiles(files: { name: string, content: string 
 export function downloadZip(zipBlob: Blob, fileName: string): void {
   downloadBlob(zipBlob, fileName);
 }
+
+/**
+ * Compresses a string using JSZip's DEFLATE algorithm
+ * Returns a base64 encoded compressed string
+ */
+export async function compressString(input: string): Promise<string> {
+  const zip = new JSZip();
+  zip.file('data', input);
+  
+  const blob = await zip.generateAsync({
+    type: 'base64',
+    compression: 'DEFLATE',
+    compressionOptions: {
+      level: 9 // Maximum compression level
+    }
+  });
+  
+  return blob;
+}
+
+/**
+ * Decompresses a base64 encoded compressed string
+ * Returns the original string
+ */
+export async function decompressString(compressedBase64: string): Promise<string> {
+  try {
+    const zip = new JSZip();
+    await zip.loadAsync(compressedBase64, { base64: true });
+    
+    const file = zip.file('data');
+    if (!file) {
+      throw new Error('No data file found in compressed content');
+    }
+    
+    return await file.async('string');
+  } catch (error) {
+    console.error('Error decompressing string:', error);
+    throw error;
+  }
+}
+
+/**
+ * Compresses an object by stringifying it and then compressing the string
+ * Returns a base64 encoded compressed string
+ */
+export async function compressObject(obj: any): Promise<string> {
+  const jsonString = JSON.stringify(obj);
+  return await compressString(jsonString);
+}
+
+/**
+ * Decompresses a base64 encoded compressed string and parses it as JSON
+ * Returns the original object
+ */
+export async function decompressObject<T>(compressedBase64: string): Promise<T> {
+  const jsonString = await decompressString(compressedBase64);
+  return JSON.parse(jsonString) as T;
+}

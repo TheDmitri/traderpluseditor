@@ -162,11 +162,25 @@
                   class="file-set-item"
                 >
                   <mat-icon matListItemIcon>description</mat-icon>
-                  <div matListItemTitle>{{ fileSet.name }}</div>
+                  <div matListItemTitle>
+                    {{ fileSet.name }}
+                    <mat-icon *ngIf="isCompressed(fileSet)" 
+                      matTooltip="This file set is compressed" 
+                      class="compression-icon"
+                      inline>
+                      compress
+                    </mat-icon>
+                  </div>
                   <div matListItemLine>
-                    {{ fileSet.fileCount }} files ·
-                    {{ fileSet.totalSize | fileSize }} · Saved
-                    {{ formatDate(fileSet.createdAt) }}
+                    {{ fileSet.fileCount }} files |
+                    {{ fileSet.totalSize | fileSize }} 
+                    <span *ngIf="isCompressed(fileSet)">
+                      | Compressed: {{ fileSet.compressedSize || 0 | fileSize }}
+                      <span class="compression-savings">({{ getCompressionDetails(fileSet) }})</span>
+                    </span>
+                  </div>
+                  <div matListItemLine class="date-line">
+                    Saved {{ formatDate(fileSet.createdAt) }}
                   </div>
                   <div matListItemMeta>
                     <div class="file-set-actions">
@@ -186,7 +200,7 @@
                         (click)="deleteSavedFileSet(fileSet, $event)"
                         matTooltip="Delete"
                       >
-                        <mat-icon>delete</mat-icon>
+                        <mat-icon>delete_forever</mat-icon>
                       </button>
                     </div>
                   </div>

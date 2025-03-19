@@ -336,15 +336,30 @@
                 padding: 8px;
               }
 
+              mat-icon {
+                font-size: 24px;
+                height: 24px;
+                width: 24px;
+                line-height: 24px;
+              }
+
               .mdc-list-item__primary-text {
                 font-weight: 500;
+                line-height: 1.6;
                 display: flex;
               }
 
               .mdc-list-item__secondary-text {
-                margin-top: 8px;
+                margin-top: 16px;
                 line-height: 1.4;
                 display: flex;
+              }
+              
+              // Add styling for the third line (date)
+              .date-line {
+                color: var(--brush-text-tertiary, #999); // Lighter color for date
+                font-size: 12px; // Slightly smaller font size
+                margin-top: 2px !important; // Override Material styling
               }
             }
 
@@ -353,7 +368,8 @@
               gap: 8px;
 
               button {
-                margin-top: -24px;
+                display: flex;
+                align-items: center;
                 height: 36px;
                 width: 36px;
 
@@ -446,6 +462,22 @@
         }
       }
     }
+  }
+
+  // Add styling for compression indicators
+  .compression-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+    vertical-align: middle;
+    margin-left: 8px;
+    color: var(--color-accent-medium);
+  }
+
+  .compression-savings {
+    color: var(--color-success-light);
+    font-weight: 500;
+    margin-left: 4px;
   }
 
   // Responsive adjustments

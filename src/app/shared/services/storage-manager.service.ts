@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, BehaviorSubject, map, combineLatest, defer, catchError } from 'rxjs';
+import { Observable, of, BehaviorSubject, map, combineLatest, defer, catchError, from } from 'rxjs';
 import { SavedFileSet } from '../models/saved-file-set.model';
-import { createStructuredZip, downloadBlob, FileEntry } from '../utils/zip.utils';
+import { 
+  createStructuredZip, 
+  downloadBlob, 
+  FileEntry, 
+  compressObject, 
+  decompressObject, 
+  compressString
+} from '../utils/zip.utils';
 import { StorageService, StorageKey } from '../../core/services/storage.service';
 
 // LocalStorage key for saved file sets
@@ -43,6 +50,9 @@ export class StorageManagerService {
   private lastBreakdownCheck: number = 0;
   private CACHE_LIFETIME = 30000; // 30 seconds in milliseconds
   
+  // Compression flag to track if we need to migrate old data
+  private isCompressionEnabled = true;
+  
   constructor(private storageService: StorageService) {
     // Load saved file sets on initialization
     this.loadFromLocalStorage();
@@ -50,15 +60,43 @@ export class StorageManagerService {
   
   /**
    * Loads saved file sets from localStorage
+   * Now includes decompression if needed
    */
-  private loadFromLocalStorage(): void {
+  private async loadFromLocalStorage(): Promise<void> {
     try {
-      const storedSets = localStorage.getItem(STORAGE_KEY);
-      if (storedSets) {
-        const parsedSets = JSON.parse(storedSets) as SavedFileSet[];
-        this.savedFileSetsSubject.next(parsedSets);
-      } else {
+      const storedData = localStorage.getItem(STORAGE_KEY);
+      if (!storedData) {
         this.savedFileSetsSubject.next([]);
+        return;
+      }
+      
+      // Check if data is compressed (starts with 'UEsDBC' which is the ZIP file signature in base64)
+      if (storedData.startsWith('UEs')) {
+        // This appears to be compressed data
+        try {
+          const decompressedData = await decompressObject<SavedFileSet[]>(storedData);
+          this.savedFileSetsSubject.next(decompressedData);
+        } catch (error) {
+          console.error('Error decompressing file sets:', error);
+          // Fallback to treating as uncompressed
+          const parsedSets = JSON.parse(storedData) as SavedFileSet[];
+          
+          // If we successfully parsed uncompressed data, let's migrate it to compressed
+          if (Array.isArray(parsedSets)) {
+            this.savedFileSetsSubject.next(parsedSets);
+            // Schedule migration to compressed format
+            setTimeout(() => this.migrateToCompressedFormat(), 100);
+          } else {
+            this.savedFileSetsSubject.next([]);
+          }
+        }
+      } else {
+        // Treat as uncompressed legacy data
+        const parsedSets = JSON.parse(storedData) as SavedFileSet[];
+        this.savedFileSetsSubject.next(parsedSets);
+        
+        // Schedule migration to compressed format
+        setTimeout(() => this.migrateToCompressedFormat(), 100);
       }
     } catch (error) {
       console.error('Error loading saved file sets from localStorage:', error);
@@ -67,12 +105,62 @@ export class StorageManagerService {
   }
   
   /**
-   * Saves current sets to localStorage
+   * Migrate existing uncompressed data to compressed format
    */
-  private saveToLocalStorage(sets: SavedFileSet[]): void {
+  private async migrateToCompressedFormat(): Promise<void> {
+    if (!this.isCompressionEnabled) return;
+    
+    const currentSets = this.savedFileSetsSubject.getValue();
+    if (currentSets.length === 0) return;
+    
+    // Check if sets need migration (any without compressed flag)
+    const needsMigration = currentSets.some(set => !set.compressed);
+    if (!needsMigration) return;
+    
+    console.log('Migrating file sets to compressed format...');
+    
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(sets));
-      this.savedFileSetsSubject.next([...sets]);
+      await this.saveToLocalStorage(currentSets);
+      console.log('Migration to compressed format completed successfully.');
+    } catch (error) {
+      console.error('Error during migration to compressed format:', error);
+    }
+  }
+  
+  /**
+   * Saves current sets to localStorage with compression
+   */
+  private async saveToLocalStorage(sets: SavedFileSet[]): Promise<void> {
+    try {
+      // Mark all sets as compressed and calculate compressed size
+      const setsToSave = await Promise.all(sets.map(async (set) => {
+        // If already compressed, keep as is
+        if (set.compressed) return set;
+        
+        // Calculate compressed size for each file set
+        const filesJson = JSON.stringify(set.files);
+        const compressedFilesJson = await compressString(filesJson);
+        const compressedSize = new Blob([compressedFilesJson]).size;
+        
+        // Return updated set with compression info
+        return {
+          ...set,
+          compressedSize,
+          compressed: true
+        };
+      }));
+      
+      if (this.isCompressionEnabled) {
+        // Compress the entire array
+        const compressedData = await compressObject(setsToSave);
+        localStorage.setItem(STORAGE_KEY, compressedData);
+      } else {
+        // Fallback to uncompressed if needed (should not happen)
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(setsToSave));
+      }
+      
+      // Update the subject
+      this.savedFileSetsSubject.next([...setsToSave]);
       
       // Invalidate cache after changes
       this.invalidateBreakdownCache();
@@ -118,35 +206,51 @@ export class StorageManagerService {
     source: string, 
     files: { [path: string]: string }
   ): Observable<SavedFileSet> {
-    return this.isStorageNearLimit().pipe(
-      map(isNearLimit => {
-        if (isNearLimit) {
-          throw new Error('Storage is nearly full (>90%). Please delete some saved file sets before saving new ones.');
-        }
-        
-        const currentSets = this.savedFileSetsSubject.getValue();
-        
-        // Calculate total size more accurately
-        let totalSize = this.calculateFilesSize(files);
-        
-        // Create a new file set
-        const newSet: SavedFileSet = {
-          id: this.generateUniqueId(),
-          name,
-          source,
-          createdAt: Date.now(),
-          fileCount: Object.keys(files).length,
-          totalSize,
-          files
-        };
-        
-        // Add to current sets and save
-        const updatedSets = [...currentSets, newSet];
-        this.saveToLocalStorage(updatedSets);
-        
-        return newSet;
-      })
-    );
+    return from(this.saveFileSetAsync(name, source, files));
+  }
+  
+  /**
+   * Async implementation of saveFileSet with compression
+   */
+  private async saveFileSetAsync(
+    name: string,
+    source: string,
+    files: { [path: string]: string }
+  ): Promise<SavedFileSet> {
+    // Check storage limit
+    const isNearLimit = await this.isStorageNearLimit().toPromise().catch(() => false);
+    if (isNearLimit) {
+      throw new Error('Storage is nearly full (>90%). Please delete some saved file sets before saving new ones.');
+    }
+    
+    const currentSets = this.savedFileSetsSubject.getValue();
+    
+    // Calculate original size
+    const totalSize = this.calculateFilesSize(files);
+    
+    // Compress the files content to estimate compressed size
+    const filesJson = JSON.stringify(files);
+    const compressedFilesJson = await compressString(filesJson);
+    const compressedSize = new Blob([compressedFilesJson]).size;
+    
+    // Create the new file set with compression info
+    const newSet: SavedFileSet = {
+      id: this.generateUniqueId(),
+      name,
+      source,
+      createdAt: Date.now(),
+      fileCount: Object.keys(files).length,
+      totalSize,
+      files,
+      compressed: true,
+      compressedSize
+    };
+    
+    // Add to current sets and save
+    const updatedSets = [...currentSets, newSet];
+    await this.saveToLocalStorage(updatedSets);
+    
+    return newSet;
   }
   
   /**
@@ -161,16 +265,23 @@ export class StorageManagerService {
    * Deletes a file set
    */
   deleteFileSet(id: string): Observable<boolean> {
+    return from(this.deleteFileSetAsync(id));
+  }
+  
+  /**
+   * Async implementation of deleteFileSet
+   */
+  private async deleteFileSetAsync(id: string): Promise<boolean> {
     const currentSets = this.savedFileSetsSubject.getValue();
     const updatedSets = currentSets.filter(set => set.id !== id);
     
     // Only save if something was actually removed
     if (updatedSets.length < currentSets.length) {
-      this.saveToLocalStorage(updatedSets);
-      return of(true);
+      await this.saveToLocalStorage(updatedSets);
+      return true;
     }
     
-    return of(false);
+    return false;
   }
   
   /**
@@ -215,8 +326,15 @@ export class StorageManagerService {
    * Clear all saved file sets
    */
   clearAllSets(): Observable<boolean> {
-    this.saveToLocalStorage([]);
-    return of(true);
+    return from(this.clearAllSetsAsync());
+  }
+  
+  /**
+   * Async implementation of clearAllSets
+   */
+  private async clearAllSetsAsync(): Promise<boolean> {
+    await this.saveToLocalStorage([]);
+    return true;
   }
   
   /**
@@ -239,15 +357,23 @@ export class StorageManagerService {
   
   /**
    * Gets the total storage usage in bytes
+   * Now accounts for compressed data
    */
   getTotalStorageUsage(): Observable<number> {
-    return this.savedFileSets$.pipe(
-      map(sets => {
-        // Use the JSON stringified size for better accuracy
-        if (sets.length === 0) return 0;
+    return defer(async () => {
+      const sets = this.savedFileSetsSubject.getValue();
+      if (sets.length === 0) return 0;
+      
+      if (this.isCompressionEnabled) {
+        // For compressed storage, we need to get the actual size from localStorage
+        const compressedData = localStorage.getItem(STORAGE_KEY);
+        if (!compressedData) return 0;
+        return new Blob([compressedData]).size;
+      } else {
+        // Fallback to calculating based on the JSON size
         return new Blob([JSON.stringify(sets)]).size;
-      })
-    );
+      }
+    });
   }
   
   /**
@@ -256,101 +382,109 @@ export class StorageManagerService {
    * @returns Observable containing the created file set
    */
   createFileSetFromAppData(name: string): Observable<SavedFileSet> {
-    return this.isStorageNearLimit().pipe(
-      map(isNearLimit => {
-        if (isNearLimit) {
-          throw new Error('Storage is nearly full (>90%). Please delete some saved file sets before saving new ones.');
-        }
-        
-        const files: { [path: string]: string } = {};
-        let fileCount = 0;
-        
-        // Get products data
-        const products = this.storageService.products();
-        if (products && products.length > 0) {
-          // Save as TraderPlusData\Products\products.json
-          files['TraderPlusData/Products/products.json'] = JSON.stringify(products, null, 2);
-          fileCount++;
-          
-          // Also save each product individually
-          products.forEach(product => {
-            // Create a new object with properties in the correct order for TraderPlus format
-            const orderedProduct = {
-              className: product.className,
-              coefficient: product.coefficient,
-              maxStock: product.maxStock,
-              tradeQuantity: product.tradeQuantity,
-              buyPrice: product.buyPrice,
-              sellPrice: product.sellPrice,
-              stockSettings: product.stockSettings,
-              attachments: product.attachments || [],
-              variants: product.variants || [],
-            };
-            
-            files[`TraderPlusData/Products/${product.productId}.json`] = JSON.stringify(orderedProduct, null, 4);
-            fileCount++;
-          });
-        }
-        
-        // Get categories data
-        const categories = this.storageService.categories();
-        if (categories && categories.length > 0) {
-          // Save as TraderPlusData\Categories\categories.json
-          files['TraderPlusData/Categories/categories.json'] = JSON.stringify(categories, null, 2);
-          fileCount++;
-          
-          // Also save each category individually
-          categories.forEach(category => {
-            files[`TraderPlusData/Categories/${category.categoryId}.json`] = JSON.stringify(category, null, 4);
-            fileCount++;
-          });
-        }
-        
-        // Get currency settings
-        const currencySettings = this.storageService.currencySettings();
-        if (currencySettings) {
-          files['TraderPlusCurrencySettings.json'] = JSON.stringify(currencySettings, null, 4);
-          fileCount++;
-        }
-        
-        // Get general settings
-        const generalSettings = this.storageService.generalSettings();
-        if (generalSettings) {
-          files['TraderPlusGeneralSettings.json'] = JSON.stringify(generalSettings, null, 4);
-          fileCount++;
-        }
-        
-        // If no data, return error
-        if (fileCount === 0) {
-          throw new Error('No app data available to create a file set');
-        }
-        
-        // Calculate total size more accurately
-        const totalSize = this.calculateFilesSize(files);
-        
-        // Create the new file set
-        const newSet: SavedFileSet = {
-          id: this.generateUniqueId(),
-          name,
-          source: 'app-data', // Special source identifier for app-created data
-          createdAt: Date.now(),
-          fileCount,
-          totalSize,
-          files
+    return from(this.createFileSetFromAppDataAsync(name));
+  }
+  
+  /**
+   * Async implementation of createFileSetFromAppData with compression
+   */
+  private async createFileSetFromAppDataAsync(name: string): Promise<SavedFileSet> {
+    // Check storage limit
+    const isNearLimit = await this.isStorageNearLimit().toPromise().catch(() => false);
+    if (isNearLimit) {
+      throw new Error('Storage is nearly full (>90%). Please delete some saved file sets before saving new ones.');
+    }
+    
+    const files: { [path: string]: string } = {};
+    let fileCount = 0;
+    
+    // Get products data
+    const products = this.storageService.products();
+    if (products && products.length > 0) {
+      // Save as TraderPlusData\Products\products.json
+      files['TraderPlusData/Products/products.json'] = JSON.stringify(products, null, 2);
+      fileCount++;
+      
+      // Also save each product individually
+      products.forEach(product => {
+        // Create a new object with properties in the correct order for TraderPlus format
+        const orderedProduct = {
+          className: product.className,
+          coefficient: product.coefficient,
+          maxStock: product.maxStock,
+          tradeQuantity: product.tradeQuantity,
+          buyPrice: product.buyPrice,
+          sellPrice: product.sellPrice,
+          stockSettings: product.stockSettings,
+          attachments: product.attachments || [],
+          variants: product.variants || [],
         };
         
-        // Save to localStorage
-        const currentSets = this.savedFileSetsSubject.getValue();
-        const updatedSets = [...currentSets, newSet];
-        this.saveToLocalStorage(updatedSets);
-        
-        return newSet;
-      }),
-      catchError(error => {
-        console.error('Error creating file set from app data:', error);
-        throw error;
-      })
-    );
+        files[`TraderPlusData/Products/${product.productId}.json`] = JSON.stringify(orderedProduct, null, 4);
+        fileCount++;
+      });
+    }
+    
+    // Get categories data
+    const categories = this.storageService.categories();
+    if (categories && categories.length > 0) {
+      // Save as TraderPlusData\Categories\categories.json
+      files['TraderPlusData/Categories/categories.json'] = JSON.stringify(categories, null, 2);
+      fileCount++;
+      
+      // Also save each category individually
+      categories.forEach(category => {
+        files[`TraderPlusData/Categories/${category.categoryId}.json`] = JSON.stringify(category, null, 4);
+        fileCount++;
+      });
+    }
+    
+    // Get currency settings
+    const currencySettings = this.storageService.currencySettings();
+    if (currencySettings) {
+      files['TraderPlusCurrencySettings.json'] = JSON.stringify(currencySettings, null, 4);
+      fileCount++;
+    }
+    
+    // Get general settings
+    const generalSettings = this.storageService.generalSettings();
+    if (generalSettings) {
+      files['TraderPlusGeneralSettings.json'] = JSON.stringify(generalSettings, null, 4);
+      fileCount++;
+    }
+    
+    // If no data, return error
+    if (fileCount === 0) {
+      throw new Error('No app data available to create a file set');
+    }
+    
+    // Calculate total size more accurately
+    const totalSize = this.calculateFilesSize(files);
+    
+    // Compress the files content to estimate compressed size
+    const filesJson = JSON.stringify(files);
+    const compressedFilesJson = await compressString(filesJson);
+    const compressedSize = new Blob([compressedFilesJson]).size;
+    
+    // Create the new file set with compression info
+    const newSet: SavedFileSet = {
+      id: this.generateUniqueId(),
+      name,
+      source: 'app-data', // Special source identifier for app-created data
+      createdAt: Date.now(),
+      fileCount,
+      totalSize,
+      files,
+      compressed: true,
+      compressedSize
+    };
+    
+    // Save to localStorage
+    const currentSets = this.savedFileSetsSubject.getValue();
+    const updatedSets = [...currentSets, newSet];
+    await this.saveToLocalStorage(updatedSets);
+    
+    return newSet;
   }
 
   /**

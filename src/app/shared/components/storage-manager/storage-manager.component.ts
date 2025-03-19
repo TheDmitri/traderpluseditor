@@ -75,10 +75,10 @@ export class StorageManagerComponent implements OnInit, OnDestroy {
   
   // Source display names mapping
   sourceNames: {[key: string]: string} = {
-    'traderplus': 'TraderPlus v1',
-    'expansion': 'Expansion Trader',
-    'jones': 'Dr. Jones Trader',
-    'app-data': 'App Created Data',
+    'traderplus': 'FileSets converted from TraderPlus v1',
+    'expansion': 'FileSets converted from Expansion Trader',
+    'jones': 'FileSets converted from Dr. Jones Trader',
+    'app-data': 'FileSets created from App Data',
     'unknown': 'Unknown Source'
   };
 
@@ -451,5 +451,27 @@ export class StorageManagerComponent implements OnInit, OnDestroy {
   getChartSegmentSize(value: number, total: number): number {
     if (total <= 0) return 0;
     return Math.round((value / total) * 100);
+  }
+
+  /**
+   * Gets compression details for display
+   */
+  getCompressionDetails(fileSet: SavedFileSet): string {
+    if (!fileSet.compressed || !fileSet.compressedSize) {
+      return '';
+    }
+    
+    const originalSize = fileSet.totalSize;
+    const compressedSize = fileSet.compressedSize;
+    const savingsPercent = Math.round((1 - (compressedSize / originalSize)) * 100);
+    
+    return `${savingsPercent}% saved`;
+  }
+  
+  /**
+   * Checks if file set is compressed
+   */
+  isCompressed(fileSet: SavedFileSet): boolean {
+    return !!fileSet.compressed;
   }
 }
