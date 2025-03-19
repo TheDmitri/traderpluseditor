@@ -56,27 +56,8 @@ hr {
  */
 
 // Prevent text selection for UI elements to improve interaction experience
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-span,
-.stats-value,
-button,
-mat-label,
-.mat-mdc-button,
-.mat-mdc-raised-button,
-.mat-mdc-menu-item,
-.mat-mdc-list-item,
-.mat-mdc-tab-label,
-.mat-mdc-select-value-text,
-.mat-mdc-card-title,
-.mat-mdc-card-subtitle,
-.dialog-header,
-.modal-header {
+html,
+body {
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
