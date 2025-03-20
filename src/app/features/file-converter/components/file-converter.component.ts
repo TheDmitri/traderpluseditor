@@ -25,6 +25,7 @@ import {
   ExpansionConverterService,
   JonesConverterService,
 } from '../services';
+import { FileConverterStorageService } from '../services/file-converter-storage.service';
 
 // Components and utilities
 import { FileSizePipe } from '../../../shared/pipes/filesize.pipe';
@@ -42,6 +43,7 @@ import {
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { TextInputDialogComponent } from '../../../shared/components/text-input-dialog/text-input-dialog.component';
 
 // Define a type for converter types to ensure type safety
 type ConverterType = 'traderplus' | 'expansion' | 'jones';
@@ -114,17 +116,18 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     jones: 0,
   };
 
-  // Array to store converted files
-  convertedFiles: ConvertedFile[] = [];
-
-  // New property for file structure
-  fileStructure: FileNode = {
-    name: 'TraderPlusConfig',
-    type: 'folder',
-    path: 'TraderPlusConfig',
-    children: [],
-    expanded: true,
+  // Track converted files by type instead of a single array
+  convertedFilesByType: { [key in ConverterType]?: ConvertedFile[] } = {
+    traderplus: [],
+    expansion: [],
+    jones: []
   };
+
+  // Track file structure by type
+  fileStructureByType: { [key in ConverterType]?: FileNode } = {};
+
+  // Keep activeTab to track which tab is currently visible
+  activeTab: ConverterType = 'traderplus';
 
   // New properties to track conversion state
   isTraderPlusConverted = false;
@@ -141,18 +144,59 @@ export class FileConverterComponent implements OnInit, OnDestroy {
   showSaveDialog: boolean = false;
   private subscriptions: Subscription = new Subscription();
 
+  // Flag to track if data is being loaded from storage
+  private isLoadingFromStorage = false;
+
   constructor(
     private fileConverterService: FileConverterService,
     private traderPlusConverterService: TraderPlusConverterService,
     private expansionConverterService: ExpansionConverterService,
     private jonesConverterService: JonesConverterService,
     private storageManagerService: StorageManagerService,
+    private fileConverterStorageService: FileConverterStorageService,
     private router: Router,
     private dialog: MatDialog,
     private notificationService: NotificationService
-  ) {}
+  ) {
+    // Initialize empty file structures
+    this.fileStructureByType = {
+      traderplus: this.createEmptyFileStructure(),
+      expansion: this.createEmptyFileStructure(),
+      jones: this.createEmptyFileStructure()
+    };
+  }
 
-  ngOnInit(): void {
+  /**
+   * Creates an empty file structure
+   */
+  private createEmptyFileStructure(): FileNode {
+    return {
+      name: 'TraderPlusConfig',
+      type: 'folder',
+      path: 'TraderPlusConfig',
+      children: [],
+      expanded: true,
+    };
+  }
+
+  /**
+   * Get the converted files for the currently active tab
+   */
+  get convertedFiles(): ConvertedFile[] {
+    return this.convertedFilesByType[this.activeTab] || [];
+  }
+
+  /**
+   * Get the file structure for the currently active tab
+   */
+  get fileStructure(): FileNode {
+    return this.fileStructureByType[this.activeTab] || this.createEmptyFileStructure();
+  }
+
+  async ngOnInit(): Promise<void> {
+    // Load data from localStorage
+    await this.loadDataFromStorage();
+    
     // Check if we should load a file set from sessionStorage
     const fileSetId = sessionStorage.getItem('loadFileSetId');
     if (fileSetId) {
@@ -167,6 +211,162 @@ export class FileConverterComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // Clean up subscriptions
     this.subscriptions.unsubscribe();
+  }
+
+  /**
+   * Handle tab change events
+   */
+  onTabChange(tabIndex: number): void {
+    // Convert tab index to converter type
+    if (tabIndex === 0) {
+      this.activeTab = 'traderplus';
+    } else if (tabIndex === 1) {
+      this.activeTab = 'expansion';
+    } else if (tabIndex === 2) {
+      this.activeTab = 'jones';
+    }
+  }
+
+  /**
+   * Loads data from localStorage
+   */
+  private async loadDataFromStorage(): Promise<void> {
+    this.isLoadingFromStorage = true;
+    
+    try {
+      // Load converted files by type
+      const convertedFilesByType = this.fileConverterStorageService.getConvertedFilesByType();
+      if (convertedFilesByType) {
+        this.convertedFilesByType = convertedFilesByType;
+      }
+      
+      // Load file structures by type
+      const fileStructureByType = this.fileConverterStorageService.getFileStructureByType();
+      if (fileStructureByType) {
+        this.fileStructureByType = fileStructureByType;
+      } else {
+        // Initialize empty structures if none exist
+        this.fileStructureByType = {
+          traderplus: this.createEmptyFileStructure(),
+          expansion: this.createEmptyFileStructure(),
+          jones: this.createEmptyFileStructure()
+        };
+      }
+      
+      // Load conversion state
+      const conversionState = this.fileConverterStorageService.getConversionState();
+      if (conversionState) {
+        this.isTraderPlusConverted = conversionState.isTraderPlusConverted;
+        this.isExpansionConverted = conversionState.isExpansionConverted;
+        this.isJonesConverted = conversionState.isJonesConverted;
+      }
+      
+      // Load TraderPlus files
+      this.traderPlusFiles = await this.fileConverterStorageService.getTraderPlusFiles();
+      
+      // Load Expansion files
+      this.expansionFiles = await this.fileConverterStorageService.getExpansionFiles();
+      
+      // Load Jones files
+      this.jonesFiles = await this.fileConverterStorageService.getJonesFiles();
+    } catch (error) {
+      console.error('Error loading data from storage:', error);
+      this.notificationService.error('Error loading previously converted files. Starting fresh.');
+      
+      // Reset everything if there's an error
+      this.resetConverter();
+    } finally {
+      this.isLoadingFromStorage = false;
+    }
+  }
+
+  /**
+   * Saves current state to localStorage
+   */
+  private saveDataToStorage(): void {
+    // Don't save if we're still loading from storage
+    if (this.isLoadingFromStorage) return;
+    
+    // Save files
+    this.fileConverterStorageService.saveTraderPlusFiles(this.traderPlusFiles);
+    this.fileConverterStorageService.saveExpansionFiles(this.expansionFiles);
+    this.fileConverterStorageService.saveJonesFiles(this.jonesFiles);
+    
+    // Save converted files by type
+    this.fileConverterStorageService.saveConvertedFilesByType(this.convertedFilesByType);
+    
+    // Save file structure by type
+    this.fileConverterStorageService.saveFileStructureByType(this.fileStructureByType);
+    
+    // Save conversion state
+    this.fileConverterStorageService.saveConversionState({
+      isTraderPlusConverted: this.isTraderPlusConverted,
+      isExpansionConverted: this.isExpansionConverted,
+      isJonesConverted: this.isJonesConverted
+    });
+  }
+
+  /**
+   * Resets the file converter and clears localStorage
+   */
+  resetConverter(): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Reset File Converter',
+        message: 'Are you sure you want to reset the file converter? This will remove all uploaded and converted files.',
+        confirmText: 'Reset',
+        cancelText: 'Cancel',
+        type: 'warning'
+      }
+    });
+
+    dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
+      if (result) {
+        // Clear arrays
+        this.traderPlusFiles = [];
+        this.expansionFiles = [];
+        this.jonesFiles = [];
+        
+        // Clear converted files by type
+        this.convertedFilesByType = {
+          traderplus: [],
+          expansion: [],
+          jones: []
+        };
+        
+        // Reset file structures
+        this.fileStructureByType = {
+          traderplus: this.createEmptyFileStructure(),
+          expansion: this.createEmptyFileStructure(),
+          jones: this.createEmptyFileStructure()
+        };
+        
+        // Reset conversion state
+        this.isTraderPlusConverted = false;
+        this.isExpansionConverted = false;
+        this.isJonesConverted = false;
+        
+        // Reset conversion status
+        this.conversionStatus = {
+          traderPlus: '',
+          expansion: '',
+          jones: '',
+        };
+        
+        // Reset conversion progress
+        this.conversionProgress = {
+          traderPlus: 0,
+          expansion: 0,
+          jones: 0,
+        };
+        
+        // Clear localStorage
+        this.fileConverterStorageService.resetStorage();
+        
+        // Notify user
+        this.notificationService.success('File converter has been reset.');
+      }
+    });
   }
 
   /**
@@ -205,6 +405,9 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     } else if (converterType === 'jones') {
       this.isJonesConverted = false;
     }
+    
+    // Save state to localStorage
+    this.saveDataToStorage();
   }
 
   /**
@@ -227,6 +430,9 @@ export class FileConverterComponent implements OnInit, OnDestroy {
         this.jonesFiles = [...this.jonesFiles, ...files];
         break;
     }
+    
+    // Save state to localStorage
+    this.saveDataToStorage();
   }
 
   /**
@@ -253,6 +459,9 @@ export class FileConverterComponent implements OnInit, OnDestroy {
         }
         break;
     }
+    
+    // Save state to localStorage
+    this.saveDataToStorage();
   }
 
   /**
@@ -305,10 +514,13 @@ export class FileConverterComponent implements OnInit, OnDestroy {
                 this.conversionStatus[converterType] =
                   'Finalizing conversion...';
 
-                // Add the converted files to the list
+                // Clear previous files for this converter type to avoid duplicates
+                this.convertedFilesByType[converterType] = [];
+
+                // Add the converted files to the list for this converter type
                 Object.keys(convertedFiles).forEach((fileName) => {
                   const content = convertedFiles[fileName];
-                  this.convertedFiles.push({
+                  this.convertedFilesByType[converterType]!.push({
                     name: fileName,
                     content: content,
                     type: 'TraderPlus v2',
@@ -322,6 +534,9 @@ export class FileConverterComponent implements OnInit, OnDestroy {
 
                 // Set the appropriate conversion flag based on the converter type
                 this.updateConversionState(converterType);
+                
+                // Save to localStorage
+                this.saveDataToStorage();
               },
               error: (error: any) => {
                 this.conversionStatus[
@@ -361,33 +576,34 @@ export class FileConverterComponent implements OnInit, OnDestroy {
         break;
     }
 
-    // Update file structure after conversion
-    this.updateFileStructure();
+    // Update file structure for this converter type
+    this.updateFileStructure(converterType);
+    
+    // Save to localStorage
+    this.saveDataToStorage();
   }
 
   /**
    * Updates the file structure based on converted files
    */
-  private updateFileStructure(): void {
-    // Reset the file structure
-    this.fileStructure = {
-      name: 'TraderPlusConfig',
-      type: 'folder',
-      path: 'TraderPlusConfig',
-      children: [],
-      expanded: true,
-    };
+  private updateFileStructure(converterType: ConverterType): void {
+    // Reset the file structure for this converter type
+    this.fileStructureByType[converterType] = this.createEmptyFileStructure();
 
     // Add each file to the structure
-    this.convertedFiles.forEach((file) => {
-      this.addFileToStructure(file);
+    const files = this.convertedFilesByType[converterType] || [];
+    files.forEach((file) => {
+      this.addFileToStructure(file, converterType);
     });
+    
+    // Save to localStorage after updating file structure
+    this.saveDataToStorage();
   }
 
   /**
    * Adds a file to the file structure
    */
-  private addFileToStructure(file: ConvertedFile): void {
+  private addFileToStructure(file: ConvertedFile, converterType: ConverterType): void {
     // Normalize the path - ensure it doesn't already start with the root folder name
     let normalizedPath = file.name;
     if (normalizedPath.startsWith('TraderPlusConfig/')) {
@@ -395,7 +611,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     }
 
     const path = normalizedPath.split('/');
-    let currentLevel = this.fileStructure;
+    let currentLevel = this.fileStructureByType[converterType] || this.createEmptyFileStructure();
 
     // Process each part of the path except the last one (filename)
     for (let i = 0; i < path.length - 1; i++) {
@@ -579,23 +795,84 @@ export class FileConverterComponent implements OnInit, OnDestroy {
    * Opens dialog to save current converted files to localStorage
    */
   openSaveDialog(): void {
-    if (this.convertedFiles.length === 0) {
-      alert('No files to save. Please convert files first.');
+    const currentFiles = this.convertedFiles;
+    
+    if (currentFiles.length === 0) {
+      this.notificationService.error('No files to save. Please convert files first.');
       return;
     }
 
     // Set a default name based on the conversion source
     let source = '';
-    if (this.isTraderPlusConverted) source = 'TraderPlus';
-    if (this.isExpansionConverted) source = 'Expansion';
-    if (this.isJonesConverted) source = 'Jones';
+    if (this.activeTab === 'traderplus') source = 'TraderPlus';
+    if (this.activeTab === 'expansion') source = 'Expansion';
+    if (this.activeTab === 'jones') source = 'Jones';
 
-    this.newFileSetName = `${source} Conversion ${new Date().toLocaleDateString()}`;
-    this.showSaveDialog = true;
+    // First check if we're near the storage limit
+    this.storageManagerService.isStorageNearLimit().pipe(take(1)).subscribe(isNearLimit => {
+      if (isNearLimit) {
+        this.notificationService.warning('Storage is nearly full (>90%). Please delete some saved file sets before saving new ones.');
+        return;
+      }
+
+      // If not near limit, proceed with showing the dialog
+      const dialogRef = this.dialog.open(TextInputDialogComponent, {
+        width: '350px',
+        data: {
+          title: 'Save Converted Files',
+          label: 'File Set Name',
+          placeholder: 'Enter a name for this file set',
+          initialValue: `${source} Conversion ${new Date().toLocaleDateString()}`,
+          confirmText: 'Save'
+        }
+      });
+
+      dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
+        if (result) {
+          // Create a map of files
+          const fileMap: { [path: string]: string } = {};
+          currentFiles.forEach((file) => {
+            fileMap[file.name] = file.content;
+          });
+
+          // Determine the source type for storage
+          const sourceType = this.activeTab;
+
+          // Save the file set
+          this.storageManagerService.saveFileSet(result, sourceType, fileMap)
+            .pipe(take(1))
+            .subscribe({
+              next: (fileSet) => {
+                this.notificationService.success(`File set '${fileSet.name}' saved successfully`);
+                
+                const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {
+                  data: {
+                    title: 'File Set Saved',
+                    message: 'Would you like to view your saved file sets?',
+                    confirmText: 'View File Sets',
+                    cancelText: 'Stay Here',
+                    type: 'info'
+                  }
+                });
+
+                confirmDialogRef.afterClosed().pipe(take(1)).subscribe(navigateToSets => {
+                  if (navigateToSets) {
+                    this.router.navigate(['/storage-manager']);
+                  }
+                });
+              },
+              error: (error) => {
+                console.error('Error saving file set:', error);
+                this.notificationService.error(`Error saving file set: ${error.message}`);
+              }
+            });
+        }
+      });
+    });
   }
 
   /**
-   * Cancels the save dialog
+   * Cancels the save dialog - can be removed as we no longer need it
    */
   cancelSaveDialog(): void {
     this.showSaveDialog = false;
@@ -603,66 +880,11 @@ export class FileConverterComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Saves the current converted files to localStorage
+   * Saves the current converted files to localStorage - can be removed as we've merged its functionality
    */
   saveConvertedFilesToStorage(): void {
-    if (!this.newFileSetName.trim()) {
-      this.notificationService.error('Please enter a name for this file set.');
-      return;
-    }
-
-    // Create a map of files
-    const fileMap: { [path: string]: string } = {};
-    this.convertedFiles.forEach((file) => {
-      fileMap[file.name] = file.content;
-    });
-
-    // Determine the source
-    let source = 'unknown';
-    if (this.isTraderPlusConverted) source = 'traderplus';
-    if (this.isExpansionConverted) source = 'expansion';
-    if (this.isJonesConverted) source = 'jones';
-
-    // First check if storage is near limit
-    this.storageManagerService.isStorageNearLimit().pipe(take(1)).subscribe(
-      isNearLimit => {
-        if (isNearLimit) {
-          this.notificationService.warning('Storage is nearly full (>90%). Please delete some saved file sets before saving new ones.');
-          return;
-        }
-
-        // If not near limit, proceed with saving
-        this.storageManagerService
-          .saveFileSet(this.newFileSetName, source, fileMap)
-          .pipe(take(1))
-          .subscribe(
-            (result) => {
-              this.showSaveDialog = false;
-              this.newFileSetName = '';
-              
-              const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-                data: {
-                  title: 'File Set Saved',
-                  message: 'File set saved successfully. Would you like to view your saved file sets?',
-                  confirmText: 'View File Sets',
-                  cancelText: 'Stay Here',
-                  type: 'info'
-                }
-              });
-
-              dialogRef.afterClosed().pipe(take(1)).subscribe(navigateToSets => {
-                if (navigateToSets) {
-                  this.router.navigate(['/storage-manager']);
-                }
-              });
-            },
-            (error) => {
-              console.error('Error saving file set:', error);
-              this.notificationService.error(`Error saving file set: ${error.message}`);
-            }
-          );
-      }
-    );
+    // This method's functionality has been merged into openSaveDialog()
+    // It can be removed or deprecated
   }
 
   /**
@@ -722,12 +944,16 @@ export class FileConverterComponent implements OnInit, OnDestroy {
    * Loads a saved file set into the current view
    */
   loadSavedFileSet(set: SavedFileSet): void {
-    // First clear the current files
-    this.convertedFiles = [];
+    // Determine the appropriate converter type
+    const converterType = set.source as ConverterType;
+    this.activeTab = converterType;
+    
+    // Clear converted files for this converter type
+    this.convertedFilesByType[converterType] = [];
 
     // Convert the file map to convertedFiles array
     Object.entries(set.files).forEach(([path, content]) => {
-      this.convertedFiles.push({
+      this.convertedFilesByType[converterType]!.push({
         name: path,
         content: content,
         type: 'TraderPlus v2',
@@ -735,13 +961,16 @@ export class FileConverterComponent implements OnInit, OnDestroy {
       });
     });
 
-    // Update file structure
-    this.updateFileStructure();
+    // Update file structure for this converter type
+    this.updateFileStructure(converterType);
 
     // Set appropriate conversion flags based on source
-    this.isTraderPlusConverted = set.source === 'traderplus';
-    this.isExpansionConverted = set.source === 'expansion';
-    this.isJonesConverted = set.source === 'jones';
+    this.isTraderPlusConverted = converterType === 'traderplus';
+    this.isExpansionConverted = converterType === 'expansion';
+    this.isJonesConverted = converterType === 'jones';
+    
+    // Save to localStorage
+    this.saveDataToStorage();
   }
 
   /**

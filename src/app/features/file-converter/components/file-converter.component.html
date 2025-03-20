@@ -7,6 +7,18 @@
           Convert any other Trader Mod Config to a TraderPlus v2 Config
         </p>
       </div>
+      <div class="header-right">
+        <button
+          class="custom-stroked-button color-warn with-icon"
+          (click)="resetConverter()"
+          matTooltip="Reset file converter"
+          matTooltipPosition="left"
+          [disabled]="!convertedFilesByType.traderplus!.length && !convertedFilesByType.expansion!.length && !convertedFilesByType.jones!.length && !traderPlusFiles.length && !expansionFiles.length && !jonesFiles.length"
+        >
+        <mat-icon class="icon-error">delete_forever</mat-icon>
+        <span>Reset Converter</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -18,6 +30,7 @@
           animationDuration="200ms"
           mat-stretch-tabs="false"
           mat-align-tabs="start"
+          (selectedIndexChange)="onTabChange($event)"
         >
           <!-- TraderPlus Tab -->
           <mat-tab>
@@ -277,33 +290,45 @@
     </div>
 
     <!-- Results Section - File Explorer -->
-    <mat-card
-      *ngIf="convertedFiles.length"
-      appearance="outlined"
-      class="data-card results-panel"
-    >
-      <div class="results-header">
-        <h2 class="results-title">Converted Files</h2>
-        <div class="results-actions-top">
+    <div *ngIf="convertedFiles.length" class="data-card results-panel">
+      <div class="panel-header">
+        <div class="panel-title-area">
+          <h2 class="section-title">
+            Converted Files
+            <ng-container [ngSwitch]="activeTab">
+              <span *ngSwitchCase="'traderplus'"> - TraderPlus v1</span>
+              <span *ngSwitchCase="'expansion'"> - Expansion Trader</span>
+              <span *ngSwitchCase="'jones'"> - Jones Trader</span>
+            </ng-container>
+          </h2>
+          <p class="panel-subtitle">
+            You can download your converted files or save them as File Set in
+            the App
+          </p>
+        </div>
+
+        <div class="panel-actions">
           <button
             class="custom-stroked-button color-primary with-icon"
             (click)="downloadAllFiles()"
+            matTooltip="Download all files as .zip"
           >
             <mat-icon>download_all</mat-icon>
-            Download All
+            <span>Download All</span>
           </button>
 
           <button
             class="custom-stroked-button color-secondary with-icon"
-            matTooltip="Save converted files" (click)="openSaveDialog()"
+            (click)="openSaveDialog()"
+            matTooltip="Save converted files as File Set"
           >
             <mat-icon>save</mat-icon>
-            Save File Set
+            <span>Save File Set</span>
           </button>
         </div>
       </div>
 
-      <mat-card-content class="file-explorer-content">
+      <div class="file-explorer-content">
         <div class="file-explorer">
           <!-- Root folder -->
           <div class="folder-node root-folder">
@@ -421,38 +446,6 @@
             </div>
           </ng-template>
         </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-  <!-- Save Dialog -->
-  <div class="save-dialog-overlay" *ngIf="showSaveDialog">
-    <div class="save-dialog">
-      <h2>Save Files to LocalStorage</h2>
-      <p>Enter a name for this file set:</p>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Name</mat-label>
-        <input
-          matInput
-          [(ngModel)]="newFileSetName"
-          placeholder="My File Set"
-        />
-      </mat-form-field>
-
-      <div class="dialog-actions">
-        <button
-          class="custom-stroked-button color-warn"
-          (click)="cancelSaveDialog()"
-        >
-          Cancel
-        </button>
-        <button
-          class="custom-stroked-button color-primary"
-          (click)="saveConvertedFilesToStorage()"
-        >
-          Save
-        </button>
       </div>
     </div>
   </div>

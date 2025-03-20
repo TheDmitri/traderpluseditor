@@ -138,7 +138,7 @@
               <div class="storage-card" [class.active]="hoveredCardIndex === 2" (mouseenter)="hoveredCardIndex = 2" (mouseleave)="hoveredCardIndex = -1">
                 <div class="card-indicator other"></div>
                 <div class="card-content">
-                  <div class="card-title">System Data</div>
+                  <div class="card-title">Converter Data</div>
                   <div class="card-details">
                     <div class="card-size">{{ storageBreakdown?.other || 0 | fileSize }}</div>
                     <div class="card-percentage">{{ getPercentage(storageBreakdown?.other || 0, storageBreakdown?.limit || 1) }}%</div>
