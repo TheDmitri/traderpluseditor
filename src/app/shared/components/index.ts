@@ -4,4 +4,3 @@ export * from './loader/loader.component';
 export * from './navigation/navigation.component';
 export * from './product-list/product-list.component';
 export * from './product-modal/product-modal.component';
-export * from './help-panel/help-panel.component';

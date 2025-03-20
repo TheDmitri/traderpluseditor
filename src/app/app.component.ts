@@ -5,9 +5,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { environment } from '../environments/environment';
+import { Router } from '@angular/router';
 
 import { NavigationComponent } from './shared/components/navigation/navigation.component';
-import { HelpPanelComponent } from './shared/components/help-panel/help-panel.component';
 import { NavigationService } from './core/services';
 
 @Component({
@@ -26,6 +26,7 @@ import { NavigationService } from './core/services';
 export class AppComponent implements OnInit {
   private navigationService = inject(NavigationService);
   private dialog = inject(MatDialog);
+  private router = inject(Router);
   title = 'traderpluseditor';
   appVersion = environment.version;
   
@@ -56,9 +57,7 @@ export class AppComponent implements OnInit {
   }
   
   openHelpPanel(): void {
-    this.dialog.open(HelpPanelComponent, {
-      panelClass: 'help-dialog',
-      autoFocus: false
-    });
+    // Navigate to information route instead of opening dialog
+    this.router.navigate(['/information']);
   }
 }

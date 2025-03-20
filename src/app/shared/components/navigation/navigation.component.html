@@ -10,7 +10,7 @@
       <div class="sidenav-wrapper">
         <div class="sidenav-content custom-scrollbar">
           <mat-nav-list>
-            @for (item of navItems; track item.route) {
+            @for (item of getVisibleNavItems(); track item.route) {
             <button
               mat-stroked-button
               [routerLink]="item.route"

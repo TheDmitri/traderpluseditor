@@ -114,4 +114,24 @@ export class InitializationService {
     // Get a deep copy of the default categories from the externalized data file
     return getDefaultProducts();
   }
+
+  /**
+   * Initialize the application with default data
+   */
+  initializeFullDefaultConfig(): void {
+    // Create standard currency types and currencies
+    this.createStandardCurrencies();
+
+    // Create default general settings
+    const generalSettings = this.createDefaultGeneralSettings();
+    this.storageService.saveGeneralSettings(generalSettings);
+
+    // Create default categories
+    const defaultCategories = this.createDefaultCategories();
+    this.storageService.saveCategories(defaultCategories);
+
+    // Create default products
+    const defaultProducts = this.createDefaultProducts();
+    this.storageService.saveProducts(defaultProducts);
+  }
 }

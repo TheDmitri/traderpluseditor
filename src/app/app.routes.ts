@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { ConfigExistsGuard } from './core/guards/config-exists.guard';
 
 // Feature components
 import { DashboardComponent } from './features/dashboard/components/dashboard.component';
@@ -9,10 +10,15 @@ import { CurrencyEditorComponent } from './features/currency-editor/components/c
 import { GeneralSettingsEditorComponent } from './features/general-settings-editor/components/general-settings-editor.component';
 import { FileConverterComponent } from './features/file-converter/components/file-converter.component';
 import { StorageManagerComponent } from './shared/components/storage-manager/storage-manager.component';
+import { InformationComponent } from './features/information/components/information.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
+  { 
+    path: 'dashboard', 
+    component: DashboardComponent,
+    canActivate: [ConfigExistsGuard]
+  },
   { path: 'categories', component: CategoryEditorComponent },
   { path: 'products', component: ProductEditorComponent },
   { path: 'currencies', component: CurrencyEditorComponent },
@@ -20,5 +26,6 @@ export const routes: Routes = [
   { path: 'file-management', component: FileManagementComponent },
   { path: 'converter', component: FileConverterComponent },
   { path: 'storage-manager', component: StorageManagerComponent },
+  { path: 'information', component: InformationComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];

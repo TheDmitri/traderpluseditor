@@ -16,6 +16,7 @@ interface NavItem {
   label: string;
   icon: string;
   route: string;
+  showInSidebar?: boolean;
 }
 
 @Component({
@@ -44,8 +45,13 @@ export class NavigationComponent {
     { label: 'Settings', icon: 'settings', route: '/settings' },
     { label: 'Import/Export', icon: 'import_export', route: '/file-management' },
     { label: 'Converter', icon: 'auto_fix_high', route: '/converter' },
-    { label: 'Storage', icon: 'storage', route: '/storage-manager' }
+    { label: 'Storage', icon: 'storage', route: '/storage-manager' },
+    { label: 'Information', icon: 'help_outline', route: '/information', showInSidebar: false }
   ];
+  
+  getVisibleNavItems(): NavItem[] {
+    return this.navItems.filter(item => item.showInSidebar !== false);
+  }
   
   getContentClass(): string {
     return this.isExpanded() ? 'content-expanded' : 'content-collapsed';
