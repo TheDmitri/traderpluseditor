@@ -26,79 +26,17 @@
       }
     }
     
+    .template-description {
+      font-family: monospace;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+    
     .markdown-hint {
       margin-bottom: 8px;
       font-weight: lighter;
       font-size: .75rem;
       color: var(--brush-text-secondary);
-    }
-  }
-  
-  // File upload styling
-  .file-upload-container {
-    margin-top: 8px;
-    
-    .file-drop-area {
-      border: 2px dashed var(--brush-border-subtle);
-      border-radius: 8px;
-      padding: 24px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      transition: all var(--transition-normal) var(--transition-timing);
-      background-color: var(--brush-hover-overlay);
-      
-      &:hover {
-        border-color: var(--color-primary-medium);
-        background-color: var(--brush-active-overlay);
-      }
-      
-      .upload-btn {
-        padding: 8px 16px;
-      }
-      
-      .drop-hint {
-        color: var(--brush-text-secondary);
-        font-size: var(--font-size-sm);
-      }
-    }
-    
-    .file-list {
-      margin-top: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      
-      .file-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 16px;
-        border-radius: 4px;
-        background-color: var(--brush-hover-overlay);
-        
-        .file-info {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          
-          mat-icon {
-            color: var(--brush-text-secondary);
-          }
-          
-          .file-name {
-            font-weight: var(--font-weight-medium);
-            color: var(--brush-text-primary);
-          }
-          
-          .file-size {
-            font-size: var(--font-size-xs);
-            color: var(--brush-text-secondary);
-          }
-        }
-      }
     }
   }
   
@@ -146,6 +84,40 @@
         background-color: var(--brush-hover-overlay);
         border-radius: 8px;
         margin-bottom: 24px;
+        
+        h1 {
+          font-size: 1.8rem;
+          margin-top: 0;
+          margin-bottom: 1rem;
+          font-weight: 600;
+        }
+        
+        h2 {
+          font-size: 1.4rem;
+          margin-top: 1.5rem;
+          margin-bottom: 0.75rem;
+          font-weight: 500;
+          border-bottom: 1px solid var(--brush-border-subtle);
+          padding-bottom: 0.3rem;
+        }
+        
+        ul {
+          padding-left: 1.5rem;
+          margin-bottom: 1rem;
+        }
+        
+        li {
+          margin-bottom: 0.5rem;
+        }
+        
+        strong {
+          font-weight: 600;
+        }
+        
+        em {
+          font-style: italic;
+          color: var(--brush-text-secondary);
+        }
       }
       
       .preview-attachments {
@@ -157,30 +129,67 @@
         
         .attachment-list {
           display: flex;
-          flex-wrap: wrap;
+          flex-direction: column;
           gap: 12px;
+          margin-bottom: 16px;
           
           .attachment-item {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 8px;
-            padding: 8px 16px;
+            padding: 16px;
             border-radius: 4px;
             background-color: var(--brush-hover-overlay);
             
-            mat-icon {
-              color: var(--brush-text-secondary);
+            .file-info {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              
+              mat-icon {
+                color: var(--brush-text-secondary);
+              }
+              
+              .file-name {
+                font-weight: var(--font-weight-medium);
+                color: var(--brush-text-primary);
+              }
+              
+              .file-size {
+                font-size: var(--font-size-xs);
+                color: var(--brush-text-secondary);
+              }
             }
             
-            .file-name {
-              font-weight: var(--font-weight-medium);
-              color: var(--brush-text-primary);
+            .image-preview {
+              margin-top: 8px;
+              overflow: hidden;
+              border-radius: 4px;
+              max-height: 200px;
+              text-align: center;
+              background-color: var(--brush-background-body);
+              
+              img {
+                max-width: 100%;
+                max-height: 200px;
+                object-fit: contain;
+              }
             }
-            
-            .file-size {
-              font-size: var(--font-size-xs);
-              color: var(--brush-text-secondary);
-            }
+          }
+        }
+        
+        .github-note {
+          margin-top: 16px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 12px;
+          border-radius: 8px;
+          background-color: rgba(var(--color-primary-rgb), 0.05);
+          color: var(--brush-text-secondary);
+          
+          mat-icon {
+            flex-shrink: 0;
           }
         }
       }

@@ -27,17 +27,19 @@
       
       <div class="preview-body">
         <div class="preview-description markdown-preview">
+          <h1>{{ getRequestTypeLabel() }}</h1>
           {{ requestForm.get('description')?.value }}
-        </div>
-        
-        <div class="preview-attachments" *ngIf="files.length > 0">
-          <h4>Attachments ({{ files.length }})</h4>
-          <div class="attachment-list">
-            <div class="attachment-item" *ngFor="let file of files">
-              <mat-icon>{{ getFileIcon(file) }}</mat-icon>
-              <span class="file-name">{{ file.name }}</span>
-              <span class="file-size">({{ formatFileSize(file.size) }})</span>
-            </div>
+          
+          <h2>System Information</h2>
+          <ul>
+            <li><strong>Browser</strong>: {{ navigator.userAgent }}</li>
+            <li><strong>Platform</strong>: {{ navigator.platform }}</li>
+            <li><strong>App Version</strong>: {{ environment.version || 'Unknown' }}</li>
+          </ul>
+
+          <div>
+            <h2>Attachments</h2>
+            <p><em>Attachments will be available for upload on GitHub after submission</em></p>
           </div>
         </div>
       </div>
@@ -87,7 +89,7 @@
       <div class="form-field">
         <label class="field-label">
           Description
-          <span class="field-hint">Please provide detailed information. Markdown formatting is supported.</span>
+          <span class="field-hint">The template below includes all necessary sections.</span>
         </label>
 
         <div class="markdown-hint">
@@ -96,9 +98,10 @@
         <mat-form-field appearance="outline">
           <textarea 
             matInput 
-            rows="5"
+            rows="12"
             placeholder="Describe your request in detail..."
             formControlName="description"
+            class="template-description"
           ></textarea>
           <mat-error *ngIf="requestForm.get('description')?.hasError('required')">
             Description is required
@@ -108,67 +111,17 @@
           </mat-error>
         </mat-form-field>
       </div>
-
-      <!-- File attachments -->
-      <div class="form-field">
-        <label class="field-label">
-          Attachments
-          <span class="field-hint">Upload screenshots, logs, or configuration files (images, .json, .txt)</span>
-        </label>
-
-        <div class="file-upload-container">
-          <div class="file-drop-area">
-            <button 
-              type="button" 
-              class="custom-stroked-button color-primary with-icon upload-btn"
-              (click)="fileInput.click()"
-            >
-              <mat-icon>attach_file</mat-icon>
-              Add Files
-            </button>
-            <input 
-              #fileInput 
-              type="file" 
-              accept="image/*,.json,.txt" 
-              multiple 
-              (change)="onFileSelected($event)" 
-              hidden
-            >
-            <span class="drop-hint">or drag files here</span>
-          </div>
-
-          <div class="file-list" *ngIf="files.length > 0">
-            <div class="file-item" *ngFor="let file of files; let i = index">
-              <div class="file-info">
-                <mat-icon>{{ getFileIcon(file) }}</mat-icon>
-                <span class="file-name">{{ file.name }}</span>
-                <span class="file-size">({{ formatFileSize(file.size) }})</span>
-              </div>
-              <button 
-                type="button" 
-                mat-icon-button 
-                color="warn" 
-                (click)="removeFile(i)"
-                matTooltip="Remove file"
-              >
-                <mat-icon>close</mat-icon>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     </form>
   </mat-dialog-content>
 
   <!-- Actions -->
-  <mat-dialog-actions align="end">
-    <button type="button" mat-button (click)="onCancel()" [disabled]="isSubmitting">Cancel</button>
+  <mat-dialog-actions>
+    <button type="button" mat-button (click)="onCancel()">Cancel</button>
     <button 
       type="button" 
       mat-button 
       color="primary" 
       (click)="togglePreview()" 
-      [disabled]="isSubmitting"
     >
       {{ previewMode ? 'Edit' : 'Preview' }}
     </button>
@@ -176,11 +129,11 @@
       type="button" 
       mat-raised-button 
       color="primary" 
-      [disabled]="requestForm.invalid || isSubmitting"
+      [disabled]="requestForm.invalid"
       (click)="onSubmit()"
       *ngIf="previewMode"
     >
-      Submit
+      Continue to GitHub
     </button>
   </mat-dialog-actions>
 </div>
