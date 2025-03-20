@@ -4,7 +4,9 @@
     <div class="header-content">
       <div class="header-left">
         <h1 class="page-title">Welcome to TraderPlus Editor</h1>
-        <p class="subtitle">Manage and optimize your DayZ trading system with ease</p>
+        <p class="subtitle">
+          Manage and optimize your DayZ trading system with ease
+        </p>
       </div>
     </div>
   </header>
@@ -85,81 +87,189 @@
   <div class="data-card quick-actions">
     <div class="panel-header">
       <h2 class="section-title">Quick Actions</h2>
-      <p class="panel-subtitle">Common operations to manage your trading system</p>
+      <p class="panel-subtitle">
+        Common operations to manage your trading system
+      </p>
     </div>
     <div class="panel-body">
       <div class="action-grid">
-        <div class="action-item">
-          <div class="app-icon-bg icon-md neutral-bg">
-            <mat-icon>upload</mat-icon>
-          </div>
-          <div class="action-info">
-            <h3 class="action-title">Import Configuration</h3>
-            <p class="action-description">Upload and parse existing TraderPlus JSON files</p>
-            <a class="action-link" routerLink="/file-management">Import Now</a>
-          </div>
-        </div>
-
         <div class="action-item">
           <div class="app-icon-bg icon-md neutral-bg">
             <mat-icon>settings</mat-icon>
           </div>
           <div class="action-info">
             <h3 class="action-title">Settings</h3>
-            <p class="action-description">Configure application preferences and defaults</p>
+            <p class="action-description">
+              Configure the general settings of TraderPlus
+            </p>
             <a class="action-link" routerLink="/settings">Go to Settings</a>
           </div>
         </div>
 
         <div class="action-item">
           <div class="app-icon-bg icon-md neutral-bg">
-            <mat-icon>download</mat-icon>
+            <mat-icon>import_export</mat-icon>
           </div>
           <div class="action-info">
-            <h3 class="action-title">Export Configuration</h3>
-            <p class="action-description">Download your configurations as JSON files</p>
-            <a class="action-link" routerLink="/file-management">Export Files</a>
+            <h3 class="action-title">Import/Export Configurations</h3>
+            <p class="action-description">
+              Upload and download TraderPlus files
+            </p>
+            <a class="action-link" routerLink="/file-management"
+              >Go to Import/Export</a
+            >
+          </div>
+        </div>
+
+        <div class="action-item">
+          <div class="app-icon-bg icon-md neutral-bg">
+            <mat-icon>auto_fix_high</mat-icon>
+          </div>
+          <div class="action-info">
+            <h3 class="action-title">Convert Configurations</h3>
+            <p class="action-description">
+              Convert any Trader configuration to TraderPlus
+            </p>
+            <a class="action-link" routerLink="/converter">Go to Converter</a>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- System Information Section -->
-  <div class="data-card info-section">
-    <div class="panel-header">
-      <h2 class="section-title">System Information</h2>
-      <p class="panel-subtitle">Current configuration status and statistics</p>
+  <!-- Storage Information and Community Section -->
+  <div class="dashboard-sections-grid">
+    <!-- Storage Information Section -->
+    <div class="data-card storage-info">
+      <div class="panel-header">
+        <h2 class="section-title">Storage Usage</h2>
+        <p class="panel-subtitle">
+          Current local storage utilization
+        </p>
+      </div>
+      <div class="panel-body">
+        <ng-container *ngIf="storageBreakdown$ | async as breakdown">
+          <div class="storage-usage-container">
+            <div class="storage-usage-header">
+              <div class="storage-usage-info">
+                <span class="storage-used">{{
+                  formatBytes(breakdown.total)
+                }}</span>
+                <span class="storage-limit"
+                  >of {{ formatBytes(breakdown.limit) }} used</span
+                >
+              </div>
+              <span
+                class="storage-percentage"
+                [ngClass]="
+                  getStorageColorClass((storageWarningLevel$ | async) ?? 'safe')
+                "
+              >
+                {{ breakdown.percentUsed.toFixed(1) }}%
+              </span>
+            </div>
+
+            <mat-progress-bar
+              [value]="breakdown.percentUsed"
+              [ngClass]="
+                getStorageColorClass((storageWarningLevel$ | async) ?? 'safe')
+              "
+            >
+            </mat-progress-bar>
+
+            <div class="storage-breakdown">
+              <div class="storage-breakdown-item">
+                <div class="breakdown-title">
+                  <mat-icon>save</mat-icon>
+                  <span>Saved Files</span>
+                </div>
+                <span class="breakdown-value">{{
+                  formatBytes(breakdown.fileSets)
+                }}</span>
+              </div>
+              <div class="storage-breakdown-item">
+                <div class="breakdown-title">
+                  <mat-icon>shopping_cart</mat-icon>
+                  <span>App Data</span>
+                </div>
+                <span class="breakdown-value">{{
+                  formatBytes(breakdown.appData.total)
+                }}</span>
+              </div>
+              <div class="storage-breakdown-item">
+                <div class="breakdown-title">
+                  <mat-icon>folder_open</mat-icon>
+                  <span>Other</span>
+                </div>
+                <span class="breakdown-value">{{
+                  formatBytes(breakdown.other)
+                }}</span>
+              </div>
+            </div>
+
+            <div class="storage-actions">
+              <a class="btn-secondary" routerLink="/storage-manager">
+                <mat-icon>storage</mat-icon>
+                <span>Manage Storage</span>
+              </a>
+            </div>
+          </div>
+        </ng-container>
+      </div>
     </div>
-    <div class="panel-body">
-      <div class="info-grid">
-        <div class="info-item">
-          <mat-icon class="info-icon app-icon-color info-color">history</mat-icon>
-          <div class="info-content">
-            <span class="info-label">Last Import</span>
-            <span class="info-value">2 hours ago</span>
+
+    <!-- Community & Statistics Section -->
+    <div class="data-card community-stats">
+      <div class="panel-header">
+        <h2 class="section-title">Community & Statistics</h2>
+        <p class="panel-subtitle">
+          TraderPlus Editor usage and community activity
+        </p>
+      </div>
+      <div class="panel-body">
+        <div class="community-stats-grid">
+          <div class="community-stat-card">
+            <div class="app-icon-bg icon-sm">
+              <mat-icon aria-label="Products">people</mat-icon>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value">{{ dummyStats.activeUsers }}</span>
+              <span class="stat-label">Active Users</span>
+            </div>
+          </div>
+
+          <div class="community-stat-card">
+            <div class="app-icon-bg icon-sm">
+              <mat-icon aria-label="Products">dns</mat-icon>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value">{{ dummyStats.createdFileSets }}</span>
+              <span class="stat-label">File Sets created</span>
+            </div>
+          </div>
+
+          <div class="community-stat-card">
+            <div class="app-icon-bg icon-sm">
+              <mat-icon aria-label="Products">download</mat-icon>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value">{{ dummyStats.exportedFiles }}</span>
+              <span class="stat-label">exported Files</span>
+            </div>
           </div>
         </div>
-        <div class="info-item">
-          <mat-icon class="info-icon app-icon-color export-color">save_alt</mat-icon>
-          <div class="info-content">
-            <span class="info-label">Last Export</span>
-            <span class="info-value">1 hour ago</span>
-          </div>
-        </div>
-        <div class="info-item">
-          <mat-icon class="info-icon app-icon-color storage-color">storage</mat-icon>
-          <div class="info-content">
-            <span class="info-label">Storage Usage</span>
-            <span class="info-value">45%</span>
-          </div>
-        </div>
-        <div class="info-item">
-          <mat-icon class="info-icon app-icon-color info-color">new_releases</mat-icon>
-          <div class="info-content">
-            <span class="info-label">Version</span>
-            <span class="info-value">1.0.0</span>
-          </div>
+
+        <div class="community-actions">
+          <a class="feature-request-btn" routerLink="/feedback">
+            <mat-icon>bug_report</mat-icon>
+            <div class="request-text">
+              <span class="request-title">Bug Report or Feature Request</span>
+              <span class="request-subtitle"
+                >Help us improve TraderPlus Editor</span
+              >
+            </div>
+            <mat-icon class="chevron-icon">chevron_right</mat-icon>
+          </a>
         </div>
       </div>
     </div>
