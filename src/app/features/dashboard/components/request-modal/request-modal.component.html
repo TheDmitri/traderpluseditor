@@ -1,0 +1,186 @@
+<div class="request-modal-container">
+  <!-- Header -->
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon class="dialog-icon">message</mat-icon>
+    <span>{{ previewMode ? 'Preview' : 'Create Request' }}</span>
+  </h2>
+
+  <!-- Loading overlay when submitting -->
+  <div class="submit-overlay" *ngIf="isSubmitting">
+    <div class="submit-content">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <span>Submitting your request...</span>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <mat-dialog-content class="modal-content">
+    <!-- Preview mode -->
+    <div class="preview-container" *ngIf="previewMode">
+      <div class="preview-header">
+        <div class="preview-type" [ngClass]="{'bug-type': requestForm.get('type')?.value === 'bug'}">
+          <mat-icon>{{ requestForm.get('type')?.value === 'bug' ? 'bug_report' : 'lightbulb' }}</mat-icon>
+          <span>{{ getRequestTypeLabel() }}</span>
+        </div>
+        <h3 class="preview-title">{{ requestForm.get('title')?.value }}</h3>
+      </div>
+      
+      <div class="preview-body">
+        <div class="preview-description markdown-preview">
+          {{ requestForm.get('description')?.value }}
+        </div>
+        
+        <div class="preview-attachments" *ngIf="files.length > 0">
+          <h4>Attachments ({{ files.length }})</h4>
+          <div class="attachment-list">
+            <div class="attachment-item" *ngFor="let file of files">
+              <mat-icon>{{ getFileIcon(file) }}</mat-icon>
+              <span class="file-name">{{ file.name }}</span>
+              <span class="file-size">({{ formatFileSize(file.size) }})</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit mode -->
+    <form [formGroup]="requestForm" *ngIf="!previewMode" (ngSubmit)="onSubmit()">
+      <!-- Request type -->
+      <div class="form-field">
+        <label class="field-label">Request Type</label>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="type">
+            <mat-option value="bug">Bug Report</mat-option>
+            <mat-option value="enhancement">Feature Request</mat-option>
+          </mat-select>
+          <mat-error *ngIf="requestForm.get('type')?.hasError('required')">
+            Request type is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Request title -->
+      <div class="form-field">
+        <label class="field-label">
+          Title
+          <span class="field-hint">Clear and concise summary of the request</span>
+        </label>
+        <mat-form-field appearance="outline">
+          <input 
+            matInput 
+            placeholder="e.g., 'Cannot save category changes'"
+            formControlName="title"
+          >
+          <mat-error *ngIf="requestForm.get('title')?.hasError('required')">
+            Title is required
+          </mat-error>
+          <mat-error *ngIf="requestForm.get('title')?.hasError('minlength')">
+            Title must be at least 5 characters
+          </mat-error>
+          <mat-error *ngIf="requestForm.get('title')?.hasError('maxlength')">
+            Title must be less than 100 characters
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Description -->
+      <div class="form-field">
+        <label class="field-label">
+          Description
+          <span class="field-hint">Please provide detailed information. Markdown formatting is supported.</span>
+        </label>
+
+        <div class="markdown-hint">
+          <span>(Supports Markdown: **bold**, *italic*, `code`, ```codeblock```, - list, # heading)</span>
+        </div>
+        <mat-form-field appearance="outline">
+          <textarea 
+            matInput 
+            rows="5"
+            placeholder="Describe your request in detail..."
+            formControlName="description"
+          ></textarea>
+          <mat-error *ngIf="requestForm.get('description')?.hasError('required')">
+            Description is required
+          </mat-error>
+          <mat-error *ngIf="requestForm.get('description')?.hasError('minlength')">
+            Description must be at least 20 characters
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- File attachments -->
+      <div class="form-field">
+        <label class="field-label">
+          Attachments
+          <span class="field-hint">Upload screenshots, logs, or configuration files (images, .json, .txt)</span>
+        </label>
+
+        <div class="file-upload-container">
+          <div class="file-drop-area">
+            <button 
+              type="button" 
+              class="custom-stroked-button color-primary with-icon upload-btn"
+              (click)="fileInput.click()"
+            >
+              <mat-icon>attach_file</mat-icon>
+              Add Files
+            </button>
+            <input 
+              #fileInput 
+              type="file" 
+              accept="image/*,.json,.txt" 
+              multiple 
+              (change)="onFileSelected($event)" 
+              hidden
+            >
+            <span class="drop-hint">or drag files here</span>
+          </div>
+
+          <div class="file-list" *ngIf="files.length > 0">
+            <div class="file-item" *ngFor="let file of files; let i = index">
+              <div class="file-info">
+                <mat-icon>{{ getFileIcon(file) }}</mat-icon>
+                <span class="file-name">{{ file.name }}</span>
+                <span class="file-size">({{ formatFileSize(file.size) }})</span>
+              </div>
+              <button 
+                type="button" 
+                mat-icon-button 
+                color="warn" 
+                (click)="removeFile(i)"
+                matTooltip="Remove file"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <!-- Actions -->
+  <mat-dialog-actions align="end">
+    <button type="button" mat-button (click)="onCancel()" [disabled]="isSubmitting">Cancel</button>
+    <button 
+      type="button" 
+      mat-button 
+      color="primary" 
+      (click)="togglePreview()" 
+      [disabled]="isSubmitting"
+    >
+      {{ previewMode ? 'Edit' : 'Preview' }}
+    </button>
+    <button 
+      type="button" 
+      mat-raised-button 
+      color="primary" 
+      [disabled]="requestForm.invalid || isSubmitting"
+      (click)="onSubmit()"
+      *ngIf="previewMode"
+    >
+      Submit
+    </button>
+  </mat-dialog-actions>
+</div>

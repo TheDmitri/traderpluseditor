@@ -260,7 +260,7 @@
         </div>
 
         <div class="community-actions">
-          <a class="feature-request-btn" routerLink="/feedback">
+          <a class="feature-request-btn" (click)="openRequestModal()" href="javascript:void(0)">
             <mat-icon>bug_report</mat-icon>
             <div class="request-text">
               <span class="request-title">Bug Report or Feature Request</span>

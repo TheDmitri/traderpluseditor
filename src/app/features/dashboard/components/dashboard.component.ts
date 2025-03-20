@@ -8,11 +8,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatDialog } from '@angular/material/dialog';
 
 // Application imports
 import { StorageService } from '../../../core/services';
 import { StorageManagerService, StorageBreakdown } from '../../../shared/services/storage-manager.service';
 import { Observable, of } from 'rxjs';
+import { RequestModalComponent } from './request-modal/request-modal.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,6 +34,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private storageService = inject(StorageService);
   private storageManagerService = inject(StorageManagerService);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
   private destroy$ = new Subject<void>();
   
   storageBreakdown$: Observable<StorageBreakdown> = of({
@@ -112,5 +115,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
       case 'safe': return 'storage-safe';
       default: return 'storage-safe';
     }
+  }
+
+  openRequestModal(): void {
+    const dialogRef = this.dialog.open(RequestModalComponent, {
+      width: '700px',
+      maxWidth: '90vw',
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Request submitted:', result);
+        // This will later integrate with the GitHub issue service
+      }
+    });
   }
 }
