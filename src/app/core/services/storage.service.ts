@@ -6,6 +6,7 @@ import {
   Product,
 } from '../models';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 /**
  * Storage keys for LocalStorage
@@ -38,7 +39,7 @@ export interface DataCache<T> {
   providedIn: 'root',
 })
 export class StorageService {
-  private readonly APP_VERSION = '1.0.0';
+  private readonly APP_VERSION = environment.version;
   private readonly CACHE_LIFETIME = 300000; // 5 minutes in milliseconds
 
   // Signals for reactive state management (important for backward compatibility)

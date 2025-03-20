@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { environment } from '../environments/environment';
 
 import { NavigationComponent } from './shared/components/navigation/navigation.component';
 import { HelpPanelComponent } from './shared/components/help-panel/help-panel.component';
@@ -26,6 +27,7 @@ export class AppComponent implements OnInit {
   private navigationService = inject(NavigationService);
   private dialog = inject(MatDialog);
   title = 'traderpluseditor';
+  appVersion = environment.version;
   
   ngOnInit(): void {
     // Additional initialization can be added here if needed

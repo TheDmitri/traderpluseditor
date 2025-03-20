@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { environment } from '../../../../environments/environment';
 
 export type SectionId = 'getting-started' | 'external-resources' | 'about';
 
@@ -39,6 +40,7 @@ export type SectionId = 'getting-started' | 'external-resources' | 'about';
 export class HelpPanelComponent {
   // Track which section is currently expanded
   expandedSection: SectionId | null = 'getting-started';
+  appVersion = environment.version;
   
   constructor(
     public dialogRef: MatDialogRef<HelpPanelComponent>
