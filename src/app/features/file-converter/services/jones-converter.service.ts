@@ -212,7 +212,7 @@ export class JonesConverterService {
           
           // Convert quantity string to appropriate values based on Jones format
           let maxStock = 100;  // Default values
-          let tradeQuantity = 1;
+          const tradeQuantity = 1;
           
           // Handle special quantity values
           if (product.quantity === '*') {
