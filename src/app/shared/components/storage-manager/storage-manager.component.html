@@ -1,0 +1,257 @@
+<div class="storage-manager-container">
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h1 class="page-title">Storage Manager</h1>
+        <p class="subtitle">
+          Manage saved file sets and their associated files.
+        </p>
+        <div class="action-buttons">
+          <!-- Primary action: Create new currency type -->
+          <button
+            class="custom-stroked-button color-primary with-icon"
+            (click)="createAppDataFileSet()"
+            [disabled]="!hasAnyAppData"
+            matTooltip="Create a file set from your current app data"
+          >
+          <mat-icon>add_circle</mat-icon>
+          Create new Set from App
+          </button>
+        </div>
+      </div>
+      <div class="header-right">
+        <button
+          class="custom-stroked-button color-warn with-icon"
+          [matMenuTriggerFor]="dangerMenu"
+          matTooltip="Dangerous operations"
+          [disabled]="savedFileSets.length == 0"
+        >
+          <mat-icon>warning</mat-icon>
+          Danger Zone
+        </button>
+        <mat-menu #dangerMenu="matMenu">
+          <!-- Delete by type options -->
+          <button
+            mat-menu-item
+            (click)="deleteFileSetsByType('app-data')"
+            [disabled]="!groupedFileSets['app-data'] || groupedFileSets['app-data'].length === 0"
+            matTooltip="Delete all App Data file sets"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon-error">app_registration</mat-icon>
+            <span>Delete All App Data Sets</span>
+          </button>
+          <button
+            mat-menu-item
+            (click)="deleteFileSetsByType('traderplus')"
+            [disabled]="!groupedFileSets['traderplus'] || groupedFileSets['traderplus'].length === 0"
+            matTooltip="Delete all TraderPlus v1 file sets"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon-error">storefront</mat-icon>
+            <span>Delete All TraderPlus v1 Sets</span>
+          </button>
+          <button
+            mat-menu-item
+            (click)="deleteFileSetsByType('expansion')"
+            [disabled]="!groupedFileSets['expansion'] || groupedFileSets['expansion'].length === 0"
+            matTooltip="Delete all Expansion Trader file sets"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon-error">extension</mat-icon>
+            <span>Delete All Expansion Sets</span>
+          </button>
+          <button
+            mat-menu-item
+            (click)="deleteFileSetsByType('jones')"
+            [disabled]="!groupedFileSets['jones'] || groupedFileSets['jones'].length === 0"
+            matTooltip="Delete all Dr. Jones Trader file sets"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon-error">local_mall</mat-icon>
+            <span>Delete All Dr. Jones Sets</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button
+            mat-menu-item
+            (click)="clearAllSavedFileSets()"
+            matTooltip="Remove all file sets permanently"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon-error">delete_forever</mat-icon>
+            <span>Clear All File Sets</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  </header>
+  
+  <div class="main-content-area">
+    <!-- Storage Usage Section -->
+    <div class="data-card storage-stats-panel">
+      <mat-card-content>
+        <!-- Storage Usage Header - simplified without progress bar -->
+        <div class="storage-usage-header">
+          <div class="usage-info">
+            <mat-icon>storage</mat-icon>
+            <h2 class="section-title">
+              Local Storage Usage
+            </h2>
+          </div>
+          <div class="storage-limit-info"
+          [ngClass]="getStoragePercentageClass()"
+          >
+          {{ storageBreakdown?.total || 0 | fileSize }} /
+          {{ storageBreakdown?.limit || 10485760 | fileSize }}
+          </div>
+        </div>
+
+        <!-- Storage Breakdown -->
+        <div class="modern-breakdown">
+            <!-- Storage Type Cards -->
+            <div class="storage-cards">
+              <!-- File Sets Card -->
+              <div class="storage-card" [class.active]="hoveredCardIndex === 0" (mouseenter)="hoveredCardIndex = 0" (mouseleave)="hoveredCardIndex = -1">
+                <div class="card-indicator file-sets"></div>
+                <div class="card-content">
+                  <div class="card-title">Saved File Sets</div>
+                  <div class="card-details">
+                    <div class="card-size">{{ storageBreakdown?.fileSets || 0 | fileSize }}</div>
+                    <div class="card-percentage">{{ getPercentage(storageBreakdown?.fileSets || 0, storageBreakdown?.limit || 1) }}%</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- App Data Card -->
+              <div class="storage-card" [class.active]="hoveredCardIndex === 1" (mouseenter)="hoveredCardIndex = 1" (mouseleave)="hoveredCardIndex = -1">
+                <div class="card-indicator app-data"></div>
+                <div class="card-content">
+                  <div class="card-title">App Data</div>
+                  <div class="card-details">
+                    <div class="card-size">{{ storageBreakdown?.appData?.total || 0 | fileSize }}</div>
+                    <div class="card-percentage">{{ getPercentage(storageBreakdown?.appData?.total || 0, storageBreakdown?.limit || 1) }}%</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Other Storage Card -->
+              <div class="storage-card" [class.active]="hoveredCardIndex === 2" (mouseenter)="hoveredCardIndex = 2" (mouseleave)="hoveredCardIndex = -1">
+                <div class="card-indicator other"></div>
+                <div class="card-content">
+                  <div class="card-title">Converter Data</div>
+                  <div class="card-details">
+                    <div class="card-size">{{ storageBreakdown?.other || 0 | fileSize }}</div>
+                    <div class="card-percentage">{{ getPercentage(storageBreakdown?.other || 0, storageBreakdown?.limit || 1) }}%</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Free Space Card -->
+              <div class="storage-card" [class.active]="hoveredCardIndex === 3" (mouseenter)="hoveredCardIndex = 3" (mouseleave)="hoveredCardIndex = -1">
+                <div class="card-indicator free"></div>
+                <div class="card-content">
+                  <div class="card-title">Free Space</div>
+                  <div class="card-details">
+                    <div class="card-size">{{ (storageBreakdown?.limit || 0) - (storageBreakdown?.total || 0) | fileSize }}</div>
+                    <div class="card-percentage">{{ getPercentage((storageBreakdown?.limit || 0) - (storageBreakdown?.total || 0), storageBreakdown?.limit || 1) }}%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </mat-card-content>
+    </div>
+
+    <!-- Saved File Sets Section -->
+    <ng-container *ngIf="savedFileSets.length === 0; else fileSetsList">
+      <div class="data-card empty-state-card">
+        <mat-card-content>
+          <div class="empty-state-container">
+            <mat-icon class="empty-state-icon">storage</mat-icon>
+            <h2 class="empty-state-title">No Saved File Sets</h2>
+            <p class="empty-state-message">
+              Convert files in the File Converter and save them to localStorage
+              to access them later. You can also create products, categories, or
+              configure settings in the app to create file sets from your data.
+            </p>
+          </div>
+        </mat-card-content>
+      </div>
+    </ng-container>
+
+    <ng-template #fileSetsList>
+      <!-- File Sets Grid Layout -->
+      <div class="file-sets-grid">
+        <!-- File Sets by Type -->
+        <ng-container *ngFor="let sourceKey of getSortedKeys(groupedFileSets)">
+          <div class="data-card file-sets-panel" [ngClass]="'source-' + sourceKey">
+            <div class="file-sets-header">
+              <div class="source-info">
+                <mat-icon>{{ getSourceIcon(sourceKey) }}</mat-icon>
+                <h2 class="section-title">
+                  {{ getSourceDisplayName(sourceKey) }}
+                </h2>
+              </div>
+              <div class="source-stats">
+                {{ groupedFileSets[sourceKey].length }} sets
+              </div>
+            </div>
+
+            <mat-card-content class="file-sets-content">
+              <mat-list class="file-sets-list">
+                <mat-list-item
+                  *ngFor="let fileSet of groupedFileSets[sourceKey]"
+                  class="file-set-item"
+                >
+                  <mat-icon matListItemIcon>description</mat-icon>
+                  <div matListItemTitle>
+                    {{ fileSet.name }}
+                    <mat-icon *ngIf="isCompressed(fileSet)" 
+                      matTooltip="This file set is compressed" 
+                      class="compression-icon"
+                      inline>
+                      compress
+                    </mat-icon>
+                  </div>
+                  <div matListItemLine>
+                    {{ fileSet.fileCount }} files |
+                    {{ fileSet.totalSize | fileSize }} 
+                    <span *ngIf="isCompressed(fileSet)">
+                      | Compressed: {{ fileSet.compressedSize || 0 | fileSize }}
+                      <span class="compression-savings">({{ getCompressionDetails(fileSet) }})</span>
+                    </span>
+                  </div>
+                  <div matListItemLine class="date-line">
+                    Saved {{ formatDate(fileSet.createdAt) }}
+                  </div>
+                  <div matListItemMeta>
+                    <div class="file-set-actions">
+                      <button
+                        type="button"
+                        class="custom-icon-btn icon-btn-primary"
+                        (click)="
+                          downloadSavedFileSet(fileSet); $event.stopPropagation()
+                        "
+                        matTooltip="Download"
+                      >
+                        <mat-icon>download</mat-icon>
+                      </button>
+                      <button
+                        type="button"
+                        class="custom-icon-btn icon-btn-warn"
+                        (click)="deleteSavedFileSet(fileSet, $event)"
+                        matTooltip="Delete"
+                      >
+                        <mat-icon>delete_forever</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                </mat-list-item>
+              </mat-list>
+            </mat-card-content>
+          </div>
+        </ng-container>
+      </div>
+    </ng-template>
+  </div>
+</div>

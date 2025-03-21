@@ -1,0 +1,55 @@
+/* Custom Expansion Panel Styling */
+.custom-expansion-panel {
+
+  mat-expansion-panel {
+    background: linear-gradient(
+      135deg,
+      var(--brush-background-elevated),
+      var(--brush-background-body)
+    );
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .mat-expansion-panel-header {
+      padding: 0 16px;
+      height: 54px;
+
+      mat-panel-title {
+        align-items: center;
+        color: var(--brush-text-primary);
+        font-weight: 500;
+
+        mat-icon {
+          margin-right: 8px;
+          color: var(--brush-text-secondary);
+        }
+      }
+
+      mat-panel-description {
+        color: var(--brush-text-secondary);
+        font-size: 14px;
+      }
+    }
+
+    .mat-expansion-panel-body {
+      padding: 16px;
+    }
+  }
+
+  .panel-info-text {
+    color: var(--brush-text-secondary);
+    font-style: italic;
+    margin: 8px 0;
+  }
+}
+
+/* Info box for categories, currencies, etc. */
+.panel-info-text {
+  padding: 12px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid var(--brush-text-info);
+}

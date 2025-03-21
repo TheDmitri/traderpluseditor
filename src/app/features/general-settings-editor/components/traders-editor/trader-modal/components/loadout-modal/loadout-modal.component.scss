@@ -1,0 +1,151 @@
+.loadout-modal {
+
+  // Form grid layout
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+
+    // Slot dropdown takes full width but slightly narrower
+    .slot-dropdown {
+      margin-bottom: 8px;
+    }
+
+    // Class name and quantity side by side
+    .class-quantity-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .class-quantity-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+
+  // Attachments section
+  .attachments-section {
+    margin-top: 32px;
+    border-top: 1px solid var(--brush-border-subtle);
+    padding-top: 8px;
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+
+      h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: normal;
+      }
+    }
+
+    .attachment-form {
+      background-color: var(--brush-hover-overlay);
+      border-radius: 8px;
+      padding: 16px;
+
+      .attachment-form-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 12px;
+
+        // Make class name and quantity side by side
+        mat-form-field:first-child {
+          grid-column: 1;
+        }
+
+        mat-form-field:nth-child(2) {
+          grid-column: 2;
+        }
+
+        // Actions span entire row
+        .attachment-actions {
+          grid-column: span 2;
+          display: flex;
+          justify-content: flex-end;
+          gap: 8px;
+        }
+
+        @media (max-width: 400px) {
+          grid-template-columns: 1fr;
+
+          mat-form-field:first-child,
+          mat-form-field:nth-child(2) {
+            grid-column: span 1;
+          }
+
+          .attachment-actions {
+            grid-column: span 1;
+          }
+        }
+      }
+    }
+
+    .attachments-list {
+        margin-top: 16px;
+        
+      .no-attachments {
+        text-align: center;
+        padding: 12px;
+        background-color: rgba(0, 0, 0, 0.04);
+        border-radius: 4px;
+        color: var(--brush-text-secondary);
+        font-style: italic;
+        font-size: 0.9rem;
+      }
+
+      .attachments-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        .attachment-chip {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          background: linear-gradient(
+            135deg,
+            var(--brush-background-body),
+            var(--brush-background-elevated)
+          );
+          border-radius: 16px;
+          padding: 4px 8px 4px 16px;
+          box-shadow: var(--brush-shadow-light);
+
+          .attachment-class {
+            font-weight: 500;
+            margin-right: 4px;
+          }
+
+          .attachment-quantity {
+            color: var(--brush-text-secondary);
+            font-size: 0.9rem;
+          }
+
+          .attachment-actions {
+            display: flex;
+            margin-left: 4px;
+
+            button {
+              width: 24px;
+              height: 24px;
+              line-height: 24px;
+
+              mat-icon {
+                font-size: 20px;
+                width: 20px;
+                height: 20px;
+                line-height: 20px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

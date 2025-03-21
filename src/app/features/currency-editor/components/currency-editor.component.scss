@@ -1,0 +1,156 @@
+// Main container for the currency editor
+// Uses CSS Grid for layout with consistent spacing
+.currency-editor-container {
+  padding: 32px;
+  max-width: 1800px;
+  margin: 0 auto;
+  display: grid;
+  gap: 32px;
+  
+  // Currency count column styling
+  // Left alignment for better readability of numeric values
+  .currency-count {
+    text-align: start;
+  }
+
+  // Expandable section for currencies within a currency type
+  // Provides consistent padding and hierarchy through typography
+  .currencies-container {
+    padding: 16px 24px 24px;
+    
+    // Section title styling with appropriate spacing
+    .currencies-title {
+      margin: 0 0 16px;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--brush-text-primary);
+    }
+    
+    // Table for displaying individual currencies
+    // Consistent with main table styling but emphasizes value field
+    .currency-table {
+      width: 100%;
+      margin-bottom: 16px;
+      
+      // Special styling for currency value to highlight importance
+      .value-cell {
+        font-family: monospace; // Better alignment of numeric values
+        color: var(--brush-success);
+        font-weight: 500;
+      }
+    }
+    
+    // Container for actions below the currencies table
+    // Right-aligned to match table action columns
+    .currency-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 16px;
+    }
+  }
+  
+  // Styling for rows being edited
+  // Subtle background highlight to indicate edit state
+  .editing-row {
+    background-color: rgba(33, 150, 243, 0.05);
+  }
+  
+  // Non-editable cell display styling
+  .display-value {
+    padding: 8px 0;
+  }
+  
+  // Styling for inline editing components
+  // Combines input, validation, and action buttons
+  .edit-mode {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    // Form field takes most space while keeping buttons visible
+    .inline-editor {
+      flex: 1;
+      margin-bottom: -1.34em; // Compensates for Material form field margin
+      width: 100%;
+      min-width: 150px;
+    }
+    
+    // Container for save/cancel buttons
+    .edit-actions {
+      display: flex;
+      align-items: center;
+      
+      button {
+        margin-left: 4px;
+      }
+    }
+    
+    // Remove extra padding from Material form fields
+    mat-form-field {
+      ::ng-deep .mat-form-field-wrapper {
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  // Table layout and column-specific styling
+  .table-container {
+    table {
+      width: 100%;
+      
+      // Column width distribution for optimal data display
+      .mat-column-currencyName {
+        min-width: 180px;
+        flex: 2; // Takes more space as it's the primary identifier
+      }
+      
+      .mat-column-currencyCount {
+        min-width: 120px;
+        flex: 0.8;
+        text-align: start;
+      }
+      
+      .mat-column-actions {
+        min-width: 150px;
+        flex: 1;
+      }
+      
+      .currency-count {
+        min-width: 100px;
+        text-align: start;
+      }
+    }
+  }
+}
+
+/* Responsive Adjustments */
+// Medium screens - reduce padding to utilize space better
+@media (max-width: 960px) {
+  .currency-editor-container {
+    padding: 16px;
+  }
+}
+
+// Small tablets and large phones - adjust layout for readability
+@media (max-width: 768px) {
+  .currency-editor-container {
+    
+    // Hide less important columns to focus on key data
+    .table-container {
+      .mat-column-currencyCount {
+        display: none;
+      }
+    }
+  }
+}
+
+// Small phones - maximize space for content
+@media (max-width: 480px) {
+  .currency-editor-container {
+    
+    // Reduce padding to maximize content area
+    .currencies-container {
+      padding: 12px;
+    }
+  }
+}

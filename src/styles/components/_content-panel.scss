@@ -1,0 +1,75 @@
+/**
+ * Content Panel Component
+ * ========================================================================== 
+ * This file contains styling for standard content panels used to contain 
+ * main content sections across the application.
+ *
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Panel backgrounds, borders, containers (neutral colors)
+ * - 30%: Supporting text, secondary elements (secondary colors)
+ * - 10%: Accent elements, interactive components (primary/accent colors)
+ */
+
+.content-panel {
+  background-color: var(
+    --brush-background-elevated
+  ); // 60% - structural background
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid var(--brush-border-subtle); // 60% - subtle border for structure
+
+  // Main content area of the panel
+  .panel-body {
+    color: var(--brush-text-primary); // 60% - primary text for main content
+
+    // Text styling within panel body
+    p {
+      margin-top: 0;
+      line-height: var(--line-height-normal); // Ensures proper text readability
+    }
+  }
+
+  // Optional footer section, often containing action buttons
+  .panel-footer {
+    display: flex;
+    justify-content: flex-end; // Right-aligns buttons (common pattern)
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--brush-divider); // 60% - subtle divider for visual separation
+
+    // Consistent button spacing
+    button:not(:last-child) {
+      margin-right: 12px;
+    }
+  }
+}
+
+// Panel header section with title and actions
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  // Main heading styling
+  h3 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-medium);
+    margin: 0;
+    color: var(--brush-text-primary); // 60% - primary text
+  }
+
+  // Optional subtitle for additional context
+  .panel-subtitle {
+    color: var(--brush-text-secondary); // 30% - supporting text
+    font-size: var(--font-size-base);
+    margin: 4px 0 0;
+  }
+
+  // Container for action buttons in header
+  .panel-actions {
+    display: flex;
+    gap: 8px; // Consistent spacing between action buttons
+  }
+}

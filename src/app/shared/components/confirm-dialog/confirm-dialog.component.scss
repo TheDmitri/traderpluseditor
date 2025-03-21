@@ -1,0 +1,36 @@
+.dialog-title {
+  display: flex !important;
+  align-items: center !important;
+  padding-bottom: 12px !important;
+  
+  .dialog-icon {
+    margin-right: 16px;
+
+    // Type-specific icon colors
+    &.info {
+      color: var(--color-info);
+    }
+    
+    &.warning {
+      color: var(--color-warning);
+    }
+    
+    &.danger {
+      color: var(--color-danger);
+    }
+    
+    &.success {
+      color: var(--color-success);
+    }
+  }
+}
+
+.dialog-content {
+  .dialog-primary-text {
+    white-space: pre-line;
+  }
+  
+  .dialog-secondary-text {
+    white-space: pre-line;
+  }
+}

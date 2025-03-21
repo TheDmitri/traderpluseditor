@@ -1,0 +1,273 @@
+/**
+ * Material Button Component Styling
+ * ========================================================================== 
+ * This file contains styling for Angular Material button components including
+ * raised, stroked, flat, and icon buttons used throughout the application.
+ *
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Button structure, containers, disabled states (neutral colors)
+ * - 30%: Secondary button variants, hover states (secondary colors)
+ * - 10%: Primary button variants, interactive states, focus (primary/accent colors)
+ */
+
+/* Material Button Customization
+ * ========================================================================== 
+ * Overrides default Material button styling to match application design system
+ * Includes primary, secondary, warning, and light variants with consistent interaction states
+ */
+.mat-mdc-raised-button,
+.mat-mdc-button {
+  // Primary action button - main call to action (10% of UI)
+  &.mat-primary {
+    background-color: var(--brush-button-primary-background) !important; // 10% - primary accent color
+    color: var(--brush-button-primary-text) !important; // Text color for contrast
+
+    // Interactive states for visual feedback
+    &:hover {
+      background-color: var(--brush-button-primary-hover) !important; // 10% - lighter primary for hover
+    }
+
+    &:active {
+      background-color: var(--brush-button-primary-active) !important; // 10% - darker primary for active
+    }
+
+    // Accessibility focus indicator - critical for keyboard navigation
+    &:focus:not(:active) {
+      outline: 2px solid var(--brush-button-focus-ring) !important; // 10% - focus indicator
+      outline-offset: 2px;
+    }
+
+    // Disabled state uses neutral colors (60% of UI) for reduced visibility
+    &:disabled {
+      background-color: var(--brush-button-disabled-background) !important; // 60% - muted container
+      color: var(--brush-button-disabled-text) !important; // 60% - muted text
+    }
+  }
+
+  // Secondary buttons - supporting actions (30% of UI)
+  &.mat-accent {
+    background-color: var(--brush-button-secondary-background) !important; // 30% - secondary color
+    color: var(--brush-button-secondary-text) !important; // Contrasting text color
+
+    // Interactive states for consistent feedback
+    &:hover {
+      background-color: var(--brush-button-secondary-hover) !important; // 30% - lighter secondary for hover
+    }
+
+    &:active {
+      background-color: var(--brush-button-secondary-active) !important; // 30% - darker secondary for active
+    }
+
+    // Accessibility focus indicator
+    &:focus:not(:active) {
+      outline: 2px solid var(--brush-button-focus-ring) !important; // 10% - focus indicator
+      outline-offset: 2px;
+    }
+
+    // Disabled state uses neutral colors (60%)
+    &:disabled {
+      background-color: var(--brush-button-disabled-background) !important; // 60% - muted container
+      color: var(--brush-button-disabled-text) !important; // 60% - muted text
+    }
+  }
+
+  // Warning/destructive buttons (special emphasis - part of 10%)
+  &.mat-warn {
+    background-color: var(--brush-button-destructive-background) !important; // Warning color for destructive actions
+    color: white !important; // High contrast for warning actions
+
+    // Interactive states with appropriate feedback
+    &:hover {
+      background-color: var(--brush-button-destructive-hover) !important; // Lighter warning for hover
+    }
+
+    &:active {
+      background-color: var(--brush-button-destructive-active) !important; // Darker warning for active
+    }
+
+    // Accessibility focus indicator with warning-specific color
+    &:focus:not(:active) {
+      outline: 2px solid var(--color-error-light) !important; // Warning-specific focus
+      outline-offset: 2px;
+    }
+
+    // Disabled state
+    &:disabled {
+      background-color: var(--brush-button-disabled-background) !important; // 60% - muted container
+      color: var(--brush-button-disabled-text) !important; // 60% - muted text
+    }
+  }
+
+  // Light variant for use on dark backgrounds (part of 60% structural)
+  &.light-button {
+    background-color: var(--color-neutral-lightest) !important; // Light background for dark contexts
+    color: var(--brush-text-primary-on-light) !important; // Dark text for contrast
+
+    // Interactive states adapted for light buttons
+    &:hover {
+      background-color: var(--color-neutral-light) !important; // Slightly darker on hover
+    }
+
+    &:active {
+      background-color: var(--color-neutral-medium) !important; // Even darker on active
+    }
+
+    // Accessibility focus indicator for light buttons
+    &:focus:not(:active) {
+      outline: 2px solid var(--brush-focus-outline-light) !important; // Light-specific focus
+      outline-offset: 2px;
+    }
+
+    // Disabled state for light buttons
+    &:disabled {
+      background-color: var(--brush-button-disabled-background-light) !important; // Light disabled state
+      color: var(--brush-button-disabled-text) !important; // Muted text
+    }
+  }
+}
+
+/* Button Size Variants
+ * ========================================================================== 
+ * Different size options for varying button prominence
+ */
+.mat-mdc-raised-button,
+.mat-mdc-button {
+  // Small button for compact UIs
+  &.button-sm {
+    height: 32px !important;
+    line-height: 32px !important;
+    padding: 0 12px !important;
+    font-size: var(--font-size-sm) !important;
+    
+    .mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+  }
+
+  // Large button for prominent actions
+  &.button-lg {
+    height: 48px !important;
+    line-height: 48px !important;
+    padding: 0 24px !important;
+    font-size: var(--font-size-lg) !important;
+    
+    .mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+  }
+}
+
+/* Icon Buttons
+ * ========================================================================== 
+ * Material icon buttons for compact actions
+ */
+.mat-mdc-icon-button {
+  // Base icon button styling
+  width: 40px !important;
+  height: 40px !important;
+  padding: 8px !important;
+  transition: all var(--transition-normal) var(--transition-timing) !important;
+  border-radius: 4px !important;
+  
+  // Primary icon button (10% emphasis)
+  &.mat-primary {
+    color: var(--color-primary-medium) !important; // 10% - primary accent
+    
+    &:hover {
+      background-color: var(--color-primary-transparent-10) !important;
+    }
+    
+    &:active {
+      background-color: var(--color-primary-transparent-20) !important;
+    }
+  }
+  
+  // Secondary icon button (30% supporting)
+  &.mat-accent {
+    color: var(--color-secondary-medium) !important; // 30% - secondary color
+    
+    &:hover {
+      background-color: var(--color-secondary-transparent-10) !important;
+    }
+    
+    &:active {
+      background-color: var(--color-secondary-transparent-20) !important;
+    }
+  }
+  
+  // Warning icon button (part of 10% emphasis)
+  &.mat-warn {
+    color: var(--color-error-medium) !important; // Warning color
+    
+    &:hover {
+      background-color: var(--color-error-transparent-50) !important;
+    }
+    
+    &:active {
+      background-color: var(--color-error-transparent-50) !important;
+    }
+  }
+  
+  // Disabled state (60% neutral)
+  &:disabled {
+    color: var(--brush-button-disabled-text) !important; // 60% - muted icon
+    background-color: transparent !important;
+    cursor: not-allowed;
+  }
+  
+  // Light variant for dark backgrounds (part of 60% structural)
+  &.light-icon {
+    color: var(--color-neutral-lightest) !important; // Light icon for dark backgrounds
+    
+    &:hover {
+      background-color: var(--brush-hover-overlay) !important; // Subtle light overlay
+    }
+    
+    &:active {
+      background-color: var(--brush-active-overlay) !important;
+    }
+  }
+  
+  // Focus state for accessibility
+  &:focus:not(:active) {
+    outline: 2px solid var(--brush-button-focus-ring) !important; // 10% - focus indicator
+    outline-offset: 2px;
+  }
+}
+
+/* Button Layout Helpers
+ * ========================================================================== 
+ * Utilities for button positioning and spacing
+ */
+.button-group {
+  display: flex;
+  gap: 8px;
+  
+  // Right-aligned button group
+  &.right-aligned {
+    justify-content: flex-end;
+  }
+  
+  // Centered button group
+  &.centered {
+    justify-content: center;
+  }
+  
+  // Evenly spaced button group
+  &.spread {
+    justify-content: space-between;
+  }
+  
+  // Stacked vertical button group
+  &.vertical {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,100 @@
+/* Material Snackbars
+========================================================================== */
+/**
+ * Notification System
+ * 
+ * Snackbars provide brief messages about app processes.
+ * Each variant uses the appropriate semantic color:
+ * - Success: Green palette (positive feedback)
+ * - Warning: Orange/Yellow palette (caution)
+ * - Error: Red palette (critical issues)
+ * - Info: Blue palette (neutral information)
+ */
+
+/**
+ * Snackbar Variants
+ * 
+ * Each variant has specific colors based on the message context
+ * with appropriate text colors for readability
+ */
+.mat-mdc-snack-bar-container {
+  // Success snackbar - Green
+  &.success-snackbar {
+    --mdc-snackbar-container-color: var(
+      --brush-status-success-background
+    ) !important;
+    --mdc-snackbar-supporting-text-color: var(
+      --brush-status-success-text
+    ) !important;
+
+    .mat-mdc-button {
+      color: var(--color-success-lightest) !important;
+    }
+  }
+
+  // Warning snackbar - Orange/Yellow
+  &.warning-snackbar {
+    --mdc-snackbar-container-color: var(
+      --brush-status-warning-background
+    ) !important;
+    --mdc-snackbar-supporting-text-color: var(
+      --brush-status-warning-text
+    ) !important;
+
+    .mat-mdc-button {
+      color: var(--color-warning-lightest) !important;
+    }
+  }
+
+  // Error snackbar - Red
+  &.error-snackbar {
+    --mdc-snackbar-container-color: var(
+      --brush-status-error-background
+    ) !important;
+    --mdc-snackbar-supporting-text-color: var(
+      --brush-status-error-text
+    ) !important;
+
+    .mat-mdc-button {
+      color: var(--color-error-lightest) !important;
+    }
+  }
+
+  // Info snackbar - Blue
+  &.info-snackbar {
+    --mdc-snackbar-container-color: var(
+      --brush-status-info-background
+    ) !important;
+    --mdc-snackbar-supporting-text-color: var(
+      --brush-status-info-text
+    ) !important;
+
+    .mat-mdc-button {
+      color: var(--color-info-lightest) !important;
+    }
+  }
+
+  // Default/Neutral snackbar - Gray
+  &.default-snackbar {
+    --mdc-snackbar-container-color: var(
+      --brush-status-neutral-background
+    ) !important;
+    --mdc-snackbar-supporting-text-color: var(
+      --brush-status-neutral-text
+    ) !important;
+
+    .mat-mdc-button {
+      color: var(--color-neutral-lightest) !important;
+    }
+  }
+}
+
+// Global positioning override
+.custom-snackbar {
+  position: fixed !important;
+  top: 68px !important;
+  right: 24px !important;
+  left: unset !important;
+  bottom: unset !important;
+  margin: 0 !important;
+}

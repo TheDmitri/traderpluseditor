@@ -1,45 +1,46 @@
 <div class="navigation-container">
   <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav 
-      #sidenav 
-      mode="side" 
-      [opened]="true" 
+    <mat-sidenav
+      #sidenav
+      mode="side"
+      [opened]="true"
       class="sidenav"
-      [ngClass]="isExpanded() ? 'expanded' : 'collapsed'">
-      
-      <div class="sidenav-header">
-        @if (isExpanded()) {
-          <button mat-icon-button class="toggle-button" (click)="toggleSidebar()" matTooltip="Collapse menu" matTooltipPosition="right">
-            <mat-icon>chevron_left</mat-icon>
-          </button>
-        }
-      </div>
-      
-      <div class="sidenav-content">
-        <mat-nav-list>
-          @for (item of navItems; track item.route) {
-            <a mat-list-item [routerLink]="item.route" routerLinkActive="active-link" [matTooltip]="!isExpanded() ? item.label : ''" matTooltipPosition="right">
+      [ngClass]="isExpanded() ? 'expanded' : 'collapsed'"
+    >
+      <div class="sidenav-wrapper">
+        <div class="sidenav-content custom-scrollbar">
+          <mat-nav-list>
+            @for (item of getVisibleNavItems(); track item.route) {
+            <button
+              mat-stroked-button
+              [routerLink]="item.route"
+              routerLinkActive="active-link"
+              [matTooltip]="!isExpanded() ? item.label : ''"
+              matTooltipPosition="right"
+              class="nav-item"
+            >
               <div class="nav-item-content">
                 <div class="nav-icon-wrapper">
                   <mat-icon>{{ item.icon }}</mat-icon>
                 </div>
                 @if (isExpanded()) {
-                  <span class="nav-item-label">{{ item.label }}</span>
+                <span class="nav-item-label">{{ item.label }}</span>
                 }
               </div>
-            </a>
-          }
-        </mat-nav-list>
-      </div>
-      
-      <div class="sidenav-footer">
+              <div class="nav-item-active-indicator"></div>
+            </button>
+            }
+          </mat-nav-list>
+        </div>
+
         @if (isExpanded()) {
-          <span class="version-text">v1.0</span>
+        <!-- <div class="sidenav-footer">
+        </div> -->
         }
       </div>
     </mat-sidenav>
-    
-    <mat-sidenav-content [ngClass]="isExpanded() ? 'content-expanded' : 'content-collapsed'">
+
+    <mat-sidenav-content [ngClass]="getContentClass()">
       <div class="content">
         <router-outlet></router-outlet>
       </div>

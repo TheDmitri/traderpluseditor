@@ -10,6 +10,8 @@
 /node_modules
 npm-debug.log
 yarn-error.log
+.npm
+.npmrc
 
 # IDEs and editors
 .idea/
@@ -40,3 +42,11 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Debug files
+debug.log

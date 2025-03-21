@@ -1,176 +1,309 @@
+/* Navigation Container
+========================================================================== */
 .navigation-container {
   height: 100%;
-  width: 100%;
-}
 
-.sidenav-container {
-  height: 100%;
-}
+  // Main sidenav container
+  .sidenav-container {
+    height: 100%;
 
-.sidenav {
-  width: 260px;
-  background-color: #1e1e1e;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-  transition: width 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  
-  &.collapsed {
-    width: 70px;
-    
-    .nav-icon-wrapper {
-      margin: 0 auto;
-    }
-    
-    .sidenav-header {
-      justify-content: center;
-      padding: 16px 4px;
+    // Sidenav panel styling
+    .sidenav {
+      width: 230px;
+      background-color: var(--brush-sidebar-background);
+      border-right: 1px solid var(--brush-border-subtle);
+      transition: width var(--transition-normal) var(--transition-timing);
+
+      // Collapsed state
+      &.collapsed {
+        width: 80px;
+      }
+      
+      // Wrapper to enable flex layout for content and footer
+      .sidenav-wrapper {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
     }
   }
 }
 
-.sidenav-header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  height: 64px;
-  position: relative;
-}
-
-.toggle-button {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  position: absolute;
-  top: 16px;
-  right: -12px;
-  z-index: 100;
-  background-color: #1e1e1e;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-}
-
+/* Sidenav Content Area
+========================================================================== */
 .sidenav-content {
   flex: 1;
+  max-height: calc(100% - 56px); // Account for footer height
   overflow-y: auto;
-  padding-top: 8px;
-  
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  
-  /* Hide scrollbar for IE, Edge and Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
 }
 
+/* Navigation Items
+========================================================================== */
 mat-nav-list {
   padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
   
-  a {
-    height: 56px;
+  // Navigation item styling
+  .nav-item {
+    height: 54px;
     margin: 4px 8px;
+    width: calc(100% - 16px);
     border-radius: 8px;
-    transition: all 0.2s ease;
+    transition: all var(--transition-fast) var(--transition-timing);
     overflow: hidden;
+    position: relative;
+    justify-content: flex-start;
+    border: none !important;
+    background-color: transparent;
     
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.05) !important;
+    // Element that indicates active state
+    .nav-item-active-indicator {
+      position: absolute;
+      left: 0;
+      top: -2px;
+      bottom: -2px;
+      width: 3px;
+      border-radius: 6px 0 0 6px;
+      transform: scaleY(0);
+      transition: transform var(--transition-fast) var(--transition-timing), 
+                  background-color var(--transition-fast) var(--transition-timing);
+      background: var(--color-primary-medium);
+      transform-origin: center left;
     }
     
-    &.active-link {
-      background-color: rgba(121, 134, 203, 0.15) !important;
-      border-left: 4px solid #7986cb;
+    // Inactive state - neutral styling
+    .nav-icon-wrapper {
+      background-color: transparent;
       
+      mat-icon {
+        color: var(--brush-text-secondary);
+        transition: color var(--transition-fast) cubic-bezier(0.4, 0, 0.2, 1), 
+                    transform var(--transition-fast) cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+    }
+    
+    .nav-item-label {
+      color: var(--brush-text-secondary);
+      font-weight: 400;
+      transition: color var(--transition-fast) var(--transition-timing),
+                  transform var(--transition-fast) cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform: translateX(0);
+    }
+    
+    // Interactive states
+    &:hover {
+      background-color: var(--brush-hover-overlay);
+
       .nav-icon-wrapper {
-        background: linear-gradient(135deg, #3f51b5, #7986cb);
+        background-color: var(--brush-hover-overlay);
         
         mat-icon {
-          color: white !important;
+          color: var(--brush-text-primary);
+          transform: scale(1.1);
+        }
+      }
+
+      .nav-item-label {
+        color: var(--brush-text-primary);
+        transform: translateX(4px);
+      }
+    }
+    
+    &:active {
+      background-color: var(--brush-pressed-overlay);
+      
+      .nav-icon-wrapper {
+        background-color: var(--brush-pressed-overlay);
+      }
+      
+      .nav-item-active-indicator {
+        transform: scaleY(0.05);
+        background: var(--color-primary-medium);
+      }
+    }
+    
+    // Remove the focus outline that remains after clicking
+    &:focus {
+      outline: none;
+    }
+    
+    // Route active state (current page)
+    &.active-link {
+      position: relative;
+      background-color: var(--brush-active-overlay);
+      
+      .nav-item-active-indicator {
+        transform: scaleY(1);
+        background: linear-gradient(to bottom,
+          var(--color-primary-medium),
+          var(--color-primary-light));
+      }
+      
+      .nav-icon-wrapper {
+        background-color: transparent;
+        
+        mat-icon {
+          color: var(--color-primary-medium);
         }
       }
       
       .nav-item-label {
-        color: white;
+        color: var(--color-primary-light);
         font-weight: 500;
+      }
+
+      // Active hover state
+      &:hover {
+        background-color: var(--brush-active-overlay);
+        
+        .nav-icon-wrapper mat-icon {
+          color: var(--color-primary-light);
+        }
+      }
+    }
+
+    // Special handling for collapsed state
+    .sidenav.collapsed & {
+      display: flex;
+      justify-content: center;
+      
+      // Only apply if not active
+      &:not(.active-link) {
+        .nav-item-content {
+          justify-content: center;
+          padding: 0;
+        }
+        
+        .nav-icon-wrapper {
+          margin: 0 auto;
+        }
+      }
+      
+      // Active button in collapsed state
+      &.active-link {
+        .nav-item-content {
+          justify-content: flex-start;
+          padding-left: 12px;
+        }
       }
     }
   }
 }
 
+/* Navigation Item Content
+========================================================================== */
 .nav-item-content {
   display: flex;
   align-items: center;
   height: 100%;
-  padding: 0 16px;
+  padding: 0 12px;
+  transition: padding var(--transition-normal) var(--transition-timing), 
+              justify-content var(--transition-normal) var(--transition-timing);
   
   .sidenav.collapsed & {
-    padding: 0;
     justify-content: center;
+    padding: 0 4px;
   }
 }
 
+// Icon wrapper styling
 .nav-icon-wrapper {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.05);
-  transition: all 0.2s ease;
+  transition: all var(--transition-normal) var(--transition-timing);
+
+  mat-icon {
+    transition: color var(--transition-normal) var(--transition-timing);
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+  }
 }
 
+// Navigation item label
 .nav-item-label {
-  margin-left: 16px;
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.87);
+  margin-left: 12px;
+  font-size: var(--font-size-sm);
+  transition: color var(--transition-normal) var(--transition-timing);
+  white-space: nowrap;
+  letter-spacing: 0.1px;
 }
 
+/* Sidenav Footer
+========================================================================== */
 .sidenav-footer {
-  padding: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px;
+  border-top: 1px solid var(--brush-border-subtle);
   text-align: center;
+  background-color: var(--brush-sidebar-background);
+  margin-top: auto; /* Push to bottom */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.version-text {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+.external-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
-.content {
-  padding: 0;
-  height: 100%;
-  overflow: auto;
-}
-
-.content-expanded {
-  margin-left: 260px;
-  transition: margin-left 0.3s ease;
-}
-
-.content-collapsed {
-  margin-left: 70px;
-  transition: margin-left 0.3s ease;
-}
-
-@media (max-width: 768px) {
-  .sidenav.expanded {
-    width: 240px;
+/* Content Transition Improvements
+========================================================================== */
+mat-sidenav-content {
+  transition: margin-left var(--transition-normal) var(--transition-timing);
+  will-change: margin-left; // Optimize animations
+  display: flex;
+  flex-direction: column;
+  
+  // Applying the dominant color (60%) as per 60-30-10 rule
+  background-color: var(--brush-background-surface); // Main content area - dominant neutral tone
+  
+  &.content-expanded {
+    margin-left: 230px !important;
   }
   
-  .content-expanded {
-    margin-left: 0;
+  &.content-collapsed {
+    margin-left: 80px !important;
   }
   
-  .content-collapsed {
-    margin-left: 0;
+  // Content scrolling container
+  .content {
+    flex: 1;
+    overflow: auto;
+    padding: 24px;
+    
+    // Adding subtle elevation to content area for depth
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
   }
+}
+
+/* Animation for Route Changes
+========================================================================== */
+@keyframes nav-item-selected {
+  0% { 
+    transform: translateY(0) scaleY(0); 
+    opacity: 0;
+  }
+  50% { 
+    transform: translateY(0) scaleY(1.2); 
+    opacity: 0.7;
+  }
+  100% { 
+    transform: translateY(0) scaleY(1); 
+    opacity: 1;
+  }
+}
+
+.active-link .nav-item-active-indicator {
+  animation: nav-item-selected 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }

@@ -1,0 +1,23 @@
+.object-modal-container {
+  width: 500px;
+  max-width: 100%;
+}
+
+.object-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.vector-inputs {
+  display: flex;
+  gap: 8px;
+  
+  mat-form-field {
+    flex: 1;
+  }
+}

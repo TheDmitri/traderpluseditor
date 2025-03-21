@@ -1,0 +1,350 @@
+/* Material Theme Configuration
+========================================================================== */
+/**
+ * Angular Material Theme Integration
+ * This imports and sets up the core Material theming system
+ */
+@use "@angular/material" as mat;
+@include mat.core();
+
+/* Color System
+========================================================================== */
+/**
+ * Design Token Architecture
+ * 
+ * This application uses a multi-layer color system:
+ * 1. Base Colors: Raw color values in 5 gradations (lightest to darkest)
+ * 2. Transparent Colors: Semi-transparent variants of base colors
+ * 3. Semantic Colors: Contextual usage of colors (prefixed with "brush-")
+ * 
+ * Following the 60-30-10 rule:
+ * - 60% Background/Neutral colors (dominant)
+ * - 30% Secondary colors (supporting)
+ * - 10% Primary/Accent colors (key elements)
+ */
+:root {
+  /* Base Color Palettes (5 gradations each)
+  --------------------------------------------------------- */
+  // Background Colors (Dark Theme) - 60% of UI
+  --color-background-lightest: #424242;
+  --color-background-light: #303030;
+  --color-background-medium: #212121;
+  --color-background-dark: #1e1e1e;
+  --color-background-darkest: #121212;
+
+  // Primary Colors - 10% of UI (Call to action, key interactive elements)
+  --color-primary-lightest: #c3fdff;
+  --color-primary-light: #80deea;
+  --color-primary-medium: #26c6da;
+  --color-primary-dark: #00acc1;
+  --color-primary-darkest: #00838f;
+
+  // Secondary Colors - 30% of UI (Supporting elements)
+  --color-secondary-lightest: #ffecb3;
+  --color-secondary-light: #ffcc80;
+  --color-secondary-medium: #ffb74d;
+  --color-secondary-dark: #ffa726;
+  --color-secondary-darkest: #ff8f00;
+
+  // Accent Colors (Highlights, selection, focus)
+  --color-accent-lightest: #ffe0b2;
+  --color-accent-light: #ffb74d;
+  --color-accent-medium: #f57c00;
+  --color-accent-dark: #e65100;
+  --color-accent-darkest: #bf360c;
+
+  // Neutral Colors (Borders, separators, non-emphasized elements)
+  --color-neutral-lightest: #e0e0e0;
+  --color-neutral-light: #bdbdbd;
+  --color-neutral-medium: #757575;
+  --color-neutral-dark: #424242;
+  --color-neutral-darkest: #212121;
+
+  /* Status Colors
+  --------------------------------------------------------- */
+  // Success - Green Palette
+  --color-success-lightest: #c8e6c9;
+  --color-success-light: #a5d6a7;
+  --color-success-medium: #4caf50;
+  --color-success-dark: #388e3c;
+  --color-success-darkest: #2e7d32;
+
+  // Error - Red Palette
+  --color-error-lightest: #ffcdd2;
+  --color-error-light: #ef9a9a;
+  --color-error-medium: #e57373;
+  --color-error-dark: #d32f2f;
+  --color-error-darkest: #b71c1c;
+
+  // Warning - Orange/Yellow Palette
+  --color-warning-lightest: #fff8e1;
+  --color-warning-light: #ffd54f;
+  --color-warning-medium: #ffca28;
+  --color-warning-dark: #ff8f00;
+  --color-warning-darkest: #ff6f00;
+
+  // Info - Blue Palette
+  --color-info-lightest: #bbdefb;
+  --color-info-light: #90caf9;
+  --color-info-medium: #64b5f6;
+  --color-info-dark: #1976d2;
+  --color-info-darkest: #0d47a1;
+
+  /* Status and Dialog Colors
+  ========================================================================== */
+  --color-info: #2196f3;
+  --color-success: #4caf50;
+  --color-warning: #ff9800;
+  --color-danger: #f44336;
+
+  /* Transparent Color Variants
+  --------------------------------------------------------- */
+  // Background Transparent
+  --color-background-transparent-10: rgba(30, 30, 30, 0.1);
+  --color-background-transparent-20: rgba(30, 30, 30, 0.2);
+  --color-background-transparent-50: rgba(30, 30, 30, 0.5);
+  --color-background-transparent-80: rgba(30, 30, 30, 0.8);
+
+  // Primary Transparent
+  --color-primary-transparent-10: rgba(0, 172, 193, 0.1);
+  --color-primary-transparent-20: rgba(0, 172, 193, 0.2);
+  --color-primary-transparent-50: rgba(0, 172, 193, 0.5);
+  --color-primary-transparent-80: rgba(0, 172, 193, 0.8);
+
+  // Secondary Transparent
+  --color-secondary-transparent-10: rgba(255, 167, 38, 0.1);
+  --color-secondary-transparent-20: rgba(255, 167, 38, 0.2);
+  --color-secondary-transparent-50: rgba(255, 167, 38, 0.5);
+  --color-secondary-transparent-80: rgba(255, 167, 38, 0.8);
+
+  // Accent Transparent
+  --color-accent-transparent-10: rgba(230, 81, 0, 0.1);
+  --color-accent-transparent-20: rgba(230, 81, 0, 0.2);
+  --color-accent-transparent-50: rgba(230, 81, 0, 0.5);
+  --color-accent-transparent-80: rgba(230, 81, 0, 0.8);
+
+  // Status Transparent
+  --color-success-transparent-50: rgba(76, 175, 80, 0.5);
+  --color-success-transparent-20: rgba(76, 175, 80, 0.2);
+  --color-error-transparent-50: rgba(211, 47, 47, 0.5);
+  --color-error-transparent-20: rgba(211, 47, 47, 0.2);
+  --color-warning-transparent-50: rgba(255, 143, 0, 0.5);
+  --color-warning-transparent-20: rgba(255, 143, 0, 0.2);
+  --color-info-transparent-50: rgba(25, 118, 210, 0.5);
+  --color-info-transparent-20: rgba(25, 118, 210, 0.2);
+
+  /* Text Colors
+  --------------------------------------------------------- */
+  --color-text-primary-light: #ffffff; 
+  --color-text-secondary-light: #e0e0e0;
+  --color-text-primary-dark: #121212; 
+  --color-text-secondary-dark: #424242;
+  --color-text-disabled: #757575;
+}
+
+/* Semantic Color System (Brushes)
+  ========================================================================== */
+/**
+ * Semantic Brushes with clear purpose-based naming
+ * 
+ * Each UI component type has its own set of brushes
+ * Naming convention: --brush-[component]-[property/state]
+ */
+:root {
+  /* Layout & Structure Brushes
+  --------------------------------------------------------- */
+  --brush-background-body: var(--color-background-dark);
+  --brush-background-surface: var(--color-background-medium);
+  --brush-background-elevated: var(--color-background-light);
+  --brush-background-overlay: var(--color-background-transparent-50);
+  --brush-border-subtle: var(--color-neutral-dark); 
+  --brush-border-moderate: var(--color-neutral-medium);
+  --brush-border-prominent: var(--color-primary-dark);
+  --brush-divider: var(--color-neutral-dark);
+  --brush-shadow-light: rgba(0, 0, 0, 0.1);
+  --brush-shadow-medium: rgba(0, 0, 0, 0.2);
+  --brush-shadow-heavy: rgba(0, 0, 0, 0.5);
+
+  /* Typography Brushes
+  --------------------------------------------------------- */
+  --brush-text-primary: var(--color-text-primary-light);
+  --brush-text-secondary: var(--color-text-secondary-light);
+  --brush-text-disabled: var(--color-text-disabled);
+  --brush-text-inverse: var(--color-text-primary-dark);
+  --brush-text-accent: var(--color-primary-light);
+  --brush-text-link: var(--color-primary-light);
+  --brush-text-link-hover: var(--color-primary-lightest);
+  --brush-text-link-visited: var(--color-secondary-light);
+  --brush-text-error: var(--color-error-light);
+  --brush-text-success: var(--color-success-light);
+  --brush-text-warning: var(--color-warning-light);
+  --brush-text-info: var(--color-info-light);
+
+  /* Button Brushes
+  --------------------------------------------------------- */
+  // Primary Buttons (Call to action)
+  --brush-button-primary-background: var(--color-primary-dark);
+  --brush-button-primary-hover: var(--color-primary-medium);
+  --brush-button-primary-active: var(--color-primary-darkest);
+  --brush-button-primary-text: var(--color-text-primary-dark);
+  --brush-button-primary-border: transparent;
+  
+  // Secondary Buttons (Common actions)
+  --brush-button-secondary-background: var(--color-secondary-dark);
+  --brush-button-secondary-hover: var(--color-secondary-medium);
+  --brush-button-secondary-active: var(--color-secondary-darkest);
+  --brush-button-secondary-text: var(--color-text-primary-dark);
+  --brush-button-secondary-border: transparent;
+  
+  // Tertiary/Text Buttons (Low emphasis)
+  --brush-button-tertiary-background: transparent;
+  --brush-button-tertiary-hover: var(--color-background-transparent-20);
+  --brush-button-tertiary-active: var(--color-background-transparent-50);
+  --brush-button-tertiary-text: var(--color-primary-light);
+  --brush-button-tertiary-border: transparent;
+  
+  // Disabled Buttons
+  --brush-button-disabled-background: var(--color-neutral-dark);
+  --brush-button-disabled-text: var(--color-text-disabled);
+  --brush-button-disabled-border: transparent;
+  
+  // Action Buttons
+  --brush-button-destructive-background: var(--color-error-dark);
+  --brush-button-destructive-hover: var(--color-error-medium);
+  --brush-button-destructive-active: var(--color-error-darkest);
+  --brush-button-success-background: var(--color-success-dark);
+  --brush-button-success-hover: var(--color-success-medium);
+  
+  // Button Focus
+  --brush-button-focus-ring: var(--color-primary-light);
+
+  /* Form Elements Brushes
+  --------------------------------------------------------- */
+  --brush-input-background: var(--color-background-medium);
+  --brush-input-background-hover: var(--color-background-light);
+  --brush-input-background-disabled: var(--color-background-dark);
+  --brush-input-border: var(--color-neutral-medium);
+  --brush-input-border-hover: var(--color-primary-medium);
+  --brush-input-border-focus: var(--color-primary-light);
+  --brush-input-border-error: var(--color-error-medium);
+  --brush-input-text: var(--color-text-primary-light);
+  --brush-input-text-disabled: var(--color-text-disabled);
+  --brush-input-placeholder: var(--color-text-secondary-light);
+  --brush-input-icon: var(--color-neutral-light);
+  --brush-label-text: var(--color-text-secondary-light);
+  --brush-checkbox-background: var(--color-background-medium);
+  --brush-checkbox-selected: var(--color-primary-medium);
+  --brush-radio-background: var(--color-background-medium);
+  --brush-radio-selected: var(--color-primary-medium);
+  --brush-switch-track: var(--color-neutral-dark);
+  --brush-switch-thumb: var(--color-neutral-light);
+  --brush-switch-track-active: var(--color-primary-transparent-50);
+  --brush-switch-thumb-active: var(--color-neutral-dark);
+  --brush-slider-track: var(--color-neutral-medium);
+  --brush-slider-thumb: var(--color-primary-medium);
+
+  /* Navigation & Menu Brushes
+  --------------------------------------------------------- */
+  --brush-nav-background: var(--color-background-dark);
+  --brush-nav-item-text: var(--color-text-secondary-light);
+  --brush-nav-item-hover: var(--color-background-light);
+  --brush-nav-item-active-text: var(--color-primary-light);
+  --brush-nav-item-active-background: var(--color-background-medium);
+  --brush-nav-item-selected: var(--color-primary-darkest);
+  --brush-nav-item-disabled: var(--color-text-disabled);
+  --brush-sidebar-background: var(--color-background-dark);
+  --brush-toolbar-background: var(--color-background-darkest);
+  --brush-menu-background: var(--color-background-light);
+  --brush-menu-item-hover: var(--color-background-lightest);
+  --brush-menu-border: var(--color-neutral-dark);
+  --brush-dropdown-background: var(--color-background-light);
+  --brush-dropdown-shadow: rgba(0, 0, 0, 0.3);
+  --brush-dropdown-item-hover: var(--color-background-lightest);
+  --brush-breadcrumb-text: var(--color-text-secondary-light);
+  --brush-breadcrumb-separator: var(--color-neutral-medium);
+  --brush-breadcrumb-current: var(--color-text-primary-light);
+
+  /* Data Display Brushes
+  --------------------------------------------------------- */
+  --brush-card-background: var(--color-background-medium);
+  --brush-card-border: var(--color-neutral-dark);
+  --brush-card-header: var(--color-background-light);
+  --brush-card-footer: var(--color-background-light);
+  --brush-table-header-background: var(--color-background-light);
+  --brush-table-header-text: var(--color-text-secondary-light);
+  --brush-table-row: var(--color-background-medium);
+  --brush-table-row-alternate: var(--color-background-dark);
+  --brush-table-row-hover: var(--color-background-light);
+  --brush-table-row-selected: var(--color-primary-transparent-20);
+  --brush-table-border: var(--color-neutral-dark);
+  --brush-list-item-hover: var(--color-background-light);
+  --brush-list-item-selected: var(--color-primary-transparent-20);
+  --brush-list-item-border: var(--color-neutral-dark);
+  --brush-chip-background: var(--color-background-light);
+  --brush-chip-border: var(--color-neutral-medium);
+  --brush-badge-background: var(--color-primary-dark);
+  --brush-tooltip-background: var(--color-background-light);
+  --brush-tooltip-text: var(--color-text-primary-light);
+  --brush-tooltip-border: var(--color-neutral-medium);
+
+  /* Dialog & Overlay Brushes
+  --------------------------------------------------------- */
+  --brush-dialog-background: var(--color-background-light);
+  --brush-dialog-header: var(--color-background-medium);
+  --brush-dialog-border: var(--color-neutral-medium);
+  --brush-dialog-shadow: rgba(0, 0, 0, 0.5);
+  --brush-drawer-background: var(--color-background-medium);
+  --brush-overlay-background: var(--color-background-transparent-80);
+  --brush-snackbar-background: var(--color-background-lightest);
+  --brush-snackbar-text: var(--color-text-primary-dark);
+  --brush-snackbar-action: var(--color-primary-dark);
+  --brush-toast-background: var(--color-background-lightest);
+  --brush-toast-text: var(--color-text-primary-dark);
+  
+  /* Status Indicator Brushes
+  --------------------------------------------------------- */
+  --brush-status-success-background: var(--color-success-dark);
+  --brush-status-success-text: white;
+  --brush-status-success-border: var(--color-success-darkest);
+  --brush-status-success-subtle: var(--color-success-transparent-50);
+  
+  --brush-status-error-background: var(--color-error-dark);
+  --brush-status-error-text: white;
+  --brush-status-error-border: var(--color-error-darkest);
+  --brush-status-error-subtle: var(--color-error-transparent-50);
+  
+  --brush-status-warning-background: var(--color-warning-dark);
+  --brush-status-warning-text: black;
+  --brush-status-warning-border: var(--color-warning-darkest);
+  --brush-status-warning-subtle: var(--color-warning-transparent-50);
+  
+  --brush-status-info-background: var(--color-info-dark);
+  --brush-status-info-text: white;
+  --brush-status-info-border: var(--color-info-darkest);
+  --brush-status-info-subtle: var(--color-info-transparent-50);
+  
+  --brush-status-neutral-background: var(--color-neutral-medium);
+  --brush-status-neutral-text: white;
+  --brush-status-neutral-border: var(--color-neutral-dark);
+
+  /* Interactive State Brushes
+  --------------------------------------------------------- */
+  --brush-hover-overlay: rgba(255, 255, 255, 0.04);
+  --brush-active-overlay: rgba(255, 255, 255, 0.08);
+  --brush-selected-overlay: rgba(255, 255, 255, 0.12);
+  --brush-focus-ring: var(--color-primary-light);
+  --brush-focus-outline: rgba(255, 255, 255, 0.24);
+  --brush-ripple-color: rgba(255, 255, 255, 0.12);
+  --brush-pressed-overlay: rgba(255, 255, 255, 0.16);
+  --brush-disabled-overlay: rgba(255, 255, 255, 0.12);
+
+  /* Progress & Loading Brushes
+  --------------------------------------------------------- */
+  --brush-progress-track: var(--color-neutral-dark);
+  --brush-progress-indicator: var(--color-primary-medium);
+  --brush-progress-buffer: var(--color-primary-transparent-20);
+  --brush-skeleton-background: var(--color-neutral-dark);
+  --brush-skeleton-highlight: var(--color-neutral-medium);
+  --brush-spinner-track: var(--color-primary-transparent-20);
+  --brush-spinner-indicator: var(--color-primary-medium);
+}

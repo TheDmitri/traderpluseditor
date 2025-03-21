@@ -1,0 +1,59 @@
+/**
+ * Slider Component Styling
+ * ========================================================================== 
+ * This file contains styling for Angular Material slider (range input) components.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Slider track background, container elements (neutral colors)
+ * - 30%: Supporting elements, label text (secondary colors)
+ * - 10%: Active track, thumb, interactive elements (primary/accent colors)
+ */
+
+/* Base Slider Styling
+ * ========================================================================== 
+ * Core styling for Material slider components with custom theming
+ */
+.mat-mdc-slider {
+  // Track styling - background/inactive portion
+  .mdc-slider__track {
+    background-color: var(--brush-slider-track) !important; // 60% - container/background element
+    
+    // Active track portion - shows selected range
+    .mdc-slider__track--active {
+      background-color: var(
+        --brush-slider-thumb
+      ) !important; // 10% - primary accent for active portion
+    }
+  }
+
+  // Thumb/handle styling - the draggable element
+  .mdc-slider__thumb {
+    background-color: var(
+      --brush-slider-thumb
+    ) !important; // 10% - primary accent for interactive element
+    border-color: var(--brush-slider-thumb) !important; // 10% - primary accent border
+
+    // Inner part of thumb element
+    .mdc-slider__thumb-knob {
+      border-color: var(
+        --brush-slider-thumb
+      ) !important; // 10% - primary accent consistent with thumb
+    }
+  }
+
+  // Disabled state - reduces visibility with neutral colors
+  &.mat-mdc-slider-disabled {
+    opacity: 0.5; // Reduces overall visibility
+    
+    .mdc-slider__track {
+      background-color: var(
+        --brush-input-text-disabled
+      ) !important; // 60% - muted container for disabled state
+    }
+
+    .mdc-slider__thumb {
+      background-color: var(
+        --brush-input-text-disabled
+      ) !important; // 60% - muted element for disabled state
+    }
+  }
+}

@@ -1,0 +1,107 @@
+<div class="currency-modal">
+  <!-- Dialog header using consistent styling with other modals -->
+  <div class="mdc-dialog__title">
+    <h2>{{ data.currencyType.currencyName }} Currencies</h2>
+  </div>
+  
+  <div class="mdc-dialog__content">
+    <!-- Expansion Panel for Adding New Currencies -->
+    <mat-expansion-panel 
+      [expanded]="expansionPanelOpen" 
+      (opened)="expansionPanelOpen = true"
+      (closed)="expansionPanelOpen = false"
+      class="add-currency-panel"
+    >
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>add_circle_outline</mat-icon>
+          <span>Add New Currency</span>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      
+      <form [formGroup]="newCurrencyForm" (ngSubmit)="addNewCurrency()">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="class-name-field">
+            <mat-label>Class Name</mat-label>
+            <input matInput formControlName="className" placeholder="e.g., TraderPlus_Money_Euro100" required>
+            <mat-error *ngIf="newCurrencyForm.get('className')?.hasError('required')">
+              Class name is required
+            </mat-error>
+            <mat-error *ngIf="newCurrencyForm.get('className')?.hasError('duplicate')">
+              This class name already exists
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="value-field">
+            <mat-label>Value</mat-label>
+            <input matInput formControlName="value" type="number" min="0" placeholder="e.g., 100" required>
+            <mat-error *ngIf="newCurrencyForm.get('value')?.hasError('required')">
+              Value is required
+            </mat-error>
+            <mat-error *ngIf="newCurrencyForm.get('value')?.hasError('min')">
+              Value must be positive
+            </mat-error>
+          </mat-form-field>
+          
+          <button 
+            type="submit" 
+            class="custom-stroked-button color-secondary with-icon add-button"
+            [disabled]="newCurrencyForm.invalid"
+          >
+            <mat-icon>add</mat-icon>
+            Add
+          </button>
+        </div>
+      </form>
+    </mat-expansion-panel>
+
+    <!-- Existing Currencies Section -->
+    <div class="current-currencies">
+      <h3 class="section-title">Current Currencies</h3>
+      
+      <div class="data-table-container" *ngIf="currencies.length > 0">
+        <table class="data-table currencies-table">
+          <thead>
+            <tr>
+              <th class="class-name-column">Class Name</th>
+              <th class="value-column">Value</th>
+              <th class="actions-column">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let currency of currencies; let i = index" class="data-row">
+              <td class="class-name-cell">{{ currency.className }}</td>
+              <td class="value-cell">{{ currency.value }}</td>
+              <td class="actions-cell">
+                <button 
+                  type="button" 
+                  class="custom-icon-btn icon-btn-warn" 
+                  (click)="removeCurrency(i)" 
+                  matTooltip="Remove currency"
+                >
+                  <mat-icon>delete</mat-icon>
+                  <div class="icon-btn-ripple"></div>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- No Data State - Informative message and call to action -->
+      <div class="empty-state-container" *ngIf="currencies.length === 0">
+        <mat-icon class="empty-state-icon">money_off</mat-icon>
+        <h2 class="empty-state-title">No currencies for this currency type</h2>
+        <p class="empty-state-message">
+          Use the form above to add new currencies
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Dialog actions matched with other modals -->
+  <div class="mdc-dialog__actions">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSave()">Save Changes</button>
+  </div>
+</div>

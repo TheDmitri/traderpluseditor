@@ -1,0 +1,88 @@
+/* Table-Specific Styling for Traders
+========================================================================== */
+.traders-section {
+  .role-label {
+    font-size: 0.9em;
+    color: var(--brush-text-secondary);
+    font-style: italic;
+    margin-left: 4px;
+  }
+
+  // Table column widths
+  .mat-column-npcId {
+    width: 80px;
+    min-width: 80px;
+  }
+
+  .mat-column-givenName {
+    min-width: 180px;
+  }
+
+  .mat-column-className {
+    min-width: 220px;
+  }
+
+  .mat-column-position {
+    min-width: 220px;
+  }
+  
+  .mat-column-actions {
+    width: 120px;
+  }
+}
+
+/* Table & Action Button Styling - For consistency
+========================================================================== */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  
+  /* Make sure tables work well on small screens */
+  @media (max-width: 600px) {
+    margin: 0 -12px;
+    width: calc(100% + 24px);
+    
+    table {
+      min-width: 500px; /* Ensures table doesn't get too compressed */
+      
+      th, td {
+        padding: 0 8px;
+      }
+    }
+  }
+}
+
+.actions-cell {
+  width: 120px;
+  
+  /* Ensure action buttons remain usable on small screens */
+  @media (max-width: 600px) {
+    .action-buttons {
+      button {
+        margin: 0 2px;
+      }
+    }
+  }
+}
+
+/* Panel Body - For consistency
+========================================================================== */
+.panel-body {
+  padding: 0;
+}
+
+/* Empty state responsive styling
+========================================================================== */
+.empty-state-container {
+  @media (max-width: 480px) {
+    padding: 24px 12px;
+    
+    .empty-state-title {
+      font-size: 1.2rem;
+    }
+    
+    .empty-state-message {
+      font-size: 0.9rem;
+    }
+  }
+}

@@ -1,0 +1,14 @@
+.product-editor-container {
+  padding: 32px;
+  max-width: 1800px;
+  margin: 0 auto;
+  display: grid;
+  gap: 32px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .product-editor-container {
+    padding: 16px;
+  }
+}

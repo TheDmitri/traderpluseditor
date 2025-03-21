@@ -1,0 +1,185 @@
+.currency-modal {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 80vh;
+  box-sizing: border-box;
+  
+  // Dialog title - matching other modal components
+  .mdc-dialog__title {
+    background-color: var(--brush-dialog-header);
+    color: var(--brush-text-primary);
+    padding: 16px 24px;
+    margin: 0;
+    border-bottom: 1px solid var(--brush-divider);
+    flex: 0 0 auto; // Don't allow flex to shrink this
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    
+    h2 {
+      margin: 0;
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-medium);
+    }
+  }
+
+  // Dialog content
+  .mdc-dialog__content {
+    padding: 24px;
+    margin: 0;
+    overflow-y: auto; // Enable vertical scrolling
+    flex: 1 1 auto; // Allow this to grow and shrink as needed
+    min-height: 0; // Required for proper flex child scrolling
+    
+    // Add currency panel styling
+    .add-currency-panel {
+      margin-bottom: 24px;
+      
+      ::ng-deep .mat-expansion-panel-header {
+        .mat-icon {
+          margin-right: 8px;
+          color: var(--color-accent-medium);
+        }
+      }
+      
+      .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 16px;
+        padding: 8px 0;
+        
+        .class-name-field {
+          flex: 2;
+          min-width: 220px;
+        }
+        
+        .value-field {
+          flex: 0 0 100px;
+          width: 100px;
+          
+          ::ng-deep .mat-form-field-infix {
+            width: auto;
+          }
+        }
+        
+        .add-button {
+          height: 48px;
+          margin-top: -36px;
+          flex: 0 0 auto;
+        }
+      }
+    }
+    
+    // Current currencies section styling
+    .current-currencies {
+      .section-title {
+        margin: 0 0 16px;
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--brush-text-primary);
+      }
+      
+      .data-table-container {
+        width: 100%;
+        max-height: 330px;
+        overflow-y: auto;
+        
+        .currencies-table {
+          width: 100%;
+          border-collapse: collapse;
+          
+          th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--brush-divider);
+            
+            &.class-name-column {
+              width: 60%;
+            }
+            
+            &.value-column {
+              width: 25%;
+            }
+            
+            &.actions-column {
+              width: 15%;
+              text-align: center;
+            }
+            
+            &.class-name-cell {
+              font-family: monospace;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+            
+            &.value-cell {
+              font-family: monospace;
+              color: var(--brush-success);
+              font-weight: 500;
+            }
+            
+            &.actions-cell {
+              text-align: center;
+            }
+          }
+          
+          th {
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--brush-text-secondary);
+            background-color: var(--brush-surface-secondary);
+          }
+          
+          .data-row {
+            transition: background-color 0.2s ease;
+            
+            &:hover {
+              background-color: var(--brush-hover-overlay);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Dialog actions - matching other modal components
+  .mdc-dialog__actions {
+    border-top: 1px solid var(--brush-divider);
+    padding: 12px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    background-color: var(--brush-dialog-header);
+    flex: 0 0 auto; // Don't allow flex to shrink this
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+  }
+}
+
+// Responsive styles
+@media (max-width: 600px) {
+  .currency-modal {
+    .mdc-dialog__content {
+      .add-currency-panel {
+        .form-row {
+          flex-direction: column;
+          
+          .class-name-field,
+          .value-field {
+            width: 100%;
+            flex: auto;
+          }
+          
+          .add-button {
+            width: 100%;
+            margin-top: 0;
+          }
+        }
+      }
+    }
+  }
+}

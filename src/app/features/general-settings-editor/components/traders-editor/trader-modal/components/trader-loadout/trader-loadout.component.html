@@ -1,0 +1,85 @@
+<div class="loadout-container">
+  <div class="panel-header">
+    <div class="panel-title-area">
+      <p class="panel-subtitle">
+        Configure the trader's loadout.</p>
+    </div>
+
+    <div class="panel-actions">
+      <button
+        type="button"
+        class="custom-stroked-button color-primary with-icon"
+        (click)="addLoadoutItem()"
+        [disabled]="getAvailableSlotsForNewItems().length === 0"
+      >
+        <mat-icon>add</mat-icon>
+        Add Loadout Item
+      </button>
+    </div>
+  </div>
+
+  <!-- Loadout Items List -->
+  <div class="loadouts-list" *ngIf="loadoutItems.length > 0">
+    <div class="loadout-item" *ngFor="let item of loadoutItems; let i = index">
+      <div class="loadout-item-header">
+        <div class="item-info">
+          <span class="slot-name">{{ item.slotName }}</span>
+          <span class="class-name">{{ item.className }}</span>
+          <span class="quantity">Qty: {{ item.quantity }}</span>
+        </div>
+
+        <div class="item-actions">
+          <button
+            type="button"
+            mat-icon-button
+            color="primary"
+            (click)="editLoadoutItem(item, i)"
+            matTooltip="Edit item and manage attachments"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button
+            type="button"
+            mat-icon-button
+            color="warn"
+            (click)="removeLoadoutItem(item.slotName)"
+            matTooltip="Remove item"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Attachments Display (read-only) -->
+      <div
+        class="attachments-display"
+        *ngIf="item.attachments && item.attachments.length > 0"
+      >
+        <div class="attachments-count">
+          {{ item.attachments.length }} attachment{{
+            item.attachments.length !== 1 ? "s" : ""
+          }}:
+        </div>
+        <div class="attachment-chips">
+          <div
+            class="attachment-chip"
+            *ngFor="let attachment of item.attachments"
+          >
+            <span class="attachment-class">{{ attachment.className }}</span>
+            <span class="attachment-quantity">x{{ attachment.quantity }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state-container" *ngIf="loadoutItems.length === 0">
+    <mat-icon class="empty-state-icon">inventory_2</mat-icon>
+    <h2 class="empty-state-title">No loadout items added yet</h2>
+    <p class="empty-state-message">
+      Click the "Add Loadout Item" button to add items to the trader's loadout
+    </p>
+  </div>
+</div>

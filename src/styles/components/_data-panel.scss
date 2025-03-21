@@ -1,0 +1,115 @@
+/**
+ * Data Panel Component
+ * ========================================================================== 
+ * This file contains styling for specialized panels used to display data metrics,
+ * statistics, and structured information in a visually appealing format.
+ *
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Panel backgrounds, containers, borders (neutral colors)
+ * - 30%: Labels, supporting text, secondary information (secondary colors)
+ * - 10%: Trend indicators, highlights, important metrics (primary/accent colors)
+ */
+
+/* Standard Data Panel
+ * ========================================================================== 
+ * Main panel for displaying data metrics and statistics
+ */
+.data-panel {
+  background-color: var(--brush-background-elevated); // 60% - structural background
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  
+  // Panel with subtle gradient for visual interest
+  &.gradient {
+    background: linear-gradient(
+      135deg,
+      var(--brush-background-elevated),
+      var(--brush-background-body)
+    ); // 60% - structural gradient background
+  }
+  
+  // Container for multiple metric items
+  .data-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    
+    // Individual metric display component
+    .metric-item {
+      flex: 1;
+      min-width: 180px;
+      
+      // Metric label/title - uses secondary color (30%)
+      .metric-label {
+        font-size: var(--font-size-sm);
+        color: var(--brush-text-secondary); // 30% - supporting text
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      // Metric value - large, prominent display (60% - primary text)
+      .metric-value {
+        font-size: var(--font-size-2xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--brush-text-primary); // 60% - primary text
+      }
+      
+      // Trend indicator showing change direction (10% - status colors)
+      .metric-trend {
+        display: flex;
+        align-items: center;
+        margin-top: 4px;
+        font-size: var(--font-size-sm);
+        
+        // Positive trend indicator (green)
+        &.positive {
+          color: var(--brush-text-success); // 10% - status accent color
+        }
+        
+        // Negative trend indicator (red)
+        &.negative {
+          color: var(--brush-text-error); // 10% - status accent color
+        }
+        
+        // Icon styling for trend indicators
+        .mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+          margin-right: 4px;
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Data Card Panel Variation
+ * ========================================================================== 
+ * More compact panel styled as a card for displaying focused data points
+ */
+.data-card {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 24px;
+  background: linear-gradient(
+    135deg,
+    var(--brush-background-elevated),
+    var(--brush-background-body)
+  ); // 60% - structural gradient background
+  border-radius: 8px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 4px var(--brush-shadow-light); // Subtle elevation
+}
+
+/* Responsive Adjustments
+ * ========================================================================== 
+ * Ensures proper display across different screen sizes
+ */
+@media (max-width: 768px) {
+  .data-panel .data-metrics .metric-item {
+    min-width: 100%; // Full width on small screens for better readability
+  }
+}

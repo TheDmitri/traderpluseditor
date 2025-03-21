@@ -70,6 +70,30 @@ Example:
 ./deploy.sh user example.com /var/www/traderpluseditor
 ```
 
+## Troubleshooting
+
+### Package Version Issues
+
+If you encounter npm package version issues during installation or CI/CD:
+
+1. Make sure all Angular package versions are aligned (all should use the same major.minor version)
+2. Create or update `.npmrc` file with:
+   ```
+   registry=https://registry.npmjs.org/
+   legacy-peer-deps=true
+   ```
+3. Try clearing npm cache: `npm cache clean --force`
+4. Delete `node_modules` and `package-lock.json`, then run `npm install`
+
+### CI/CD Deployment Issues
+
+If deployment fails:
+
+1. Verify SSH keys are correctly set up in GitHub Secrets
+2. Check that the target directory on the VPS exists and has correct permissions
+3. Ensure the SSH user has write permissions to the deploy path
+4. Test the rsync command locally to verify connectivity
+
 You can also test your SSH connection before deploying:
 
 ```bash

@@ -1,0 +1,254 @@
+.file-converter-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 32px;
+  max-width: 1800px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  .main-content-area {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+
+    // Tab styles
+    .tab-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 4px;
+
+      mat-icon {
+        color: inherit;
+      }
+    }
+
+    // Content area styling
+    .converter-tab-content {
+      .content-overlay-container {
+        padding: 0;
+        position: relative;
+        min-height: 240px;
+        border-radius: 4px;
+
+        // Loader overlay styling
+        .conversion-loader {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+          background-color: var(--brush-overlay-background);
+          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        // Actions area styling
+        .converter-actions {
+          padding: 16px;
+          border-radius: 4px 4px 0 0;
+          border-bottom: 1px solid var(--brush-divider);
+
+          .actions-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+
+            @media (max-width: 600px) {
+              flex-direction: column;
+              align-items: stretch;
+            }
+          }
+        }
+
+        mat-divider {
+          margin: 0;
+        }
+
+        // File selection area styling
+        .file-selection-area {
+          margin-top: 8px;
+          min-height: 160px;
+
+          .selected-files {
+            // Grid layout for file cards
+            .file-cards {
+              display: grid;
+              grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+              gap: 16px;
+
+              .file-card {
+                background-color: var(--brush-overlay-background);
+                border-radius: 6px;
+                border: 1px solid var(--brush-divider);
+                padding: 12px;
+                position: relative;
+
+                .file-icon {
+                  font-size: 24px;
+                  width: 24px;
+                  height: 24px;
+                  color: var(--brush-text-secondary);
+                  margin-bottom: 8px;
+                }
+
+                .file-name {
+                  font-weight: 500;
+                  font-size: 14px;
+                  color: var(--brush-text-primary);
+                  margin: 0 0 4px 0;
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  padding-right: 28px; // Space for delete button
+                }
+
+                .file-size {
+                  color: var(--brush-text-secondary);
+                  font-size: 12px;
+                }
+
+                .delete-btn {
+                  position: absolute;
+                  top: 8px;
+                  right: 8px;
+                  width: 28px;
+                  height: 28px;
+                  min-width: unset;
+                  padding: 0;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Results panel styling
+    .file-explorer-content {
+      max-height: 450px;
+      overflow-y: auto;
+      padding: 0;
+
+      .file-explorer {
+        .root-folder {
+          > .folder-header {
+            background-color: var(--brush-background-surface);
+            font-weight: 500;
+
+            .folder-name {
+              font-size: 16px;
+            }
+          }
+        }
+
+        .folder-node {
+          margin: 0;
+
+          .folder-header {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            background-color: var(--brush-background-elevated);
+            border-bottom: 1px solid var(--brush-divider);
+            transition: background-color 0.2s;
+
+            &:hover {
+              background-color: var(--brush-background-surface-hover);
+            }
+
+            .folder-toggle {
+              background: none;
+              border: none;
+              color: var(--brush-text-primary);
+              padding: 0;
+              display: flex;
+              align-items: center;
+              cursor: pointer;
+            }
+
+            .folder-icon {
+              color: var(--brush-text-secondary);
+              margin-right: 8px;
+            }
+
+            .folder-name {
+              flex: 1;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+
+            .folder-actions {
+              display: flex;
+              gap: 4px;
+              opacity: 0.7;
+              transition: opacity 0.2s;
+
+              &:hover {
+                opacity: 1;
+              }
+            }
+          }
+
+          .folder-children {
+            padding-left: 24px;
+            border-left: 1px dotted var(--brush-divider);
+            margin-left: 12px;
+          }
+        }
+
+        .file-node {
+          display: flex;
+          align-items: center;
+          padding: 8px 12px;
+          border-bottom: 1px dotted var(--brush-divider);
+          background-color: var(--brush-background-surface);
+
+          &:hover {
+            background-color: var(--brush-background-surface-hover);
+          }
+
+          .file-icon {
+            color: var(--brush-text-secondary);
+            margin-right: 8px;
+          }
+
+          .file-name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .file-size {
+            color: var(--brush-text-secondary);
+            font-size: 12px;
+            margin-right: 16px;
+          }
+
+          .file-actions {
+            display: flex;
+            gap: 4px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+
+            &:hover {
+              opacity: 1;
+            }
+          }
+        }
+      }
+    }
+  }
+}

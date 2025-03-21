@@ -1,0 +1,115 @@
+<div class="object-modal-container">
+  <h2 mat-dialog-title>{{ isEditMode ? 'Edit' : 'Add' }} Trader Object</h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="objectForm" class="object-form">
+      <!-- Class Name Field -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Class Name</mat-label>
+        <input 
+          matInput 
+          formControlName="className" 
+          placeholder="Enter object class name"
+          required
+        >
+        <mat-error *ngIf="objectForm.get('className')?.invalid">
+          Class name is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Position Fields -->
+      <div class="form-section">
+        <h3 class="section-title">Position</h3>
+        <div class="vector-inputs">
+          <mat-form-field appearance="outline">
+            <mat-label>X</mat-label>
+            <input 
+              matInput 
+              formControlName="positionX" 
+              type="number" 
+              step="0.1"
+              required
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Y</mat-label>
+            <input 
+              matInput 
+              formControlName="positionY" 
+              type="number" 
+              step="0.1"
+              required
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Z</mat-label>
+            <input 
+              matInput 
+              formControlName="positionZ" 
+              type="number" 
+              step="0.1"
+              required
+            >
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Orientation Fields -->
+      <div class="form-section">
+        <h3 class="section-title">Orientation</h3>
+        <div class="vector-inputs">
+          <mat-form-field appearance="outline">
+            <mat-label>X</mat-label>
+            <input 
+              matInput 
+              formControlName="orientationX" 
+              type="number" 
+              step="1"
+              required
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Y</mat-label>
+            <input 
+              matInput 
+              formControlName="orientationY" 
+              type="number" 
+              step="1"
+              required
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Z</mat-label>
+            <input 
+              matInput 
+              formControlName="orientationZ" 
+              type="number" 
+              step="1"
+              required
+            >
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button type="button" mat-button
+      (click)="cancel()"
+    >
+      Cancel
+    </button>
+    <button 
+    mat-raised-button 
+    color="primary" 
+      (click)="saveObject()"
+      [disabled]="objectForm.invalid"
+    >
+      {{ isEditMode ? 'Update' : 'Add' }}
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,201 @@
+/**
+ * Icon Button Component
+ * ========================================================================== 
+ * This file contains styling for custom icon buttons with multiple variants.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Button structure, disabled states, background (neutral colors)
+ * - 30%: Secondary button variants, supporting elements (secondary colors)
+ * - 10%: Primary button variants, interactive states, highlights (primary/accent colors)
+ */
+
+// Base icon button styling - structure and interactions
+.custom-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  border: none;
+  background-color: transparent; // Default transparent background
+  position: relative;
+  cursor: pointer;
+  transition: all var(--transition-normal) var(--transition-timing);
+  padding: 0;
+
+  // Accessibility focus handling for better keyboard navigation
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--brush-focus-outline); // Keyboard focus indicator (10% accent)
+  }
+
+  // Icon styling and animation for user feedback
+  .mat-icon {
+    color: inherit;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    transition: transform var(--transition-normal) var(--transition-timing);
+  }
+
+  /* Button Color Variants */
+
+  // Primary action icon buttons (10% emphasis) - most important actions
+  &.icon-btn-primary {
+    color: var(--color-primary-medium); // 10% - primary accent color
+
+    // Interactive states for visual feedback
+    &:hover {
+      background-color: var(--color-primary-transparent-10); // 10% - subtle background feedback
+      color: var(--color-primary-light); // 10% - increased contrast on hover
+    }
+
+    &:active {
+      background-color: var(--color-primary-transparent-20); // 10% - stronger background on press
+      transform: scale(0.95); // Subtle pressed effect for tactile feedback
+
+      .mat-icon {
+        transform: scale(0.95); // Coordinated icon animation with button scale
+      }
+    }
+
+    &:disabled {
+      color: var(--brush-button-disabled-text); // 60% - muted color for inactive state
+      cursor: not-allowed;
+      background-color: transparent;
+    }
+  }
+
+  // Secondary icon buttons (30% supporting) - common actions
+  &.icon-btn-secondary {
+    color: var(--color-secondary-medium); // 30% - secondary color
+
+    // Interactive states with appropriate visual feedback
+    &:hover {
+      background-color: var(--color-secondary-transparent-10); // 30% - subtle background feedback
+      color: var(--color-secondary-light); // 30% - increased contrast on hover
+    }
+
+    &:active {
+      background-color: var(--color-secondary-transparent-20); // 30% - stronger background on press
+      transform: scale(0.95);
+
+      .mat-icon {
+        transform: scale(0.95);
+      }
+    }
+
+    &:disabled {
+      color: var(--brush-button-disabled-text); // 60% - muted color for inactive state
+      cursor: not-allowed;
+      background-color: transparent;
+    }
+  }
+
+  // Destructive/warning icon buttons (special emphasis - part of 10%)
+  &.icon-btn-warn {
+    color: var(--color-error-medium); // Warning color for destructive actions
+
+    // Interactive states with appropriate visual feedback
+    &:hover {
+      background-color: var(--color-error-transparent-50);
+      color: var(--color-error-light);
+    }
+
+    &:active {
+      background-color: var(--color-error-transparent-50);
+      transform: scale(0.95);
+
+      .mat-icon {
+        transform: scale(0.95);
+      }
+    }
+
+    &:disabled {
+      color: var(--brush-button-disabled-text); // 60% - muted color for inactive state
+      cursor: not-allowed;
+      background-color: transparent;
+    }
+  }
+
+  // Light variant for dark backgrounds (part of 60% structural)
+  &.icon-btn-light {
+    color: var(--color-neutral-lightest); // Light color for contrast on dark backgrounds
+
+    // Interactive states with appropriate visual feedback
+    &:hover {
+      background-color: var(--brush-hover-overlay); // Subtle light overlay
+      color: white; // Maximum contrast
+    }
+
+    &:active {
+      background-color: var(--brush-active-overlay); // More visible overlay on press
+      transform: scale(0.95);
+
+      .mat-icon {
+        transform: scale(0.95);
+      }
+    }
+
+    &:disabled {
+      color: var(--brush-button-disabled-text); // 60% - muted color for inactive state
+      cursor: not-allowed;
+      background-color: transparent;
+    }
+  }
+
+  /* Size Variants */
+
+  // Small icon button for compact UIs
+  &.icon-btn-sm {
+    width: 32px;
+    height: 32px;
+
+    .mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  // Large icon button for more prominent actions
+  &.icon-btn-lg {
+    width: 48px;
+    height: 48px;
+
+    .mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  /* Button with Text Label */
+  &.icon-btn-with-text {
+    width: auto;
+    padding: 0 16px;
+    gap: 8px; // Space between icon and text
+
+    .btn-label {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+  }
+
+  // Container for ripple effect animation
+  .icon-btn-ripple {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    overflow: hidden;
+  }
+}

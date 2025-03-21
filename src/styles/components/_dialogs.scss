@@ -1,0 +1,124 @@
+/**
+ * Dialog Component Styling
+ * ========================================================================== 
+ * This file contains styling for Angular Material dialogs, modals, and notification components.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Dialog backgrounds, containers, structure (neutral/background colors)
+ * - 30%: Secondary text, supporting elements (secondary colors)
+ * - 10%: Action buttons, focus states, highlights (primary/accent colors)
+ */
+
+/* Material Dialogs and Modals
+========================================================================== */
+.mat-mdc-dialog-container {
+  // Dialog container styling - 60% (structural)
+  .mdc-dialog__surface {
+    background-color: var(--brush-dialog-background) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 24px var(--brush-dialog-shadow) !important;
+    border: 1px solid var(--brush-dialog-border) !important;
+    overflow: hidden !important;
+  }
+  
+  // Dialog header - 60% (structural)
+  .mdc-dialog__title {
+    background-color: var(--brush-dialog-header);
+    color: var(--brush-text-primary) !important;
+    padding: 16px 24px !important;
+    font-size: var(--font-size-lg) !important;
+    font-weight: var(--font-weight-medium) !important;
+    margin: 0 !important;
+    border-bottom: 1px solid var(--brush-divider);
+    display: flex !important;
+    align-items: center !important;
+    padding-bottom: 12px !important;
+
+    .dialog-icon {
+      margin-right: 16px;
+    }
+  }
+
+  // Dialog content - Main content uses 60% color (text on neutral), details use 30% (secondary)
+  .mdc-dialog__content {
+    color: var(--brush-text-secondary) !important;
+    padding: 20px 24px !important;
+    
+    // Primary content - Main message
+    .dialog-primary-text {
+      color: var(--brush-text-primary);
+      font-size: var(--font-size-base);
+      margin-bottom: 16px;
+    }
+    
+    // Secondary content - Additional details
+    .dialog-secondary-text {
+      color: var(--brush-text-secondary);
+      font-size: var(--font-size-sm);
+    }
+    
+    // Highlighted content - Important notice (10% accent)
+    .dialog-highlight {
+      color: var(--color-primary-medium);
+      font-weight: var(--font-weight-medium);
+    }
+  }
+  
+  // Dialog actions - Contains buttons with 10% accent for primary actions
+  .mdc-dialog__actions {
+    border-top: 1px solid var(--brush-divider);
+    padding: 12px 24px !important;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    background-color: var(--brush-dialog-header);
+    flex: 0 0 auto; // Don't allow flex to shrink this
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    
+    // Cancel button should be less prominent
+    .mat-mdc-button:not(.mat-primary):not(.mat-accent):not(.mat-warn) {
+      color: var(--brush-text-secondary) !important;
+    }
+    
+    // Primary action (10% accent)
+    .mat-primary {
+      background-color: var(--brush-button-primary-background) !important;
+      color: var(--brush-button-primary-text) !important;
+    }
+    
+    // Secondary action (30% supporting)
+    .mat-accent {
+      background-color: var(--brush-button-secondary-background) !important;
+      color: var(--brush-button-secondary-text) !important;
+    }
+    
+    // Destructive action (part of 10% accent)
+    .mat-warn {
+      background-color: var(--brush-button-destructive-background) !important;
+      color: white !important;
+    }
+  }
+
+  // Close button (X) styling
+  .mat-mdc-dialog-close {
+    color: var(--brush-text-secondary) !important;
+    margin-top: 8px !important;
+    margin-right: 8px !important;
+    
+    &:hover {
+      background-color: var(--brush-hover-overlay) !important;
+      color: var(--brush-text-primary) !important;
+    }
+  }
+}
+
+/* Overlay Backdrop
+========================================================================== */
+/**
+ * Dialog backdrop customization
+ * This is the semi-transparent background behind dialogs
+ */
+.cdk-overlay-dark-backdrop {
+  background-color: var(--brush-overlay-background) !important;
+}

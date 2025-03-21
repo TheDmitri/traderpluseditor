@@ -1,0 +1,187 @@
+<div class="category-modal">
+  <!-- Modal header with dynamic title based on mode -->
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon class="dialog-icon"> category </mat-icon>
+    <span>{{ isEditMode ? "Edit" : "Create" }} Category</span>
+  </h2>
+
+  <mat-dialog-content class="dialog-content">
+    <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+      <div class="form-container">
+        <!-- Basic Category Information Section - Contains name, icon and visibility settings -->
+        <div class="form-section">
+          <h4 class="section-title">Basic Information</h4>
+
+          <div class="form-row">
+            <div class="form-col form-col-two-thirds">
+              <mat-form-field appearance="fill">
+                <mat-label>Category Name</mat-label>
+                <input matInput formControlName="categoryName" required />
+                <mat-error
+                  *ngIf="categoryForm.get('categoryName')?.hasError('required')"
+                >
+                  Category name is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-col form-col-third">
+              <mat-form-field appearance="fill">
+                <mat-label>Icon</mat-label>
+                <input
+                  matInput
+                  formControlName="icon"
+                  placeholder="e.g., shopping_cart"
+                />
+                <mat-icon matSuffix class="icon-secondary">
+                  {{ categoryForm.get("icon")?.value || "category" }}
+                </mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Toggle control for category visibility in trader menu -->
+          <div class="visibility-toggle">
+            <mat-slide-toggle formControlName="isVisible" color="primary">
+              Category Visible
+            </mat-slide-toggle>
+            <span class="toggle-hint"
+              >Toggle visibility in the trader menu</span
+            >
+          </div>
+        </div>
+
+        <!-- License Section - Handles required permissions for category access -->
+        <div class="form-section">
+          <h4 class="section-title">Required Licenses</h4>
+
+          <!-- License selection list - Shows available licenses with validation warnings -->
+          <div
+            class="license-list-container"
+            *ngIf="displayLicenses.length > 0"
+          >
+            <div
+              class="license-item"
+              *ngFor="let license of displayLicenses"
+              (click)="toggleLicense(license)"
+              [class.license-missing]="!license.isInGeneralSettings"
+            >
+              <mat-checkbox
+                color="primary"
+                [checked]="isLicenseSelected(license.licenseId || '')"
+                (click)="$event.stopPropagation(); toggleLicense(license)"
+              >
+                <span class="license-name">{{ license.licenseName }}</span>
+              </mat-checkbox>
+
+              <!-- Warning indicator for licenses not defined in general settings -->
+              <mat-icon
+                *ngIf="!license.isInGeneralSettings"
+                class="license-warning-icon"
+                matTooltip="This license is not defined in general settings and may not work properly"
+              >
+                warning_amber
+              </mat-icon>
+
+              <span class="license-id" *ngIf="license.licenseId">{{
+                license.licenseId
+              }}</span>
+              <span class="license-description" *ngIf="license.description">
+                {{ license.description }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Empty state display when no licenses are available -->
+          <div
+            class="empty-state-container"
+            *ngIf="displayLicenses.length === 0"
+          >
+            <mat-icon class="empty-state-icon">vpn_key</mat-icon>
+            <h2 class="empty-state-title">No licenses available.</h2>
+            <p class="empty-state-message">
+              Add licenses in General Settings first.
+            </p>
+          </div>
+
+          <!-- Summary of selected licenses -->
+          <div
+            class="selected-licenses-summary"
+            *ngIf="selectedLicenseIds.length > 0"
+          >
+            <mat-icon>check_circle</mat-icon>
+            <span
+              >{{ selectedLicenseIds.length }} license(s) required for this
+              category</span
+            >
+          </div>
+        </div>
+
+        <!-- Products Management Section - Allows adding, assigning and managing products in this category -->
+        <div class="form-section product-section">
+          <div class="section-header-with-actions">
+            <h4 class="title">Products in Category</h4>
+            <div class="section-actions">
+              <button
+                class="custom-stroked-button color-primary with-icon"
+                type="button"
+                (click)="assignExistingProducts()"
+              >
+                <mat-icon>playlist_add</mat-icon>
+                Assign Products
+              </button>
+              <button
+                class="custom-stroked-button color-primary with-icon"
+                type="button"
+                (click)="addProductToCategory()"
+              >
+                <mat-icon>add</mat-icon>
+                Add Product
+              </button>
+            </div>
+          </div>
+
+          <div class="product-list-container scroll-y slim-scrollbar">
+            <!-- Empty state for categories with no products -->
+            <div
+              class="empty-state-container"
+              *ngIf="categoryProducts.length === 0"
+            >
+              <mat-icon class="empty-state-icon">category</mat-icon>
+              <h2 class="empty-state-title">No Products in this Category</h2>
+              <p class="empty-state-message">
+                Use the buttons above to add products
+              </p>
+            </div>
+
+            <!-- Product listing with edit/remove capabilities -->
+            <ng-container *ngIf="categoryProducts.length > 0">
+              <app-product-list
+                [products]="categoryProducts"
+                [showActions]="true"
+                [useExternalProducts]="true"
+                (productRemoved)="onProductRemoved($event)"
+                (productEdited)="onProductEdited($event)"
+              >
+              </app-product-list>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <!-- Dialog action buttons -->
+  <mat-dialog-actions>
+    <button mat-button type="button" (click)="onCancel()">Cancel</button>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      [disabled]="categoryForm.invalid"
+      (click)="onSubmit()"
+    >
+      {{ isEditMode ? "Save" : "Create" }}
+    </button>
+  </mat-dialog-actions>
+</div>

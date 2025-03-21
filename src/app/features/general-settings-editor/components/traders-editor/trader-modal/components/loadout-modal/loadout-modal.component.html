@@ -1,0 +1,214 @@
+<div class="loadout-modal">
+  <h2 mat-dialog-title>{{ dialogTitle }}</h2>
+
+  <mat-dialog-content>
+    <!-- Item Form -->
+    <form [formGroup]="itemForm">
+      <div class="form-grid">
+        <!-- Slot Selection - Positioned at the top -->
+        <div class="slot-dropdown">
+          <mat-form-field appearance="outline">
+            <mat-label>Slot</mat-label>
+            <mat-select formControlName="slotName" required>
+              <mat-option
+                *ngFor="let slot of getAvailableSlots()"
+                [value]="slot"
+              >
+                {{ slot }}
+              </mat-option>
+            </mat-select>
+            <mat-hint *ngIf="data.editMode"
+              >Slot cannot be changed when editing</mat-hint
+            >
+            <mat-error *ngIf="itemForm.get('slotName')?.hasError('required')">
+              Slot is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Class Name and Quantity side by side -->
+        <div class="class-quantity-row">
+          <!-- Class Name -->
+          <mat-form-field appearance="outline">
+            <mat-label>Class Name</mat-label>
+            <input
+              matInput
+              formControlName="className"
+              placeholder="Enter class name"
+              required
+            />
+            <mat-error *ngIf="itemForm.get('className')?.hasError('required')">
+              Class name is required
+            </mat-error>
+            <mat-error *ngIf="itemForm.get('className')?.hasError('hasSpaces')">
+              Class name cannot contain spaces
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Quantity -->
+          <mat-form-field appearance="outline">
+            <mat-label>Quantity</mat-label>
+            <input
+              matInput
+              formControlName="quantity"
+              type="number"
+              placeholder="Enter quantity"
+              required
+            />
+            <mat-hint>Use -1 for unlimited</mat-hint>
+            <mat-error *ngIf="itemForm.get('quantity')?.hasError('required')">
+              Quantity is required
+            </mat-error>
+            <mat-error
+              *ngIf="itemForm.get('quantity')?.hasError('invalidQuantity')"
+            >
+              Quantity must be -1 or greater than 0
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+
+    <!-- Attachments Section -->
+    <div class="attachments-section">
+      <div class="section-header">
+        <h3>Attachments</h3>
+        <button
+          type="button"
+          class="custom-icon-btn icon-btn-primary"
+          (click)="toggleAttachmentForm()"
+          matTooltip="{{
+            showAttachmentForm ? 'Hide attachment form' : 'Add attachment'
+          }}"
+        >
+          <mat-icon>{{ showAttachmentForm ? "expand_less" : "add" }}</mat-icon>
+        </button>
+      </div>
+
+      <!-- Attachment Form -->
+      <div *ngIf="showAttachmentForm" class="attachment-form">
+        <form [formGroup]="attachmentForm">
+          <div class="attachment-form-grid">
+            <!-- Attachment Class Name -->
+            <mat-form-field appearance="outline">
+              <mat-label>Attachment Class</mat-label>
+              <input
+                matInput
+                formControlName="className"
+                placeholder="Enter attachment class name"
+                required
+              />
+              <mat-error
+                *ngIf="attachmentForm.get('className')?.hasError('required')"
+              >
+                Class name is required
+              </mat-error>
+              <mat-error
+                *ngIf="attachmentForm.get('className')?.hasError('hasSpaces')"
+              >
+                Class name cannot contain spaces
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Attachment Quantity -->
+            <mat-form-field appearance="outline">
+              <mat-label>Quantity</mat-label>
+              <input
+                matInput
+                formControlName="quantity"
+                type="number"
+                placeholder="Enter quantity"
+                required
+              />
+              <mat-error
+                *ngIf="attachmentForm.get('quantity')?.hasError('required')"
+              >
+                Quantity is required
+              </mat-error>
+              <mat-error
+                *ngIf="
+                  attachmentForm.get('quantity')?.hasError('invalidQuantity')
+                "
+              >
+                Quantity must be -1 or greater than 0
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Attachment Actions -->
+            <div class="attachment-actions">
+              <button
+                type="button"
+                mat-stroked-button
+                (click)="toggleAttachmentForm()"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="custom-stroked-button color-primary"
+                [disabled]="attachmentForm.invalid"
+                (click)="addAttachment()"
+              >
+                {{ isEditingAttachment ? "Update" : "Add" + " Attachment" }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Attachments List -->
+      <div class="attachments-list">
+        <div
+          *ngIf="currentItem.attachments?.length === 0"
+          class="no-attachments"
+        >
+          No attachments added to this item yet.
+        </div>
+
+        <div
+          *ngIf="currentItem.attachments && currentItem.attachments.length > 0"
+          class="attachments-chips"
+        >
+          <div
+            class="attachment-chip"
+            *ngFor="let attachment of currentItem.attachments; let i = index"
+          >
+            <span class="attachment-class">{{ attachment.className }}</span>
+            <span class="attachment-quantity">x{{ attachment.quantity }}</span>
+            <div class="attachment-actions">
+              <button
+                type="button"
+                class="custom-icon-btn icon-btn-primary"
+                (click)="editAttachment(attachment, i)"
+                matTooltip="Edit attachment"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                type="button"
+                class="custom-icon-btn icon-btn-warn"
+                (click)="removeAttachment(i)"
+                matTooltip="Remove attachment"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button type="button" mat-button (click)="cancel()">Cancel</button>
+    <button
+      type="button"
+      mat-raised-button
+      color="primary"
+      [disabled]="itemForm.invalid"
+      (click)="saveItem()"
+    >
+      {{ data.editMode ? "Save Changes" : "Add Item" }}
+    </button>
+  </mat-dialog-actions>
+</div>

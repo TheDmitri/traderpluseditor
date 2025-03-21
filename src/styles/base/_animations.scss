@@ -1,0 +1,108 @@
+/**
+ * Animation Configurations and Component Animations
+ * 
+ * This file defines global animation variables and component-specific
+ * animation behaviors to ensure consistent motion design throughout the application.
+ * Color usage follows the 60-30-10 rule for visual hierarchy.
+ */
+
+/* Global Animation Configuration
+========================================================================== */
+:root {
+  // Transition timing variables - controls the speed of animations
+  --transition-quick: 100ms;  // For subtle, immediate feedback
+  --transition-normal: 200ms; // Standard animation duration for most interactions
+  --transition-slow: 300ms;   // For more noticeable, deliberate transitions
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1); // Material Design easing curve
+}
+
+/* Component-Specific Animations
+========================================================================== */
+// Button animations
+// Provides tactile feedback through subtle scale change on interaction
+.mat-mdc-raised-button,
+.mat-mdc-icon-button {
+  transition: all var(--transition-normal) var(--transition-timing) !important;
+
+  &:active {
+    transform: scale(0.96); // Slight shrink effect when pressed
+  }
+}
+
+// Card hover animations
+// Adds depth through elevation change and subtle movement on hover
+.mat-mdc-card {
+  transition: transform var(--transition-normal) var(--transition-timing),
+    box-shadow var(--transition-normal) var(--transition-timing) !important;
+
+  &:hover {
+    transform: translateY(-2px); // Slight lift effect
+    box-shadow: 0 6px 12px var(--brush-shadow-medium) !important; // Enhanced shadow for depth
+  }
+}
+
+// List item hover feedback
+// Provides subtle visual feedback when interacting with list items
+.mat-mdc-list-item {
+  transition: background-color var(--transition-quick) var(--transition-timing) !important;
+}
+
+/* Custom Ripple Effect Animation
+========================================================================== */
+/**
+ * Creates a circular expanding animation that emanates from the click point
+ * Used to enhance the tactile feel of icon button interactions
+ */
+@keyframes ripple {
+  to {
+    transform: scale(4); // Expand to 4x original size
+    opacity: 0;          // Fade out completely
+  }
+}
+
+.icon-btn-ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  background: var(--brush-ripple-color); /* Interactive element uses primary color (10%) */
+  opacity: 0.4;
+  animation: ripple 0.5s linear;
+  pointer-events: none; // Ensures the ripple doesn't interfere with clicks
+}
+
+/* State Transition Animations
+========================================================================== */
+/**
+ * Define transition effects for component state changes
+ * to provide consistent feedback across the UI
+ */
+
+// Focus state animation (for keyboard navigation)
+.focus-visible-outline {
+  outline: 2px solid var(--brush-focus-ring); /* Primary color (10%) for focus state */
+  outline-offset: 2px;
+  transition: outline-color var(--transition-quick) var(--transition-timing);
+}
+
+// Hover effect for interactive elements that follows the 60-30-10 ratio
+.hover-effect {
+  position: relative;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--brush-hover-overlay);
+    opacity: 0;
+    transition: opacity var(--transition-quick) var(--transition-timing);
+    pointer-events: none;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+  }
+}

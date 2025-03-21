@@ -1,0 +1,237 @@
+/**
+ * Toggle Component Styling
+ * ========================================================================== 
+ * This file contains styling for Angular Material slide toggle components.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Toggle structure, track in off state, disabled states (neutral colors)
+ * - 30%: Supporting elements, hover effects (secondary colors)
+ * - 10%: Active/selected states, focus indicators (primary/accent colors)
+ */
+
+/* Material Slide Toggle Customization
+ * ========================================================================== 
+ * The Material slide toggle is heavily customized to match our design system.
+ * Each state (on/off/disabled/hover) is styled using our color system variables.
+ */
+.mat-mdc-slide-toggle {
+  // Handle (Thumb) - consistently light regardless of state (60% neutral)
+  .mdc-switch:enabled .mdc-switch__handle::after {
+    background-color: var(--brush-switch-thumb) !important; // 60% - neutral element for thumb
+  }
+
+  // Track - Unchecked State (60% neutral)
+  // We use multiple selectors to ensure high specificity to override Material defaults
+  .mdc-switch:enabled .mdc-switch__track,
+  .mdc-switch:enabled .mdc-switch__track::before,
+  .mdc-switch:enabled .mdc-switch__track::after {
+    background-color: var(--brush-switch-track) !important; // 60% - structural element for track
+    border: none !important;
+    opacity: 0.3;
+  }
+
+  // Track - Checked State with primary accent color (10% accent)
+  &.mat-primary {
+    .mdc-switch.mdc-switch--selected:enabled {
+      .mdc-switch__track,
+      .mdc-switch__track::before,
+      .mdc-switch__track::after {
+        background-color: var(--brush-switch-track-active) !important; // 10% - primary accent for active track
+        border: none !important;
+        opacity: 1;
+      }
+
+      .mdc-switch__handle::after {
+        background-color: var(--brush-switch-thumb-active) !important; // 10% - primary accent for active thumb
+      }
+
+      .mdc-switch__icon {
+        fill: var(--color-primary-light) !important; // 10% - accent color for icon
+      }
+    }
+  }
+
+  // Secondary color variant (30% supporting)
+  &.mat-accent {
+    .mdc-switch.mdc-switch--selected:enabled {
+      .mdc-switch__track,
+      .mdc-switch__track::before,
+      .mdc-switch__track::after {
+        background-color: var(--color-secondary-transparent-50) !important; // 30% - secondary color for track
+        opacity: 1;
+      }
+
+      .mdc-switch__handle::after {
+        background-color: var(--color-secondary-medium) !important; // 30% - secondary color for thumb
+      }
+
+      .mdc-switch__icon {
+        fill: var(--color-secondary-light) !important; // 30% - secondary color for icon
+      }
+    }
+  }
+
+  // Warning variant (for destructive toggles) - part of the 10% accent colors
+  &.mat-warn {
+    .mdc-switch.mdc-switch--selected:enabled {
+      .mdc-switch__track,
+      .mdc-switch__track::before,
+      .mdc-switch__track::after {
+        background-color: var(--color-error-transparent-50) !important; // Warning color for track
+        opacity: 1;
+      }
+
+      .mdc-switch__handle::after {
+        background-color: var(--color-error-medium) !important; // Warning color for thumb
+      }
+
+      .mdc-switch__icon {
+        fill: var(--color-error-light) !important; // Warning color for icon
+      }
+    }
+  }
+
+  // Hover States - Improves visual feedback on interaction
+  &:hover {
+    .mdc-switch:enabled .mdc-switch__track {
+      opacity: 0.4; // Slightly more visible on hover for better feedback
+    }
+
+    &.mat-primary .mdc-switch.mdc-switch--selected:enabled .mdc-switch__track {
+      opacity: 0.8; // Increased opacity for active state on hover
+    }
+  }
+
+  // Disabled States - Clearly indicates non-interactive state (60% neutral)
+  .mdc-switch:disabled {
+    .mdc-switch__handle::after {
+      background-color: var(--brush-input-text-disabled) !important; // 60% - muted element for disabled thumb
+    }
+
+    .mdc-switch__track {
+      background-color: var(--brush-input-background-disabled) !important; // 60% - muted container for disabled track
+      opacity: 0.2;
+    }
+  }
+
+  // Focus State - Improves accessibility with clear focus indication (10% accent)
+  .mdc-switch:focus-within {
+    outline: 2px solid var(--brush-focus-ring) !important; // 10% - accent for focus outline
+    outline-offset: 2px;
+  }
+
+  // Label styling - aligns with our form label styling (30% supporting)
+  .mat-mdc-slide-toggle-content {
+    color: var(--brush-label-text) !important; // 30% - supporting text for labels
+  }
+
+  /* Light Variant
+   * ========================================================================== 
+   * For use on dark backgrounds or in contexts where the toggle
+   * should stand out from the dark theme background
+   */
+  &.light-toggle {
+    .mdc-switch:enabled .mdc-switch__handle::after {
+      background-color: var(--color-neutral-lightest) !important; // Light variant for thumb
+    }
+
+    .mdc-switch:enabled .mdc-switch__track {
+      background-color: var(--color-neutral-medium) !important; // Light variant for track
+      opacity: 0.3;
+    }
+
+    &:hover .mdc-switch:enabled .mdc-switch__track {
+      opacity: 0.4; // Slightly increased opacity on hover
+    }
+
+    .mdc-switch:disabled {
+      .mdc-switch__handle::after {
+        background-color: var(--color-neutral-light) !important; // Light variant for disabled thumb
+      }
+
+      .mdc-switch__track {
+        background-color: var(--color-neutral-lightest) !important; // Light variant for disabled track
+        opacity: 0.2;
+      }
+    }
+
+    .mdc-switch:focus-within {
+      outline-color: var(--color-neutral-lightest) !important; // Light variant for focus outline
+    }
+    
+    // Light toggle label
+    .mat-mdc-slide-toggle-content {
+      color: var(--color-neutral-lightest) !important; // Light variant for label
+    }
+  }
+}
+
+/* Toggle Sizes
+ * ========================================================================== 
+ * Different size variants of the toggle component
+ */
+.mat-mdc-slide-toggle {
+  // Small toggle (compact UI)
+  &.toggle-sm {
+    --mdc-switch-track-width: 32px;
+    --mdc-switch-track-height: 16px;
+    
+    .mdc-switch {
+      width: 32px;
+      height: 16px;
+      
+      .mdc-switch__handle {
+        height: 12px;
+        width: 12px;
+      }
+    }
+    
+    .mat-mdc-slide-toggle-content {
+      font-size: var(--font-size-xs); // Smaller text for compact toggle
+    }
+  }
+  
+  // Large toggle (more prominent)
+  &.toggle-lg {
+    --mdc-switch-track-width: 48px;
+    --mdc-switch-track-height: 24px;
+    
+    .mdc-switch {
+      width: 48px;
+      height: 24px;
+      
+      .mdc-switch__handle {
+        height: 20px;
+        width: 20px;
+      }
+    }
+    
+    .mat-mdc-slide-toggle-content {
+      font-size: var(--font-size-base); // Larger text for prominent toggle
+    }
+  }
+}
+
+/* Toggle Group
+ * ========================================================================== 
+ * Groups of toggles with consistent spacing and alignment
+ */
+.toggle-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  
+  // Horizontal toggle group
+  &.toggle-group-horizontal {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  
+  // Toggle group with label
+  .toggle-group-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--brush-label-text); // 30% - supporting text for group label
+    margin-bottom: 8px;
+  }
+}
