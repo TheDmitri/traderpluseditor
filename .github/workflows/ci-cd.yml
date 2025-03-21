@@ -68,11 +68,21 @@ jobs:
           name: dist
           path: dist/
           
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.8.0
         with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          
+      - name: Add host key to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+      
+      - name: Debug SSH connection
+        run: |
+          echo "Testing SSH connection..."
+          ssh -v -o BatchMode=yes -o StrictHostKeyChecking=accept-new ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo SSH connection successful"
           
       - name: Deploy to VPS
         run: |
