@@ -1,0 +1,488 @@
+<div class="general-settings-container">
+  <!-- Page header with standardized structure -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h1 class="page-title">General Settings</h1>
+        <p class="subtitle">
+          Configure general settings for the TraderPlus system
+        </p>
+
+        <div class="action-buttons">
+          <!-- Secondary action: Import from file -->
+          <button
+            class="custom-stroked-button color-secondary with-icon"
+            routerLink="/file-management"
+            matTooltip="Import general settings from file"
+          >
+            <mat-icon>upload_file</mat-icon>
+            Import General Settings
+          </button>
+        </div>
+      </div>
+      <div class="header-right">
+        <button
+          *ngIf="hasSettings"
+          class="custom-stroked-button color-warn with-icon"
+          [matMenuTriggerFor]="dangerMenu"
+          matTooltip="Dangerous operations"
+        >
+          <mat-icon>warning</mat-icon>
+          Danger Zone
+        </button>
+        <!-- Dropdown menu for destructive actions -->
+        <mat-menu #dangerMenu="matMenu">
+          <button
+            mat-menu-item
+            (click)="deleteAllSettings()"
+            matTooltip="Remove all General Settings permanently"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon-error">delete_forever</mat-icon>
+            <span>Remove All Settings</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  </header>
+
+  <!-- Loading state while creating default settings -->
+  <div class="empty-state-container" *ngIf="isCreatingDefaultSettings">
+    <app-loader loadingText="Creating general settings..."></app-loader>
+  </div>
+
+  <!-- No Settings State - Informative message and call to action -->
+  <div class="empty-state-container" *ngIf="!hasSettings && !isCreatingDefaultSettings">
+    <mat-icon class="empty-state-icon">settings</mat-icon>
+    <h2 class="empty-state-title">No General Settings Found</h2>
+    <p class="empty-state-message">
+      To get started, you can either import an existing TraderPlus general settings file or create a new one.
+    </p>
+    <div class="empty-state-actions">
+      <button
+        class="custom-stroked-button color-primary with-icon"
+        (click)="createGeneralSettings()"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Create General Settings
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Area - Only shown when settings exist -->
+  <div class="main-content-area" *ngIf="hasSettings && !isCreatingDefaultSettings">
+    <!-- Two-column grid layout for settings sections -->
+    <div class="settings-grid">
+      
+      <!-- Licenses Section -->
+      <div class="data-card licenses-section">
+        <div class="panel-header">
+          <div class="panel-title-area">
+            <h2 class="section-title">Licenses</h2>
+            <p class="panel-subtitle">Manage trader license requirements</p>
+          </div>
+
+          <div class="panel-actions">
+            <button
+              class="custom-stroked-button color-primary with-icon"
+              (click)="addLicense()"
+              [disabled]="editingLicenseIndex !== null"
+              matTooltip="Add License"
+            >
+              <mat-icon>add</mat-icon>
+              <span>Add License</span>
+            </button>
+
+            <button
+              class="custom-stroked-button color-warn with-icon"
+              (click)="deleteAllLicenses()"
+              [disabled]="licensesDataSource.data.length === 0 || editingLicenseIndex !== null"
+              matTooltip="Delete All Licenses"
+            >
+              <mat-icon>delete_forever</mat-icon>
+              <span>Delete All</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <!-- No Data State - Informative message and call to action -->
+          <div class="empty-state-container" *ngIf="licensesDataSource.data.length === 0">
+            <mat-icon class="empty-state-icon">vpn_key</mat-icon>
+            <h2 class="empty-state-title">No Licenses Available</h2>
+            <p class="empty-state-message">
+              Create licenses that players must have to use the trader
+            </p>
+          </div>
+
+          <!-- Licenses Table with styling consistent with other tables -->
+          <div
+            class="table-container"
+            *ngIf="licensesDataSource.data.length > 0"
+          >
+            <table
+              mat-table
+              [dataSource]="licensesDataSource"
+              class="data-table with-border hoverable-table consistent-rows"
+            >
+              <!-- License Name Column -->
+              <ng-container matColumnDef="licenseName">
+                <th mat-header-cell *matHeaderCellDef>License Name</th>
+                <td mat-cell *matCellDef="let license; let i = index">
+                  <!-- Edit mode -->
+                  <div *ngIf="editingLicenseIndex === i" class="edit-field">
+                    <mat-form-field appearance="outline">
+                      <mat-label>License Name</mat-label>
+                      <input 
+                        matInput 
+                        [(ngModel)]="editLicenseName" 
+                        required
+                        placeholder="Enter license name"
+                        (keydown.enter)="$event.preventDefault(); canSaveLicense() && saveLicense()"
+                      >
+                      <mat-error>License name is required</mat-error>
+                    </mat-form-field>
+                  </div>
+                  <!-- View mode with tooltip showing license ID -->
+                  <div 
+                    *ngIf="editingLicenseIndex !== i"
+                    [matTooltip]="'License ID: ' + (license.licenseId || 'Not assigned')"
+                    matTooltipPosition="below"
+                    matTooltipClass="license-tooltip"
+                  >
+                    {{ license.licenseName }}
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef>Description</th>
+                <td mat-cell *matCellDef="let license; let i = index">
+                  <!-- Edit mode -->
+                  <div *ngIf="editingLicenseIndex === i" class="edit-field">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Description</mat-label>
+                      <textarea
+                        matInput
+                        [(ngModel)]="editLicenseDescription"
+                        placeholder="Enter description (optional)"
+                        rows="2"
+                        (keydown.enter)="$event.preventDefault()"
+                      ></textarea>
+                    </mat-form-field>
+                  </div>
+                  <!-- View mode -->
+                  <div *ngIf="editingLicenseIndex !== i">
+                    {{ license.description || "No description" }}
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-- Actions Column -->
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef class="actions-header">
+                  Actions
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let license; let i = index"
+                  class="actions-cell"
+                >
+                  <!-- Edit mode actions -->
+                  <div *ngIf="editingLicenseIndex === i" class="action-buttons">
+                    <button
+                      class="custom-icon-btn icon-btn-primary"
+                      matTooltip="Save"
+                      (click)="saveLicense()"
+                      [disabled]="!canSaveLicense()"
+                    >
+                      <mat-icon>check</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+                    <button
+                      class="custom-icon-btn icon-btn-warn"
+                      matTooltip="Cancel"
+                      (click)="cancelEditLicense()"
+                    >
+                      <mat-icon>close</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+                  </div>
+                  
+                  <!-- View mode actions -->
+                  <div *ngIf="editingLicenseIndex !== i" class="action-buttons">
+                    <button
+                      class="custom-icon-btn icon-btn-primary"
+                      (click)="startEditLicense(license, i)"
+                      matTooltip="Edit License"
+                      [disabled]="editingLicenseIndex !== null"
+                    >
+                      <mat-icon>edit</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+
+                    <button
+                      class="custom-icon-btn icon-btn-warn"
+                      (click)="deleteLicense(i)"
+                      matTooltip="Delete License"
+                      [disabled]="editingLicenseIndex !== null"
+                    >
+                      <mat-icon>delete_forever</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+                  </div>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr 
+                mat-row 
+                *matRowDef="let row; columns: displayedColumns"
+                [class.editing-row]="editingLicenseIndex === licensesDataSource.data.indexOf(row)"
+              ></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accepted States Section -->
+      <div class="data-card states-section">
+        <div class="panel-header">
+          <div class="panel-title-area">
+            <h2 class="section-title">Accepted Item States</h2>
+            <p class="panel-subtitle">
+              Configure which item states traders will accept and their price
+              coefficients
+            </p>
+          </div>
+        </div>
+
+        <div class="panel-body" *ngIf="acceptedStatesForm">
+          <form [formGroup]="acceptedStatesForm" class="form-container">
+            <div class="states-grid">
+              <!-- Worn State -->
+              <div class="state-card" [class.active]="acceptedStatesForm.get('worn')?.value">
+                <div class="state-header">
+                  <mat-checkbox color="primary" formControlName="worn" class="state-checkbox">
+                    <span class="state-label">
+                      <span class="state-indicator worn"></span>
+                      Worn
+                    </span>
+                  </mat-checkbox>
+                </div>
+                
+                <div class="state-content">
+                  <div class="coefficient-display" *ngIf="acceptedStatesForm.get('worn')?.value && !isEditingCoefficient('worn')">
+                    <div class="coefficient-value" 
+                         matTooltip="Traders will pay this percentage of the original price for worn items"
+                         matTooltipPosition="above">
+                      {{ (acceptedStatesForm.get('coefficientWorn')?.value * 100) || 0 }}%
+                    </div>
+                    <button 
+                      class="custom-icon-btn icon-btn-primary" 
+                      (click)="toggleCoefficientEdit('worn')"
+                      matTooltip="Edit coefficient">
+                      <mat-icon>edit</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+                  </div>
+                  
+                  <div class="coefficient-edit" *ngIf="acceptedStatesForm.get('worn')?.value && isEditingCoefficient('worn')">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Price Coefficient</mat-label>
+                      <input 
+                        matInput 
+                        type="number" 
+                        step="0.01" 
+                        min="0" 
+                        max="1" 
+                        formControlName="coefficientWorn"
+                      />
+                      <mat-hint>Value between 0 and 1</mat-hint>
+                    </mat-form-field>
+                    <div class="edit-actions">
+                      <button 
+                        class="custom-icon-btn icon-btn-primary" 
+                        (click)="saveCoefficient()"
+                        [disabled]="!isValidCoefficient('worn')"
+                        matTooltip="{{ isValidCoefficient('worn') ? 'Save' : 'Value must be between 0 and 1' }}">
+                        <mat-icon>check</mat-icon>
+                        <div class="icon-btn-ripple"></div>
+                      </button>
+                      <button 
+                        class="custom-icon-btn icon-btn-warn" 
+                        (click)="toggleCoefficientEdit('worn')"
+                        matTooltip="Cancel">
+                        <mat-icon>close</mat-icon>
+                        <div class="icon-btn-ripple"></div>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="state-inactive" *ngIf="!acceptedStatesForm.get('worn')?.value">
+                    <mat-icon class="hint-icon">info_outline</mat-icon>
+                    <span>Inactive</span>
+                    <div class="inactive-coefficient" matTooltip="This value will be used when state is activated">
+                      {{ getCoefficientValue('worn') }}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Damaged State -->
+              <div class="state-card" [class.active]="acceptedStatesForm.get('damaged')?.value">
+                <div class="state-header">
+                  <mat-checkbox color="primary" formControlName="damaged" class="state-checkbox">
+                    <span class="state-label">
+                      <span class="state-indicator damaged"></span>
+                      Damaged
+                    </span>
+                  </mat-checkbox>
+                </div>
+                
+                <div class="state-content">
+                  <div class="coefficient-display" *ngIf="acceptedStatesForm.get('damaged')?.value && !isEditingCoefficient('damaged')">
+                    <div class="coefficient-value"
+                         matTooltip="Traders will pay this percentage of the original price for damaged items"
+                         matTooltipPosition="above">
+                      {{ (acceptedStatesForm.get('coefficientDamaged')?.value * 100) || 0 }}%
+                    </div>
+                    <button 
+                      class="custom-icon-btn icon-btn-primary" 
+                      (click)="toggleCoefficientEdit('damaged')"
+                      matTooltip="Edit coefficient">
+                      <mat-icon>edit</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+                  </div>
+                  
+                  <div class="coefficient-edit" *ngIf="acceptedStatesForm.get('damaged')?.value && isEditingCoefficient('damaged')">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Price Coefficient</mat-label>
+                      <input 
+                        matInput 
+                        type="number" 
+                        step="0.01" 
+                        min="0" 
+                        max="1" 
+                        formControlName="coefficientDamaged"
+                      />
+                      <mat-hint>Value between 0 and 1</mat-hint>
+                    </mat-form-field>
+                    <div class="edit-actions">
+                      <button 
+                        class="custom-icon-btn icon-btn-primary" 
+                        (click)="saveCoefficient()"
+                        [disabled]="!isValidCoefficient('damaged')"
+                        matTooltip="{{ isValidCoefficient('damaged') ? 'Save' : 'Value must be between 0 and 1' }}">
+                        <mat-icon>check</mat-icon>
+                        <div class="icon-btn-ripple"></div>
+                      </button>
+                      <button 
+                        class="custom-icon-btn icon-btn-warn" 
+                        (click)="toggleCoefficientEdit('damaged')"
+                        matTooltip="Cancel">
+                        <mat-icon>close</mat-icon>
+                        <div class="icon-btn-ripple"></div>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="state-inactive" *ngIf="!acceptedStatesForm.get('damaged')?.value">
+                    <mat-icon class="hint-icon">info_outline</mat-icon>
+                    <span>Inactive</span>
+                    <div class="inactive-coefficient" matTooltip="This value will be used when state is activated">
+                      {{ getCoefficientValue('damaged') }}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Badly Damaged State -->
+              <div class="state-card" [class.active]="acceptedStatesForm.get('badly_damaged')?.value">
+                <div class="state-header">
+                  <mat-checkbox color="primary" formControlName="badly_damaged" class="state-checkbox">
+                    <span class="state-label">
+                      <span class="state-indicator badly-damaged"></span>
+                      Badly Damaged
+                    </span>
+                  </mat-checkbox>
+                </div>
+                
+                <div class="state-content">
+                  <div class="coefficient-display" *ngIf="acceptedStatesForm.get('badly_damaged')?.value && !isEditingCoefficient('badly_damaged')">
+                    <div class="coefficient-value"
+                         matTooltip="Traders will pay this percentage of the original price for badly damaged items"
+                         matTooltipPosition="above">
+                      {{ (acceptedStatesForm.get('coefficientBadlyDamaged')?.value * 100) || 0 }}%
+                    </div>
+                    <button 
+                      class="custom-icon-btn icon-btn-primary" 
+                      (click)="toggleCoefficientEdit('badly_damaged')"
+                      matTooltip="Edit coefficient">
+                      <mat-icon>edit</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+                  </div>
+                  
+                  <div class="coefficient-edit" *ngIf="acceptedStatesForm.get('badly_damaged')?.value && isEditingCoefficient('badly_damaged')">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Price Coefficient</mat-label>
+                      <input 
+                        matInput 
+                        type="number" 
+                        step="0.1" 
+                        min="0" 
+                        max="1" 
+                        formControlName="coefficientBadlyDamaged"
+                      />
+                      <mat-hint>Value between 0 and 1</mat-hint>
+                    </mat-form-field>
+                    <div class="edit-actions">
+                      <button 
+                        class="custom-icon-btn icon-btn-primary" 
+                        (click)="saveCoefficient()"
+                        [disabled]="!isValidCoefficient('badly_damaged')"
+                        matTooltip="{{ isValidCoefficient('badly_damaged') ? 'Save' : 'Value must be between 0 and 1' }}">
+                        <mat-icon>check</mat-icon>
+                        <div class="icon-btn-ripple"></div>
+                      </button>
+                      <button 
+                        class="custom-icon-btn icon-btn-warn" 
+                        (click)="toggleCoefficientEdit('badly_damaged')"
+                        matTooltip="Cancel">
+                        <mat-icon>close</mat-icon>
+                        <div class="icon-btn-ripple"></div>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="state-inactive" *ngIf="!acceptedStatesForm.get('badly_damaged')?.value">
+                    <mat-icon class="hint-icon">info_outline</mat-icon>
+                    <span>Inactive</span>
+                    <div class="inactive-coefficient" matTooltip="This value will be used when state is activated">
+                      {{ getCoefficientValue('badly_damaged') }}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Traders Section -->
+      <app-traders-editor 
+        [hasSettings]="hasSettings" 
+        [generalSettings]="generalSettings"
+      ></app-traders-editor>
+
+      <!-- Objects Section -->
+      <app-objects-editor
+        [hasSettings]="hasSettings"
+        [generalSettings]="generalSettings"
+      ></app-objects-editor>
+    </div>
+  </div>
+</div>

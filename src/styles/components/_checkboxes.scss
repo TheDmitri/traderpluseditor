@@ -1,0 +1,71 @@
+/**
+ * Checkbox Component Styling
+ * ========================================================================== 
+ * This file contains styling for Angular Material checkbox components.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Checkbox backgrounds, containers, disabled states (neutral colors)
+ * - 30%: Supporting elements like borders and hover states
+ * - 10%: Selected state, focus indicators, active states (primary/accent colors)
+ */
+
+// Checkbox base styling with custom colors
+.mat-mdc-checkbox {
+  .mdc-checkbox {
+    .mdc-checkbox__background {
+      background-color: var(
+        --brush-checkbox-background
+      ) !important; // 60% - container background
+      border-color: var(--brush-input-border) !important; // 60% - subtle border
+    }
+
+    // Selected state styling - uses accent color (10% emphasis)
+    &.mdc-checkbox--selected {
+      .mdc-checkbox__background {
+        background-color: var(
+          --brush-checkbox-selected
+        ) !important; // 10% - primary accent
+        border-color: var(
+          --brush-checkbox-selected
+        ) !important; // 10% - primary accent
+      }
+    }
+
+    // Hover state - increases visibility with supporting color (30%)
+    &:hover:not(.mdc-checkbox--disabled) {
+      .mdc-checkbox__background {
+        border-color: var(
+          --brush-input-border-hover
+        ) !important; // 30% - supporting highlight
+      }
+    }
+
+    // Disabled state - reduces visibility with neutral colors (60%)
+    &.mdc-checkbox--disabled {
+      .mdc-checkbox__background {
+        background-color: var(
+          --brush-input-background-disabled
+        ) !important; // 60% - muted container
+        border-color: var(
+          --brush-input-text-disabled
+        ) !important; // 60% - muted border
+      }
+    }
+  }
+
+  // Touch target expansion for better mobile usability
+  .mdc-checkbox-touch {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 48px;
+    width: 48px;
+    transform: translate(-50%, -50%);
+  }
+
+  // Label styling for checkbox text
+  .mdc-form-field {
+    label {
+      color: var(--brush-label-text) !important; // 30% - supporting text
+    }
+  }
+}

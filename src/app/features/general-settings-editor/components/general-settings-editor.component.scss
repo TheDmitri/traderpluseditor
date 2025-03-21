@@ -1,0 +1,292 @@
+/* General Settings Container Layout
+========================================================================== */
+.general-settings-container {
+  padding: 32px;
+  max-width: 1800px;
+  margin: 0 auto;
+  display: grid;
+  gap: 32px;
+  
+  /* More responsive padding for smaller screens */
+  @media (max-width: 1220px) {
+    padding: 24px 16px;
+    gap: 24px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 16px 12px;
+    gap: 16px;
+  }
+}
+
+/* Main Content Area
+========================================================================== */
+.main-content-area {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  
+  /* Responsive gap for smaller screens */
+  @media (max-width: 1220px) {
+    gap: 24px;
+  }
+}
+
+/* Two-column Grid Layout
+========================================================================== */
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+  
+  /* Better progressive breakpoints */
+  @media (max-width: 1975px) {
+    grid-template-columns: 1fr;
+  }
+  
+  @media (max-width: 1220px) {
+    gap: 24px;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 16px;
+  }
+}
+
+/* States Grid Styling - Redesigned for horizontal layout
+========================================================================== */
+.states-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 900px; /* Makes the section narrower as requested */
+  margin: 0 auto;
+  
+  /* Responsive layout - stack vertically on smaller screens */
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .state-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--brush-hover-overlay);
+    border-radius: 8px;
+    padding: 16px;
+    transition: all var(--transition-quick) var(--transition-timing);
+    min-width: 0;  /* Prevent overflow */
+    
+    &.active {
+      border-left: 4px solid;
+      
+      &:nth-child(1) {
+        border-color: var(--brush-text-success); /* Green for worn */
+      }
+      
+      &:nth-child(2) {
+        border-color: var(--brush-text-warning); /* Yellow for damaged */
+      }
+      
+      &:nth-child(3) {
+        border-color: var(--brush-text-error); /* Red for badly damaged */
+      }
+    }
+    
+    &:hover {
+      background-color: var(--brush-active-overlay);
+    }
+    
+    .state-header {
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--brush-border-subtle);
+      
+      .state-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+      }
+      
+      .state-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        transition: opacity var(--transition-normal) var(--transition-timing);
+        opacity: 0.5;
+        
+        &.worn {
+          background-color: var(--brush-text-success); // Green
+        }
+        
+        &.damaged {
+          background-color: var(--brush-text-warning); // Yellow
+        }
+        
+        &.badly-damaged {
+          background-color: var(--brush-text-error); // Red
+        }
+      }
+      
+      // Make indicator more visible when state is active
+      mat-checkbox.mat-checkbox-checked {
+        .state-indicator {
+          opacity: 1;
+          box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+      }
+    }
+    
+    .state-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100px;
+      
+      .state-inactive {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        color: var(--brush-text-secondary);
+        font-size: var(--font-size-sm);
+        font-style: italic;
+        opacity: 0.7;
+        
+        .hint-icon {
+          font-size: 24px;
+          height: 24px;
+          width: 24px;
+          color: var(--brush-text-secondary);
+        }
+        
+        .inactive-coefficient {
+          margin-top: 8px;
+          font-size: 1rem;
+          opacity: 0.5;
+          background-color: var(--brush-hover-overlay);
+          padding: 4px 10px;
+          border-radius: 4px;
+          position: relative;
+          
+          &:before {
+            content: 'Saved value: ';
+            font-size: 0.8rem;
+            opacity: 0.7;
+          }
+        }
+      }
+      
+      .coefficient-display {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        width: 100%;
+        
+        .coefficient-value {
+          font-size: 1.5rem;
+          font-weight: 500;
+          padding: 8px 16px;
+          border-radius: 4px;
+          background-color: var(--brush-hover-overlay);
+          min-width: 60px;
+          text-align: center;
+        }
+      }
+      
+      .coefficient-edit {
+        width: 100%;
+        animation: fadeIn 0.3s ease-in-out;
+        
+        mat-form-field {
+          width: 100%;
+        }
+        
+        .edit-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 8px;
+          margin-top: 8px;
+        }
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    }
+  }
+}
+
+/* Table & Action Button Styling
+========================================================================== */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  
+  /* Improve table responsiveness */
+  table {
+    min-width: 500px; /* Ensures table doesn't get too compressed */
+  }
+  
+  /* Make sure tables don't overflow the viewport */
+  @media (max-width: 600px) {
+    margin: 0 -12px;
+    width: calc(100% + 24px);
+    
+    table {
+      th, td {
+        padding: 0 8px;
+      }
+    }
+  }
+}
+
+.actions-cell {
+  width: 120px;
+}
+
+/* Inline Editing Styles 
+========================================================================== */
+.edit-field {
+  padding: 8px 0;
+  
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.editing-row {
+  background-color: var(--brush-hover-overlay) !important;
+}
+
+/* Empty State Responsive Adjustments
+========================================================================== */
+.empty-state-container {
+  @media (max-width: 480px) {
+    padding: 24px 12px;
+    
+    .empty-state-title {
+      font-size: 1.2rem;
+    }
+    
+    .empty-state-message {
+      font-size: 0.9rem;
+    }
+    
+    .empty-state-actions {
+      flex-direction: column;
+      width: 100%;
+      
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

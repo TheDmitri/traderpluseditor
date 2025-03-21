@@ -1,17 +1,22 @@
-import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NavigationService } from '../../../core/services/navigation.service';
+
+// Material imports
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+// Application imports
+import { NavigationService } from '../../../core/services';
 
 interface NavItem {
   label: string;
   icon: string;
   route: string;
+  showInSidebar?: boolean;
 }
 
 @Component({
@@ -35,11 +40,22 @@ export class NavigationComponent {
   navItems: NavItem[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
     { label: 'Categories', icon: 'category', route: '/categories' },
-    { label: 'Products', icon: 'inventory_2', route: '/products' },
-    { label: 'Currencies', icon: 'attach_money', route: '/currencies' },
+    { label: 'Products', icon: 'shopping_cart', route: '/products' },
+    { label: 'Currencies', icon: 'payments', route: '/currencies' },
     { label: 'Settings', icon: 'settings', route: '/settings' },
-    { label: 'Import/Export', icon: 'import_export', route: '/file-management' }
+    { label: 'Import/Export', icon: 'import_export', route: '/file-management' },
+    { label: 'Converter', icon: 'auto_fix_high', route: '/converter' },
+    { label: 'Storage', icon: 'storage', route: '/storage-manager' },
+    { label: 'Information', icon: 'help_outline', route: '/information', showInSidebar: false }
   ];
+  
+  getVisibleNavItems(): NavItem[] {
+    return this.navItems.filter(item => item.showInSidebar !== false);
+  }
+  
+  getContentClass(): string {
+    return this.isExpanded() ? 'content-expanded' : 'content-collapsed';
+  }
 
   isExpanded(): boolean {
     return this.navigationService.isExpanded();

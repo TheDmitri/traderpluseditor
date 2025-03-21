@@ -1,0 +1,24 @@
+<div [class]="data.type || 'info'">
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon class="dialog-icon" [ngClass]="data.type || 'info'">
+      {{getIcon()}}
+    </mat-icon>
+    <span>{{ data.title }}</span>
+  </h2>
+
+  <mat-dialog-content class="dialog-content">
+    <div class="dialog-primary-text">{{ data.message }}</div>
+    <div *ngIf="data.additionalInfo" class="dialog-secondary-text">
+      {{ data.additionalInfo }}
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-button (click)="onCancel()" cdkFocusInitial>
+      {{ data.cancelText || "Cancel" }}
+    </button>
+    <button mat-raised-button [color]="getButtonColor()" (click)="onConfirm()">
+      {{ data.confirmText || "Confirm" }}
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -8,5 +8,6 @@ export interface Category {
   isVisible: boolean;
   licensesRequired: string[];
   productIds: string[];
+  className?: string[];
   categoryType?: number;
 }

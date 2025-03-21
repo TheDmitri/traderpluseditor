@@ -1,0 +1,99 @@
+.category-editor-container {
+  padding: 32px;
+  max-width: 1800px;
+  margin: 0 auto;
+  display: grid;
+  gap: 32px;
+
+  // Loading indicator styling for category editor
+  .loader-container {
+    transform: scale(0.8);
+  }
+
+  .loading-text {
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 16px;
+    color: var(--brush-text-secondary);
+  }
+
+  // No data row styling
+  .no-data-row {
+    .no-data-message {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 20px;
+      color: var(--brush-text-secondary);
+
+      mat-icon {
+        color: var(--color-warn);
+      }
+    }
+  }
+
+  // Product count styling
+  .product-count {
+    text-align: start;
+  }
+
+  .table-container {
+    table {
+      // Specific column adjustments for category editor table
+      .mat-column-icon {
+        min-width: 48px;
+        flex: 0.3;
+      }
+
+      .mat-column-categoryName {
+        min-width: 180px;
+        flex: 2;
+      }
+
+      .mat-column-categoryId {
+        min-width: 150px;
+        text-align: start;
+        flex: 1.5;
+      }
+
+      .mat-column-isVisible {
+        min-width: 80px;
+        flex: 0.5;
+      }
+
+      .mat-column-productCount {
+        min-width: 100px;
+        flex: 0.8;
+      }
+
+      .product-count {
+        min-width: 100px;
+        text-align: start;
+      }
+    }
+  }
+
+  // Responsive adjustments - kept from original but optimized
+  @media screen and (max-width: 960px) {
+    padding: 16px;
+
+    .mat-column-categoryId {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .mat-column-productCount {
+      display: none;
+    }
+
+    .mat-column-isVisible {
+      display: none;
+    }
+
+    .mat-column-icon {
+      display: none;
+    }
+  }
+}

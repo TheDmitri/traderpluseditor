@@ -1,0 +1,74 @@
+/**
+ * Side Panel
+ * ========================================================================== 
+ * Panel docked to side of screen, often used for filters or secondary content
+ */
+.side-panel {
+  background-color: var(--brush-background-elevated); // 60% - structural
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--brush-border-subtle); // 60% - subtle border
+  
+  // Panel header
+  .side-panel-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--brush-divider); // 60% - subtle divider
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    h3 {
+      margin: 0;
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-medium);
+      color: var(--brush-text-primary); // 60% - primary text
+    }
+    
+    .close-button {
+      color: var(--brush-text-secondary); // 30% - supporting element
+      
+      &:hover {
+        color: var(--brush-text-primary); // 60% - increased visibility on hover
+      }
+    }
+  }
+  
+  // Panel body
+  .side-panel-body {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+  }
+  
+  // Panel footer
+  .side-panel-footer {
+    padding: 16px;
+    border-top: 1px solid var(--brush-divider); // 60% - subtle divider
+    display: flex;
+    justify-content: flex-end;
+    
+    button:not(:last-child) {
+      margin-right: 8px;
+    }
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .side-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    width: 280px;
+    transform: translateX(100%);
+    transition: transform var(--transition-normal) var(--transition-timing);
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+    
+    &.open {
+      transform: translateX(0);
+    }
+  }
+}

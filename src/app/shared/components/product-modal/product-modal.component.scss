@@ -1,0 +1,259 @@
+.product-modal {
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  width: 100%;
+  min-width: 50vw;
+  max-width: 85vw;
+  overflow: hidden;
+
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+
+    // Section styling with consistent spacing and appearance
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+
+      // Consistent section titles using the global styles
+      .section-title {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-medium);
+        color: var(--brush-text-primary);
+        margin: 0 0 16px 0;
+        padding: 0 0 8px 0;
+        border-bottom: 1px solid var(--brush-divider);
+      }
+
+      // Fix spacing between elements
+      > * + * {
+        margin-top: 16px;
+      }
+    }
+
+    // Form grid layouts
+    .form-row {
+      display: flex;
+      gap: 16px;
+      width: 100%;
+
+      &.radio-group-row {
+        align-items: center;
+        padding: 0 0 16px; // Entferne oberes Padding
+        margin-top: -8px; // Negativer Abstand nach oben, um den Abstand zum Input zu verringern
+        margin-left: 0; // Entferne Versatz
+
+        // Füge eine Wrapper-Klasse hinzu, um das gleiche Padding wie mat-form-field zu simulieren
+        .radio-group-wrapper {
+          display: flex;
+          align-items: center;
+          width: 100%;
+          padding-left: 4px; // Angleichung an mat-form-field internes Padding
+
+          .radio-label {
+            flex: 0 0 auto;
+            font-size: var(--font-size-sm);
+            color: var(--brush-text-primary);
+            margin-right: 16px;
+            font-weight: var(--font-weight-medium);
+          }
+        }
+      }
+
+      .form-col {
+        flex: 1;
+
+        &-full {
+          flex: 1 1 100%;
+          width: 100%;
+        }
+
+        @media (max-width: 600px) {
+          flex: 1 1 100%;
+        }
+      }
+
+      @media (max-width: 600px) {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      // Radio group styling
+      .radio-label {
+        flex: 0 0 auto;
+        font-size: var(--font-size-sm);
+        color: var(--brush-text-primary);
+        margin-right: 16px;
+        font-weight: var(--font-weight-medium);
+      }
+
+      .radio-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+
+        .mat-radio-button {
+          margin-right: 16px;
+        }
+      }
+    }
+
+    // Validation error messages
+    .validation-error {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      background-color: rgba(244, 67, 54, 0.08);
+      border: 1px solid rgba(244, 67, 54, 0.2);
+      color: #f44336;
+      margin-top: 8px;
+      font-size: var(--font-size-sm);
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    // Product lists styling (attachments & variants)
+    .product-lists-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .mat-expansion-panel {
+      background-color: var(--brush-background-elevated);
+      border: 1px solid var(--brush-border-subtle);
+      margin-bottom: 16px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .mat-expansion-panel-header {
+        height: 56px;
+
+        .mat-expansion-panel-header-title {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          color: var(--brush-text-primary);
+          margin-right: 0;
+
+          button.custom-icon-btn {
+            min-width: 32px;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            padding: 0;
+            margin: 0;
+
+            &[disabled] {
+              opacity: 0.5;
+              cursor: not-allowed;
+
+              &:hover {
+                background-color: transparent;
+              }
+            }
+
+            mat-icon {
+              font-size: 20px;
+              width: 20px;
+              height: 20px;
+              line-height: 20px;
+            }
+          }
+        }
+      }
+    }
+
+    .product-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .product-list {
+        max-height: 200px;
+        overflow-y: auto;
+        border-radius: 4px;
+        background: var(--brush-background-subtle);
+
+        &.slim-scrollbar {
+          @extend .dark-scrollbar !optional;
+
+          &::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+          }
+
+          &::-webkit-scrollbar-track {
+            background: transparent;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            background-color: var(--brush-scrollbar-thumb, #444444);
+            border-radius: 3px;
+          }
+
+          &::-webkit-scrollbar-thumb:hover {
+            background-color: var(--brush-scrollbar-thumb-hover, #666666);
+          }
+
+          scrollbar-width: thin;
+          scrollbar-color: var(--brush-scrollbar-thumb, #444444) transparent;
+        }
+
+        .product-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 8px 16px;
+          border-bottom: 1px solid var(--brush-divider);
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          &:hover {
+            background: var(--brush-hover-overlay);
+
+            .remove-button {
+              opacity: 1;
+            }
+          }
+
+          .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            .product-id {
+              color: var(--brush-text-secondary);
+              font-size: var(--font-size-xs);
+            }
+
+            .product-name {
+              color: var(--brush-text-primary);
+              font-size: var(--font-size-sm);
+            }
+          }
+
+          .remove-button {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+          }
+        }
+      }
+    }
+  }
+}

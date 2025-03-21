@@ -1,0 +1,181 @@
+.product-list-container {
+  .table-container {
+    position: relative;
+    min-height: 200px;
+    overflow-x: auto;
+
+    .loading-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 24px;
+      color: var(--brush-text-secondary);
+
+      .loader-container {
+        transform: scale(0.6);
+        margin: -16px;
+      }
+
+      .loading-text {
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+
+    // No data row styling
+    .no-data-row {
+      .no-data-message {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 20px;
+        color: var(--brush-text-secondary);
+
+        mat-icon {
+          color: var(--color-warn);
+        }
+      }
+    }
+
+    // Specific column adjustments for product list table
+    table {
+      width: 100%;
+
+      .mat-mdc-column-actions,
+      .mat-column-actions {
+        min-width: 120px;
+        width: 120px;
+        flex: 0 0 120px;
+        text-align: center;
+        padding-right: 16px;
+
+        .actions-header,
+        .actions-cell {
+          text-align: center;
+          justify-content: flex-end;
+        }
+      }
+
+      // Other columns remain flexible
+      [class*="mat-column-"]:not([class*="mat-column-actions"]) {
+        flex: 1;
+        min-width: 100px;
+      }
+
+      // Specific column adjustments
+      .mat-column-className {
+        min-width: 180px;
+        flex: 2;
+      }
+
+      .mat-column-categories {
+        min-width: 150px;
+        flex: 1.5;
+
+        .additional-count {
+          color: var(--brush-text-secondary);
+          font-size: 0.9em;
+          margin-left: 4px;
+          font-style: italic;
+          white-space: nowrap;
+        }
+      }
+
+      .mat-column-coefficient,
+      .mat-column-maxStock,
+      .mat-column-tradeQuantity,
+      .mat-column-buyPrice,
+      .mat-column-sellPrice {
+        min-width: 100px;
+        flex: 0.8;
+        text-align: start;
+      }
+
+      .mat-column-attachments,
+      .mat-column-variants {
+        min-width: 110px;
+        flex: 0.7;
+        text-align: center;
+      }
+
+      // Cell styles
+      .mat-mdc-header-cell,
+      .mat-mdc-cell {
+        padding: 12px 8px;
+        font-size: 14px;
+        color: var(--brush-text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .mat-mdc-header-cell {
+        font-weight: 500;
+        color: var(--brush-text-secondary);
+      }
+    }
+  }
+
+  // Progressive responsive column hiding
+  // First breakpoint - hide variants and attachments
+  @media screen and (max-width: 1590px) {
+    .table-container table {
+      .mat-column-variants,
+      .mat-column-attachments {
+        display: none;
+      }
+    }
+  }
+
+  // Second breakpoint - hide stock settings
+  @media screen and (max-width: 1400px) {
+    .table-container table {
+      .mat-column-stockSettings {
+        display: none;
+      }
+    }
+  }
+
+  // Third breakpoint - hide more columns
+  @media screen and (max-width: 1245px) {
+    .table-container table {
+      .mat-column-coefficient,
+      .mat-column-maxStock,
+      .mat-column-tradeQuantity {
+        display: none;
+      }
+    }
+  }
+
+  @media screen and (max-width: 1000px) {
+    .table-container table {
+      .mat-column-categories {
+        display: none;
+      }
+    }
+  }
+
+  // Fourth breakpoint - hide coefficient and maxStock
+  @media screen and (max-width: 845px) {
+    .table-container table {
+      .mat-column-sellPrice,
+      .mat-column-buyPrice {
+        display: none;
+      }
+    }
+  }
+}
+
+/* Custom color for buy price column */
+.buy-price-highlight {
+  color: var(--color-secondary-medium);
+  font-weight: 500;
+}
+
+/* Add highlight for cell values */
+.cell-highlight {
+  color: var(--color-primary-medium);
+  font-weight: 500;
+}

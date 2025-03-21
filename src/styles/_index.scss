@@ -1,0 +1,53 @@
+/**
+ * Style System Index
+ * 
+ * This is the main entry point for all styles in the application.
+ * It imports all modular SCSS files in a specific order to ensure
+ * proper cascade, specificity, and prevent style conflicts.
+ * 
+ * The structure follows a methodology that separates concerns
+ * from abstract definitions to concrete implementations.
+ */
+
+// Abstracts
+// Variables, functions, mixins, and placeholders that don't output CSS directly
+@import "./abstracts/variables";
+
+// Base styles
+// Foundational styles applied globally including resets and typography
+@import "./base/animations";
+@import "./base/reset";
+@import "./base/typography";
+
+// Components
+// Reusable UI components with specific styling
+@import "./components/app-icons";
+@import "./components/cards";
+@import "./components/checkboxes";
+@import "./components/chips";
+@import "./components/collapsible-panel";
+@import "./components/content-panel";
+@import "./components/data-panel";
+@import "./components/dialogs";
+@import "./components/empty-states";
+@import "./components/expansion-panel";
+@import "./components/file-upload";
+@import "./components/forms";
+@import "./components/icon-button";
+@import "./components/info-box";
+@import "./components/loader";
+@import "./components/material-buttons";
+@import "./components/page-header";
+@import "./components/radio-button";
+@import "./components/side-panel";
+@import "./components/sliders";
+@import "./components/snackbar";
+@import "./components/status";
+@import "./components/toggles";
+@import "./components/stroked-button";
+@import "./components/tables";
+@import "./components/titles";
+
+@import "./overrides/material";
+
+@import "./utilities/scrollbar";

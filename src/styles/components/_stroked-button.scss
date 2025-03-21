@@ -1,0 +1,221 @@
+/**
+ * Stroked Button Component
+ * ========================================================================== 
+ * This file contains styling for custom outlined buttons with consistent styling
+ * that follows the application's design system and color palette.
+ * 
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Button structure, container, disabled states (neutral colors)
+ * - 30%: Secondary variant buttons, supporting visual cues (secondary colors)
+ * - 10%: Primary variant buttons, interactive states, focus (primary/accent colors)
+ */
+
+/* Base Stroked Button Styling
+ * ========================================================================== 
+ * Core styling for outlined buttons with transparent backgrounds and colored borders
+ */
+.custom-stroked-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  padding: 0 16px;
+  min-width: 64px;
+  height: 36px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 36px;
+  text-decoration: none;
+  text-align: center;
+  vertical-align: baseline;
+  cursor: pointer;
+  background-color: transparent; // Transparent background by default
+  transition: all 0.2s ease;
+  border-width: 0.5px;
+  border-style: solid;
+  user-select: none;
+
+  // Primary variant (10% emphasis) - for important actions
+  &.color-primary {
+    border-color: var(--color-primary-dark); // 10% - primary accent border
+    color: var(--color-primary-medium); // 10% - primary accent text
+
+    // Interactive states
+    &:hover {
+      background-color: var(--color-primary-transparent-10); // 10% - subtle background feedback
+      border-color: var(--color-primary-medium); // 10% - slightly lighter border on hover
+      color: var(--color-primary-light); // 10% - enhanced contrast on hover
+    }
+
+    &:active {
+      background-color: var(--color-primary-transparent-20); // 10% - stronger background on press
+      border-color: var(--color-primary-darkest); // 10% - darker border for active state
+      color: var(--color-primary-darkest); // 10% - darker text for active state
+    }
+
+    // Accessibility focus indicator
+    &:focus:not(:active) {
+      outline: 2px solid var(--brush-button-focus-ring); // 10% - focus indicator
+      outline-offset: 1px;
+    }
+
+    // Disabled state - uses neutral colors (60%)
+    &:disabled {
+      border-color: var(--brush-button-disabled-text); // 60% - muted border
+      color: var(--brush-button-disabled-text); // 60% - muted text
+      cursor: not-allowed;
+    }
+  }
+
+  // Secondary variant (30% supporting) - for common/supporting actions
+  &.color-secondary {
+    border-color: var(--color-secondary-dark); // 30% - secondary accent border
+    color: var(--color-secondary-medium); // 30% - secondary accent text
+
+    // Interactive states for visual feedback
+    &:hover {
+      background-color: var(--color-secondary-transparent-10); // 30% - subtle background feedback
+      border-color: var(--color-secondary-medium); // 30% - slightly lighter border on hover
+      color: var(--color-secondary-light); // 30% - enhanced contrast on hover
+    }
+
+    &:active {
+      background-color: var(--color-secondary-transparent-20); // 30% - stronger background on press
+      border-color: var(--color-secondary-darkest); // 30% - darker border for active state
+      color: var(--color-secondary-darkest); // 30% - darker text for active state
+    }
+
+    // Accessibility focus indicator
+    &:focus:not(:active) {
+      outline: 2px solid var(--color-secondary-light); // 30% - focus indicator
+      outline-offset: 1px;
+    }
+
+    // Disabled state - uses neutral colors (60%)
+    &:disabled {
+      border-color: var(--brush-button-disabled-text); // 60% - muted border
+      color: var(--brush-button-disabled-text); // 60% - muted text
+      cursor: not-allowed;
+    }
+  }
+
+  // Accent variant (part of 10% emphasis) - for special actions
+  &.color-accent {
+    border-color: var(--color-accent-dark); // 10% - accent border
+    color: var(--color-accent-medium); // 10% - accent text
+
+    // Interactive states for visual feedback
+    &:hover {
+      background-color: var(--color-accent-transparent-10); // 10% - subtle background feedback
+      border-color: var(--color-accent-medium); // 10% - slightly lighter border on hover
+      color: var(--color-accent-light); // 10% - enhanced contrast on hover
+    }
+
+    &:active {
+      background-color: var(--color-accent-transparent-20); // 10% - stronger background on press
+      border-color: var(--color-accent-darkest); // 10% - darker border for active state
+      color: var(--color-accent-darkest); // 10% - darker text for active state
+    }
+
+    // Accessibility focus indicator
+    &:focus:not(:active) {
+      outline: 2px solid var(--color-accent-light); // 10% - focus indicator
+      outline-offset: 1px;
+    }
+
+    // Disabled state - uses neutral colors (60%)
+    &:disabled {
+      border-color: var(--brush-button-disabled-text); // 60% - muted border
+      color: var(--brush-button-disabled-text); // 60% - muted text
+      cursor: not-allowed;
+    }
+  }
+
+  // Warning/destructive variant (special emphasis - part of 10%)
+  &.color-warn {
+    border-color: var(--color-error-dark); // 10% - warning/error border
+    color: var(--color-error-medium); // 10% - warning/error text
+
+    // Interactive states for visual feedback
+    &:hover {
+      background-color: var(--color-error-transparent-50); // 10% - subtle background feedback
+      border-color: var(--color-error-medium); // 10% - slightly lighter border on hover
+      color: var(--color-error-light); // 10% - enhanced contrast on hover
+    }
+
+    &:active {
+      background-color: var(--color-error-transparent-50); // 10% - stronger background on press
+      border-color: var(--color-error-darkest); // 10% - darker border for active state
+      color: var(--color-error-darkest); // 10% - darker text for active state
+    }
+
+    // Accessibility focus indicator
+    &:focus:not(:active) {
+      outline: 2px solid var(--color-error-light); // 10% - focus indicator
+      outline-offset: 1px;
+    }
+
+    // Disabled state - uses neutral colors (60%)
+    &:disabled {
+      border-color: var(--brush-button-disabled-text); // 60% - muted border
+      color: var(--brush-button-disabled-text); // 60% - muted text
+      cursor: not-allowed;
+    }
+  }
+
+  /* Button Size Variants
+   * ========================================================================== 
+   * Different size options for varying button prominence
+   */
+  // Small button for compact UIs
+  &.button-sm {
+    height: 32px;
+    line-height: 32px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  // Large button for more prominent actions
+  &.button-lg {
+    height: 44px;
+    line-height: 44px;
+    padding: 0 24px;
+    font-size: 15px;
+  }
+
+  // Button with icon addition
+  &.with-icon {
+    gap: 8px; // Space between icon and text
+
+    .mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  // Light variant for dark backgrounds (part of 60% structural)
+  &.light-stroked-button {
+    border-color: var(--color-neutral-lightest); // Light border for dark backgrounds
+    color: var(--color-neutral-lightest); // Light text for dark backgrounds
+
+    // Interactive states with appropriate visual feedback
+    &:hover {
+      background-color: var(--brush-hover-overlay); // Subtle light overlay
+      border-color: white; // Pure white for maximum contrast on hover
+      color: white; // Pure white for maximum contrast on hover
+    }
+
+    &:active {
+      background-color: var(--brush-active-overlay); // More visible overlay on press
+    }
+
+    // Disabled state - uses neutral colors (60%)
+    &:disabled {
+      border-color: var(--brush-button-disabled-text); // 60% - muted border
+      color: var(--brush-button-disabled-text); // 60% - muted text
+    }
+  }
+}

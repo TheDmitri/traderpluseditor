@@ -1,0 +1,180 @@
+/* App Icons Styling
+========================================================================== */
+
+// Icon Constants - icon names to be used throughout the app
+:root {
+  --icon-dashboard: "dashboard";
+  --icon-categories: "category";
+  --icon-products: "shopping_cart";
+  --icon-currencies: "payments";
+  --icon-settings: "settings";
+  --icon-import: "upload_file";
+  --icon-export: "download";
+  --icon-storage: "storage";
+  --icon-history: "history";
+  --icon-version: "new_releases";
+}
+
+/* Icon Background Containers
+========================================================================== */
+.app-icon-bg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+  // Default gradient from primary to secondary color
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-dark),
+    var(--color-secondary-medium)
+  );
+  
+  // Common shine effect for all icon backgrounds
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at top right,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    opacity: 0.8;
+    pointer-events: none;
+  }
+  
+  // Standard icon styling within the background
+  mat-icon {
+    color: white;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Size Variations 
+  -------------------------------------- */
+  &.icon-sm {
+    width: 40px;
+    height: 40px;
+    
+    mat-icon {
+      font-size: 20px;
+      height: 20px;
+      width: 20px;
+    }
+  }
+  
+  &.icon-md {
+    width: 48px;
+    height: 48px;
+    
+    mat-icon {
+      font-size: 24px;
+      height: 24px;
+      width: 24px;
+    }
+  }
+  
+  &.icon-lg {
+    width: 56px;
+    height: 56px;
+    
+    mat-icon {
+      font-size: 28px;
+      height: 28px;
+      width: 28px;
+    }
+  }
+  
+  &.icon-xl {
+    width: 64px;
+    height: 64px;
+    
+    mat-icon {
+      font-size: 32px;
+      height: 32px;
+      width: 32px;
+    }
+  }
+  
+  &.neutral-bg {
+    background: linear-gradient(
+      135deg,
+      var(--brush-background-elevated),
+      var(--brush-background-body)
+    );
+  }
+}
+
+/* Standalone Icon Colors (without backgrounds)
+========================================================================== */
+.app-icon-color {
+  &.categories-color {
+    color: var(--color-primary-medium);
+  }
+  
+  &.products-color {
+    color: var(--color-secondary-medium);
+  }
+  
+  &.currencies-color {
+    color: var(--color-secondary-dark);
+  }
+  
+  &.settings-color {
+    color: var(--color-primary-dark);
+  }
+  
+  &.export-color {
+    color: var(--color-secondary-medium);
+  }
+  
+  &.import-color {
+    color: var(--color-primary-medium);
+  }
+  
+  &.storage-color {
+    color: var(--color-primary-dark);
+  }
+  
+  &.success-color {
+    color: var(--color-success-medium);
+  }
+  
+  &.error-color {
+    color: var(--color-error-medium);
+  }
+  
+  &.warning-color {
+    color: var(--color-warning-medium);
+  }
+  
+  &.info-color {
+    color: var(--color-info-medium);
+  }
+}
+
+/* Animation for Interactive States
+========================================================================== */
+@keyframes icon-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+}
+
+.app-icon-bg.interactive:hover {
+  animation: icon-pulse 1.2s infinite ease-in-out;
+}

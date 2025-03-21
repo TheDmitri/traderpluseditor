@@ -1,0 +1,142 @@
+/* Loadout Container
+========================================================================== */
+.loadout-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .panel-header {
+    margin-bottom: 0;
+  }
+}
+
+/* Loadout Items List
+========================================================================== */
+.loadouts-list {
+  .loadout-item {
+    margin-bottom: 8px;
+    padding: 12px;
+    background: linear-gradient(
+      135deg,
+      var(--brush-background-body),
+      var(--brush-background-elevated)
+    );
+    border-radius: 8px;
+    box-shadow: var(--brush-shadow-light);
+    
+    .loadout-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      
+      .item-info {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        
+        .slot-name {
+          font-weight: 500;
+          color: var(--color-primary-medium);
+          background-color: var(--color-primary-transparent-20);
+          padding: 2px 8px;
+          border-radius: 4px;
+          font-size: 0.9rem;
+        }
+        
+        .class-name {
+          font-weight: 500;
+        }
+        
+        .quantity {
+          color: var(--brush-text-secondary);
+          font-size: 0.9rem;
+        }
+      }
+      
+      .item-actions {
+        display: flex;
+        gap: 4px;
+      }
+    }
+    
+    .attachments-display {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--brush-divider);
+      
+      .attachments-count {
+        font-size: 0.85rem;
+        color: var(--brush-text-secondary);
+        margin-bottom: 6px;
+      }
+      
+      .attachment-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        
+        .attachment-chip {
+          display: inline-flex;
+          align-items: center;
+          background-color: var(--color-background-medium);
+          padding: 3px 8px;
+          border-radius: 12px;
+          font-size: 0.8rem;
+          
+          .attachment-class {
+            margin-right: 4px;
+            font-weight: 500;
+          }
+          
+          .attachment-quantity {
+            color: var(--brush-text-secondary);
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Responsive layout adjustments
+========================================================================== */
+@media (max-width: 767px) {
+  .slots-section {
+    .slots-grid {
+      .slot-card {
+        height: 70px;
+      }
+    }
+  }
+
+  .loadout-item {
+    .loadout-item-header {
+      flex-direction: column;
+      align-items: flex-start;
+      
+      .item-info {
+        margin-bottom: 8px;
+      }
+      
+      .item-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .slots-section {
+    .slots-grid {
+      .slot-card {
+        height: 65px;
+        
+        .slot-name {
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+}

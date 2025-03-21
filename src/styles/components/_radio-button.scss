@@ -1,0 +1,168 @@
+/**
+ * Radio Button Component Styling
+ * ========================================================================== 
+ * This file contains styling for Angular Material radio button components.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Radio backgrounds, containers, disabled states (neutral colors)
+ * - 30%: Labels, supporting elements, hover states (secondary colors)
+ * - 10%: Selected states, focus indicators (primary/accent colors)
+ */
+
+/* Base Radio Button Styling
+ * ========================================================================== 
+ * Core styling for the radio button component
+ */
+.mat-mdc-radio-button {
+  margin-right: 16px;
+  
+  // Radio button outer circle - increase specificity
+  .mdc-radio {
+    .mdc-radio__background {
+      .mdc-radio__outer-circle {
+        border-color: var(--color-neutral-medium) !important;
+      }
+      
+      // Inner circle - always WHITE
+      .mdc-radio__inner-circle {
+        background-color: white !important;
+      }
+    }
+    
+    // Hover state with secondary colors
+    &:hover:not(.mdc-radio--disabled) {
+      .mdc-radio__background .mdc-radio__outer-circle {
+        border-color: var(--color-secondary-medium) !important;
+      }
+    }
+    
+    // Disabled state
+    &.mdc-radio--disabled {
+      .mdc-radio__background {
+        .mdc-radio__outer-circle {
+          border-color: var(--color-neutral-dark) !important;
+        }
+        
+        .mdc-radio__inner-circle {
+          background-color: var(--color-neutral-dark) !important;
+        }
+      }
+    }
+  }
+  
+  // Label styling
+  .mdc-form-field {
+    label {
+      color: var(--color-text-primary-light) !important;
+      font-size: var(--font-size-base);
+      
+      &.mat-mdc-radio-disabled {
+        color: var(--color-text-disabled) !important;
+      }
+    }
+  }
+  
+  // Focus states
+  &.cdk-focused .mdc-radio .mdc-radio__native-control:focus:focus-visible ~ .mdc-radio__background::before {
+    opacity: 0.12;
+    transform: scale(1);
+  }
+  
+  .mat-ripple-element {
+    background-color: var(--color-secondary-transparent-20) !important;
+  }
+}
+
+// Checked state - outer circle with secondary color
+.mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio .mdc-radio__background .mdc-radio__outer-circle {
+  border-color: var(--color-secondary-dark) !important;
+}
+
+// Checked state - inner circle always WHITE
+.mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio .mdc-radio__background .mdc-radio__inner-circle {
+  background-color: white !important;
+}
+
+// Hover state
+.mat-mdc-radio-button:hover .mdc-radio:not(.mdc-radio--disabled) .mdc-radio__outer-circle {
+  border-color: var(--color-secondary-medium) !important;
+}
+
+// Active state
+.mat-mdc-radio-button:active .mdc-radio:not(.mdc-radio--disabled) .mdc-radio__outer-circle {
+  border-color: var(--color-secondary-dark) !important;
+}
+
+/* Radio Group Layout
+ * ========================================================================== 
+ * Controls the arrangement of radio buttons within a group
+ */
+.mat-mdc-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  // Horizontal layout option
+  &.radio-group-horizontal {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+/* Radio Group within Form Row
+ * ========================================================================== 
+ * Specific styling for radio groups in our form context
+ */
+.radio-group-row {
+  margin-bottom: 16px;
+  
+  .radio-group-wrapper {
+    display: flex;
+    align-items: center;
+    
+    .radio-label {
+      flex: 0 0 auto;
+      font-size: var(--font-size-sm);
+      color: var(--brush-text-primary);
+      margin-right: 16px;
+      font-weight: var(--font-weight-medium);
+    }
+  }
+}
+
+// Target Material's internal ripple effects
+.mat-mdc-radio-ripple .mat-ripple-element,
+.mat-mdc-radio-button.cdk-program-focused .mdc-radio .mdc-radio__ripple::before,
+.mat-mdc-radio-button.cdk-keyboard-focused .mdc-radio .mdc-radio__ripple::before {
+  background-color: var(--color-secondary-transparent-20) !important;
+}
+
+// Target hover effect
+.mat-mdc-radio-button .mdc-radio .mdc-radio__ripple:hover::before {
+  background-color: var(--color-secondary-transparent-10) !important;
+  opacity: 1;
+}
+
+// Target Material's touch target 
+.mat-mdc-radio-touch-target {
+  &:hover + .mdc-radio .mdc-radio__outer-circle {
+    border-color: var(--color-secondary-medium) !important;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 600px) {
+  .radio-group-row {
+    .radio-group-wrapper {
+      flex-direction: column;
+      align-items: flex-start;
+      
+      .radio-label {
+        margin-bottom: 8px;
+      }
+      
+      .mat-mdc-radio-group {
+        margin-left: 4px;
+      }
+    }
+  }
+}

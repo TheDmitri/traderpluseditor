@@ -1,0 +1,606 @@
+<div class="product-modal">
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon class="dialog-icon"> shopping_cart </mat-icon>
+    <span>{{ isEditMode ? "Edit" : "Create" }} Product</span>
+  </h2>
+
+  <mat-dialog-content class="dialog-content">
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <div class="form-container">
+        <!-- Basic Product Information Section -->
+        <div class="form-section">
+          <h4 class="section-title">Basic Information</h4>
+
+          <!-- Class Name (full width) -->
+          <div class="form-row">
+            <div class="form-col form-col-full">
+              <mat-form-field appearance="fill">
+                <mat-label>Class Name</mat-label>
+                <input matInput formControlName="className" required />
+                <mat-error
+                  *ngIf="productForm.get('className')?.hasError('required')"
+                >
+                  Class name is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Stock Type Radio Buttons -->
+          <div class="form-row radio-group-row">
+            <div class="radio-group-wrapper">
+              <label class="radio-label">Stock Type:</label>
+              <mat-radio-group
+                formControlName="stockType"
+                class="radio-group-horizontal"
+              >
+                <mat-radio-button value="defined"
+                  >Defined Stock</mat-radio-button
+                >
+                <mat-radio-button value="infinite"
+                  >Infinite Stock</mat-radio-button
+                >
+              </mat-radio-group>
+            </div>
+          </div>
+
+          <!-- Max Stock -->
+          <div class="form-row">
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Max Stock</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="maxStock"
+                  [readonly]="
+                    productForm.get('stockType')?.value === 'infinite'
+                  "
+                />
+                <mat-hint
+                  *ngIf="productForm.get('stockType')?.value === 'infinite'"
+                >
+                  Set to -1 for infinite stock
+                </mat-hint>
+                <mat-hint
+                  *ngIf="productForm.get('stockType')?.value === 'defined'"
+                >
+                  Maximum items available in trader
+                </mat-hint>
+                <mat-error
+                  *ngIf="
+                    productForm.get('maxStock')?.hasError('invalidMaxStock')
+                  "
+                >
+                  Must be -1 for infinite or greater than 0 for defined stock
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Trade Quantity</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="tradeQuantity"
+                  required
+                />
+                <mat-hint>Units traded per transaction</mat-hint>
+                <mat-error *ngIf="productForm.get('tradeQuantity')?.invalid">
+                  Must be at least 1
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trade Quantity Section -->
+        <div class="form-section">
+          <h4 class="section-title">Trade Quantity</h4>
+
+          <!-- Buy Quantity Mode -->
+          <div class="form-row">
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Buy Quantity Mode</mat-label>
+                <mat-select formControlName="buyQuantityMode">
+                  <mat-option
+                    *ngFor="let option of buyModeOptions"
+                    [value]="option.value"
+                  >
+                    {{ option.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>How to determine quantity when player buys</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div
+              class="form-col"
+              *ngIf="
+                productForm.get('buyQuantityMode')?.value === BUY_COEFFICIENT ||
+                productForm.get('buyQuantityMode')?.value === BUY_STATIC
+              "
+            >
+              <mat-form-field appearance="fill">
+                <mat-label>
+                  {{
+                    productForm.get("buyQuantityMode")?.value ===
+                    BUY_COEFFICIENT
+                      ? "Buy Percentage (%)"
+                      : "Buy Amount"
+                  }}
+                </mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="buyQuantityValue"
+                  [min]="0"
+                  [max]="
+                    productForm.get('buyQuantityMode')?.value ===
+                    BUY_COEFFICIENT
+                      ? 100
+                      : null
+                  "
+                />
+                <mat-hint
+                  *ngIf="
+                    productForm.get('buyQuantityMode')?.value ===
+                    BUY_COEFFICIENT
+                  "
+                >
+                  Percentage of maximum capacity (0-100)
+                </mat-hint>
+                <mat-hint
+                  *ngIf="
+                    productForm.get('buyQuantityMode')?.value === BUY_STATIC
+                  "
+                >
+                  Specific number of units
+                </mat-hint>
+                <mat-error
+                  *ngIf="productForm.get('buyQuantityValue')?.hasError('min')"
+                >
+                  Must be at least 0
+                </mat-error>
+                <mat-error
+                  *ngIf="productForm.get('buyQuantityValue')?.hasError('max')"
+                >
+                  Must not exceed 100%
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Sell Quantity Mode -->
+          <div class="form-row">
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Sell Quantity Mode</mat-label>
+                <mat-select formControlName="sellQuantityMode">
+                  <mat-option
+                    *ngFor="let option of sellModeOptions"
+                    [value]="option.value"
+                  >
+                    {{ option.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>How to determine quantity when player sells</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div
+              class="form-col"
+              *ngIf="
+                productForm.get('sellQuantityMode')?.value ===
+                  SELL_COEFFICIENT ||
+                productForm.get('sellQuantityMode')?.value === SELL_STATIC
+              "
+            >
+              <mat-form-field appearance="fill">
+                <mat-label>
+                  {{
+                    productForm.get("sellQuantityMode")?.value ===
+                    SELL_COEFFICIENT
+                      ? "Sell Percentage (%)"
+                      : "Sell Amount"
+                  }}
+                </mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="sellQuantityValue"
+                  [min]="0"
+                  [max]="
+                    productForm.get('sellQuantityMode')?.value ===
+                    SELL_COEFFICIENT
+                      ? 100
+                      : null
+                  "
+                />
+                <mat-hint
+                  *ngIf="
+                    productForm.get('sellQuantityMode')?.value ===
+                    SELL_COEFFICIENT
+                  "
+                >
+                  Percentage of maximum capacity (0-100)
+                </mat-hint>
+                <mat-hint
+                  *ngIf="
+                    productForm.get('sellQuantityMode')?.value === SELL_STATIC
+                  "
+                >
+                  Specific number of units
+                </mat-hint>
+                <mat-error
+                  *ngIf="productForm.get('sellQuantityValue')?.hasError('min')"
+                >
+                  Must be at least 0
+                </mat-error>
+                <mat-error
+                  *ngIf="productForm.get('sellQuantityValue')?.hasError('max')"
+                >
+                  Must not exceed 100%
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Info box explaining trade quantity system -->
+          <div class="info-box">
+            <mat-icon class="info-icon">info</mat-icon>
+            <div class="info-content">
+              <p>
+                The trade quantity settings control how items are bought and
+                sold:
+              </p>
+              <ul>
+                <li>
+                  <strong>As-Is:</strong> Uses the current quantity of the item
+                  (sell only)
+                </li>
+                <li>
+                  <strong>Empty/Full:</strong> Sets quantity to 0% or 100% of
+                  capacity
+                </li>
+                <li>
+                  <strong>Percentage:</strong> Uses a percentage of the maximum
+                  capacity
+                </li>
+                <li>
+                  <strong>Specific Amount:</strong> Uses an exact number of
+                  units
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stock Configuration (only for defined stock) -->
+        <div
+          class="form-section"
+          *ngIf="productForm.get('stockType')?.value === 'defined'"
+        >
+          <h4 class="section-title">Stock Configuration</h4>
+
+          <div class="form-row">
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Destock Coefficient (%)</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="destockCoefficient"
+                  min="0"
+                  max="100"
+                />
+                <mat-hint
+                  >Percentage by which stock decreases over time</mat-hint
+                >
+                <mat-error
+                  *ngIf="productForm.get('destockCoefficient')?.invalid"
+                >
+                  Must be between 0 and 100%
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Behavior at Server Restart</mat-label>
+                <mat-select formControlName="behaviorAtRestart">
+                  <mat-option
+                    *ngFor="let option of behaviorOptions"
+                    [value]="option.value"
+                  >
+                    {{ option.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>How stock is handled when server restarts</mat-hint>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <!-- Price Configuration Section -->
+        <div class="form-section">
+          <h4 class="section-title">Price Configuration</h4>
+
+          <!-- Price Type Radio Buttons -->
+          <div
+            class="form-row radio-group-row"
+            *ngIf="productForm.get('stockType')?.value === 'defined'"
+          >
+            <div class="radio-group-wrapper">
+              <label class="radio-label">Price Type:</label>
+              <mat-radio-group
+                formControlName="priceType"
+                class="radio-group-horizontal"
+              >
+                <mat-radio-button value="static">Static Price</mat-radio-button>
+                <mat-radio-button value="dynamic"
+                  >Dynamic Price</mat-radio-button
+                >
+              </mat-radio-group>
+            </div>
+          </div>
+
+          <!-- Static Price Fields -->
+          <div
+            class="form-row"
+            *ngIf="productForm.get('priceType')?.value === 'static'"
+          >
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Buy Price</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="buyPrice"
+                  required
+                />
+                <mat-hint>Player purchase price</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Sell Price</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="sellPrice"
+                  required
+                />
+                <mat-hint>Player selling price</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div
+              class="form-col"
+              *ngIf="productForm.get('stockType')?.value === 'defined'"
+            >
+              <mat-form-field appearance="fill">
+                <mat-label>Coefficient</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="coefficient"
+                  required
+                />
+                <mat-hint>Price multiplier for this item</mat-hint>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Dynamic Price Fields -->
+          <div
+            class="form-row"
+            *ngIf="productForm.get('priceType')?.value === 'dynamic'"
+          >
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Min Price (High Stock)</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="minPrice"
+                  required
+                />
+                <mat-hint>Price when stock is high</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Max Price (Low Stock)</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="maxPrice"
+                  required
+                />
+                <mat-hint>Price when stock is low</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div class="form-col">
+              <mat-form-field appearance="fill">
+                <mat-label>Calculated Coefficient</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="coefficient"
+                  readonly
+                />
+                <mat-hint>Auto-calculated based on price range</mat-hint>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Price Validation Error Messages -->
+          <div
+            class="validation-error"
+            *ngIf="productForm.hasError('sellPriceExceedsBuyPrice')"
+          >
+            <mat-icon>error</mat-icon>
+            <span>Sell price must be less than buy price</span>
+          </div>
+
+          <div
+            class="validation-error"
+            *ngIf="productForm.hasError('minPriceExceedsMaxPrice')"
+          >
+            <mat-icon>error</mat-icon>
+            <span>Minimum price must be less than maximum price</span>
+          </div>
+        </div>
+
+        <!-- Product Relationships Section -->
+        <div class="form-section">
+          <h4 class="section-title">Product Relationships</h4>
+
+          <!-- Product Lists -->
+          <div class="product-lists-container">
+            <!-- Attachments -->
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <span>Attachments ({{ attachmentProducts.length }})</span>
+                  <button
+                    class="custom-icon-btn icon-btn-primary"
+                    type="button"
+                    (click)="$event.stopPropagation(); addAttachments()"
+                    matTooltip="{{
+                      hasAvailableProducts()
+                        ? 'Add attachments'
+                        : 'No products available'
+                    }}"
+                    aria-label="Add attachments"
+                    [disabled]="!hasAvailableProducts()"
+                  >
+                    <mat-icon>add_box</mat-icon>
+                    <div class="icon-btn-ripple"></div>
+                  </button>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <div class="product-list-container">
+                <div class="product-list slim-scrollbar">
+                  <!-- Empty state when no attachments -->
+                  <div
+                    *ngIf="attachmentProducts.length === 0"
+                    class="empty-list"
+                  >
+                    <mat-icon>extension</mat-icon>
+                    <span
+                      >No attachments assigned to this product<br />Click the
+                      '+' button to add attachments</span
+                    >
+                  </div>
+
+                  <!-- List of attachments -->
+                  <div
+                    *ngFor="let product of attachmentProducts"
+                    class="product-item"
+                  >
+                    <span class="product-info">
+                      <small class="product-id">{{ product.productId }}</small>
+                      <span class="product-name">{{ product.className }}</span>
+                    </span>
+                    <button
+                      class="custom-icon-btn icon-btn-sm icon-btn-warn remove-button"
+                      type="button"
+                      (click)="removeAttachment(product.productId)"
+                      matTooltip="Remove attachment"
+                      aria-label="Remove attachment"
+                    >
+                      <mat-icon>close</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+
+            <!-- Variants -->
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <span>Variants ({{ variantProducts.length }})</span>
+                  <button
+                    class="custom-icon-btn icon-btn-primary"
+                    type="button"
+                    (click)="$event.stopPropagation(); addVariants()"
+                    matTooltip="{{
+                      hasAvailableProducts()
+                        ? 'Add variants'
+                        : 'No products available'
+                    }}"
+                    aria-label="Add variants"
+                    [disabled]="!hasAvailableProducts()"
+                  >
+                    <mat-icon>add_box</mat-icon>
+                    <div class="icon-btn-ripple"></div>
+                  </button>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <div class="product-list-container">
+                <div class="product-list slim-scrollbar">
+                  <!-- Empty state when no variants -->
+                  <div
+                    *ngIf="attachmentProducts.length === 0"
+                    class="empty-list"
+                  >
+                    <mat-icon>style</mat-icon>
+                    <span
+                      >No variants assigned to this product<br />Click the '+'
+                      button to add variants</span
+                    >
+                  </div>
+
+                  <!-- List of variants -->
+                  <div
+                    *ngFor="let product of variantProducts"
+                    class="product-item"
+                  >
+                    <span class="product-info">
+                      <small class="product-id">{{ product.productId }}</small>
+                      <span class="product-name">{{ product.className }}</span>
+                    </span>
+                    <button
+                      class="custom-icon-btn icon-btn-sm icon-btn-warn remove-button"
+                      type="button"
+                      (click)="removeVariant(product.productId)"
+                      matTooltip="Remove variant"
+                      aria-label="Remove variant"
+                    >
+                      <mat-icon>close</mat-icon>
+                      <div class="icon-btn-ripple"></div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </div>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-button type="button" (click)="onCancel()">Cancel</button>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      [disabled]="productForm.invalid"
+      (click)="onSubmit()"
+    >
+      {{ isEditMode ? "Save" : "Create" }}
+    </button>
+  </mat-dialog-actions>
+</div>

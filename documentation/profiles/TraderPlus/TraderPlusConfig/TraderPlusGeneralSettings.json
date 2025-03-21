@@ -3,12 +3,12 @@
     "serverID": "33C8206B-FE15-48FB-A898-ACF206DB2397",
     "licenses": [
         {
-            "licenseId": "26EE5BF3-DA9D-4CDE-A6C6-76B0AAF073E9",
+            "licenseId": "license_car_licence_001",
             "licenseName": "Car Licence",
             "description": ""
         },
         {
-            "licenseId": "5DB2827C-E409-4637-9EC3-0DCCEC4699C4",
+            "licenseId": "license_admin_license_001",
             "licenseName": "Admin Licence",
             "description": ""
         }
@@ -47,7 +47,7 @@
                 "cat_medications_001",
                 "cat_money_exchange_001"
             ],
-            "currenciesAccepted": [],
+            "currenciesAccepted": ["EUR", "USD"],
             "loadouts": []
         },
         {
@@ -84,7 +84,7 @@
                 "cat_bayonets_001",
                 "cat_flashlights_001"
             ],
-            "currenciesAccepted": [],
+            "currenciesAccepted": ["EUR"],
             "loadouts": [
                 {
                     "className": "FirefighterAxe",
@@ -196,7 +196,7 @@
                 "cat_hardware_supplies_001",
                 "cat_seeds_&_lime_001"
             ],
-            "currenciesAccepted": [],
+            "currenciesAccepted": ["USD"],
             "loadouts": []
         },
         {
@@ -233,7 +233,7 @@
                 "cat_belt_001",
                 "cat_bags_001"
             ],
-            "currenciesAccepted": [],
+            "currenciesAccepted": ["EUR", "USD"],
             "loadouts": [
                 {
                     "className": "ManSuit_DarkGrey",

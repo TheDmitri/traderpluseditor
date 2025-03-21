@@ -1,4 +1,7 @@
+// Angular imports
 import { Injectable, signal } from '@angular/core';
+
+// App imports
 import { StorageService } from './storage.service';
 
 /**

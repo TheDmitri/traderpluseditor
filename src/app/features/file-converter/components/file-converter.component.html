@@ -1,0 +1,452 @@
+<div class="file-converter-container">
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h1 class="page-title">File Converter</h1>
+        <p class="subtitle">
+          Convert any other Trader Mod Config to a TraderPlus v2 Config
+        </p>
+      </div>
+      <div class="header-right">
+        <button
+          class="custom-stroked-button color-warn with-icon"
+          (click)="resetConverter()"
+          matTooltip="Reset file converter"
+          matTooltipPosition="left"
+          [disabled]="!convertedFilesByType.traderplus!.length && !convertedFilesByType.expansion!.length && !convertedFilesByType.jones!.length && !traderPlusFiles.length && !expansionFiles.length && !jonesFiles.length"
+        >
+        <mat-icon class="icon-error">delete_forever</mat-icon>
+        <span>Reset Converter</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-content-area">
+    <!-- Data Card with Tab Content -->
+    <div class="data-card">
+      <mat-card-content>
+        <mat-tab-group
+          animationDuration="200ms"
+          mat-stretch-tabs="false"
+          mat-align-tabs="start"
+          (selectedIndexChange)="onTabChange($event)"
+        >
+          <!-- TraderPlus Tab -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <div class="tab-label">
+                <mat-icon>storefront</mat-icon>
+                <span>TraderPlus v1</span>
+              </div>
+            </ng-template>
+
+            <div class="converter-tab-content">
+              <div class="content-overlay-container">
+                <!-- Loader component that overlays the content -->
+                <app-loader
+                  *ngIf="isConverting('traderplus')"
+                  [loadingText]="
+                    conversionStatus.traderPlus || 'Converting files...'
+                  "
+                  class="conversion-loader"
+                >
+                </app-loader>
+
+                <div class="converter-actions">
+                  <div class="actions-row">
+                    <button
+                      class="custom-stroked-button color-primary with-icon"
+                      (click)="selectFiles('traderplus')"
+                    >
+                      <mat-icon>add</mat-icon>
+                      Select Files
+                    </button>
+                    <button
+                      class="custom-stroked-button color-secondary with-icon"
+                      [disabled]="
+                        !traderPlusFiles.length || isTraderPlusConverted
+                      "
+                      (click)="convert('traderplus')"
+                    >
+                      <mat-icon>transform</mat-icon>
+                      Convert to TraderPlus v2
+                    </button>
+                  </div>
+                </div>
+
+                <div class="file-selection-area">
+                  <div
+                    class="empty-state-container"
+                    *ngIf="!traderPlusFiles.length; else traderPlusFilesList"
+                  >
+                    <mat-icon class="empty-state-icon">settings</mat-icon>
+                    <h2 class="empty-state-title">
+                      No TraderPlus v1 Files Found
+                    </h2>
+                    <p class="empty-state-message">
+                      Select TraderPlus v1 configuration files to convert them
+                      to TraderPlus v2 format
+                    </p>
+                  </div>
+
+                  <ng-template #traderPlusFilesList>
+                    <div class="selected-files">
+                      <h3>Selected Files</h3>
+                      <div class="file-cards">
+                        <div
+                          class="file-card"
+                          *ngFor="let file of traderPlusFiles"
+                        >
+                          <mat-icon class="file-icon">description</mat-icon>
+                          <h4 class="file-name">{{ file.name }}</h4>
+                          <div class="file-size">
+                            {{ file.size | fileSize }}
+                          </div>
+                          <button
+                            class="custom-icon-btn icon-btn-warn delete-btn"
+                            (click)="removeFile(file, 'traderplus')"
+                          >
+                            <mat-icon>close</mat-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Expansion Trader Tab -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <div class="tab-label">
+                <mat-icon>extension</mat-icon>
+                <span>Expansion Trader</span>
+              </div>
+            </ng-template>
+
+            <div class="converter-tab-content">
+              <div class="content-overlay-container">
+                <!-- Loader component that overlays the content -->
+                <app-loader
+                  *ngIf="isConverting('expansion')"
+                  [loadingText]="
+                    conversionStatus.expansion || 'Converting files...'
+                  "
+                  class="conversion-loader"
+                >
+                </app-loader>
+
+                <div class="converter-actions">
+                  <div class="actions-row">
+                    <button
+                      class="custom-stroked-button color-primary with-icon"
+                      (click)="selectFiles('expansion')"
+                    >
+                      <mat-icon>add</mat-icon>
+                      Select Files
+                    </button>
+                    <button
+                      class="custom-stroked-button color-secondary with-icon"
+                      [disabled]="
+                        !expansionFiles.length || isExpansionConverted
+                      "
+                      (click)="convert('expansion')"
+                    >
+                      <mat-icon>transform</mat-icon>
+                      Convert to TraderPlus v2
+                    </button>
+                  </div>
+                </div>
+
+                <div class="file-selection-area">
+                  <div
+                    class="empty-state-container"
+                    *ngIf="!expansionFiles.length; else expansionFilesList"
+                  >
+                    <mat-icon class="empty-state-icon">settings</mat-icon>
+                    <h2 class="empty-state-title">
+                      No Expansion Trader Files Found
+                    </h2>
+                    <p class="empty-state-message">
+                      Select Expansion Trader configuration files to convert
+                      them to TraderPlus v2 format
+                    </p>
+                  </div>
+
+                  <ng-template #expansionFilesList>
+                    <div class="selected-files">
+                      <h3>Selected Files</h3>
+                      <div class="file-cards">
+                        <div
+                          class="file-card"
+                          *ngFor="let file of expansionFiles"
+                        >
+                          <mat-icon class="file-icon">description</mat-icon>
+                          <h4 class="file-name">{{ file.name }}</h4>
+                          <div class="file-size">
+                            {{ file.size | fileSize }}
+                          </div>
+                          <button
+                            class="custom-icon-btn icon-btn-warn delete-btn"
+                            (click)="removeFile(file, 'expansion')"
+                          >
+                            <mat-icon>close</mat-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Jones Trader Tab -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <div class="tab-label">
+                <mat-icon>local_mall</mat-icon>
+                <span>Jones Trader</span>
+              </div>
+            </ng-template>
+
+            <div class="converter-tab-content">
+              <div class="content-overlay-container">
+                <!-- Loader component that overlays the content -->
+                <app-loader
+                  *ngIf="isConverting('jones')"
+                  [loadingText]="
+                    conversionStatus.jones || 'Converting files...'
+                  "
+                  class="conversion-loader"
+                >
+                </app-loader>
+
+                <div class="converter-actions">
+                  <div class="actions-row">
+                    <button
+                      class="custom-stroked-button color-primary with-icon"
+                      (click)="selectFiles('jones')"
+                    >
+                      <mat-icon>add</mat-icon>
+                      Select Files
+                    </button>
+                    <button
+                      class="custom-stroked-button color-secondary with-icon"
+                      [disabled]="!jonesFiles.length || isJonesConverted"
+                      (click)="convert('jones')"
+                    >
+                      <mat-icon>transform</mat-icon>
+                      Convert to TraderPlus v2
+                    </button>
+                  </div>
+                </div>
+
+                <div class="file-selection-area">
+                  <div
+                    class="empty-state-container"
+                    *ngIf="!jonesFiles.length; else jonesFilesList"
+                  >
+                    <mat-icon class="empty-state-icon">settings</mat-icon>
+                    <h2 class="empty-state-title">
+                      No Dr.Jones Trader Files Found
+                    </h2>
+                    <p class="empty-state-message">
+                      Select Jones Trader configuration files to convert them to
+                      TraderPlus v2 format
+                    </p>
+                  </div>
+
+                  <ng-template #jonesFilesList>
+                    <div class="selected-files">
+                      <h3>Selected Files</h3>
+                      <div class="file-cards">
+                        <div class="file-card" *ngFor="let file of jonesFiles">
+                          <mat-icon class="file-icon">description</mat-icon>
+                          <h4 class="file-name">{{ file.name }}</h4>
+                          <div class="file-size">
+                            {{ file.size | fileSize }}
+                          </div>
+                          <button
+                            type="button"
+                            class="custom-icon-btn icon-btn-warn delete-btn"
+                            (click)="removeFile(file, 'jones')"
+                          >
+                            <mat-icon>close</mat-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card-content>
+    </div>
+
+    <!-- Results Section - File Explorer -->
+    <div *ngIf="convertedFiles.length" class="data-card results-panel">
+      <div class="panel-header">
+        <div class="panel-title-area">
+          <h2 class="section-title">
+            Converted Files
+            <ng-container [ngSwitch]="activeTab">
+              <span *ngSwitchCase="'traderplus'"> - TraderPlus v1</span>
+              <span *ngSwitchCase="'expansion'"> - Expansion Trader</span>
+              <span *ngSwitchCase="'jones'"> - Jones Trader</span>
+            </ng-container>
+          </h2>
+          <p class="panel-subtitle">
+            You can download your converted files or save them as File Set in
+            the App
+          </p>
+        </div>
+
+        <div class="panel-actions">
+          <button
+            class="custom-stroked-button color-primary with-icon"
+            (click)="downloadAllFiles()"
+            matTooltip="Download all files as .zip"
+          >
+            <mat-icon>download_all</mat-icon>
+            <span>Download All</span>
+          </button>
+
+          <button
+            class="custom-stroked-button color-secondary with-icon"
+            (click)="openSaveDialog()"
+            matTooltip="Save converted files as File Set"
+          >
+            <mat-icon>save</mat-icon>
+            <span>Save File Set</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="file-explorer-content">
+        <div class="file-explorer">
+          <!-- Root folder -->
+          <div class="folder-node root-folder">
+            <div class="folder-header" (click)="toggleFolder(fileStructure)">
+              <button class="folder-toggle">
+                <mat-icon>{{
+                  fileStructure.expanded ? "expand_more" : "chevron_right"
+                }}</mat-icon>
+              </button>
+              <mat-icon class="folder-icon">folder_open</mat-icon>
+              <span class="folder-name">{{ fileStructure.name }}</span>
+              <div class="folder-actions">
+                <button
+                  class="custom-icon-btn icon-btn-primary"
+                  matTooltip="Download as zip"
+                  (click)="
+                    downloadFolder(fileStructure); $event.stopPropagation()
+                  "
+                >
+                  <mat-icon>download</mat-icon>
+                </button>
+                <button
+                  class="custom-icon-btn icon-btn-secondary"
+                  matTooltip="Save to project"
+                  (click)="
+                    saveFolderToProject(fileStructure); $event.stopPropagation()
+                  "
+                >
+                  <mat-icon>save</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- Recursive folder structure -->
+            <div class="folder-children" *ngIf="fileStructure.expanded">
+              <ng-container
+                *ngTemplateOutlet="
+                  folderContents;
+                  context: { $implicit: fileStructure }
+                "
+              ></ng-container>
+            </div>
+          </div>
+
+          <!-- Template for displaying a folder's contents -->
+          <ng-template #folderContents let-folder>
+            <div class="folder-content" *ngIf="folder.children">
+              <ng-container *ngFor="let node of folder.children">
+                <!-- Subfolder -->
+                <div class="folder-node" *ngIf="node.type === 'folder'">
+                  <div class="folder-header" (click)="toggleFolder(node)">
+                    <button class="folder-toggle">
+                      <mat-icon>{{
+                        node.expanded ? "expand_more" : "chevron_right"
+                      }}</mat-icon>
+                    </button>
+                    <mat-icon class="folder-icon">folder</mat-icon>
+                    <span class="folder-name">{{ node.name }}</span>
+                    <div class="folder-actions">
+                      <button
+                        class="custom-icon-btn icon-btn-primary"
+                        matTooltip="Download as zip"
+                        (click)="downloadFolder(node); $event.stopPropagation()"
+                      >
+                        <mat-icon>download</mat-icon>
+                      </button>
+                      <button
+                        class="custom-icon-btn icon-btn-secondary"
+                        matTooltip="Save to project"
+                        (click)="
+                          saveFolderToProject(node); $event.stopPropagation()
+                        "
+                      >
+                        <mat-icon>save</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="folder-children" *ngIf="node.expanded">
+                    <ng-container
+                      *ngTemplateOutlet="
+                        folderContents;
+                        context: { $implicit: node }
+                      "
+                    ></ng-container>
+                  </div>
+                </div>
+
+                <!-- File -->
+                <div class="file-node" *ngIf="node.type === 'file'">
+                  <mat-icon class="file-icon">{{
+                    getFileIcon(node.name)
+                  }}</mat-icon>
+                  <span class="file-name">{{ node.name }}</span>
+                  <span class="file-size" *ngIf="node.size">{{
+                    node.size | fileSize
+                  }}</span>
+                  <div class="file-actions">
+                    <button
+                      class="custom-icon-btn icon-btn-primary"
+                      matTooltip="Download file"
+                      (click)="downloadFile(node)"
+                    >
+                      <mat-icon>download</mat-icon>
+                    </button>
+                    <button
+                      class="custom-icon-btn icon-btn-secondary"
+                      matTooltip="Save to project"
+                      (click)="saveFileToProject(node)"
+                    >
+                      <mat-icon>save</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

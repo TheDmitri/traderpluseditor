@@ -1,0 +1,76 @@
+/**
+ * Collapsible Panel Component
+ * ========================================================================== 
+ * This file contains styling for expandable/collapsible content panels.
+ * Following the 60-30-10 ratio principle:
+ * - 60%: Panel backgrounds, borders, containers (neutral colors)
+ * - 30%: Toggle icons, supporting text, interactive states (secondary colors)
+ * - 10%: Active states, highlights, accent elements (primary/accent colors)
+ */
+
+.collapsible-panel {
+  margin-bottom: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--brush-border-subtle); // 60% - subtle border for structure
+  
+  // Panel header - always visible toggle control element
+  .panel-toggle {
+    padding: 16px;
+    background-color: var(--brush-background-elevated); // 60% - structural background
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    
+    // Hover state for better interaction feedback
+    &:hover {
+      background-color: var(--brush-hover-overlay); // Interactive hover state
+    }
+    
+    // Title styling within toggle header
+    .toggle-title {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
+      color: var(--brush-text-primary); // 60% - primary text
+    }
+    
+    // Icon indicating collapsed/expanded state
+    .toggle-icon {
+      color: var(--brush-text-secondary); // 30% - supporting element
+      transition: transform var(--transition-normal) var(--transition-timing);
+      
+      // Rotates icon when panel is expanded
+      &.expanded {
+        transform: rotate(180deg); // Visual indicator of expanded state
+      }
+    }
+    
+    // Active state styling - uses accent color for emphasis (10%)
+    &.active {
+      border-left: 4px solid var(--color-primary-dark); // 10% - accent element
+      padding-left: 12px; // Compensates for the border width
+      
+      .toggle-title {
+        color: var(--brush-text-accent); // 10% - accent text for emphasis
+      }
+    }
+  }
+  
+  // Panel content area - hidden by default, shown when expanded
+  .panel-content {
+    padding: 0;
+    max-height: 0; // Hidden by default (collapsed state)
+    overflow: hidden;
+    transition: max-height var(--transition-slow) var(--transition-timing),
+                padding var(--transition-normal) var(--transition-timing);
+    background-color: var(--brush-background-body); // 60% - main background
+    
+    // Expanded state - reveals content with smooth animation
+    &.expanded {
+      padding: 20px;
+      max-height: 1000px; // Arbitrary large height that accommodates content
+    }
+  }
+}

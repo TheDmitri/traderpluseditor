@@ -1,0 +1,43 @@
+.objects-section {
+  grid-column: span 2;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  
+  /* Make sure tables work well on small screens */
+  @media (max-width: 600px) {
+    margin: 0 -12px;
+    width: calc(100% + 24px);
+    
+    table {
+      min-width: 500px; /* Ensures table doesn't get too compressed */
+      
+      th, td {
+        padding: 0 8px;
+      }
+    }
+  }
+}
+
+:host ::ng-deep .mat-mdc-row {
+  &:hover {
+    background-color: var(--brush-hover-overlay);
+  }
+}
+
+/* Empty state responsive styling */
+.empty-state-container {
+  @media (max-width: 480px) {
+    padding: 24px 12px;
+    
+    .empty-state-title {
+      font-size: 1.2rem;
+    }
+    
+    .empty-state-message {
+      font-size: 0.9rem;
+    }
+  }
+}

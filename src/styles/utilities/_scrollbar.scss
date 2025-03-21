@@ -1,0 +1,234 @@
+/**
+ * Custom Scrollbar Styling
+ *
+ * This file contains styling for browser scrollbars to ensure they match
+ * the application's color scheme and provide a consistent experience.
+ *
+ * Usage distribution:
+ *
+ * - 60%: Scrollbar track/background (neutral colors)
+ * - 30%: Scrollbar thumb in default state (secondary colors)
+ * - 10%: Scrollbar thumb in hover/active states (primary/accent colors)
+ */
+
+/* Webkit Scrollbars (Chrome, Safari, Edge) */
+
+::-webkit-scrollbar {
+  width: 8px; // Standard width for vertical scrollbar
+  height: 8px; // Height for horizontal scrollbar
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--brush-background-dark, #1e1e1e);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--brush-scrollbar-thumb, #444444);
+  border-radius: 4px;
+  border: 1px solid var(--brush-background-dark, #1e1e1e);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--brush-scrollbar-thumb-hover, #666666);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--brush-scrollbar-thumb-active, #888888);
+}
+
+/* Firefox Scrollbar
+ *
+ * Firefox uses its own scrollbar styling mechanism
+ */
+* {
+  scrollbar-width: thin; // Use thin scrollbars in Firefox
+  scrollbar-color: var(--brush-scrollbar-thumb, #444444) var(--brush-background-dark, #1e1e1e); // thumb and track colors
+}
+
+/**
+ * IE and Edge specific scrollbar
+ */
+.scrollbar-container {
+  -ms-overflow-style: -ms-autohiding-scrollbar; // Auto-hiding scrollbars for Edge/IE
+}
+
+/**
+ * Class for adding custom scrollbar to specific elements
+ */
+.custom-scrollbar {
+  overflow: auto;
+  
+  // Override for dark themes - lighter scrollbar on dark backgrounds
+  .theme-dark & {
+    &::-webkit-scrollbar-track {
+      background-color: var(--brush-background-darkest, #121212);
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--brush-scrollbar-thumb, #444444);
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: var(--brush-scrollbar-thumb-hover, #666666);
+    }
+    
+    scrollbar-color: var(--brush-scrollbar-thumb, #444444) var(--brush-background-darkest, #121212);
+  }
+  
+  // Override for light themes - darker scrollbar on light backgrounds
+  .theme-light & {
+    &::-webkit-scrollbar-track {
+      background-color: var(--color-neutral-lightest, #f5f5f5);
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--color-neutral-light, #cccccc);
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: var(--color-neutral-medium, #999999);
+    }
+    
+    scrollbar-color: var(--color-neutral-light, #cccccc) var(--color-background-lightest, #ffffff);
+  }
+}
+
+/* Hide Scrollbar but Allow Scrolling
+ * 
+ * Hides scrollbar visually while preserving scroll functionality
+ */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none; // Firefox
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Scrollbar Variants
+ */
+/* Slim Scrollbar - for compact UIs */
+.slim-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  scrollbar-width: thin;
+}
+
+/* Accent Scrollbar - uses primary color for emphasis */
+.accent-scrollbar {
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-primary, #007bff);
+    
+    &:hover {
+      background-color: var(--color-primary-light, #3395ff);
+    }
+  }
+  
+  scrollbar-color: var(--color-primary-dark, #0056b3) var(--brush-background-elevated, #2a2a2a);
+}
+
+/* Transparent Scrollbar - more subtle for content-focused areas */
+.transparent-scrollbar {
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+  
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* Hidden Scrollbar - scrolling functionality without visible scrollbar */
+.hidden-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none; // Firefox
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Light Mode Scrollbar - for light theme contexts */
+.light-scrollbar {
+  &::-webkit-scrollbar-track {
+    background-color: var(--color-neutral-lightest, #f5f5f5);
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-neutral-light, #cccccc);
+    
+    &:hover {
+      background-color: var(--color-neutral-medium, #999999);
+    }
+  }
+  
+  scrollbar-color: var(--color-neutral-medium, #999999) var(--color-neutral-lightest, #f5f5f5);
+}
+
+/* Dark Mode Scrollbar - specifically for dark theme contexts */
+.dark-scrollbar {
+  &::-webkit-scrollbar-track {
+    background-color: var(--brush-background-dark, #1e1e1e);
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--brush-scrollbar-thumb, #444444);
+    
+    &:hover {
+      background-color: var(--brush-scrollbar-thumb-hover, #666666);
+    }
+  }
+  
+  scrollbar-color: var(--brush-scrollbar-thumb, #444444) var(--brush-background-dark, #1e1e1e);
+}
+
+/* Custom Content Scrolling Utilities
+ * ========================================================================== */
+/**
+ * Utility classes to control scrolling behavior in specific containers
+ */
+
+// Enables smooth scrolling for the entire application
+html {
+  scroll-behavior: smooth;
+}
+
+// Container with vertical scrolling only
+.scroll-y {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+// Container with horizontal scrolling only
+.scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+// Container with both scrolling directions
+.scroll-both {
+  overflow: auto;
+}
+
+// Container with automatic scroll shadows (fades at the edges)
+.scroll-shadow {
+  background: 
+    linear-gradient(var(--brush-background-surface) 30%, rgba(255, 255, 255, 0)),
+    linear-gradient(rgba(255, 255, 255, 0), var(--brush-background-surface) 70%) 0 100%,
+    radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+    radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
+  background-attachment: local, local, scroll, scroll;
+}

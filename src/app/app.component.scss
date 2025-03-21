@@ -2,70 +2,101 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden;
-}
 
-.app-toolbar {
-  background-color: #1e1e1e !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  position: relative;
-  z-index: 10;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  height: 64px;
-  
-  .menu-button {
-    margin-right: 16px;
+  // Toolbar styling
+  .app-toolbar {
+    flex: 0 0 64px; // Fixed height
+    background-color: var(--brush-sidebar-background); // 60% - dominant background color
+    border-bottom: 1px solid var(--brush-border-subtle); // 60% - structural element
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+
+    // Enhanced box shadow for depth
+    box-shadow: 0 2px 8px var(--brush-shadow-light); // 60% - structural element
+
+    .toolbar-title-container {
+      margin-left: 16px;
+      display: flex;
+      align-items: center;
+
+      .app-title {
+        color: var(--brush-text-primary); // 60% - primary text
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.35rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: color var(--transition-normal) var(--transition-timing);
+
+        &:hover {
+          color: var(--brush-text-accent); // 10% - accent for interactive element
+        }
+      }
+    }
+
+    .toolbar-spacer {
+      flex: 1 1 auto;
+    }
+
+    // Using existing button styles from _buttons.scss
+    .menu-button,
+    .help-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 16px;
+      
+      .mat-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform var(--transition-normal) var(--transition-timing);
+        transform-origin: center center;
+        line-height: 1;
+        
+        &.expanded {
+          transform: rotate(-2700deg) translateY(2px) scaleX(-1); // Vertical flip with scaleX(-1)
+        }
+      }
+    }
   }
-}
 
-.toolbar-title-container {
-  display: flex;
-  align-items: center;
-  margin-left: 16px;
-}
-
-.app-title {
-  font-weight: 400;
-  letter-spacing: 0.5px;
-  font-size: 20px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.toolbar-spacer {
-  flex: 1 1 auto;
-}
-
-.help-button {
-  margin-right: 8px;
-  
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+  // Main content area
+  .main-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--brush-background-body); // 60% - dominant background color
   }
-}
 
-.main-content {
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-}
+  // Footer styling
+  .app-footer {
+    flex: 0 0 48px; // Fixed height
+    background-color: var(--brush-sidebar-background); // 60% - structural element 
+    border-top: 1px solid var(--brush-border-subtle); // 60% - subtle border
+    z-index: 1;
 
-.app-footer {
-  height: 50px;
-  background-color: #1e1e1e;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  z-index: 10;
-}
+    .footer-content {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 24px;
+      color: var(--brush-text-secondary); // 30% - supporting text
+      font-size: var(--font-size-sm);
+      letter-spacing: 0.0625rem;
 
-.footer-content {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 14px;
+      span {
+        transition: color var(--transition-normal) var(--transition-timing);
+
+        &:hover {
+          color: var(--brush-text-link); // 10% - accent for interactive element
+        }
+      }
+    }
+  }
 }
