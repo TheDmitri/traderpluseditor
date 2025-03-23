@@ -92,7 +92,7 @@ jobs:
               volumes:
                 - ./dist:/src
                 - sites_volume:/sites
-              command: sh -c "mkdir -p /sites/traderpluseditor && cp -r /src/* /sites/traderpluseditor/"
+              command: sh -c "mkdir -p /sites/traderpluseditor && cp -r /src/traderpluseditor/browser/* /sites/traderpluseditor/"
               networks:
                 - caddy-network
               restart: "no"

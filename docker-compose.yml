@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - sites_volume:/sites
-    command: cp -r /app/dist/ /sites/traderpluseditor
+    command: sh -c "mkdir -p /sites/traderpluseditor && cp -r /src/traderpluseditor/browser/* /sites/traderpluseditor/"
     networks:
       - caddy-network
     restart: "no"
