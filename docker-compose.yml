@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  traderpluseditor:
+    container_name: traderpluseditor
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - sites_volume:/sites
+    command: cp -r /app/dist/ /sites/traderpluseditor
+    networks:
+      - caddy-network
+    restart: "no"
+
+networks:
+  caddy-network:
+    external: true
+
+volumes:
+  sites_volume:
+    name: caddy_sites
+    external: true
