@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 // Application imports
 import { StorageService } from '../../../core/services';
+import { DiscordService } from '../../../core/services/discord.service';
 import { StorageManagerService, StorageBreakdown } from '../../../shared/services/storage-manager.service';
 import { Observable, of } from 'rxjs';
 import { RequestModalComponent } from './request-modal/request-modal.component';
@@ -33,6 +34,7 @@ import { RequestModalComponent } from './request-modal/request-modal.component';
 export class DashboardComponent implements OnInit, OnDestroy {
   private storageService = inject(StorageService);
   private storageManagerService = inject(StorageManagerService);
+  private discordService = inject(DiscordService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
   private destroy$ = new Subject<void>();
@@ -54,9 +56,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   
   storageWarningLevel$: Observable<'safe' | 'warning' | 'critical'> = of('safe');
   
-  // Dummy statistics for future implementation
+  // Statistics for application usage
   dummyStats = {
-    activeUsers: 142,
+    activeUsers: 0, // Will be populated with Discord data
     createdFileSets: 8,
     exportedFiles: 36
   };
@@ -65,12 +67,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // Force storage breakdown calculation to ensure data is loaded
     this.loadStorageData();
     
+    // Load Discord server data
+    this.loadDiscordData();
+    
     // Refresh data when navigating back to this component
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.loadStorageData();
+      this.loadDiscordData();
     });
   }
   
@@ -83,6 +89,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // Use forceStorageBreakdownRecalculation to wait for data to be loaded
     this.storageBreakdown$ = this.storageManagerService.forceStorageBreakdownRecalculation();
     this.storageWarningLevel$ = this.storageManagerService.getStorageWarningLevel();
+  }
+  
+  private loadDiscordData(): void {
+    this.discordService.getServerData()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(data => {
+        this.dummyStats.activeUsers = data.approximate_presence_count;
+      });
   }
   
   get categoriesCount(): number {
