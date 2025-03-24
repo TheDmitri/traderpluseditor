@@ -350,15 +350,6 @@
                 >
                   <mat-icon>download</mat-icon>
                 </button>
-                <button
-                  class="custom-icon-btn icon-btn-secondary"
-                  matTooltip="Save to project"
-                  (click)="
-                    saveFolderToProject(fileStructure); $event.stopPropagation()
-                  "
-                >
-                  <mat-icon>save</mat-icon>
-                </button>
               </div>
             </div>
 
@@ -395,15 +386,6 @@
                       >
                         <mat-icon>download</mat-icon>
                       </button>
-                      <button
-                        class="custom-icon-btn icon-btn-secondary"
-                        matTooltip="Save to project"
-                        (click)="
-                          saveFolderToProject(node); $event.stopPropagation()
-                        "
-                      >
-                        <mat-icon>save</mat-icon>
-                      </button>
                     </div>
                   </div>
                   <div class="folder-children" *ngIf="node.expanded">
@@ -432,13 +414,6 @@
                       (click)="downloadFile(node)"
                     >
                       <mat-icon>download</mat-icon>
-                    </button>
-                    <button
-                      class="custom-icon-btn icon-btn-secondary"
-                      matTooltip="Save to project"
-                      (click)="saveFileToProject(node)"
-                    >
-                      <mat-icon>save</mat-icon>
                     </button>
                   </div>
                 </div>

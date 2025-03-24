@@ -736,35 +736,6 @@ export class FileConverterComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Saves a specific file to the current project
-   */
-  saveFileToProject(node: FileNode): void {
-    if (node.type !== 'file' || !node.content) return;
-    // In a real app, this would save the file to the current project
-    alert(
-      `Save file "${node.name}" to project - functionality would be implemented here`
-    );
-  }
-
-  /**
-   * Saves a folder to the current project
-   */
-  saveFolderToProject(node: FileNode): void {
-    if (node.type !== 'folder') return;
-    // In a real app, this would save all files in the folder to the current project
-    alert(
-      `Save folder "${node.name}" to project - functionality would be implemented here`
-    );
-  }
-
-  /**
-   * Saves all files to the current project
-   */
-  saveToProject(): void {
-    this.saveFolderToProject(this.fileStructure);
-  }
-
-  /**
    * Toggles expansion state of a folder
    */
   toggleFolder(node: FileNode): void {
