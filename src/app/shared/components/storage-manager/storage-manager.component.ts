@@ -30,6 +30,8 @@ import { FileSizePipe } from '../../pipes/filesize.pipe';
 import { StorageService } from '../../../core/services/storage.service';
 import { NotificationService } from '../../services/notification.service';
 import { StatisticsService } from '../../services/statistics.service';
+// Add import for FileConverterStorageService
+import { FileConverterStorageService } from '../../../features/file-converter/services/file-converter-storage.service';
 
 // Dialog components
 import { TextInputDialogComponent } from '../../components/text-input-dialog/text-input-dialog.component';
@@ -100,7 +102,9 @@ export class StorageManagerComponent implements OnInit, OnDestroy, AfterViewInit
     private router: Router,
     private dialog: MatDialog,
     private notificationService: NotificationService,
-    private statisticsService: StatisticsService
+    private statisticsService: StatisticsService,
+    // Add FileConverterStorageService to constructor
+    private fileConverterStorageService: FileConverterStorageService
   ) {}
 
   ngOnInit(): void {
@@ -287,7 +291,7 @@ export class StorageManagerComponent implements OnInit, OnDestroy, AfterViewInit
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Delete File Set',
-        message: `Are you sure you want to delete "${set.name}"?\nThis action cannot be undone.`,
+        message: `Are you sure you want to delete "${set.name}"?\n\nThis action cannot be undone.`,
         confirmText: 'Delete',
         cancelText: 'Cancel',
         type: 'danger'
@@ -333,7 +337,7 @@ export class StorageManagerComponent implements OnInit, OnDestroy, AfterViewInit
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: `Delete ${sourceName} File Sets`,
-        message: `Are you sure you want to delete all ${count} file sets from ${sourceName}?\nThis action cannot be undone.`,
+        message: `Are you sure you want to delete all ${count} file sets from ${sourceName}?\n\nThis action cannot be undone.`,
         confirmText: 'Delete All',
         cancelText: 'Cancel',
         type: 'danger'
@@ -375,7 +379,7 @@ export class StorageManagerComponent implements OnInit, OnDestroy, AfterViewInit
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Delete All File Sets',
-        message: 'Are you sure you want to delete ALL saved file sets?\nThis action cannot be undone.',
+        message: 'Are you sure you want to delete ALL saved file sets?\n\nThis action cannot be undone.',
         confirmText: 'Delete All',
         cancelText: 'Cancel',
         type: 'danger'
@@ -571,6 +575,7 @@ export class StorageManagerComponent implements OnInit, OnDestroy, AfterViewInit
                 '\n• All products and categories' +
                 '\n• All currency and general settings' +
                 '\n• Application preferences and statistics' +
+                '\n• File converter data and uploaded files' +  // Added this line to clarify
                 '\n\nThis action cannot be undone and the application will reload after reset.',
         confirmText: 'Reset Everything',
         cancelText: 'Cancel',
@@ -588,6 +593,9 @@ export class StorageManagerComponent implements OnInit, OnDestroy, AfterViewInit
           
           // Reset all statistics
           this.statisticsService.resetStatistics();
+          
+          // Reset the file converter data
+          this.fileConverterStorageService.resetStorage();
           
           // Show success notification
           this.notificationService.success('Application reset complete. The page will reload.');

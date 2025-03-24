@@ -313,7 +313,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Reset File Converter',
-        message: 'Are you sure you want to reset the file converter? This will remove all uploaded and converted files.',
+        message: 'Are you sure you want to reset the file converter? \n\nThis will remove all uploaded and converted files.',
         confirmText: 'Reset',
         cancelText: 'Cancel',
         type: 'warning'
@@ -885,7 +885,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Delete File Set',
-        message: `Are you sure you want to delete "${set.name}"?\nThis action cannot be undone.`,
+        message: `Are you sure you want to delete "${set.name}"?\n\nThis action cannot be undone.`,
         confirmText: 'Delete',
         cancelText: 'Cancel',
         type: 'danger'
@@ -973,7 +973,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: 'Delete All File Sets',
-        message: 'Are you sure you want to delete ALL saved file sets?\nThis action cannot be undone.',
+        message: 'Are you sure you want to delete ALL saved file sets?\n\nThis action cannot be undone.',
         confirmText: 'Delete All',
         cancelText: 'Cancel',
         type: 'danger'
