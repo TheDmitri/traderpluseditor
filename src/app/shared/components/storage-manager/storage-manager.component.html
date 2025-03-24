@@ -24,7 +24,6 @@
           class="custom-stroked-button color-warn with-icon"
           [matMenuTriggerFor]="dangerMenu"
           matTooltip="Dangerous operations"
-          [disabled]="savedFileSets.length == 0"
         >
           <mat-icon>warning</mat-icon>
           Danger Zone
@@ -75,11 +74,22 @@
           <button
             mat-menu-item
             (click)="clearAllSavedFileSets()"
+            [disabled]="savedFileSets.length == 0"
             matTooltip="Remove all file sets permanently"
             matTooltipPosition="left"
           >
             <mat-icon class="icon-error">delete_forever</mat-icon>
             <span>Clear All File Sets</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button
+            mat-menu-item
+            (click)="resetEntireApp()"
+            matTooltip="Reset the entire application and clear all data"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon-error">restore</mat-icon>
+            <span>Reset Entire Application</span>
           </button>
         </mat-menu>
       </div>

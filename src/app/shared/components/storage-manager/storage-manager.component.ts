@@ -29,6 +29,7 @@ import { SavedFileSet } from '../../models/saved-file-set.model';
 import { FileSizePipe } from '../../pipes/filesize.pipe';
 import { StorageService } from '../../../core/services/storage.service';
 import { NotificationService } from '../../services/notification.service';
+import { StatisticsService } from '../../services/statistics.service';
 
 // Dialog components
 import { TextInputDialogComponent } from '../../components/text-input-dialog/text-input-dialog.component';
@@ -98,7 +99,8 @@ export class StorageManagerComponent implements OnInit, OnDestroy, AfterViewInit
     private storageService: StorageService,
     private router: Router,
     private dialog: MatDialog,
-    private notificationService: NotificationService // Replace snackBar with notificationService
+    private notificationService: NotificationService,
+    private statisticsService: StatisticsService
   ) {}
 
   ngOnInit(): void {
@@ -553,6 +555,52 @@ export class StorageManagerComponent implements OnInit, OnDestroy, AfterViewInit
     this.storageManagerService.forceStorageBreakdownRecalculation().subscribe(breakdown => {
       this.storageBreakdown = breakdown;
       this.isLoading = false;
+    });
+  }
+
+  /**
+   * Resets the entire application by clearing all localStorage data
+   * This will remove ALL data including file sets, app data, and statistics
+   */
+  resetEntireApp(): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Reset Entire Application',
+        message: 'WARNING: This will permanently delete ALL data from the application, including:' +
+                '\n• All saved file sets' + 
+                '\n• All products and categories' +
+                '\n• All currency and general settings' +
+                '\n• Application preferences and statistics' +
+                '\n\nThis action cannot be undone and the application will reload after reset.',
+        confirmText: 'Reset Everything',
+        cancelText: 'Cancel',
+        type: 'danger',
+        additionalInfo: 'You may want to download your data before proceeding.'
+      }
+    });
+
+    dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
+      if (result) {
+        // First clear all file sets
+        this.storageManagerService.clearAllSets().pipe(take(1)).subscribe(() => {
+          // Then clear all app data
+          this.storageService.clearAllData();
+          
+          // Reset all statistics
+          this.statisticsService.resetStatistics();
+          
+          // Show success notification
+          this.notificationService.success('Application reset complete. The page will reload.');
+          
+          // Refresh storage breakdown
+          this.refreshStorageBreakdown();
+          
+          // Reload the application after a brief delay
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        });
+      }
     });
   }
 }
