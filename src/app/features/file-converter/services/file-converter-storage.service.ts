@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FileNode } from '../models/file-explorer.model';
+import { compressObject, decompressObject } from '../../../shared/utils/zip.utils';
 
 // Storage keys for localStorage
 enum FileConverterStorageKey {
@@ -48,157 +49,228 @@ export class FileConverterStorageService {
   constructor() { }
 
   /**
-   * Save TraderPlus files to localStorage
+   * Save TraderPlus files to localStorage with compression
    */
-  saveTraderPlusFiles(files: File[]): void {
-    this.saveFiles(FileConverterStorageKey.TRADER_PLUS_FILES, files);
+  async saveTraderPlusFiles(files: File[]): Promise<void> {
+    await this.saveFiles(FileConverterStorageKey.TRADER_PLUS_FILES, files);
   }
 
   /**
-   * Get TraderPlus files from localStorage
+   * Get TraderPlus files from localStorage with decompression
    */
   getTraderPlusFiles(): Promise<File[]> {
     return this.getFiles(FileConverterStorageKey.TRADER_PLUS_FILES);
   }
 
   /**
-   * Save Expansion files to localStorage
+   * Save Expansion files to localStorage with compression
    */
-  saveExpansionFiles(files: File[]): void {
-    this.saveFiles(FileConverterStorageKey.EXPANSION_FILES, files);
+  async saveExpansionFiles(files: File[]): Promise<void> {
+    await this.saveFiles(FileConverterStorageKey.EXPANSION_FILES, files);
   }
 
   /**
-   * Get Expansion files from localStorage
+   * Get Expansion files from localStorage with decompression
    */
   getExpansionFiles(): Promise<File[]> {
     return this.getFiles(FileConverterStorageKey.EXPANSION_FILES);
   }
 
   /**
-   * Save Jones files to localStorage
+   * Save Jones files to localStorage with compression
    */
-  saveJonesFiles(files: File[]): void {
-    this.saveFiles(FileConverterStorageKey.JONES_FILES, files);
+  async saveJonesFiles(files: File[]): Promise<void> {
+    await this.saveFiles(FileConverterStorageKey.JONES_FILES, files);
   }
 
   /**
-   * Get Jones files from localStorage
+   * Get Jones files from localStorage with decompression
    */
   getJonesFiles(): Promise<File[]> {
     return this.getFiles(FileConverterStorageKey.JONES_FILES);
   }
 
   /**
-   * Save converted files by type to localStorage
+   * Save converted files by type to localStorage with compression
    */
-  saveConvertedFilesByType(filesByType: { [key in ConverterType]?: ConvertedFile[] }): void {
-    localStorage.setItem(FileConverterStorageKey.CONVERTED_FILES_BY_TYPE, JSON.stringify(filesByType));
+  async saveConvertedFilesByType(filesByType: { [key in ConverterType]?: ConvertedFile[] }): Promise<void> {
+    const compressed = await compressObject(filesByType);
+    localStorage.setItem(FileConverterStorageKey.CONVERTED_FILES_BY_TYPE, compressed);
   }
 
   /**
-   * Get converted files by type from localStorage
+   * Get converted files by type from localStorage with decompression
    */
-  getConvertedFilesByType(): { [key in ConverterType]?: ConvertedFile[] } {
+  async getConvertedFilesByType(): Promise<{ [key in ConverterType]?: ConvertedFile[] }> {
     const data = localStorage.getItem(FileConverterStorageKey.CONVERTED_FILES_BY_TYPE);
     if (!data) return {
       traderplus: [],
       expansion: [],
       jones: []
     };
-    return JSON.parse(data);
+    
+    try {
+      return await decompressObject<{ [key in ConverterType]?: ConvertedFile[] }>(data);
+    } catch (error) {
+      console.error('Error decompressing converted files:', error);
+      // If decompression fails, return default empty structure
+      return {
+        traderplus: [],
+        expansion: [],
+        jones: []
+      };
+    }
   }
 
   /**
-   * Save file structure by type to localStorage
+   * Save file structure by type to localStorage with compression
    */
-  saveFileStructureByType(fileStructureByType: { [key in ConverterType]?: FileNode }): void {
-    localStorage.setItem(FileConverterStorageKey.FILE_STRUCTURE_BY_TYPE, JSON.stringify(fileStructureByType));
+  async saveFileStructureByType(fileStructureByType: { [key in ConverterType]?: FileNode }): Promise<void> {
+    const compressed = await compressObject(fileStructureByType);
+    localStorage.setItem(FileConverterStorageKey.FILE_STRUCTURE_BY_TYPE, compressed);
   }
 
   /**
-   * Get file structure by type from localStorage
+   * Get file structure by type from localStorage with decompression
    */
-  getFileStructureByType(): { [key in ConverterType]?: FileNode } | null {
+  async getFileStructureByType(): Promise<{ [key in ConverterType]?: FileNode } | null> {
     const data = localStorage.getItem(FileConverterStorageKey.FILE_STRUCTURE_BY_TYPE);
-    return data ? JSON.parse(data) : null;
+    if (!data) return null;
+    
+    try {
+      return await decompressObject<{ [key in ConverterType]?: FileNode }>(data);
+    } catch (error) {
+      console.error('Error decompressing file structure:', error);
+      return null;
+    }
   }
 
   /**
-   * Save converted files to localStorage (legacy method)
+   * Save converted files to localStorage (legacy method) with compression
    */
-  saveConvertedFiles(files: ConvertedFile[]): void {
+  async saveConvertedFiles(files: ConvertedFile[]): Promise<void> {
     // For backward compatibility, also save to the old storage key
-    localStorage.setItem(FileConverterStorageKey.CONVERTED_FILES, JSON.stringify(files));
+    const compressed = await compressObject(files);
+    localStorage.setItem(FileConverterStorageKey.CONVERTED_FILES, compressed);
     
     // Also save to the new format
-    const filesByType = this.getConvertedFilesByType();
+    const filesByType = await this.getConvertedFilesByType();
     filesByType.traderplus = files;
-    this.saveConvertedFilesByType(filesByType);
+    await this.saveConvertedFilesByType(filesByType);
   }
 
   /**
-   * Get converted files from localStorage (legacy method)
+   * Get converted files from localStorage (legacy method) with decompression
    */
-  getConvertedFiles(): ConvertedFile[] {
+  async getConvertedFiles(): Promise<ConvertedFile[]> {
     // Check if we have the new format first
     const newData = localStorage.getItem(FileConverterStorageKey.CONVERTED_FILES_BY_TYPE);
     if (newData) {
-      const filesByType = JSON.parse(newData) as { [key in ConverterType]?: ConvertedFile[] };
-      return filesByType.traderplus || [];
+      try {
+        const filesByType = await decompressObject<{ [key in ConverterType]?: ConvertedFile[] }>(newData);
+        return filesByType.traderplus || [];
+      } catch (error) {
+        console.error('Error decompressing new format converted files:', error);
+      }
     }
     
-    // Fall back to old format if new doesn't exist
+    // Fall back to old format if new doesn't exist or decompression failed
     const oldData = localStorage.getItem(FileConverterStorageKey.CONVERTED_FILES);
-    return oldData ? JSON.parse(oldData) : [];
+    if (!oldData) return [];
+    
+    try {
+      return await decompressObject<ConvertedFile[]>(oldData);
+    } catch (error) {
+      console.error('Error decompressing old format converted files:', error);
+      // If both decompression attempts fail, try parsing without decompression
+      // (for backward compatibility with uncompressed data)
+      try {
+        return JSON.parse(oldData);
+      } catch (jsonError) {
+        console.error('Error parsing uncompressed data:', jsonError);
+        return [];
+      }
+    }
   }
 
   /**
-   * Save file structure to localStorage (legacy method)
+   * Save file structure to localStorage (legacy method) with compression
    */
-  saveFileStructure(fileStructure: FileNode): void {
+  async saveFileStructure(fileStructure: FileNode): Promise<void> {
     // For backward compatibility, also save to the old storage key
-    localStorage.setItem(FileConverterStorageKey.FILE_STRUCTURE, JSON.stringify(fileStructure));
+    const compressed = await compressObject(fileStructure);
+    localStorage.setItem(FileConverterStorageKey.FILE_STRUCTURE, compressed);
     
     // Also save to the new format
-    const fileStructureByType = this.getFileStructureByType() || {
+    const fileStructureByType = await this.getFileStructureByType() || {
       traderplus: fileStructure,
       expansion: undefined,
       jones: undefined
     };
     fileStructureByType.traderplus = fileStructure;
-    this.saveFileStructureByType(fileStructureByType);
+    await this.saveFileStructureByType(fileStructureByType);
   }
 
   /**
-   * Get file structure from localStorage (legacy method)
+   * Get file structure from localStorage (legacy method) with decompression
    */
-  getFileStructure(): FileNode | null {
+  async getFileStructure(): Promise<FileNode | null> {
     // Check if we have the new format first
     const newData = localStorage.getItem(FileConverterStorageKey.FILE_STRUCTURE_BY_TYPE);
     if (newData) {
-      const fileStructureByType = JSON.parse(newData) as { [key in ConverterType]?: FileNode };
-      return fileStructureByType.traderplus || null;
+      try {
+        const fileStructureByType = await decompressObject<{ [key in ConverterType]?: FileNode }>(newData);
+        return fileStructureByType.traderplus || null;
+      } catch (error) {
+        console.error('Error decompressing new format file structure:', error);
+      }
     }
     
-    // Fall back to old format if new doesn't exist
+    // Fall back to old format if new doesn't exist or decompression failed
     const oldData = localStorage.getItem(FileConverterStorageKey.FILE_STRUCTURE);
-    return oldData ? JSON.parse(oldData) : null;
+    if (!oldData) return null;
+    
+    try {
+      return await decompressObject<FileNode>(oldData);
+    } catch (error) {
+      console.error('Error decompressing old format file structure:', error);
+      // Try parsing as uncompressed JSON for backward compatibility
+      try {
+        return JSON.parse(oldData);
+      } catch (jsonError) {
+        console.error('Error parsing uncompressed data:', jsonError);
+        return null;
+      }
+    }
   }
 
   /**
-   * Save conversion state to localStorage
+   * Save conversion state to localStorage with compression
    */
-  saveConversionState(state: ConversionState): void {
-    localStorage.setItem(FileConverterStorageKey.CONVERSION_STATE, JSON.stringify(state));
+  async saveConversionState(state: ConversionState): Promise<void> {
+    const compressed = await compressObject(state);
+    localStorage.setItem(FileConverterStorageKey.CONVERSION_STATE, compressed);
   }
 
   /**
-   * Get conversion state from localStorage
+   * Get conversion state from localStorage with decompression
    */
-  getConversionState(): ConversionState | null {
+  async getConversionState(): Promise<ConversionState | null> {
     const data = localStorage.getItem(FileConverterStorageKey.CONVERSION_STATE);
-    return data ? JSON.parse(data) : null;
+    if (!data) return null;
+    
+    try {
+      return await decompressObject<ConversionState>(data);
+    } catch (error) {
+      console.error('Error decompressing conversion state:', error);
+      // Try parsing as uncompressed JSON for backward compatibility
+      try {
+        return JSON.parse(data);
+      } catch (jsonError) {
+        console.error('Error parsing uncompressed data:', jsonError);
+        return null;
+      }
+    }
   }
 
   /**
@@ -216,7 +288,7 @@ export class FileConverterStorageService {
   }
 
   /**
-   * Helper method to save files to localStorage with serialization
+   * Helper method to save files to localStorage with serialization and compression
    */
   private async saveFiles(key: FileConverterStorageKey, files: File[]): Promise<void> {
     const serializedFiles: SerializedFile[] = [];
@@ -234,17 +306,34 @@ export class FileConverterStorageService {
       });
     }
     
-    localStorage.setItem(key, JSON.stringify(serializedFiles));
+    // Compress serialized files before storing
+    const compressed = await compressObject(serializedFiles);
+    localStorage.setItem(key, compressed);
   }
 
   /**
-   * Helper method to get files from localStorage with deserialization
+   * Helper method to get files from localStorage with deserialization and decompression
    */
   private async getFiles(key: FileConverterStorageKey): Promise<File[]> {
     const data = localStorage.getItem(key);
     if (!data) return [];
     
-    const serializedFiles: SerializedFile[] = JSON.parse(data);
+    let serializedFiles: SerializedFile[];
+    
+    try {
+      // Try to decompress the data
+      serializedFiles = await decompressObject<SerializedFile[]>(data);
+    } catch (error) {
+      console.error(`Error decompressing data for key ${key}:`, error);
+      // Try parsing as uncompressed JSON for backward compatibility
+      try {
+        serializedFiles = JSON.parse(data);
+      } catch (jsonError) {
+        console.error('Error parsing uncompressed data:', jsonError);
+        return [];
+      }
+    }
+    
     const files: File[] = [];
     
     for (const serializedFile of serializedFiles) {

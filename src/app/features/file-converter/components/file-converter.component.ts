@@ -235,13 +235,13 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     
     try {
       // Load converted files by type
-      const convertedFilesByType = this.fileConverterStorageService.getConvertedFilesByType();
+      const convertedFilesByType = await this.fileConverterStorageService.getConvertedFilesByType();
       if (convertedFilesByType) {
         this.convertedFilesByType = convertedFilesByType;
       }
       
       // Load file structures by type
-      const fileStructureByType = this.fileConverterStorageService.getFileStructureByType();
+      const fileStructureByType = await this.fileConverterStorageService.getFileStructureByType();
       if (fileStructureByType) {
         this.fileStructureByType = fileStructureByType;
       } else {
@@ -254,7 +254,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
       }
       
       // Load conversion state
-      const conversionState = this.fileConverterStorageService.getConversionState();
+      const conversionState = await this.fileConverterStorageService.getConversionState();
       if (conversionState) {
         this.isTraderPlusConverted = conversionState.isTraderPlusConverted;
         this.isExpansionConverted = conversionState.isExpansionConverted;
@@ -283,27 +283,32 @@ export class FileConverterComponent implements OnInit, OnDestroy {
   /**
    * Saves current state to localStorage
    */
-  private saveDataToStorage(): void {
+  private async saveDataToStorage(): Promise<void> {
     // Don't save if we're still loading from storage
     if (this.isLoadingFromStorage) return;
     
-    // Save files
-    this.fileConverterStorageService.saveTraderPlusFiles(this.traderPlusFiles);
-    this.fileConverterStorageService.saveExpansionFiles(this.expansionFiles);
-    this.fileConverterStorageService.saveJonesFiles(this.jonesFiles);
-    
-    // Save converted files by type
-    this.fileConverterStorageService.saveConvertedFilesByType(this.convertedFilesByType);
-    
-    // Save file structure by type
-    this.fileConverterStorageService.saveFileStructureByType(this.fileStructureByType);
-    
-    // Save conversion state
-    this.fileConverterStorageService.saveConversionState({
-      isTraderPlusConverted: this.isTraderPlusConverted,
-      isExpansionConverted: this.isExpansionConverted,
-      isJonesConverted: this.isJonesConverted
-    });
+    try {
+      // Save files
+      await this.fileConverterStorageService.saveTraderPlusFiles(this.traderPlusFiles);
+      await this.fileConverterStorageService.saveExpansionFiles(this.expansionFiles);
+      await this.fileConverterStorageService.saveJonesFiles(this.jonesFiles);
+      
+      // Save converted files by type
+      await this.fileConverterStorageService.saveConvertedFilesByType(this.convertedFilesByType);
+      
+      // Save file structure by type
+      await this.fileConverterStorageService.saveFileStructureByType(this.fileStructureByType);
+      
+      // Save conversion state
+      await this.fileConverterStorageService.saveConversionState({
+        isTraderPlusConverted: this.isTraderPlusConverted,
+        isExpansionConverted: this.isExpansionConverted,
+        isJonesConverted: this.isJonesConverted
+      });
+    } catch (error) {
+      console.error('Error saving data to storage:', error);
+      this.notificationService.error('Failed to save converter state to storage');
+    }
   }
 
   /**
@@ -381,17 +386,17 @@ export class FileConverterComponent implements OnInit, OnDestroy {
   /**
    * Handles file selection for specific trader mod
    */
-  selectFiles(converterType: ConverterType): void {
+  async selectFiles(converterType: ConverterType): Promise<void> {
     // Creates and clicks a hidden file input to trigger file selection
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.multiple = true;
     fileInput.accept = '.json,.txt,.xml';
 
-    fileInput.addEventListener('change', (event: Event) => {
+    fileInput.addEventListener('change', async (event: Event) => {
       const files = (event.target as HTMLInputElement).files;
       if (files) {
-        this.handleSelectedFiles(files, converterType);
+        await this.handleSelectedFiles(files, converterType);
       }
     });
 
@@ -407,16 +412,16 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     }
     
     // Save state to localStorage
-    this.saveDataToStorage();
+    await this.saveDataToStorage();
   }
 
   /**
    * Processes the selected files
    */
-  private handleSelectedFiles(
+  private async handleSelectedFiles(
     fileList: FileList,
     converterType: ConverterType
-  ): void {
+  ): Promise<void> {
     const files = Array.from(fileList);
 
     switch (converterType) {
@@ -432,13 +437,13 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     }
     
     // Save state to localStorage
-    this.saveDataToStorage();
+    await this.saveDataToStorage();
   }
 
   /**
    * Removes a file from the selected files
    */
-  removeFile(file: File, converterType: ConverterType): void {
+  async removeFile(file: File, converterType: ConverterType): Promise<void> {
     switch (converterType) {
       case 'traderplus':
         this.traderPlusFiles = this.traderPlusFiles.filter((f) => f !== file);
@@ -461,7 +466,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     }
     
     // Save state to localStorage
-    this.saveDataToStorage();
+    await this.saveDataToStorage();
   }
 
   /**
@@ -563,7 +568,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
   /**
    * Updates the conversion state based on the converter type
    */
-  private updateConversionState(converterType: ConverterType): void {
+  private async updateConversionState(converterType: ConverterType): Promise<void> {
     switch (converterType) {
       case 'traderplus':
         this.isTraderPlusConverted = true;
@@ -580,13 +585,13 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     this.updateFileStructure(converterType);
     
     // Save to localStorage
-    this.saveDataToStorage();
+    await this.saveDataToStorage();
   }
 
   /**
    * Updates the file structure based on converted files
    */
-  private updateFileStructure(converterType: ConverterType): void {
+  private async updateFileStructure(converterType: ConverterType): Promise<void> {
     // Reset the file structure for this converter type
     this.fileStructureByType[converterType] = this.createEmptyFileStructure();
 
@@ -597,7 +602,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     });
     
     // Save to localStorage after updating file structure
-    this.saveDataToStorage();
+    await this.saveDataToStorage();
   }
 
   /**
