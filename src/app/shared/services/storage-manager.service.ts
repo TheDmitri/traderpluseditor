@@ -10,6 +10,7 @@ import {
   compressString
 } from '../utils/zip.utils';
 import { StorageService, StorageKey } from '../../core/services/storage.service';
+import { StatisticsService } from './statistics.service';
 
 // LocalStorage key for saved file sets
 const STORAGE_KEY = 'traderplus_saved_file_sets';
@@ -56,7 +57,10 @@ export class StorageManagerService {
   // Add a flag to track if data has been loaded
   private dataLoaded = false;
   
-  constructor(private storageService: StorageService) {
+  constructor(
+    private storageService: StorageService,
+    private statisticsService: StatisticsService
+  ) {
     // Load saved file sets on initialization
     this.loadFromLocalStorage();
     
@@ -267,6 +271,9 @@ export class StorageManagerService {
     const updatedSets = [...currentSets, newSet];
     await this.saveToLocalStorage(updatedSets);
     
+    // Increment file set count statistics
+    this.statisticsService.incrementFileSetCount();
+    
     return newSet;
   }
   
@@ -324,6 +331,10 @@ export class StorageManagerService {
       
       // Download the ZIP file
       downloadBlob(zipBlob, `${fileSet.name}.zip`);
+      
+      // Increment exported files count statistics
+      // Use file count as the number of exported files
+      this.statisticsService.incrementExportedFilesCount(fileSet.fileCount);
       
       return true;
     } catch (error) {
@@ -505,6 +516,9 @@ export class StorageManagerService {
     const currentSets = this.savedFileSetsSubject.getValue();
     const updatedSets = [...currentSets, newSet];
     await this.saveToLocalStorage(updatedSets);
+    
+    // Increment file set count statistics
+    this.statisticsService.incrementFileSetCount();
     
     return newSet;
   }

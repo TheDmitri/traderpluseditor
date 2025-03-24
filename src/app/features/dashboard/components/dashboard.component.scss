@@ -231,7 +231,7 @@
 
     .storage-limit {
       font-size: var(--font-size-sm);
-      color: var(--brush-text-secondary);
+      color: var (--brush-text-secondary);
     }
 
     .storage-percentage {
@@ -324,7 +324,7 @@
         font-size: var(--font-size-sm);
         font-weight: var(--font-weight-medium);
         background-color: var(--brush-active-overlay);
-        color: var(--brush-text-primary);
+        color: var (--brush-text-primary);
         text-decoration: none;
         transition: all var(--transition-normal) var(--transition-timing);
 
@@ -421,6 +421,42 @@
 
       .chevron-icon {
         transition: transform var(--transition-normal) var(--transition-timing);
+      }
+    }
+
+    .panel-subtitle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+
+      .reset-stats-button {
+        font-size: 16px;
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        transition: all var(--transition-normal) var(--transition-timing);
+        opacity: 0; /* Hidden by default */
+        cursor: pointer;
+
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+          line-height: 16px;
+        }
+      }
+    }
+
+    &:hover {
+      .panel-subtitle {
+        .reset-stats-button {
+          opacity: 1; /* Show when hovering over the community-stats section */
+          
+          &:hover {
+            transform: rotate(90deg);
+          }
+        }
       }
     }
   }
