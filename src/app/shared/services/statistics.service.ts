@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { compressObject, decompressObject } from '../utils/zip.utils';
 
 export interface Statistics {
   createdFileSets: number;
@@ -12,6 +13,7 @@ export interface Statistics {
 })
 export class StatisticsService {
   private readonly STORAGE_KEY = 'traderplus_statistics';
+  private readonly COMPRESSION_ENABLED = true;
   
   private statisticsSubject = new BehaviorSubject<Statistics>(this.getDefaultStatistics());
   
@@ -27,12 +29,37 @@ export class StatisticsService {
     };
   }
 
-  private loadStatistics(): void {
+  private async loadStatistics(): Promise<void> {
     try {
       const storedData = localStorage.getItem(this.STORAGE_KEY);
-      if (storedData) {
-        const statistics: Statistics = JSON.parse(storedData);
-        this.statisticsSubject.next(statistics);
+      if (!storedData) {
+        return;
+      }
+      
+      // Check if data is compressed (starts with 'UEs' which is part of the ZIP file signature in base64)
+      if (this.COMPRESSION_ENABLED && storedData.startsWith('UEs')) {
+        // This appears to be compressed data
+        try {
+          const decompressedData = await decompressObject<Statistics>(storedData);
+          this.statisticsSubject.next(decompressedData);
+        } catch (error) {
+          console.error('Error decompressing statistics:', error);
+          // Fallback to treating as uncompressed
+          const parsedStats = JSON.parse(storedData) as Statistics;
+          this.statisticsSubject.next(parsedStats);
+          
+          // Migrate to compressed format
+          this.saveStatistics(parsedStats);
+        }
+      } else {
+        // Treat as uncompressed data
+        const parsedStats = JSON.parse(storedData) as Statistics;
+        this.statisticsSubject.next(parsedStats);
+        
+        // Migrate to compressed format if compression is enabled
+        if (this.COMPRESSION_ENABLED) {
+          this.saveStatistics(parsedStats);
+        }
       }
     } catch (error) {
       console.error('Error loading statistics from localStorage', error);
@@ -41,9 +68,16 @@ export class StatisticsService {
     }
   }
 
-  private saveStatistics(statistics: Statistics): void {
+  private async saveStatistics(statistics: Statistics): Promise<void> {
     try {
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(statistics));
+      if (this.COMPRESSION_ENABLED) {
+        // Compress the statistics object
+        const compressedData = await compressObject(statistics);
+        localStorage.setItem(this.STORAGE_KEY, compressedData);
+      } else {
+        // Fallback to uncompressed if needed
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(statistics));
+      }
     } catch (error) {
       console.error('Error saving statistics to localStorage', error);
     }
