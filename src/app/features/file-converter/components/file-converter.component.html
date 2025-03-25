@@ -13,10 +13,17 @@
           (click)="resetConverter()"
           matTooltip="Reset file converter"
           matTooltipPosition="left"
-          [disabled]="!convertedFilesByType.traderplus!.length && !convertedFilesByType.expansion!.length && !convertedFilesByType.jones!.length && !traderPlusFiles.length && !expansionFiles.length && !jonesFiles.length"
+          [disabled]="
+            !convertedFilesByType.traderplus!.length &&
+            !convertedFilesByType.expansion!.length &&
+            !convertedFilesByType.jones!.length &&
+            !traderPlusFiles.length &&
+            !expansionFiles.length &&
+            !jonesFiles.length
+          "
         >
-        <mat-icon class="icon-error">delete_forever</mat-icon>
-        <span>Reset Converter</span>
+          <mat-icon class="icon-error">delete_forever</mat-icon>
+          <span>Reset Converter</span>
         </button>
       </div>
     </div>
@@ -289,7 +296,7 @@
       </mat-card-content>
     </div>
 
-    <!-- Results Section - File Explorer -->
+    <!-- Results Section - with collapsible file explorer -->
     <div *ngIf="convertedFiles.length" class="data-card results-panel">
       <div class="panel-header">
         <div class="panel-title-area">
@@ -308,6 +315,17 @@
         </div>
 
         <div class="panel-actions">
+          <button
+            class="mat-mdc-button mat-primary"
+            (click)="toggleFileExplorer()"
+            matTooltip="Toggle file explorer view"
+          >
+            <mat-icon>{{
+              showFileExplorer ? "unfold_less" : "unfold_more"
+            }}</mat-icon>
+            <span>{{ showFileExplorer ? "Hide Files" : "Show Files" }}</span>
+          </button>
+
           <button
             class="custom-stroked-button color-primary with-icon"
             (click)="downloadAllFiles()"
@@ -328,7 +346,32 @@
         </div>
       </div>
 
-      <div class="file-explorer-content">
+      <!-- Show a files summary when explorer is hidden -->
+      <div class="file-summary" *ngIf="!showFileExplorer">
+        <div class="summary-stats">
+          <ng-container *ngIf="getFilesSummary() as summary">
+            <div class="stat-card">
+              <div class="stat-value">{{ summary.totalFiles }}</div>
+              <div class="stat-label">Total Files</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">{{ summary.categories }}</div>
+              <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">{{ summary.products }}</div>
+              <div class="stat-label">Products</div>
+            </div>
+            <div class="stat-card" *ngIf="summary.misc > 0">
+              <div class="stat-value">{{ summary.misc }}</div>
+              <div class="stat-label">Misc Files</div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- Show file explorer only when toggled -->
+      <div class="file-explorer-content" *ngIf="showFileExplorer">
         <div class="file-explorer">
           <!-- Root folder -->
           <div class="folder-node root-folder">

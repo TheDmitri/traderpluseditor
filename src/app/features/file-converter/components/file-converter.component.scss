@@ -250,5 +250,38 @@
         }
       }
     }
+
+    // Add styling for the summary view
+    .results-panel {
+      .file-summary {
+        padding: 24px;
+
+        .summary-stats {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 24px;
+          margin-bottom: 24px;
+
+          .stat-card {
+            border-radius: 8px;
+            padding: 16px 24px;
+            text-align: center;
+            min-width: 120px;
+
+            .stat-value {
+              font-size: 24px;
+              font-weight: 600;
+              margin-bottom: 8px;
+              color: var(--brush-accent);
+            }
+
+            .stat-label {
+              font-size: 14px;
+              color: var(--brush-text-secondary);
+            }
+          }
+        }
+      }
+    }
   }
 }
