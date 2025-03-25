@@ -6,6 +6,31 @@
         <p class="subtitle">
           Convert any other Trader Mod Config to a TraderPlus v2 Config
         </p>
+        <div class="action-buttons">
+          <!-- Move the select files and convert buttons to the header -->
+          <button
+            class="custom-stroked-button color-primary with-icon"
+            (click)="selectFiles(activeTab)"
+            [matTooltip]="
+              'Select files for ' +
+              getConverterDisplayName(activeTab) +
+              ' conversion'
+            "
+          >
+            <mat-icon>add</mat-icon>
+            Select Files
+          </button>
+
+          <button
+            class="custom-stroked-button color-secondary with-icon"
+            [disabled]="!hasFilesToConvert() || isActiveTabConverted()"
+            (click)="convert(activeTab)"
+            matTooltip="Convert selected files to TraderPlus v2"
+          >
+            <mat-icon>transform</mat-icon>
+            Convert to TraderPlus v2
+          </button>
+        </div>
       </div>
       <div class="header-right">
         <button
@@ -60,28 +85,7 @@
                 >
                 </app-loader>
 
-                <div class="converter-actions">
-                  <div class="actions-row">
-                    <button
-                      class="custom-stroked-button color-primary with-icon"
-                      (click)="selectFiles('traderplus')"
-                    >
-                      <mat-icon>add</mat-icon>
-                      Select Files
-                    </button>
-                    <button
-                      class="custom-stroked-button color-secondary with-icon"
-                      [disabled]="
-                        !traderPlusFiles.length || isTraderPlusConverted
-                      "
-                      (click)="convert('traderplus')"
-                    >
-                      <mat-icon>transform</mat-icon>
-                      Convert to TraderPlus v2
-                    </button>
-                  </div>
-                </div>
-
+                <!-- Remove redundant buttons in tab content -->
                 <div class="file-selection-area">
                   <div
                     class="empty-state-container"
@@ -146,28 +150,7 @@
                 >
                 </app-loader>
 
-                <div class="converter-actions">
-                  <div class="actions-row">
-                    <button
-                      class="custom-stroked-button color-primary with-icon"
-                      (click)="selectFiles('expansion')"
-                    >
-                      <mat-icon>add</mat-icon>
-                      Select Files
-                    </button>
-                    <button
-                      class="custom-stroked-button color-secondary with-icon"
-                      [disabled]="
-                        !expansionFiles.length || isExpansionConverted
-                      "
-                      (click)="convert('expansion')"
-                    >
-                      <mat-icon>transform</mat-icon>
-                      Convert to TraderPlus v2
-                    </button>
-                  </div>
-                </div>
-
+                <!-- Remove redundant buttons in tab content -->
                 <div class="file-selection-area">
                   <div
                     class="empty-state-container"
@@ -232,26 +215,7 @@
                 >
                 </app-loader>
 
-                <div class="converter-actions">
-                  <div class="actions-row">
-                    <button
-                      class="custom-stroked-button color-primary with-icon"
-                      (click)="selectFiles('jones')"
-                    >
-                      <mat-icon>add</mat-icon>
-                      Select Files
-                    </button>
-                    <button
-                      class="custom-stroked-button color-secondary with-icon"
-                      [disabled]="!jonesFiles.length || isJonesConverted"
-                      (click)="convert('jones')"
-                    >
-                      <mat-icon>transform</mat-icon>
-                      Convert to TraderPlus v2
-                    </button>
-                  </div>
-                </div>
-
+                <!-- Remove redundant buttons in tab content -->
                 <div class="file-selection-area">
                   <div
                     class="empty-state-container"
@@ -341,7 +305,7 @@
             matTooltip="Save converted files as File Set"
           >
             <mat-icon>save</mat-icon>
-            <span>Save File Set</span>
+            <span>Save as File Set</span>
           </button>
 
           <!-- Add the button to clear converted files -->

@@ -1198,8 +1198,9 @@ export class FileConverterComponent implements OnInit, OnDestroy {
 
   /**
    * Helper method to get display name for converter type
+   * Now public so it can be used in the template
    */
-  private getConverterDisplayName(converterType: ConverterType): string {
+  getConverterDisplayName(converterType: ConverterType): string {
     switch (converterType) {
       case 'traderplus':
         return 'TraderPlus';
@@ -1209,6 +1210,38 @@ export class FileConverterComponent implements OnInit, OnDestroy {
         return 'Jones';
       default:
         return converterType;
+    }
+  }
+
+  /**
+   * Checks if the active tab has files that can be converted
+   */
+  hasFilesToConvert(): boolean {
+    switch (this.activeTab) {
+      case 'traderplus':
+        return this.traderPlusFiles.length > 0;
+      case 'expansion':
+        return this.expansionFiles.length > 0;
+      case 'jones':
+        return this.jonesFiles.length > 0;
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * Checks if the active tab's files are already converted
+   */
+  isActiveTabConverted(): boolean {
+    switch (this.activeTab) {
+      case 'traderplus':
+        return this.isTraderPlusConverted;
+      case 'expansion':
+        return this.isExpansionConverted;
+      case 'jones':
+        return this.isJonesConverted;
+      default:
+        return false;
     }
   }
 }
