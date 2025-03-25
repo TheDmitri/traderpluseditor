@@ -6,6 +6,31 @@
         <p class="subtitle">
           Convert any other Trader Mod Config to a TraderPlus v2 Config
         </p>
+        <div class="action-buttons">
+          <!-- Move the select files and convert buttons to the header -->
+          <button
+            class="custom-stroked-button color-primary with-icon"
+            (click)="selectFiles(activeTab)"
+            [matTooltip]="
+              'Select files for ' +
+              getConverterDisplayName(activeTab) +
+              ' conversion'
+            "
+          >
+            <mat-icon>add</mat-icon>
+            Select Files
+          </button>
+
+          <button
+            class="custom-stroked-button color-secondary with-icon"
+            [disabled]="!hasFilesToConvert() || isActiveTabConverted()"
+            (click)="convert(activeTab)"
+            matTooltip="Convert selected files to TraderPlus v2"
+          >
+            <mat-icon>transform</mat-icon>
+            Convert to TraderPlus v2
+          </button>
+        </div>
       </div>
       <div class="header-right">
         <button
@@ -13,10 +38,17 @@
           (click)="resetConverter()"
           matTooltip="Reset file converter"
           matTooltipPosition="left"
-          [disabled]="!convertedFilesByType.traderplus!.length && !convertedFilesByType.expansion!.length && !convertedFilesByType.jones!.length && !traderPlusFiles.length && !expansionFiles.length && !jonesFiles.length"
+          [disabled]="
+            !convertedFilesByType.traderplus!.length &&
+            !convertedFilesByType.expansion!.length &&
+            !convertedFilesByType.jones!.length &&
+            !traderPlusFiles.length &&
+            !expansionFiles.length &&
+            !jonesFiles.length
+          "
         >
-        <mat-icon class="icon-error">delete_forever</mat-icon>
-        <span>Reset Converter</span>
+          <mat-icon class="icon-error">delete_forever</mat-icon>
+          <span>Reset Converter</span>
         </button>
       </div>
     </div>
@@ -53,28 +85,7 @@
                 >
                 </app-loader>
 
-                <div class="converter-actions">
-                  <div class="actions-row">
-                    <button
-                      class="custom-stroked-button color-primary with-icon"
-                      (click)="selectFiles('traderplus')"
-                    >
-                      <mat-icon>add</mat-icon>
-                      Select Files
-                    </button>
-                    <button
-                      class="custom-stroked-button color-secondary with-icon"
-                      [disabled]="
-                        !traderPlusFiles.length || isTraderPlusConverted
-                      "
-                      (click)="convert('traderplus')"
-                    >
-                      <mat-icon>transform</mat-icon>
-                      Convert to TraderPlus v2
-                    </button>
-                  </div>
-                </div>
-
+                <!-- Remove redundant buttons in tab content -->
                 <div class="file-selection-area">
                   <div
                     class="empty-state-container"
@@ -87,6 +98,17 @@
                     <p class="empty-state-message">
                       Select TraderPlus v1 configuration files to convert them
                       to TraderPlus v2 format
+                    </p>
+                    <p class="empty-state-files">
+                      Allowed files:
+                      <span class="allowed-file"
+                        >TraderPlusGeneralSettings.json</span
+                      >,
+                      <span class="allowed-file">TraderPlusIDsConfig.json</span
+                      >,
+                      <span class="allowed-file"
+                        >TraderPlusPriceConfig.json</span
+                      >
                     </p>
                   </div>
 
@@ -139,40 +161,16 @@
                 >
                 </app-loader>
 
-                <div class="converter-actions">
-                  <div class="actions-row">
-                    <button
-                      class="custom-stroked-button color-primary with-icon"
-                      (click)="selectFiles('expansion')"
-                    >
-                      <mat-icon>add</mat-icon>
-                      Select Files
-                    </button>
-                    <button
-                      class="custom-stroked-button color-secondary with-icon"
-                      [disabled]="
-                        !expansionFiles.length || isExpansionConverted
-                      "
-                      (click)="convert('expansion')"
-                    >
-                      <mat-icon>transform</mat-icon>
-                      Convert to TraderPlus v2
-                    </button>
-                  </div>
-                </div>
-
+                <!-- Remove redundant buttons in tab content -->
                 <div class="file-selection-area">
                   <div
                     class="empty-state-container"
                     *ngIf="!expansionFiles.length; else expansionFilesList"
                   >
                     <mat-icon class="empty-state-icon">settings</mat-icon>
-                    <h2 class="empty-state-title">
-                      No Expansion Trader Files Found
-                    </h2>
+                    <h2 class="empty-state-title">Coming Soon</h2>
                     <p class="empty-state-message">
-                      Select Expansion Trader configuration files to convert
-                      them to TraderPlus v2 format
+                      Expansion Trader converter is not yet available
                     </p>
                   </div>
 
@@ -225,26 +223,7 @@
                 >
                 </app-loader>
 
-                <div class="converter-actions">
-                  <div class="actions-row">
-                    <button
-                      class="custom-stroked-button color-primary with-icon"
-                      (click)="selectFiles('jones')"
-                    >
-                      <mat-icon>add</mat-icon>
-                      Select Files
-                    </button>
-                    <button
-                      class="custom-stroked-button color-secondary with-icon"
-                      [disabled]="!jonesFiles.length || isJonesConverted"
-                      (click)="convert('jones')"
-                    >
-                      <mat-icon>transform</mat-icon>
-                      Convert to TraderPlus v2
-                    </button>
-                  </div>
-                </div>
-
+                <!-- Remove redundant buttons in tab content -->
                 <div class="file-selection-area">
                   <div
                     class="empty-state-container"
@@ -255,8 +234,12 @@
                       No Dr.Jones Trader Files Found
                     </h2>
                     <p class="empty-state-message">
-                      Select Jones Trader configuration files to convert them to
+                      Select Jones Trader config file to convert it to
                       TraderPlus v2 format
+                    </p>
+                    <p class="empty-state-files">
+                      Allowed file:
+                      <span class="allowed-file">TraderConfig.txt</span>
                     </p>
                   </div>
 
@@ -289,7 +272,7 @@
       </mat-card-content>
     </div>
 
-    <!-- Results Section - File Explorer -->
+    <!-- Results Section - with collapsible file explorer -->
     <div *ngIf="convertedFiles.length" class="data-card results-panel">
       <div class="panel-header">
         <div class="panel-title-area">
@@ -309,6 +292,17 @@
 
         <div class="panel-actions">
           <button
+            class="mat-mdc-button mat-primary"
+            (click)="toggleFileExplorer()"
+            matTooltip="Toggle file explorer view"
+          >
+            <mat-icon>{{
+              showFileExplorer ? "unfold_less" : "unfold_more"
+            }}</mat-icon>
+            <span>{{ showFileExplorer ? "Hide Files" : "Show Files" }}</span>
+          </button>
+
+          <button
             class="custom-stroked-button color-primary with-icon"
             (click)="downloadAllFiles()"
             matTooltip="Download all files as .zip"
@@ -323,12 +317,47 @@
             matTooltip="Save converted files as File Set"
           >
             <mat-icon>save</mat-icon>
-            <span>Save File Set</span>
+            <span>Save as File Set</span>
+          </button>
+
+          <!-- Add the button to clear converted files -->
+          <button
+            class="custom-stroked-button color-warn with-icon"
+            (click)="clearConvertedFiles(activeTab)"
+            matTooltip="Clear converted files"
+          >
+            <mat-icon>delete</mat-icon>
+            <span>Clear Files</span>
           </button>
         </div>
       </div>
 
-      <div class="file-explorer-content">
+      <!-- Show a files summary when explorer is hidden -->
+      <div class="file-summary" *ngIf="!showFileExplorer">
+        <div class="summary-stats">
+          <ng-container *ngIf="getFilesSummary() as summary">
+            <div class="stat-card">
+              <div class="stat-value">{{ summary.totalFiles }}</div>
+              <div class="stat-label">Total Files</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">{{ summary.categories }}</div>
+              <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">{{ summary.products }}</div>
+              <div class="stat-label">Products</div>
+            </div>
+            <div class="stat-card" *ngIf="summary.misc > 0">
+              <div class="stat-value">{{ summary.misc }}</div>
+              <div class="stat-label">Misc Files</div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- Show file explorer only when toggled -->
+      <div class="file-explorer-content" *ngIf="showFileExplorer">
         <div class="file-explorer">
           <!-- Root folder -->
           <div class="folder-node root-folder">
