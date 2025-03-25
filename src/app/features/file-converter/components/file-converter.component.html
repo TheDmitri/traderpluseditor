@@ -343,6 +343,16 @@
             <mat-icon>save</mat-icon>
             <span>Save File Set</span>
           </button>
+
+          <!-- Add the button to clear converted files -->
+          <button
+            class="custom-stroked-button color-warn with-icon"
+            (click)="clearConvertedFiles(activeTab)"
+            matTooltip="Clear converted files"
+          >
+            <mat-icon>delete</mat-icon>
+            <span>Clear Files</span>
+          </button>
         </div>
       </div>
 

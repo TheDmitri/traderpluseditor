@@ -1141,4 +1141,74 @@ export class FileConverterComponent implements OnInit, OnDestroy {
       misc,
     };
   }
+
+  /**
+   * Clears the converted files for the specified converter type
+   */
+  clearConvertedFiles(converterType: ConverterType): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Clear Converted Files',
+        message: `Are you sure you want to clear all converted files for this ${this.getConverterDisplayName(
+          converterType
+        )} conversion?`,
+        confirmText: 'Clear',
+        cancelText: 'Cancel',
+        type: 'warning',
+      },
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((result) => {
+        if (result) {
+          // Clear converted files
+          this.convertedFilesByType[converterType] = [];
+
+          // Reset file structure
+          this.fileStructureByType[converterType] =
+            this.createEmptyFileStructure();
+
+          // Reset conversion state flag
+          switch (converterType) {
+            case 'traderplus':
+              this.isTraderPlusConverted = false;
+              break;
+            case 'expansion':
+              this.isExpansionConverted = false;
+              break;
+            case 'jones':
+              this.isJonesConverted = false;
+              break;
+          }
+
+          // Save updated state to storage
+          this.saveDataToStorage();
+
+          // Notify user
+          this.notificationService.success(
+            `${this.getConverterDisplayName(
+              converterType
+            )} converted files cleared successfully.`
+          );
+        }
+      });
+  }
+
+  /**
+   * Helper method to get display name for converter type
+   */
+  private getConverterDisplayName(converterType: ConverterType): string {
+    switch (converterType) {
+      case 'traderplus':
+        return 'TraderPlus';
+      case 'expansion':
+        return 'Expansion';
+      case 'jones':
+        return 'Jones';
+      default:
+        return converterType;
+    }
+  }
 }
