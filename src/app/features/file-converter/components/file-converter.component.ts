@@ -418,7 +418,19 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.multiple = true;
-    fileInput.accept = '.json,.txt,.xml';
+
+    // Set specific accept filters based on converter type
+    if (converterType === 'traderplus') {
+      // Only allow TraderPlus v1 specific JSON files
+      // The accept attribute will be used as a file filter in the file selection dialog
+      fileInput.accept = '.json';
+    } else if (converterType === 'jones') {
+      // Only allow TraderConfig.txt for Jones converter
+      fileInput.accept = '.txt';
+    } else {
+      // Default fallback, used for expansion or other future converters
+      fileInput.accept = '.json,.txt,.xml';
+    }
 
     fileInput.addEventListener('change', async (event: Event) => {
       const files = (event.target as HTMLInputElement).files;
@@ -450,16 +462,49 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     converterType: ConverterType
   ): Promise<void> {
     const files = Array.from(fileList);
+    const filteredFiles: File[] = [];
 
+    // Apply additional validation based on converter type
     switch (converterType) {
       case 'traderplus':
-        this.traderPlusFiles = [...this.traderPlusFiles, ...files];
+        // Only allow specific TraderPlus v1 files
+        const validTraderPlusFiles = [
+          'TraderPlusGeneralSettings.json',
+          'TraderPlusIDsConfig.json',
+          'TraderPlusPriceConfig.json',
+        ];
+
+        files.forEach((file) => {
+          if (validTraderPlusFiles.includes(file.name)) {
+            filteredFiles.push(file);
+          } else {
+            this.notificationService.warning(
+              `Skipped file "${file.name}". Only TraderPlusGeneralSettings.json, TraderPlusIDsConfig.json and TraderPlusPriceConfig.json are allowed.`
+            );
+          }
+        });
+
+        this.traderPlusFiles = [...this.traderPlusFiles, ...filteredFiles];
         break;
-      case 'expansion':
-        this.expansionFiles = [...this.expansionFiles, ...files];
-        break;
+
       case 'jones':
-        this.jonesFiles = [...this.jonesFiles, ...files];
+        // Only allow TraderConfig.txt for Jones converter
+        files.forEach((file) => {
+          if (file.name === 'TraderConfig.txt') {
+            filteredFiles.push(file);
+          } else {
+            this.notificationService.warning(
+              `Skipped file "${file.name}". Only TraderConfig.txt is allowed.`
+            );
+          }
+        });
+
+        this.jonesFiles = [...this.jonesFiles, ...filteredFiles];
+        break;
+
+      case 'expansion':
+        // No specific filtering for expansion yet as it's not implemented
+        this.expansionFiles = [...this.expansionFiles, ...files];
         break;
     }
 
