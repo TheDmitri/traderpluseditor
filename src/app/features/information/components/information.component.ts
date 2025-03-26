@@ -9,8 +9,8 @@ import { Router } from '@angular/router';
 import { InformationService } from '../services/information.service';
 import { InitializationService } from '../../../core/services/initialization.service';
 import { StorageService } from '../../../core/services/storage.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfigCheckService } from '../../../core/services/config-check.service';
+import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-information',
@@ -31,8 +31,8 @@ export class InformationComponent implements OnInit {
   private router = inject(Router);
   private initializationService = inject(InitializationService);
   private storageService = inject(StorageService);
-  private snackBar = inject(MatSnackBar);
   private configCheckService = inject(ConfigCheckService);
+  private notificationService = inject(NotificationService);
 
   appVersion: string = this.infoService.getAppVersion();
   currentYear: number = new Date().getFullYear();
@@ -66,10 +66,8 @@ export class InformationComponent implements OnInit {
     try {
       // Check if configs already exist
       if (this.configsExist) {
-        this.snackBar.open(
-          'Configuration data already exists. Please clear data before creating a new configuration.',
-          'Close',
-          { duration: 5000 }
+        this.notificationService.warning(
+          'Configuration data already exists. Please clear data before creating a new configuration.'
         );
         return;
       }
@@ -78,10 +76,8 @@ export class InformationComponent implements OnInit {
       this.initializationService.initializeFullDefaultConfig();
       
       // Show success message
-      this.snackBar.open(
-        'Default configuration created successfully!',
-        'Close',
-        { duration: 3000 }
+      this.notificationService.success(
+        'Default configuration created successfully!'
       );
       
       // Update the flag
@@ -91,10 +87,8 @@ export class InformationComponent implements OnInit {
       setTimeout(() => this.router.navigate(['/dashboard']), 1000);
     } catch (error) {
       console.error('Error creating default configuration:', error);
-      this.snackBar.open(
-        'Error creating default configuration. Please try again.',
-        'Close',
-        { duration: 5000 }
+      this.notificationService.error(
+        'Error creating default configuration. Please try again.'
       );
     }
   }

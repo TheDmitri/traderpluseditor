@@ -7,6 +7,23 @@
   margin: 0 auto;
   box-sizing: border-box;
 
+  // Add styles for the header action buttons
+  .header-content {
+    .header-left {
+      .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 16px;
+
+        @media (max-width: 600px) {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    }
+  }
+
   .main-content-area {
     display: flex;
     flex-direction: column;
@@ -50,7 +67,6 @@
 
         // Actions area styling
         .converter-actions {
-          padding: 16px;
           border-radius: 4px 4px 0 0;
           border-bottom: 1px solid var(--brush-divider);
 
@@ -73,7 +89,8 @@
 
         // File selection area styling
         .file-selection-area {
-          margin-top: 8px;
+          margin-top: 16px;
+          padding: 16px;
           min-height: 160px;
 
           .selected-files {
@@ -126,6 +143,23 @@
                   align-items: center;
                   justify-content: center;
                 }
+              }
+            }
+          }
+
+          .empty-state-container {
+            // Add styling for allowed files information
+            .empty-state-files {
+              margin-top: 16px;
+              font-size: 14px;
+              color: var(--brush-text-secondary);
+
+              .allowed-file {
+                font-family: monospace;
+                background-color: var(--brush-background-elevated);
+                padding: 2px 6px;
+                border-radius: 4px;
+                color: var(--brush-primary);
               }
             }
           }
@@ -245,6 +279,39 @@
 
             &:hover {
               opacity: 1;
+            }
+          }
+        }
+      }
+    }
+
+    // Add styling for the summary view
+    .results-panel {
+      .file-summary {
+        padding: 24px;
+
+        .summary-stats {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 24px;
+          margin-bottom: 24px;
+
+          .stat-card {
+            border-radius: 8px;
+            padding: 16px 24px;
+            text-align: center;
+            min-width: 120px;
+
+            .stat-value {
+              font-size: 24px;
+              font-weight: 600;
+              margin-bottom: 8px;
+              color: var(--brush-accent);
+            }
+
+            .stat-label {
+              font-size: 14px;
+              color: var(--brush-text-secondary);
             }
           }
         }

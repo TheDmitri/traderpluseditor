@@ -157,10 +157,21 @@
   /* Resource Sections
     ========================================================================== */
   .resource-section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .panel-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
     .section-text {
       color: var(--brush-text-secondary);
       margin-bottom: 24px;
       line-height: 1.6;
+      flex-grow: 1; // Allow text to expand and fill space
     }
 
     .resource-grid {
@@ -261,7 +272,7 @@
           opacity: 0.6;
           margin-left: 8px;
           flex-shrink: 0;
-          transition: all var(--transition-normal) var(--transition-timing);
+          transition: all var(--transition-normal) var (--transition-timing);
         }
       }
     }
@@ -329,7 +340,7 @@
       border-radius: 8px;
       padding: 20px;
       margin-bottom: 0;
-      border: 1px solid var(--brush-card-border);
+      border: 1px solid var (--brush-card-border);
 
       .legal-header {
         display: flex;
