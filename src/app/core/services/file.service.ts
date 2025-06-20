@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import JSZip from 'jszip';
 import { NotificationService } from '../../shared/services';
+import { StatisticsService } from '../../shared/services/statistics.service';
 
 // Application imports
 import { CategoryService } from '../../features/category-editor/services';
@@ -21,7 +22,8 @@ export class FileService {
     private productService: ProductService,
     private currencyService: CurrencyService,
     private generalSettingsService: GeneralSettingsService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private statisticsService: StatisticsService
   ) {}
 
   /**
@@ -199,6 +201,9 @@ export class FileService {
         URL.revokeObjectURL(url);
       }, 0);
 
+      // Increment exported files count with the number of category files
+      this.statisticsService.incrementExportedFilesCount(categories.length);
+
       return true;
     } catch (error) {
       console.error('Error exporting categories:', error);
@@ -263,6 +268,9 @@ export class FileService {
         URL.revokeObjectURL(url);
       }, 0);
 
+      // Increment exported files count with the number of product files
+      this.statisticsService.incrementExportedFilesCount(products.length);
+
       return true;
     } catch (error) {
       console.error('Error exporting products:', error);
@@ -282,6 +290,10 @@ export class FileService {
     }
 
     this.exportAsJson(currencySettings, 'TraderPlusCurrencySettings.json');
+    
+    // Increment exported files count by 1 (one file)
+    this.statisticsService.incrementExportedFilesCount(1);
+    
     return true;
   }
 
@@ -296,6 +308,10 @@ export class FileService {
     }
 
     this.exportAsJson(generalSettings, 'TraderPlusGeneralSettings.json');
+    
+    // Increment exported files count by 1 (one file)
+    this.statisticsService.incrementExportedFilesCount(1);
+    
     return true;
   }
 
@@ -306,6 +322,7 @@ export class FileService {
   async exportAllAsZip(): Promise<boolean> {
     const zip = new JSZip();
     let hasData = false;
+    let totalFileCount = 0;
 
     // Get all configurations from their respective services
     const categories = this.categoryService.getExportData();
@@ -339,6 +356,7 @@ export class FileService {
         
         // Add JSON file to the Categories folder
         categoriesFolder.file(fileName, jsonContent);
+        totalFileCount++;
       }
       
       hasData = true;
@@ -376,6 +394,7 @@ export class FileService {
         
         // Add JSON file to the Products folder
         productsFolder.file(fileName, jsonContent);
+        totalFileCount++;
       }
       
       hasData = true;
@@ -388,6 +407,7 @@ export class FileService {
         JSON.stringify(currencySettings, null, 2)
       );
       hasData = true;
+      totalFileCount++;
     }
 
     if (generalSettings) {
@@ -396,6 +416,7 @@ export class FileService {
         JSON.stringify(generalSettings, null, 2)
       );
       hasData = true;
+      totalFileCount++;
     }
 
     // If no data was added to the ZIP, return false
@@ -418,6 +439,9 @@ export class FileService {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       }, 0);
+
+      // Increment exported files count with the total number of exported files
+      this.statisticsService.incrementExportedFilesCount(totalFileCount);
 
       return true;
     } catch (error) {

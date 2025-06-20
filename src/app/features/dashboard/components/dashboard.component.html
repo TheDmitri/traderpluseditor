@@ -143,9 +143,7 @@
     <div class="data-card storage-info">
       <div class="panel-header">
         <h2 class="section-title">Storage Usage</h2>
-        <p class="panel-subtitle">
-          Current local storage utilization
-        </p>
+        <p class="panel-subtitle">Current local storage utilization</p>
       </div>
       <div class="panel-body">
         <ng-container *ngIf="storageBreakdown$ | async as breakdown">
@@ -181,7 +179,7 @@
               <div class="storage-breakdown-item">
                 <div class="breakdown-title">
                   <mat-icon>save</mat-icon>
-                  <span>Saved Files</span>
+                  <span>Saved File Sets</span>
                 </div>
                 <span class="breakdown-value">{{
                   formatBytes(breakdown.fileSets)
@@ -190,7 +188,7 @@
               <div class="storage-breakdown-item">
                 <div class="breakdown-title">
                   <mat-icon>shopping_cart</mat-icon>
-                  <span>App Data</span>
+                  <span>Editor Data</span>
                 </div>
                 <span class="breakdown-value">{{
                   formatBytes(breakdown.appData.total)
@@ -199,7 +197,7 @@
               <div class="storage-breakdown-item">
                 <div class="breakdown-title">
                   <mat-icon>folder_open</mat-icon>
-                  <span>Other</span>
+                  <span>Other Data</span>
                 </div>
                 <span class="breakdown-value">{{
                   formatBytes(breakdown.other)
@@ -223,7 +221,14 @@
       <div class="panel-header">
         <h2 class="section-title">Community & Statistics</h2>
         <p class="panel-subtitle">
-          TraderPlus Editor usage and community activity
+          TraderPlus Users and your editing activity
+          <button class="custom-icon-btn icon-btn-warn reset-stats-button"
+            (click)="resetStatisticsWithConfirmation()"
+            matTooltip="Reset Statistics"
+            aria-label="Reset statistics"
+          >
+            <mat-icon>autorenew</mat-icon>
+          </button>
         </p>
       </div>
       <div class="panel-body">
@@ -233,8 +238,8 @@
               <mat-icon aria-label="Products">people</mat-icon>
             </div>
             <div class="stat-info">
-              <span class="stat-value">{{ dummyStats.activeUsers }}</span>
-              <span class="stat-label">Active Users</span>
+              <span class="stat-value">{{ activeUsers }}</span>
+              <span class="stat-label">Active TraderPlus Users</span>
             </div>
           </div>
 
@@ -243,8 +248,8 @@
               <mat-icon aria-label="Products">dns</mat-icon>
             </div>
             <div class="stat-info">
-              <span class="stat-value">{{ dummyStats.createdFileSets }}</span>
-              <span class="stat-label">File Sets created</span>
+              <span class="stat-value">{{ statistics.createdFileSets }}</span>
+              <span class="stat-label">Total File Sets created</span>
             </div>
           </div>
 
@@ -253,14 +258,18 @@
               <mat-icon aria-label="Products">download</mat-icon>
             </div>
             <div class="stat-info">
-              <span class="stat-value">{{ dummyStats.exportedFiles }}</span>
-              <span class="stat-label">exported Files</span>
+              <span class="stat-value">{{ statistics.exportedFiles }}</span>
+              <span class="stat-label">Total Files exported</span>
             </div>
           </div>
         </div>
 
         <div class="community-actions">
-          <a class="feature-request-btn" (click)="openRequestModal()" href="javascript:void(0)">
+          <a
+            class="feature-request-btn"
+            (click)="openRequestModal()"
+            href="javascript:void(0)"
+          >
             <mat-icon>bug_report</mat-icon>
             <div class="request-text">
               <span class="request-title">Bug Report or Feature Request</span>

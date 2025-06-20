@@ -185,15 +185,14 @@ export class CurrencyService {
    * @returns Empty currency settings
    */
   removeAllCurrencyTypes(): CurrencySettings {
-    const settings = this.storageService.currencySettings();
-    const emptyCurrencySettings: CurrencySettings = {
-      version: settings?.version || '2.0.0',
+    // Delete the currency settings entirely from localStorage
+    this.storageService.deleteCurrencySettings();
+    
+    // Return empty settings object for UI state
+    return {
+      version: '2.0.0',
       currencyTypes: [],
     };
-    
-    // Save the empty currency settings
-    this.storageService.saveCurrencySettings(emptyCurrencySettings);
-    return emptyCurrencySettings;
   }
 
   /**

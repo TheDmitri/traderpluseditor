@@ -30,8 +30,27 @@ export class AppComponent implements OnInit {
   title = 'traderpluseditor';
   appVersion = environment.version;
   
+  // PWA installation
+  deferredPrompt: any;
+  showInstallButton = false;
+  
   ngOnInit(): void {
-    // Additional initialization can be added here if needed
+    // Listen for beforeinstallprompt event
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      e.preventDefault();
+      // Stash the event so it can be triggered later
+      this.deferredPrompt = e;
+      // Update UI to show the install button
+      this.showInstallButton = true;
+    });
+    
+    // Hide install button if app is already installed
+    window.addEventListener('appinstalled', () => {
+      console.log('PWA was installed');
+      this.showInstallButton = false;
+      this.deferredPrompt = null;
+    });
   }
   
   /**
@@ -59,5 +78,28 @@ export class AppComponent implements OnInit {
   openHelpPanel(): void {
     // Navigate to information route instead of opening dialog
     this.router.navigate(['/information']);
+  }
+  
+  // Install app functionality
+  installApp(): void {
+    if (!this.deferredPrompt) {
+      console.log('Installation prompt not available');
+      return;
+    }
+    
+    // Show the prompt
+    this.deferredPrompt.prompt();
+    
+    // Wait for the user to respond to the prompt
+    this.deferredPrompt.userChoice.then((choiceResult: { outcome: string }) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the installation');
+      } else {
+        console.log('User dismissed the installation');
+      }
+      // We no longer need the prompt
+      this.deferredPrompt = null;
+      this.showInstallButton = false;
+    });
   }
 }
