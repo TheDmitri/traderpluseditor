@@ -12,10 +12,10 @@ export class JonesConverterService {
   constructor() { }
 
   /**
-   * Converts Jones trader config to TraderPlus v2 format
+   * Converts Jones trader config to TraderX format
    * @param content The content of the Jones trader config file
    */
-  convertToTraderPlusV2(content: string): Observable<{ [key: string]: string }> {
+  convertToTraderX(content: string): Observable<{ [key: string]: string }> {
     try {
       // Parse the Jones config
       const jonesConfig = this.parseJonesConfig(content);
@@ -148,8 +148,8 @@ export class JonesConverterService {
   }
 
   /**
-   * Creates categories and products for TraderPlus v2
-   * Follows the exact structure of TraderPlus v2 files
+   * Creates categories and products for TraderX
+   * Follows the exact structure of TraderX files
    */
   private createCategoriesAndProducts(jonesConfig: JonesConfig): { 
     categoryFiles: { [key: string]: string }, 

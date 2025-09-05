@@ -1,5 +1,5 @@
 /**
- * General settings models based on TraderPlusGeneralSettings.c
+ * General settings models based on TraderXGeneralSettings.c
  */
 export interface License {
   licenseId?: string;  // The unique identifier for the license

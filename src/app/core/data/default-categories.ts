@@ -1,9 +1,9 @@
 import { Category } from '../models';
 
 /**
- * Default categories for TraderPlus
+ * Default categories for TraderX
  * 
- * These categories are imported from the actual TraderPlus JSON configuration files.
+ * These categories are imported from the actual TraderX JSON configuration files.
  * Each category represents a separate trading category with its own products.
  */
 export const DEFAULT_CATEGORIES: Category[] = [

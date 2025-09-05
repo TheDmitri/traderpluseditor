@@ -5,7 +5,7 @@ import { CurrencySettings, CurrencyType } from '../../../core/models';
 import { StorageService } from '../../../core/services';
 
 /**
- * Service for handling TraderPlus currency settings operations
+ * Service for handling TraderX currency settings operations
  */
 @Injectable({
   providedIn: 'root',
@@ -291,7 +291,7 @@ export class CurrencyService {
           this.storageService.saveCurrencySettings(data as CurrencySettings);
           resolve();
         } else {
-          reject(new Error('Invalid TraderPlus currency settings format'));
+          reject(new Error('Invalid TraderX currency settings format'));
         }
       } catch (error) {
         reject(error);

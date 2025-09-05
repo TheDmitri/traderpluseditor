@@ -25,7 +25,7 @@ import { CurrencyService } from '../services';
 import { CurrencyModalComponent } from './currency-modal/currency-modal.component';
 
 /**
- * CurrencyEditorComponent handles the management of TraderPlus currencies.
+ * CurrencyEditorComponent handles the management of TraderX currencies.
  *
  * This component provides a comprehensive interface for managing the in-game currency system:
  * - View and filter currency types in a paginated, sortable table

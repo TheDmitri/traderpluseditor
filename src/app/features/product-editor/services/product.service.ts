@@ -5,7 +5,7 @@ import { Product } from '../../../core/models';
 import { StorageService } from '../../../core/services';
 
 /**
- * Service for handling TraderPlus product operations
+ * Service for handling TraderX product operations
  */
 @Injectable({
   providedIn: 'root',
@@ -14,7 +14,7 @@ export class ProductService {
   constructor(private storageService: StorageService) {}
 
   /**
-   * Validates if the data is a valid TraderPlus product
+   * Validates if the data is a valid TraderX product
    * @param data Any data to validate
    * @returns True if data has valid product format
    */
@@ -178,7 +178,7 @@ export class ProductService {
             .map((item) => this.normalizeProduct(item, safeFilename));
 
           if (validProducts.length === 0) {
-            reject(new Error('No valid TraderPlus product data found in file'));
+            reject(new Error('No valid TraderX product data found in file'));
             return;
           }
 
@@ -187,7 +187,7 @@ export class ProductService {
           // Single product
           products = [this.normalizeProduct(data, safeFilename)];
         } else {
-          reject(new Error('Invalid TraderPlus product format'));
+          reject(new Error('Invalid TraderX product format'));
           return;
         }
 
@@ -223,7 +223,7 @@ export class ProductService {
         });
 
         if (processedProducts.length === 0) {
-          reject(new Error('No valid TraderPlus product data found in files'));
+          reject(new Error('No valid TraderX product data found in files'));
           return;
         }
 

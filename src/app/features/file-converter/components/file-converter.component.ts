@@ -176,7 +176,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
     return {
       name: 'TraderPlusConfig',
       type: 'folder',
-      path: 'TraderPlusConfig',
+      path: 'TraderXConfig',
       children: [],
       expanded: true,
     };
@@ -469,7 +469,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
       case 'traderplus':
         // Only allow specific TraderPlus v1 files
         const validTraderPlusFiles = [
-          'TraderPlusGeneralSettings.json',
+          'TraderPlusGeneralConfig.json',
           'TraderPlusIDsConfig.json',
           'TraderPlusPriceConfig.json',
         ];
@@ -479,7 +479,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
             filteredFiles.push(file);
           } else {
             this.notificationService.warning(
-              `Skipped file "${file.name}". Only TraderPlusGeneralSettings.json, TraderPlusIDsConfig.json and TraderPlusPriceConfig.json are allowed.`
+              `Skipped file "${file.name}". Only TraderPlusGeneralConfig.json, TraderPlusIDsConfig.json and TraderPlusPriceConfig.json are allowed.`
             );
           }
         });
@@ -585,7 +585,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
         try {
           // Process each file
           filesContent.forEach((fileContent) => {
-            service.convertToTraderPlusV2(fileContent.content).subscribe({
+            service.convertToTraderX(fileContent.content).subscribe({
               next: (convertedFiles: { [key: string]: string }) => {
                 this.conversionProgress[converterType] = 75;
                 this.conversionStatus[converterType] =
@@ -600,7 +600,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
                   this.convertedFilesByType[converterType]!.push({
                     name: fileName,
                     content: content,
-                    type: 'TraderPlus v2',
+                    type: 'TraderX',
                     size: new Blob([content]).size,
                   });
                 });
@@ -1077,7 +1077,7 @@ export class FileConverterComponent implements OnInit, OnDestroy {
       this.convertedFilesByType[converterType]!.push({
         name: path,
         content: content,
-        type: 'TraderPlus v2',
+        type: 'TraderX',
         size: new Blob([content]).size,
       });
     });

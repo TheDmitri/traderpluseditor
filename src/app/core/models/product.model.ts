@@ -1,5 +1,5 @@
 /**
- * Product model based on TraderPlusProduct.c
+ * Product model based on TraderXProduct.c
  */
 export interface Product {
   productId: string;  // Format: "prod_[lowercase_name]_[counter]" (e.g., "prod_m4a1_001")

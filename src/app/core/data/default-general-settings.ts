@@ -1,7 +1,7 @@
 import { GeneralSettings, License, TraderNpc, TraderObject } from '../models';
 
 /**
- * Default licenses for TraderPlus
+ * Default licenses for TraderX
  * Common licenses that can be assigned to categories
  */
 export const DEFAULT_LICENSES: License[] = [
@@ -18,7 +18,7 @@ export const DEFAULT_LICENSES: License[] = [
 ];
 
 /**
- * Default TraderNPCs for TraderPlus
+ * Default TraderNPCs for TraderX
  */
 export const DEFAULT_TRADERNPCS: TraderNpc[] = [
   {
@@ -208,7 +208,7 @@ export const DEFAULT_TRADERNPCS: TraderNpc[] = [
 ];
 
 /**
- * Default TraderObjects for TraderPlus
+ * Default TraderObjects for TraderX
  */
 export const DEFAULT_TRADEROBJECT: TraderObject[] = [
   {
@@ -319,7 +319,7 @@ export const DEFAULT_TRADEROBJECT: TraderObject[] = [
 ];
 
 /**
- * Default settings template for TraderPlus general configuration
+ * Default settings template for TraderX general configuration
  * (without serverID which be generated on creation)
  */
 export const DEFAULT_GENERAL_SETTINGS_TEMPLATE = {

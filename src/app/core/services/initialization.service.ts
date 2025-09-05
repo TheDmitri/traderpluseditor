@@ -78,7 +78,7 @@ export class InitializationService {
   }
 
   /**
-   * Creates standard currency types and currencies based on TraderPlusCurrencySettings.json
+   * Creates standard currency types and currencies based on TraderXCurrencySettings.json
    * This provides a set of commonly used currencies (EUR and USD) with different denominations
    */
   createStandardCurrencies(): void {

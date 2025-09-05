@@ -1,9 +1,9 @@
 import { Product } from '../models';
 
 /**
- * Default products for TraderPlus
+ * Default products for TraderX
  * 
- * These products are imported from the actual TraderPlus JSON configuration files.
+ * These products are imported from the actual TraderX JSON configuration files.
  * Each product represents a tradable item with its properties.
  */
 export const DEFAULT_PRODUCTS: Product[] = [

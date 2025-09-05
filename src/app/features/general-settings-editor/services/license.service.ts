@@ -9,7 +9,7 @@ import { ConfirmDialogComponent } from '../../../shared/components';
 import { NotificationService } from '../../../shared/services';
 
 /**
- * Service for managing licenses in TraderPlus general settings
+ * Service for managing licenses in TraderX general settings
  */
 @Injectable({
   providedIn: 'root',

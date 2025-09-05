@@ -4,7 +4,7 @@
       <div class="header-left">
         <h1 class="page-title">File Converter</h1>
         <p class="subtitle">
-          Convert any other Trader Mod Config to a TraderPlus v2 Config
+          Convert any other Trader Mod Config to a TraderX Config
         </p>
         <div class="action-buttons">
           <!-- Move the select files and convert buttons to the header -->
@@ -25,10 +25,10 @@
             class="custom-stroked-button color-secondary with-icon"
             [disabled]="!hasFilesToConvert() || isActiveTabConverted()"
             (click)="convert(activeTab)"
-            matTooltip="Convert selected files to TraderPlus v2"
+            matTooltip="Convert selected files to TraderX"
           >
             <mat-icon>transform</mat-icon>
-            Convert to TraderPlus v2
+            Convert to TraderX
           </button>
         </div>
       </div>
@@ -69,7 +69,7 @@
             <ng-template mat-tab-label>
               <div class="tab-label">
                 <mat-icon>storefront</mat-icon>
-                <span>TraderPlus v1</span>
+                <span>TraderPlus</span>
               </div>
             </ng-template>
 
@@ -93,16 +93,16 @@
                   >
                     <mat-icon class="empty-state-icon">settings</mat-icon>
                     <h2 class="empty-state-title">
-                      No TraderPlus v1 Files Found
+                      No TraderPlus Files Found
                     </h2>
                     <p class="empty-state-message">
-                      Select TraderPlus v1 configuration files to convert them
-                      to TraderPlus v2 format
+                      Select TraderPlus configuration files to convert them
+                      to TraderX format
                     </p>
                     <p class="empty-state-files">
                       Allowed files:
                       <span class="allowed-file"
-                        >TraderPlusGeneralSettings.json</span
+                        >TraderPlusGeneralConfig.json</span
                       >,
                       <span class="allowed-file">TraderPlusIDsConfig.json</span
                       >,
@@ -235,7 +235,7 @@
                     </h2>
                     <p class="empty-state-message">
                       Select Jones Trader config file to convert it to
-                      TraderPlus v2 format
+                      TraderX format
                     </p>
                     <p class="empty-state-files">
                       Allowed file:

@@ -3,9 +3,9 @@
   <header class="page-header">
     <div class="header-content">
       <div class="header-left">
-        <h1 class="page-title">TraderPlus Editor Info & Resources</h1>
+        <h1 class="page-title">TraderX Editor Info & Resources</h1>
         <p class="subtitle">
-          Get started with TraderPlus Editor and learn how to use its features
+          Get started with TraderX Editor and learn how to use its features
         </p>
       </div>
     </div>
@@ -18,14 +18,14 @@
       <div class="panel-header">
         <h2 class="section-title">Getting Started</h2>
         <p class="panel-subtitle">
-          Learn how to use TraderPlus Editor efficiently
+          Learn how to use TraderX Editor efficiently
         </p>
       </div>
       <div class="panel-body">
         <p class="intro-text">
-          Thank you for using TraderPlus Editor! This application provides powerful tools
-          to configure and manage your TraderPlus Configuration for DayZ servers using the
-          TraderPlus v2.
+          Thank you for using TraderX Editor! This application provides powerful tools
+          to configure and manage your TraderX Configuration for DayZ servers using the
+          TraderX.
         </p>
 
         <div class="feature-cards">
@@ -62,7 +62,7 @@
               <h3 class="feature-title">Import Existing Config</h3>
             </div>
             <p class="feature-description">
-              Already have TraderPlus config files? Import them directly into
+              Already have TraderX config files? Import them directly into
               the editor to modify your existing setup without starting over.
             </p>
             <div class="feature-action">
@@ -85,7 +85,7 @@
               <h3 class="feature-title">Convert from Other Mods</h3>
             </div>
             <p class="feature-description">
-              Migrate from other trader mods to TraderPlus v2. Our converter
+              Migrate from other trader mods to TraderX. Our converter
               tool supports various format conversions to help you transition.
             </p>
             <div class="feature-action">
@@ -103,16 +103,16 @@
     </div>
 
     <!-- Resources Grid -->
-    <div class="dashboard-sections-grid">
-      <!-- TraderPlus Mod Resources -->
+    <div class="dashboard-sections-grid" style="grid-template-columns: 2fr 1fr;">
+      <!-- TraderX Mod Resources -->
       <div class="data-card resource-section">
         <div class="panel-header">
-          <h2 class="section-title">TraderPlus Mod Resources</h2>
+          <h2 class="section-title">TraderX Mod Resources</h2>
           <p class="panel-subtitle">Official documentation and community</p>
         </div>
         <div class="panel-body">
           <p class="section-text">
-            Connect with the TraderPlus mod community and access official
+            Connect with the TraderX mod community and access official
             documentation and resources.
           </p>
 
@@ -120,7 +120,7 @@
             <!-- Discord -->
             <div
               class="resource-card"
-              (click)="openLink('https://discord.gg/2wShfqqgGA')"
+              (click)="openLink('https://discord.gg/traderplus')"
             >
               <div class="resource-icon discord-bg">
                 <mat-icon>discord</mat-icon>
@@ -128,7 +128,7 @@
               <div class="resource-content">
                 <h3 class="resource-title">Discord</h3>
                 <p class="resource-description">
-                  Join the TraderPlus community
+                  Join the TraderX community
                 </p>
               </div>
               <mat-icon class="chevron-icon">chevron_right</mat-icon>
@@ -137,18 +137,29 @@
             <!-- Steam Workshop -->
             <div
               class="resource-card"
-              (click)="
-                openLink(
-                  'https://steamcommunity.com/sharedfiles/filedetails/?id=2458896952'
-                )
-              "
+              (click)="openLink('https://steamcommunity.com/sharedfiles/filedetails/?id=1590841260')"
             >
               <div class="resource-icon steam-bg">
-                <mat-icon>stream</mat-icon>
+                <mat-icon>cloud_download</mat-icon>
               </div>
               <div class="resource-content">
                 <h3 class="resource-title">Steam Workshop</h3>
-                <p class="resource-description">Download and rate the mod</p>
+                <p class="resource-description">Download the mod</p>
+              </div>
+              <mat-icon class="chevron-icon">chevron_right</mat-icon>
+            </div>
+
+            <!-- Documentation -->
+            <div
+              class="resource-card"
+              (click)="openLink('https://example.com/TraderX/docs')"
+            >
+              <div class="resource-icon docs-bg">
+                <mat-icon>description</mat-icon>
+              </div>
+              <div class="resource-content">
+                <h3 class="resource-title">Documentation</h3>
+                <p class="resource-description">Setup guides and API docs</p>
               </div>
               <mat-icon class="chevron-icon">chevron_right</mat-icon>
             </div>
@@ -156,14 +167,14 @@
             <!-- Wiki -->
             <div
               class="resource-card"
-              (click)="openLink('https://example.com/TraderPlusV2/wiki')"
+              (click)="openLink('https://example.com/TraderX/wiki')"
             >
               <div class="resource-icon primary-bg">
                 <mat-icon>menu_book</mat-icon>
               </div>
               <div class="resource-content">
                 <h3 class="resource-title">Wiki</h3>
-                <p class="resource-description">Official documentation</p>
+                <p class="resource-description">Community wiki and guides</p>
               </div>
               <mat-icon class="chevron-icon">chevron_right</mat-icon>
             </div>
@@ -178,7 +189,7 @@
               </div>
               <div class="resource-content">
                 <h3 class="resource-title">Website</h3>
-                <p class="resource-description">Official TraderPlus website</p>
+                <p class="resource-description">Official TraderX website</p>
               </div>
               <mat-icon class="chevron-icon">chevron_right</mat-icon>
             </div>
@@ -186,77 +197,40 @@
         </div>
       </div>
 
-      <!-- TraderPlusEditor Resources -->
+      <!-- Developer Links -->
       <div class="data-card resource-section">
         <div class="panel-header">
-          <h2 class="section-title">TraderPlus Editor Resources</h2>
-          <p class="panel-subtitle">Support and contribute to the editor</p>
+          <h2 class="section-title">Developer Links</h2>
+          <p class="panel-subtitle">Connect with the developers</p>
         </div>
         <div class="panel-body">
-          <p class="section-text">
-            Resources specifically for the TraderPlus Editor tool. Get support,
-            contribute to development, or support the project.
-          </p>
-
           <div class="resource-grid">
-            <!-- Discord -->
+            <!-- Dmitri GitHub -->
             <div
               class="resource-card"
-              (click)="openLink('https://discord.gg/traderpluseditor')"
-            >
-              <div class="resource-icon discord-bg">
-                <mat-icon>discord</mat-icon>
-              </div>
-              <div class="resource-content">
-                <h3 class="resource-title">Discord</h3>
-                <p class="resource-description">Join the xL-Headquarter</p>
-              </div>
-              <mat-icon class="chevron-icon">chevron_right</mat-icon>
-            </div>
-
-            <!-- GitHub -->
-            <div
-              class="resource-card"
-              (click)="
-                openLink('https://github.com/xscr33m/TraderPlusEditor_Web')
-              "
+              (click)="openLink('https://github.com/TheDmitri')"
             >
               <div class="resource-icon github-bg">
                 <mat-icon>code</mat-icon>
               </div>
               <div class="resource-content">
-                <h3 class="resource-title">GitHub</h3>
-                <p class="resource-description">Source code and issues</p>
+                <h3 class="resource-title">Dmitri</h3>
+                <p class="resource-description">GitHub Profile</p>
               </div>
               <mat-icon class="chevron-icon">chevron_right</mat-icon>
             </div>
 
-            <!-- Website -->
+            <!-- xscr33m GitHub -->
             <div
               class="resource-card"
-              (click)="openLink('https://xscr33mlabs.com')"
+              (click)="openLink('https://github.com/xscr33m')"
             >
-              <div class="resource-icon secondary-bg">
-                <mat-icon>public</mat-icon>
+              <div class="resource-icon github-bg">
+                <mat-icon>code</mat-icon>
               </div>
               <div class="resource-content">
-                <h3 class="resource-title">Website</h3>
-                <p class="resource-description">xscr33mLabs Homepage</p>
-              </div>
-              <mat-icon class="chevron-icon">chevron_right</mat-icon>
-            </div>
-
-            <!-- Donation -->
-            <div
-              class="resource-card"
-              (click)="openLink('https://ko-fi.com/xscr33m')"
-            >
-              <div class="resource-icon donation-bg">
-                <mat-icon>favorite</mat-icon>
-              </div>
-              <div class="resource-content">
-                <h3 class="resource-title">Support the Project</h3>
-                <p class="resource-description">Donate to development</p>
+                <h3 class="resource-title">xscr33m</h3>
+                <p class="resource-description">GitHub Profile</p>
               </div>
               <mat-icon class="chevron-icon">chevron_right</mat-icon>
             </div>
@@ -269,15 +243,15 @@
     <div class="data-card about-section">
       <div class="panel-header">
         <h2 class="section-title">About</h2>
-        <p class="panel-subtitle">Information about TraderPlus Editor</p>
+        <p class="panel-subtitle">Information about TraderX Editor</p>
       </div>
       <div class="panel-body">
         <div class="about-content">
           <div class="about-main">
             <p class="section-text">
-              TraderPlus Editor is an open-source tool designed to help DayZ
+              TraderX Editor is an open-source tool designed to help DayZ
               server administrators efficiently configure and manage the
-              TraderPlus v2 mod.
+              TraderX mod.
             </p>
 
             <div class="info-grid">
@@ -313,7 +287,7 @@
               <h3>Legal Information</h3>
             </div>
             <p class="section-text">
-              <strong>Legal Notice:</strong> TraderPlus Editor is not affiliated
+              <strong>Legal Notice:</strong> TraderX Editor is not affiliated
               with or endorsed by Bohemia Interactive.
               DayZ is a registered trademark of Bohemia Interactive a.s.
             </p>
@@ -328,7 +302,7 @@
 
           <div class="footer-info">
             <span>Version {{ appVersion }}</span>
-            <span>© {{ currentYear }} TraderPlus Editor</span>
+            <span>© {{ currentYear }} TraderX Editor</span>
           </div>
         </div>
       </div>

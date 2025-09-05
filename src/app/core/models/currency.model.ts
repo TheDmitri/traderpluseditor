@@ -1,5 +1,5 @@
 /**
- * Currency models based on TraderPlusCurrency.c and TraderPlusCurrencyType.c
+ * Currency models based on TraderXCurrency.c and TraderXCurrencyType.c
  */
 export interface Currency {
   className: string;

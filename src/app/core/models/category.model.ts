@@ -1,5 +1,5 @@
 /**
- * Category model based on TraderPlusCategory.c
+ * Category model based on TraderXCategory.c
  */
 export interface Category {
   categoryId: string;  // Format: "cat_[lowercase_name]_[counter]" (e.g., "cat_weapons_001")

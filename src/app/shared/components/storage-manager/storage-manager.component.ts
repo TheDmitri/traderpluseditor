@@ -223,7 +223,7 @@ export class StorageManagerComponent implements OnInit, OnDestroy, AfterViewInit
           title: 'Create App Data File Set',
           label: 'File Set Name',
           placeholder: 'Enter a name for this file set',
-          initialValue: `TraderPlus Config ${new Date().toLocaleDateString()}`,
+          initialValue: `TraderX Config ${new Date().toLocaleDateString()}`,
           confirmText: 'Create'
         }
       });

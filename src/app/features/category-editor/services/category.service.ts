@@ -5,7 +5,7 @@ import { Category } from '../../../core/models';
 import { StorageService } from '../../../core/services';
 
 /**
- * Service for handling TraderPlus category operations
+ * Service for handling TraderX category operations
  */
 @Injectable({
   providedIn: 'root',
@@ -14,7 +14,7 @@ export class CategoryService {
   constructor(private storageService: StorageService) {}
 
   /**
-   * Validates if the data is a valid TraderPlus category
+   * Validates if the data is a valid TraderX category
    * @param data Any data to validate
    * @returns True if data has valid category format
    */
@@ -155,7 +155,7 @@ export class CategoryService {
           // Multiple categories in a single file
           const validCategories = data.filter(item => this.isCategoryData(item));
           if (validCategories.length === 0) {
-            reject(new Error('No valid TraderPlus category data found in file'));
+            reject(new Error('No valid TraderX category data found in file'));
             return;
           }
 
@@ -165,7 +165,7 @@ export class CategoryService {
           // Single category
           categories = [data as Category];
         } else {
-          reject(new Error('Invalid TraderPlus category format'));
+          reject(new Error('Invalid TraderX category format'));
           return;
         }
 
@@ -198,7 +198,7 @@ export class CategoryService {
         });
 
         if (processedData.length === 0) {
-          reject(new Error('No valid TraderPlus category data found in files'));
+          reject(new Error('No valid TraderX category data found in files'));
           return;
         }
 

@@ -219,7 +219,7 @@ export class FileProcessingService {
           default:
             // File type couldn't be determined
             importStats.skipped++;
-            const skipMessage = `File ${file.name} doesn't match any TraderPlus format`;
+            const skipMessage = `File ${file.name} doesn't match any TraderX format`;
             console.warn(skipMessage);
             this.activityLogService.logActivity('error', skipMessage);
         }
@@ -273,7 +273,7 @@ export class FileProcessingService {
     if (importStats.skipped > 0) {
       const skipMessage = `Skipped ${importStats.skipped} ${
         importStats.skipped > 1 ? 'files' : 'file'
-      } not matching any TraderPlus format`;
+      } not matching any TraderX format`;
       this.notificationService.warning(skipMessage);
       this.activityLogService.logActivity('error', skipMessage);
     }

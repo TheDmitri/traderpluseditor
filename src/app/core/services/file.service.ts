@@ -53,7 +53,7 @@ export class FileService {
   }
 
   /**
-   * Auto-detect the type of TraderPlus data
+   * Auto-detect the type of TraderX data
    * @param data The JSON data
    * @returns The detected type or null if not recognized
    */
@@ -289,7 +289,7 @@ export class FileService {
       return false;
     }
 
-    this.exportAsJson(currencySettings, 'TraderPlusCurrencySettings.json');
+    this.exportAsJson(currencySettings, 'TraderXCurrencySettings.json');
     
     // Increment exported files count by 1 (one file)
     this.statisticsService.incrementExportedFilesCount(1);
@@ -307,7 +307,7 @@ export class FileService {
       return false;
     }
 
-    this.exportAsJson(generalSettings, 'TraderPlusGeneralSettings.json');
+    this.exportAsJson(generalSettings, 'TraderXGeneralSettings.json');
     
     // Increment exported files count by 1 (one file)
     this.statisticsService.incrementExportedFilesCount(1);
@@ -330,16 +330,16 @@ export class FileService {
     const currencySettings = this.currencyService.getExportData();
     const generalSettings = this.generalSettingsService.getExportData();
 
-    // Create a "TraderPlusData" folder for categories and products
-    const dataFolder = zip.folder("TraderPlusData");
+    // Create a "TraderXData" folder for categories and products
+    const dataFolder = zip.folder("TraderXData");
     if (!dataFolder) {
-      console.error('Failed to create TraderPlusData folder in ZIP');
+      console.error('Failed to create TraderXData folder in ZIP');
       return false;
     }
 
-    // Add categories to the TraderPlusData folder if they exist
+    // Add categories to the TraderXData folder if they exist
     if (categories && categories.length > 0) {
-      // Create Categories folder in the TraderPlusData folder
+      // Create Categories folder in the TraderXData folder
       const categoriesFolder = dataFolder.folder('Categories');
       
       if (!categoriesFolder) {
@@ -362,9 +362,9 @@ export class FileService {
       hasData = true;
     }
 
-    // Add products to the TraderPlusData folder if they exist
+    // Add products to the TraderXData folder if they exist
     if (products && products.length > 0) {
-      // Create Products folder in the TraderPlusData folder
+      // Create Products folder in the TraderXData folder
       const productsFolder = dataFolder.folder('Products');
       
       if (!productsFolder) {
@@ -403,7 +403,7 @@ export class FileService {
     // Keep currency and general settings files at the root of the zip
     if (currencySettings) {
       zip.file(
-        'TraderPlusCurrencySettings.json',
+        'TraderXCurrencySettings.json',
         JSON.stringify(currencySettings, null, 2)
       );
       hasData = true;
@@ -412,7 +412,7 @@ export class FileService {
 
     if (generalSettings) {
       zip.file(
-        'TraderPlusGeneralSettings.json',
+        'TraderXGeneralSettings.json',
         JSON.stringify(generalSettings, null, 2)
       );
       hasData = true;
@@ -430,7 +430,7 @@ export class FileService {
       const url = URL.createObjectURL(content);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'TraderPlusConfig.zip';
+      a.download = 'TraderXConfig.zip';
       document.body.appendChild(a);
       a.click();
 

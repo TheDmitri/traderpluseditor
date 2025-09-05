@@ -32,7 +32,7 @@ import {
 } from '../services/file-processing.service';
 
 /**
- * FileManagementComponent provides functionality to import and export TraderPlus configuration files.
+ * FileManagementComponent provides functionality to import and export TraderX configuration files.
  *
  * This component handles:
  * - Importing categories, products, currency settings, and general settings via file selection

@@ -54,7 +54,7 @@ import { NotificationService } from '../../../shared/services';
 import { CategoryModalComponent } from './category-modal/category-modal.component';
 
 /**
- * CategoryEditorComponent handles the management of TraderPlus categories.
+ * CategoryEditorComponent handles the management of TraderX categories.
  *
  * This component allows users to:
  * - View all categories in a paginated, sortable table

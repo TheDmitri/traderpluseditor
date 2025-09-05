@@ -4,7 +4,7 @@
     <div class="header-content">
       <div class="header-left">
         <h2>Category Editor</h2>
-        <p class="subtitle">Import and configure your TraderPlus setup</p>
+        <p class="subtitle">Import and configure your TraderX setup</p>
         <div class="action-buttons">
           <button
             class="custom-stroked-button color-primary with-icon"
@@ -71,7 +71,7 @@
     <mat-icon class="empty-state-icon">settings</mat-icon>
     <h2 class="empty-state-title">No Categories Found</h2>
     <p class="empty-state-message">
-      To get started, you can either import an existing TraderPlus Category file
+      To get started, you can either import an existing TraderX Category file
       or create a new default one.
     </p>
     <div class="empty-state-actions">
@@ -91,8 +91,8 @@
     *ngIf="isLoading && !isCreatingDefaultCategories"
   >
     <div class="loader-container">
-      <div class="loader-v1"></div>
-      <div class="loader-v2"></div>
+      <div class="loader-traderplus"></div>
+      <div class="loader-traderx"></div>
     </div>
     <span class="loading-text">Loading categories...</span>
   </div>

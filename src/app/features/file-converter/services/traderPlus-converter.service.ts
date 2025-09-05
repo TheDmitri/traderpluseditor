@@ -26,10 +26,10 @@ export class TraderPlusConverterService {
   constructor() {}
 
   /**
-   * Converts TraderPlus v1 configs to TraderPlus v2 format
+   * Converts TraderPlus v1 configs to TraderX format
    * @param content The content of the TraderPlus v1 config file
    */
-  convertToTraderPlusV2(
+  convertToTraderX(
     content: string
   ): Observable<{ [key: string]: string }> {
     try {
@@ -84,7 +84,7 @@ export class TraderPlusConverterService {
   }
 
   /**
-   * Generate TraderPlus v2 files from the loaded configs
+   * Generate TraderX files from the loaded configs
    */
   private generateTraderPlusV2Files(): Observable<{ [key: string]: string }> {
     try {
@@ -107,14 +107,14 @@ export class TraderPlusConverterService {
       // Create general settings (including traders)
       const generalSettings = this.createGeneralSettings(categoryMap);
 
-      // Combine all files into a single object
+      // Combine all files into a single object using correct TraderX structure
       const resultFiles = {
-        'TraderPlusConfig/TraderPlusCurrencySettings.json': JSON.stringify(
+        'TraderXConfig/TraderXCurrencySettings.json': JSON.stringify(
           currencySettings,
           null,
           4
         ),
-        'TraderPlusConfig/TraderPlusGeneralSettings.json': JSON.stringify(
+        'TraderXConfig/TraderXGeneralSettings.json': JSON.stringify(
           generalSettings,
           null,
           4
@@ -125,9 +125,9 @@ export class TraderPlusConverterService {
 
       return of(resultFiles);
     } catch (error) {
-      console.error('Error generating TraderPlus v2 files:', error);
+      console.error('Error generating TraderX files:', error);
       return throwError(
-        () => new Error(`Error generating TraderPlus v2 files: ${error}`)
+        () => new Error(`Error generating TraderX files: ${error}`)
       );
     }
   }
@@ -192,7 +192,7 @@ export class TraderPlusConverterService {
   }
 
   /**
-   * Create currency settings for TraderPlus v2
+   * Create currency settings for TraderX
    */
   private createCurrencySettings(
     defaultCurrencyType: string
@@ -269,7 +269,7 @@ export class TraderPlusConverterService {
   }
 
   /**
-   * Create categories and products for TraderPlus v2
+   * Create categories and products for TraderX
    */
   private createCategoriesAndProducts(): {
     categoryFiles: { [key: string]: string };
@@ -342,14 +342,17 @@ export class TraderPlusConverterService {
           const productIds: string[] = [];
 
           category.Products.forEach((productEntry) => {
-            // Parse product entry (format: className,quantity,buyValue,sellValue,stock)
+            // Parse product entry (format: className,coefficient,maxStock,tradeQuantity,buyPrice,sellPrice,deStockCoefficient)
             const parts = productEntry.split(',');
-            if (parts.length < 2) return;
+            if (parts.length < 1) return;
 
             const className = parts[0];
-            let buyPrice = parts.length > 2 ? parseInt(parts[2]) : -1;
-            let sellPrice = parts.length > 3 ? parseInt(parts[3]) : -1;
-            let maxStock = parts.length > 4 ? parseInt(parts[4]) : 100;
+            let coefficient = parts.length > 1 ? parseFloat(parts[1]) : 1.0;
+            let maxStock = parts.length > 2 ? parseInt(parts[2]) : -1;
+            let oldTradeQuantity = parts.length > 3 ? parseFloat(parts[3]) : -1;
+            let buyPrice = parts.length > 4 ? parseInt(parts[4]) : -1;
+            let sellPrice = parts.length > 5 ? parseInt(parts[5]) : -1;
+            let deStockCoefficient = parts.length > 6 ? parseFloat(parts[6]) : 0.0;
 
             // Format className for file naming - replace all non-alphanumeric chars with underscores
             const productNameSlug = className
@@ -368,21 +371,15 @@ export class TraderPlusConverterService {
             // Add to product IDs for this category
             productIds.push(productId);
 
-            // Handle special values
-            if (buyPrice === -1) {
-              buyPrice = -1; // Cannot be bought
-            }
+            // Convert tradeQuantity using DayZ logic
+            const tradeQuantity = this.convertTradeQuantity(oldTradeQuantity);
 
-            if (sellPrice === -1) {
-              sellPrice = -1; // Cannot be sold
-            }
-
-            // Create TraderPlus v2 product
+            // Create TraderX product
             const traderPlusProduct = {
               className: className,
-              coefficient: 1.0,
+              coefficient: coefficient,
               maxStock: maxStock,
-              tradeQuantity: 1, // Default to 1
+              tradeQuantity: tradeQuantity,
               buyPrice: buyPrice,
               sellPrice: sellPrice,
               stockSettings: 0,
@@ -391,7 +388,7 @@ export class TraderPlusConverterService {
             };
 
             // Create the product file
-            const productFileName = `TraderPlusConfig/TraderPlusData/Products/${productId}.json`;
+            const productFileName = `TraderXConfig/Products/${productId}.json`;
             productFiles[productFileName] = JSON.stringify(
               traderPlusProduct,
               null,
@@ -402,7 +399,7 @@ export class TraderPlusConverterService {
           // Create or update category file with product IDs
           if (
             !categoryFiles[
-              `TraderPlusConfig/TraderPlusData/Categories/${categoryId}.json`
+              `TraderXConfig/Categories/${categoryId}.json`
             ]
           ) {
             // Create new category
@@ -415,13 +412,13 @@ export class TraderPlusConverterService {
             };
 
             categoryFiles[
-              `TraderPlusConfig/TraderPlusData/Categories/${categoryId}.json`
+              `TraderXConfig/Categories/${categoryId}.json`
             ] = JSON.stringify(traderPlusCategory, null, 4);
           } else {
             // Update existing category by adding new product IDs
             const existingCategory = JSON.parse(
               categoryFiles[
-                `TraderPlusConfig/TraderPlusData/Categories/${categoryId}.json`
+                `TraderXConfig/Categories/${categoryId}.json`
               ]
             );
             existingCategory.productIds = [
@@ -429,7 +426,7 @@ export class TraderPlusConverterService {
             ];
 
             categoryFiles[
-              `TraderPlusConfig/TraderPlusData/Categories/${categoryId}.json`
+              `TraderXConfig/Categories/${categoryId}.json`
             ] = JSON.stringify(existingCategory, null, 4);
           }
         });
@@ -443,7 +440,63 @@ export class TraderPlusConverterService {
   }
 
   /**
-   * Create the TraderPlus v2 general settings
+   * Convert tradeQuantity using TraderX constants and logic
+   */
+  private convertTradeQuantity(oldTradeQuantity: number): number {
+    // TraderX constants
+    const SELL_NO_MATTER = 0x0;
+    const SELL_EMPTY = 0x1;
+    const SELL_FULL = 0x2;
+    const SELL_COEFFICIENT = 0x3;
+    const SELL_STATIC = 0x4;
+    const BUY_EMPTY = 0x0;
+    const BUY_FULL = 0x2;
+    const BUY_COEFFICIENT = 0x3;
+    const BUY_STATIC = 0x4;
+
+    let buyMode: number;
+    let sellMode: number;
+    let buyQuantity: number;
+    let sellQuantity: number;
+
+    if (oldTradeQuantity === 0) {
+      // 0 = buy empty and sell empty
+      buyMode = BUY_EMPTY;
+      sellMode = SELL_EMPTY;
+      buyQuantity = 0;
+      sellQuantity = 0;
+    } else if (oldTradeQuantity === -1 || oldTradeQuantity === 1) {
+      // -1 or 1 = max quantity for both
+      buyMode = BUY_FULL;
+      sellMode = SELL_FULL;
+      buyQuantity = 0;
+      sellQuantity = 0;
+    } else if (oldTradeQuantity < 1.0 && oldTradeQuantity > 0.0) {
+      // coefficient = coefficient for both
+      buyMode = BUY_COEFFICIENT;
+      sellMode = SELL_COEFFICIENT;
+      buyQuantity = Math.floor(oldTradeQuantity * 100);
+      sellQuantity = Math.floor(oldTradeQuantity * 100);
+    } else {
+      // static values > 1 = static quantity for both
+      buyMode = BUY_STATIC;
+      sellMode = SELL_STATIC;
+      buyQuantity = Math.floor(oldTradeQuantity);
+      sellQuantity = Math.floor(oldTradeQuantity);
+    }
+
+    return this.createTradeQuantity(buyMode, sellMode, buyQuantity, sellQuantity);
+  }
+
+  /**
+   * Create trade quantity using DayZ bit manipulation logic
+   */
+  private createTradeQuantity(buyMode: number, sellMode: number, buyQuantity: number, sellQuantity: number): number {
+    return sellMode | (buyMode << 3) | ((sellQuantity << 6) & 0x1FFF) | (buyQuantity << 19);
+  }
+
+  /**
+   * Create the TraderX general settings
    */
   private createGeneralSettings(
     categoryMap: Map<number, string[]>

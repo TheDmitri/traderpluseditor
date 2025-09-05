@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { GeneralSettingsService } from './general-settings.service';
 
 /**
- * Service for managing accepted states in TraderPlus general settings
+ * Service for managing accepted states in TraderX general settings
  */
 @Injectable({
   providedIn: 'root',
