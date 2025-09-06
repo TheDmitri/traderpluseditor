@@ -25,8 +25,8 @@ export interface TraderPlusV1GeneralConfig {
   Licences?: string[];
   AcceptedStates: {
     AcceptWorn: number;
-    AcceptDamaged: number;
-    AcceptBadlyDamaged: number;
+    AcceptDamaged: boolean;
+    AcceptBadlyDamaged: boolean;
     CoefficientWorn?: number;
     CoefficientDamaged?: number;
     CoefficientBadlyDamaged?: number;

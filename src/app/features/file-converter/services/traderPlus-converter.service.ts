@@ -584,13 +584,12 @@ export class TraderPlusConverterService {
     // Create general settings
     const generalSettings: GeneralSettings = {
       version: '2.5',
-      serverID: 'CONVERTED_FROM_V1',
+      serverID: crypto.randomUUID(),
       licenses: licenses,
       acceptedStates: {
-        acceptWorn: this.generalConfig.AcceptedStates.AcceptWorn,
-        acceptDamaged: this.generalConfig.AcceptedStates.AcceptDamaged,
-        acceptBadlyDamaged:
-          this.generalConfig.AcceptedStates.AcceptBadlyDamaged,
+        acceptWorn: this.generalConfig.AcceptedStates.AcceptWorn === 1,
+        acceptDamaged: !!this.generalConfig.AcceptedStates.AcceptDamaged,
+        acceptBadlyDamaged: !!this.generalConfig.AcceptedStates.AcceptBadlyDamaged,
         coefficientWorn:
           this.generalConfig.AcceptedStates.CoefficientWorn || 0.7,
         coefficientDamaged:

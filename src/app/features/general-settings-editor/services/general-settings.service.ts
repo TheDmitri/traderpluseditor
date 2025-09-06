@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 // Application imports
-import { GeneralSettings, License } from '../../../core/models';
+import { GeneralSettings, GeneralSettingsExport, License } from '../../../core/models';
 import { StorageService, InitializationService } from '../../../core/services';
 import { ConfirmDialogComponent } from '../../../shared/components';
 import { NotificationService } from '../../../shared/services';
@@ -96,10 +96,30 @@ export class GeneralSettingsService {
 
   /**
    * Get general settings data for export
-   * @returns General settings object for export
+   * @returns General settings object for export with boolean values converted to 1/0
    */
-  getExportData(): GeneralSettings | null {
-    return this.getGeneralSettings();
+  getExportData(): GeneralSettingsExport | null {
+    const settings = this.getGeneralSettings();
+    if (!settings) return null;
+
+    // Create a properly typed export object
+    const exportSettings: GeneralSettingsExport = {
+      version: settings.version,
+      serverID: settings.serverID,
+      licenses: settings.licenses,
+      acceptedStates: {
+        acceptWorn: settings.acceptedStates.acceptWorn ? 1 : 0,
+        acceptDamaged: settings.acceptedStates.acceptDamaged ? 1 : 0,
+        acceptBadlyDamaged: settings.acceptedStates.acceptBadlyDamaged ? 1 : 0,
+        coefficientWorn: settings.acceptedStates.coefficientWorn,
+        coefficientDamaged: settings.acceptedStates.coefficientDamaged,
+        coefficientBadlyDamaged: settings.acceptedStates.coefficientBadlyDamaged
+      },
+      traders: settings.traders,
+      traderObjects: settings.traderObjects
+    };
+
+    return exportSettings;
   }
   
   /**

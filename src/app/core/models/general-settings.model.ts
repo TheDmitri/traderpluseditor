@@ -52,18 +52,50 @@ export interface TraderObject {
   orientation: number[]; // [x, y, z] orientation of the object
 }
 
+/**
+ * Internal accepted states interface used by the application (with boolean values)
+ */
+export interface AcceptedStatesInternal {
+  acceptWorn: boolean;
+  acceptDamaged: boolean;
+  acceptBadlyDamaged: boolean;
+  coefficientWorn?: number;
+  coefficientDamaged?: number;
+  coefficientBadlyDamaged?: number;
+}
+
+/**
+ * Export accepted states interface used for JSON export (with numeric values)
+ */
+export interface AcceptedStatesExport {
+  acceptWorn: number;
+  acceptDamaged: number;
+  acceptBadlyDamaged: number;
+  coefficientWorn?: number;
+  coefficientDamaged?: number;
+  coefficientBadlyDamaged?: number;
+}
+
+/**
+ * Internal general settings interface used by the application
+ */
 export interface GeneralSettings {
   version: string;
   serverID: string;
   licenses: License[];
-  acceptedStates: {
-    acceptWorn: number;
-    acceptDamaged: number;
-    acceptBadlyDamaged: number;
-    coefficientWorn?: number;
-    coefficientDamaged?: number;
-    coefficientBadlyDamaged?: number;
-  };
+  acceptedStates: AcceptedStatesInternal;
+  traders: TraderNpc[];
+  traderObjects: TraderObject[];
+}
+
+/**
+ * Export general settings interface used for JSON export
+ */
+export interface GeneralSettingsExport {
+  version: string;
+  serverID: string;
+  licenses: License[];
+  acceptedStates: AcceptedStatesExport;
   traders: TraderNpc[];
   traderObjects: TraderObject[];
 }

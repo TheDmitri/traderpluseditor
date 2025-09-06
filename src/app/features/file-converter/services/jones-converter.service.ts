@@ -293,9 +293,9 @@ export class JonesConverterService {
       serverID: 'CONVERTED_BY_TRADERPLUS_EDITOR',
       licenses: [],
       acceptedStates: {
-        acceptWorn: 1,
-        acceptDamaged: 1,
-        acceptBadlyDamaged: 1,
+        acceptWorn: true,
+        acceptDamaged: true,
+        acceptBadlyDamaged: true,
         coefficientWorn: 0.7,
         coefficientDamaged: 0.5,
         coefficientBadlyDamaged: 0.3
