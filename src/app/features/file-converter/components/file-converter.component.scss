@@ -258,6 +258,63 @@
           padding: 16px;
           min-height: 160px;
 
+          // Missing files warning
+          .missing-files-warning {
+            background: var(--brush-status-info-subtle);
+            border: 1px solid var(--brush-status-info-background);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+
+            .warning-content {
+              display: flex;
+              align-items: flex-start;
+              gap: 12px;
+
+              .warning-icon {
+                color: var(--brush-status-info-background);
+                font-size: 20px;
+                flex-shrink: 0;
+                margin-top: 2px;
+              }
+
+              .warning-text {
+                flex: 1;
+
+                .warning-title {
+                  margin: 0 0 6px 0;
+                  font-weight: 600;
+                  font-size: 14px;
+                  color: var(--brush-text-primary);
+                }
+
+                .warning-message {
+                  margin: 0 0 8px 0;
+                  font-size: 13px;
+                  color: var(--brush-text-secondary);
+                  line-height: 1.4;
+                }
+
+                .missing-files-list {
+                  margin: 0;
+                  padding-left: 16px;
+
+                  li {
+                    font-size: 13px;
+                    color: var(--brush-status-info-background);
+                    font-weight: 500;
+                    margin-bottom: 4px;
+                    font-family: monospace;
+
+                    &:last-child {
+                      margin-bottom: 0;
+                    }
+                  }
+                }
+              }
+            }
+          }
+
           .selected-files {
             // Grid layout for file cards
             .file-cards {

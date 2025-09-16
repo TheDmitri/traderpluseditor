@@ -23,9 +23,9 @@
 
           <button
             class="custom-stroked-button color-secondary with-icon"
-            [disabled]="!hasFilesToConvert() || isActiveTabConverted()"
+            [disabled]="!canConvertActiveTab() || isActiveTabConverted()"
             (click)="convert(activeTab)"
-            matTooltip="Convert selected files to TraderX"
+            [matTooltip]="getConvertButtonTooltip()"
           >
             <mat-icon>transform</mat-icon>
             Convert to TraderX
@@ -170,8 +170,37 @@
                   </div>
 
                   <ng-template #traderPlusFilesList>
+                    <!-- Show missing files warning if not all required files are present -->
+                    <div
+                      class="missing-files-warning"
+                      *ngIf="
+                        traderPlusFiles.length > 0 &&
+                        !hasAllRequiredTraderPlusFiles()
+                      "
+                    >
+                      <div class="warning-content">
+                        <mat-icon class="warning-icon">info</mat-icon>
+                        <div class="warning-text">
+                          <p class="warning-title">Missing Required Files</p>
+                          <p class="warning-message">
+                            To convert TraderPlus v1 files, you need all three
+                            configuration files:
+                          </p>
+                          <ul class="missing-files-list">
+                            <li
+                              *ngFor="
+                                let missingFile of getMissingTraderPlusFiles()
+                              "
+                            >
+                              {{ missingFile }}
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
                     <div class="selected-files">
-                      <h3>Selected Files</h3>
+                      <h3>Selected Files ({{ traderPlusFiles.length }}/3)</h3>
                       <div class="file-cards">
                         <div
                           class="file-card"

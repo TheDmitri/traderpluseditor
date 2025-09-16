@@ -1287,6 +1287,82 @@ export class FileConverterComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Checks if all required TraderPlus files are present
+   */
+  hasAllRequiredTraderPlusFiles(): boolean {
+    if (this.traderPlusFiles.length < 3) {
+      return false;
+    }
+
+    const requiredFiles = [
+      'TraderPlusGeneralConfig.json',
+      'TraderPlusIDsConfig.json',
+      'TraderPlusPriceConfig.json',
+    ];
+
+    const fileNames = this.traderPlusFiles.map((file) => file.name);
+    return requiredFiles.every((required) => fileNames.includes(required));
+  }
+
+  /**
+   * Enhanced check for files to convert - includes TraderPlus specific validation
+   */
+  canConvertActiveTab(): boolean {
+    switch (this.activeTab) {
+      case 'traderplus':
+        return this.hasAllRequiredTraderPlusFiles();
+      case 'expansion':
+        return this.expansionFiles.length > 0;
+      case 'jones':
+        return this.jonesFiles.length > 0;
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * Get appropriate tooltip text for convert button
+   */
+  getConvertButtonTooltip(): string {
+    if (this.isActiveTabConverted()) {
+      return 'Files already converted';
+    }
+
+    switch (this.activeTab) {
+      case 'traderplus':
+        if (!this.hasAllRequiredTraderPlusFiles()) {
+          const missing = this.getMissingTraderPlusFiles();
+          return `Missing required files: ${missing.join(', ')}`;
+        }
+        return 'Convert TraderPlus v1 files to TraderX format';
+      case 'expansion':
+        return this.expansionFiles.length > 0
+          ? 'Convert Expansion Trader files to TraderX format'
+          : 'Please select Expansion Trader files first';
+      case 'jones':
+        return this.jonesFiles.length > 0
+          ? 'Convert Jones Trader files to TraderX format'
+          : 'Please select Jones Trader files first';
+      default:
+        return 'Convert selected files to TraderX';
+    }
+  }
+
+  /**
+   * Get list of missing TraderPlus files
+   */
+  getMissingTraderPlusFiles(): string[] {
+    const requiredFiles = [
+      'TraderPlusGeneralConfig.json',
+      'TraderPlusIDsConfig.json',
+      'TraderPlusPriceConfig.json',
+    ];
+
+    const fileNames = this.traderPlusFiles.map((file) => file.name);
+    return requiredFiles.filter((required) => !fileNames.includes(required));
+  }
+
+  /**
    * Checks if the active tab's files are already converted
    */
   isActiveTabConverted(): boolean {
