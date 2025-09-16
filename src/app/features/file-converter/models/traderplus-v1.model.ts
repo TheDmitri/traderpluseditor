@@ -81,8 +81,8 @@ export interface TraderPlusV1IDsConfig {
 export interface TraderPlusV1ID {
   Id: number;
   Categories: string[];
-  LicencesRequired: string[];
-  CurrenciesAccepted: string[];
+  LicencesRequired?: string[];
+  CurrenciesAccepted?: string[];
 }
 
 /**
