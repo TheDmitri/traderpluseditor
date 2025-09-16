@@ -23,9 +23,9 @@
 
           <button
             class="custom-stroked-button color-secondary with-icon"
-            [disabled]="!hasFilesToConvert() || isActiveTabConverted()"
+            [disabled]="!canConvertActiveTab() || isActiveTabConverted()"
             (click)="convert(activeTab)"
-            matTooltip="Convert selected files to TraderX"
+            [matTooltip]="getConvertButtonTooltip()"
           >
             <mat-icon>transform</mat-icon>
             Convert to TraderX
@@ -55,6 +55,63 @@
   </header>
 
   <div class="main-content-area">
+    <!-- Issues Panel for TraderPlus conversion problems -->
+    <div
+      class="issues-panel data-card"
+      *ngIf="
+        activeTab === 'traderplus' && showIssuesPanel && hasTraderPlusIssues()
+      "
+    >
+      <div class="panel-header">
+        <div class="panel-title-area">
+          <h3 class="panel-title">
+            <mat-icon class="panel-icon">error</mat-icon>
+            Conversion Issues
+          </h3>
+          <p class="panel-subtitle">
+            Issues detected during the TraderPlus v1 to TraderX conversion.
+            Review and resolve them below.
+          </p>
+        </div>
+        <div class="panel-actions">
+          <mat-button
+            class="custom-stroked-button color-primary with-icon"
+            (click)="resolveIssues()"
+            matTooltip="Mark all issues as resolved and close this panel"
+          >
+            <mat-icon>check_circle</mat-icon>
+            <span>Issues Resolved</span>
+          </mat-button>
+        </div>
+      </div>
+
+      <div class="issues-content">
+        <div
+          class="issue-item"
+          *ngFor="let issue of getTraderPlusIssues(); let i = index"
+          [ngClass]="'issue-' + issue.type"
+        >
+          <div class="issue-header">
+            <mat-icon class="issue-icon" [ngClass]="'icon-' + issue.type">
+              {{
+                issue.type === "error"
+                  ? "error"
+                  : issue.type === "warning"
+                  ? "warning"
+                  : "info"
+              }}
+            </mat-icon>
+            <div class="issue-content-area">
+              <div class="issue-message">{{ issue.message }}</div>
+              <div class="issue-details" *ngIf="issue.details">
+                {{ issue.details }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Data Card with Tab Content -->
     <div class="data-card">
       <mat-card-content>
@@ -92,15 +149,12 @@
                     *ngIf="!traderPlusFiles.length; else traderPlusFilesList"
                   >
                     <mat-icon class="empty-state-icon">settings</mat-icon>
-                    <h2 class="empty-state-title">
-                      No TraderPlus Files Found
-                    </h2>
-                    <p class="empty-state-message">
-                      Select TraderPlus configuration files to convert them
-                      to TraderX format
-                    </p>
+                    <h2 class="empty-state-title">No TraderPlus Files Found</h2>
                     <p class="empty-state-files">
-                      Allowed files:
+                      Please select alle these TraderPlus files to create a full
+                      file-set for TraderX according to your TraderPlus-Config:
+                      <br />
+                      <br />
                       <span class="allowed-file"
                         >TraderPlusGeneralConfig.json</span
                       >,
@@ -109,12 +163,44 @@
                       <span class="allowed-file"
                         >TraderPlusPriceConfig.json</span
                       >
+                      <br />
+                      <br />
+                      The Conversion will not work if one file is missing!
                     </p>
                   </div>
 
                   <ng-template #traderPlusFilesList>
+                    <!-- Show missing files warning if not all required files are present -->
+                    <div
+                      class="missing-files-warning"
+                      *ngIf="
+                        traderPlusFiles.length > 0 &&
+                        !hasAllRequiredTraderPlusFiles()
+                      "
+                    >
+                      <div class="warning-content">
+                        <mat-icon class="warning-icon">info</mat-icon>
+                        <div class="warning-text">
+                          <p class="warning-title">Missing Required Files</p>
+                          <p class="warning-message">
+                            To convert TraderPlus v1 files, you need all three
+                            configuration files:
+                          </p>
+                          <ul class="missing-files-list">
+                            <li
+                              *ngFor="
+                                let missingFile of getMissingTraderPlusFiles()
+                              "
+                            >
+                              {{ missingFile }}
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
                     <div class="selected-files">
-                      <h3>Selected Files</h3>
+                      <h3>Selected Files ({{ traderPlusFiles.length }}/3)</h3>
                       <div class="file-cards">
                         <div
                           class="file-card"
@@ -234,8 +320,8 @@
                       No Dr.Jones Trader Files Found
                     </h2>
                     <p class="empty-state-message">
-                      Select Jones Trader config file to convert it to
-                      TraderX format
+                      Select Jones Trader config file to convert it to TraderX
+                      format
                     </p>
                     <p class="empty-state-files">
                       Allowed file:

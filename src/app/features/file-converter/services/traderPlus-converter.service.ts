@@ -14,6 +14,13 @@ import {
   TraderPlusV1PriceConfig,
 } from '../models/traderplus-v1.model';
 
+// Define interface for conversion issues
+export interface ConversionIssue {
+  type: 'error' | 'warning' | 'info';
+  message: string;
+  details?: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -23,15 +30,55 @@ export class TraderPlusConverterService {
   private idsConfig: TraderPlusV1IDsConfig | null = null;
   private priceConfig: TraderPlusV1PriceConfig | null = null;
 
+  // Store conversion issues
+  private conversionIssues: ConversionIssue[] = [];
+
   constructor() {}
+
+  /**
+   * Add an issue to the collection
+   */
+  private addIssue(
+    type: 'error' | 'warning' | 'info',
+    message: string,
+    details?: string
+  ): void {
+    this.conversionIssues.push({
+      type,
+      message,
+      details,
+    });
+  }
+
+  /**
+   * Clear all conversion issues
+   */
+  public clearIssues(): void {
+    this.conversionIssues = [];
+  }
+
+  /**
+   * Get all conversion issues
+   */
+  public getIssues(): ConversionIssue[] {
+    return [...this.conversionIssues];
+  }
+
+  /**
+   * Check if there are any issues
+   */
+  public hasIssues(): boolean {
+    return this.conversionIssues.length > 0;
+  }
 
   /**
    * Converts TraderPlus v1 configs to TraderX format
    * @param content The content of the TraderPlus v1 config file
    */
-  convertToTraderX(
-    content: string
-  ): Observable<{ [key: string]: string }> {
+  convertToTraderX(content: string): Observable<{ [key: string]: string }> {
+    // Clear previous conversion issues
+    this.clearIssues();
+
     try {
       // Parse the file content and determine which config it is
       const configObject = JSON.parse(content);
@@ -44,6 +91,11 @@ export class TraderPlusConverterService {
       } else if (this.isPriceConfig(configObject)) {
         this.priceConfig = configObject;
       } else {
+        this.addIssue(
+          'error',
+          'Unknown config file format',
+          'The uploaded file does not match any known TraderPlus v1 configuration format.'
+        );
         return throwError(() => new Error('Unknown config file format'));
       }
 
@@ -55,7 +107,11 @@ export class TraderPlusConverterService {
         return of({});
       }
     } catch (error) {
-      console.error('Error converting TraderPlus config:', error);
+      this.addIssue(
+        'error',
+        'Error parsing TraderPlus file',
+        `Failed to parse JSON content: ${error}`
+      );
       return throwError(
         () => new Error(`Error parsing TraderPlus file: ${error}`)
       );
@@ -125,7 +181,11 @@ export class TraderPlusConverterService {
 
       return of(resultFiles);
     } catch (error) {
-      console.error('Error generating TraderX files:', error);
+      this.addIssue(
+        'error',
+        'Error generating TraderX files',
+        `Failed to generate TraderX configuration files: ${error}`
+      );
       return throwError(
         () => new Error(`Error generating TraderX files: ${error}`)
       );
@@ -298,138 +358,136 @@ export class TraderPlusConverterService {
         const traderCategoryIds: string[] = [];
 
         // Process each category for this trader
-        idConfig.Categories.forEach((categoryName) => {
-          // Find the category in the price config
-          const category = this.priceConfig!.TraderCategories.find(
-            (c) => c.CategoryName === categoryName
-          );
-
-          if (!category) {
-            console.warn(
-              `Category "${categoryName}" not found in price config`
+        if (idConfig.Categories && idConfig.Categories.length > 0) {
+          idConfig.Categories.forEach((categoryName) => {
+            // Find the category in the price config
+            const category = this.priceConfig!.TraderCategories.find(
+              (c) => c.CategoryName === categoryName
             );
-            return;
-          }
 
-          // Check if this category name already exists
-          let categoryId: string;
-          if (existingCategories.has(categoryName)) {
-            categoryId = existingCategories.get(categoryName)!;
-          } else {
-            // Create a sanitized version of the category name for the ID
-            // Remove all special characters for the ID slug
-            const categoryNameForId = categoryName
-              .replace(/[^a-zA-Z0-9]/g, '')
-              .toLowerCase();
+            if (!category) {
+              this.addIssue(
+                'warning',
+                `Category "${categoryName}" not found`,
+                `Category "${categoryName}" from trader ${idConfig.Id} was not found in the price configuration.`
+              );
+              return;
+            }
 
-            // Get current counter for this category name or initialize to 1
-            const counter = categoryCounters.get(categoryNameForId) || 1;
-            categoryId = `cat_${categoryNameForId}_${counter
-              .toString()
-              .padStart(3, '0')}`;
+            // Check if this category name already exists
+            let categoryId: string;
+            if (existingCategories.has(categoryName)) {
+              categoryId = existingCategories.get(categoryName)!;
+            } else {
+              // Create a sanitized version of the category name for the ID
+              // Remove all special characters for the ID slug
+              const categoryNameForId = categoryName
+                .replace(/[^a-zA-Z0-9]/g, '')
+                .toLowerCase();
 
-            // Increment counter
-            categoryCounters.set(categoryNameForId, counter + 1);
-            existingCategories.set(categoryName, categoryId);
-          }
+              // Get current counter for this category name or initialize to 1
+              const counter = categoryCounters.get(categoryNameForId) || 1;
+              categoryId = `cat_${categoryNameForId}_${counter
+                .toString()
+                .padStart(3, '0')}`;
 
-          // Add this category ID to the trader's list
-          if (!traderCategoryIds.includes(categoryId)) {
-            traderCategoryIds.push(categoryId);
-          }
+              // Increment counter
+              categoryCounters.set(categoryNameForId, counter + 1);
+              existingCategories.set(categoryName, categoryId);
+            }
 
-          // Process products for this category
-          const productIds: string[] = [];
+            // Add this category ID to the trader's list
+            if (!traderCategoryIds.includes(categoryId)) {
+              traderCategoryIds.push(categoryId);
+            }
 
-          category.Products.forEach((productEntry) => {
-            // Parse product entry (format: className,coefficient,maxStock,tradeQuantity,buyPrice,sellPrice,deStockCoefficient)
-            const parts = productEntry.split(',');
-            if (parts.length < 1) return;
+            // Process products for this category
+            const productIds: string[] = [];
 
-            const className = parts[0];
-            let coefficient = parts.length > 1 ? parseFloat(parts[1]) : 1.0;
-            let maxStock = parts.length > 2 ? parseInt(parts[2]) : -1;
-            let oldTradeQuantity = parts.length > 3 ? parseFloat(parts[3]) : -1;
-            let buyPrice = parts.length > 4 ? parseInt(parts[4]) : -1;
-            let sellPrice = parts.length > 5 ? parseInt(parts[5]) : -1;
-            let deStockCoefficient = parts.length > 6 ? parseFloat(parts[6]) : 0.0;
+            category.Products.forEach((productEntry) => {
+              // Parse product entry (format: className,coefficient,maxStock,tradeQuantity,buyPrice,sellPrice,deStockCoefficient)
+              const parts = productEntry.split(',');
+              if (parts.length < 1) return;
 
-            // Format className for file naming - replace all non-alphanumeric chars with underscores
-            const productNameSlug = className
-              .toLowerCase()
-              .replace(/[^a-z0-9_]/g, '_');
+              const className = parts[0];
+              let coefficient = parts.length > 1 ? parseFloat(parts[1]) : 1.0;
+              let maxStock = parts.length > 2 ? parseInt(parts[2]) : -1;
+              let oldTradeQuantity =
+                parts.length > 3 ? parseFloat(parts[3]) : -1;
+              let buyPrice = parts.length > 4 ? parseInt(parts[4]) : -1;
+              let sellPrice = parts.length > 5 ? parseInt(parts[5]) : -1;
+              let deStockCoefficient =
+                parts.length > 6 ? parseFloat(parts[6]) : 0.0;
 
-            // Get counter for this product className
-            const counter = productCounters.get(productNameSlug) || 1;
-            const productId = `prod_${productNameSlug}_${counter
-              .toString()
-              .padStart(3, '0')}`;
+              // Format className for file naming - replace all non-alphanumeric chars with underscores
+              const productNameSlug = className
+                .toLowerCase()
+                .replace(/[^a-z0-9_]/g, '_');
 
-            // Increment counter
-            productCounters.set(productNameSlug, counter + 1);
+              // Get counter for this product className
+              const counter = productCounters.get(productNameSlug) || 1;
+              const productId = `prod_${productNameSlug}_${counter
+                .toString()
+                .padStart(3, '0')}`;
 
-            // Add to product IDs for this category
-            productIds.push(productId);
+              // Increment counter
+              productCounters.set(productNameSlug, counter + 1);
 
-            // Convert tradeQuantity using DayZ logic
-            const tradeQuantity = this.convertTradeQuantity(oldTradeQuantity);
+              // Add to product IDs for this category
+              productIds.push(productId);
 
-            // Create TraderX product
-            const traderPlusProduct = {
-              className: className,
-              coefficient: coefficient,
-              maxStock: maxStock,
-              tradeQuantity: tradeQuantity,
-              buyPrice: buyPrice,
-              sellPrice: sellPrice,
-              stockSettings: 0,
-              attachments: [],
-              variants: [],
-            };
+              // Convert tradeQuantity using DayZ logic
+              const tradeQuantity = this.convertTradeQuantity(oldTradeQuantity);
 
-            // Create the product file
-            const productFileName = `TraderXConfig/Products/${productId}.json`;
-            productFiles[productFileName] = JSON.stringify(
-              traderPlusProduct,
-              null,
-              4
-            );
+              // Create TraderX product
+              const traderPlusProduct = {
+                className: className,
+                coefficient: coefficient,
+                maxStock: maxStock,
+                tradeQuantity: tradeQuantity,
+                buyPrice: buyPrice,
+                sellPrice: sellPrice,
+                stockSettings: 0,
+                attachments: [],
+                variants: [],
+              };
+
+              // Create the product file
+              const productFileName = `TraderXConfig/Products/${productId}.json`;
+              productFiles[productFileName] = JSON.stringify(
+                traderPlusProduct,
+                null,
+                4
+              );
+            });
+
+            // Create or update category file with product IDs
+            if (!categoryFiles[`TraderXConfig/Categories/${categoryId}.json`]) {
+              // Create new category
+              const traderPlusCategory = {
+                isVisible: 1,
+                icon: '',
+                categoryName: categoryName, // Keep original name with special characters
+                licensesRequired: [],
+                productIds: productIds,
+              };
+
+              categoryFiles[`TraderXConfig/Categories/${categoryId}.json`] =
+                JSON.stringify(traderPlusCategory, null, 4);
+            } else {
+              // Update existing category by adding new product IDs
+              const existingCategory = JSON.parse(
+                categoryFiles[`TraderXConfig/Categories/${categoryId}.json`]
+              );
+              existingCategory.productIds = [
+                ...new Set([...existingCategory.productIds, ...productIds]),
+              ];
+
+              categoryFiles[`TraderXConfig/Categories/${categoryId}.json`] =
+                JSON.stringify(existingCategory, null, 4);
+            }
           });
-
-          // Create or update category file with product IDs
-          if (
-            !categoryFiles[
-              `TraderXConfig/Categories/${categoryId}.json`
-            ]
-          ) {
-            // Create new category
-            const traderPlusCategory = {
-              isVisible: 1,
-              icon: '',
-              categoryName: categoryName, // Keep original name with special characters
-              licensesRequired: [],
-              productIds: productIds,
-            };
-
-            categoryFiles[
-              `TraderXConfig/Categories/${categoryId}.json`
-            ] = JSON.stringify(traderPlusCategory, null, 4);
-          } else {
-            // Update existing category by adding new product IDs
-            const existingCategory = JSON.parse(
-              categoryFiles[
-                `TraderXConfig/Categories/${categoryId}.json`
-              ]
-            );
-            existingCategory.productIds = [
-              ...new Set([...existingCategory.productIds, ...productIds]),
-            ];
-
-            categoryFiles[
-              `TraderXConfig/Categories/${categoryId}.json`
-            ] = JSON.stringify(existingCategory, null, 4);
-          }
-        });
+        } // End of idConfig.Categories check
 
         // Save the category IDs for this trader
         categoryMap.set(traderId, traderCategoryIds);
@@ -485,14 +543,29 @@ export class TraderPlusConverterService {
       sellQuantity = Math.floor(oldTradeQuantity);
     }
 
-    return this.createTradeQuantity(buyMode, sellMode, buyQuantity, sellQuantity);
+    return this.createTradeQuantity(
+      buyMode,
+      sellMode,
+      buyQuantity,
+      sellQuantity
+    );
   }
 
   /**
    * Create trade quantity using DayZ bit manipulation logic
    */
-  private createTradeQuantity(buyMode: number, sellMode: number, buyQuantity: number, sellQuantity: number): number {
-    return sellMode | (buyMode << 3) | ((sellQuantity << 6) & 0x1FFF) | (buyQuantity << 19);
+  private createTradeQuantity(
+    buyMode: number,
+    sellMode: number,
+    buyQuantity: number,
+    sellQuantity: number
+  ): number {
+    return (
+      sellMode |
+      (buyMode << 3) |
+      ((sellQuantity << 6) & 0x1fff) |
+      (buyQuantity << 19)
+    );
   }
 
   /**
@@ -528,7 +601,11 @@ export class TraderPlusConverterService {
       const currenciesAccepted: string[] = [];
 
       // If we have ID config with currencies, determine which currency types to accept
-      if (traderIdConfig && traderIdConfig.CurrenciesAccepted.length > 0) {
+      if (
+        traderIdConfig &&
+        traderIdConfig.CurrenciesAccepted &&
+        traderIdConfig.CurrenciesAccepted.length > 0
+      ) {
         // Track which currency types this trader accepts
         const acceptedTypes = new Set<string>();
 
@@ -589,7 +666,8 @@ export class TraderPlusConverterService {
       acceptedStates: {
         acceptWorn: this.generalConfig.AcceptedStates.AcceptWorn === 1,
         acceptDamaged: !!this.generalConfig.AcceptedStates.AcceptDamaged,
-        acceptBadlyDamaged: !!this.generalConfig.AcceptedStates.AcceptBadlyDamaged,
+        acceptBadlyDamaged:
+          !!this.generalConfig.AcceptedStates.AcceptBadlyDamaged,
         coefficientWorn:
           this.generalConfig.AcceptedStates.CoefficientWorn || 0.7,
         coefficientDamaged:

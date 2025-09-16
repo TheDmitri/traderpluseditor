@@ -18,22 +18,22 @@ import { NavigationService } from './core/services';
     MatIconModule,
     MatToolbarModule,
     MatTooltipModule,
-    NavigationComponent
+    NavigationComponent,
   ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
   private navigationService = inject(NavigationService);
   private dialog = inject(MatDialog);
   private router = inject(Router);
-  title = 'traderpluseditor';
+  title = 'TraderX Editor';
   appVersion = environment.version;
-  
+
   // PWA installation
   deferredPrompt: any;
   showInstallButton = false;
-  
+
   ngOnInit(): void {
     // Listen for beforeinstallprompt event
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
       // Update UI to show the install button
       this.showInstallButton = true;
     });
-    
+
     // Hide install button if app is already installed
     window.addEventListener('appinstalled', () => {
       console.log('PWA was installed');
@@ -52,7 +52,7 @@ export class AppComponent implements OnInit {
       this.deferredPrompt = null;
     });
   }
-  
+
   /**
    * Prevents the default context menu from appearing on right-click
    * This will allow us to implement our own custom context menu later
@@ -61,35 +61,35 @@ export class AppComponent implements OnInit {
   onRightClick(event: MouseEvent): void {
     // Prevent default browser context menu
     event.preventDefault();
-    
+
     // Future implementation: show custom context menu
     console.log('Right click detected at:', event.clientX, event.clientY);
     // Here we would later add code to show our custom context menu
   }
-  
+
   toggleNav(): void {
     this.navigationService.toggleSidebar();
   }
-  
+
   isNavExpanded(): boolean {
     return this.navigationService.isExpanded();
   }
-  
+
   openHelpPanel(): void {
     // Navigate to information route instead of opening dialog
     this.router.navigate(['/information']);
   }
-  
+
   // Install app functionality
   installApp(): void {
     if (!this.deferredPrompt) {
       console.log('Installation prompt not available');
       return;
     }
-    
+
     // Show the prompt
     this.deferredPrompt.prompt();
-    
+
     // Wait for the user to respond to the prompt
     this.deferredPrompt.userChoice.then((choiceResult: { outcome: string }) => {
       if (choiceResult.outcome === 'accepted') {
