@@ -14,6 +14,13 @@ import {
   TraderPlusV1PriceConfig,
 } from '../models/traderplus-v1.model';
 
+// Define interface for conversion issues
+export interface ConversionIssue {
+  type: 'error' | 'warning' | 'info';
+  message: string;
+  details?: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -23,13 +30,55 @@ export class TraderPlusConverterService {
   private idsConfig: TraderPlusV1IDsConfig | null = null;
   private priceConfig: TraderPlusV1PriceConfig | null = null;
 
+  // Store conversion issues
+  private conversionIssues: ConversionIssue[] = [];
+
   constructor() {}
+
+  /**
+   * Add an issue to the collection
+   */
+  private addIssue(
+    type: 'error' | 'warning' | 'info',
+    message: string,
+    details?: string
+  ): void {
+    this.conversionIssues.push({
+      type,
+      message,
+      details,
+    });
+  }
+
+  /**
+   * Clear all conversion issues
+   */
+  public clearIssues(): void {
+    this.conversionIssues = [];
+  }
+
+  /**
+   * Get all conversion issues
+   */
+  public getIssues(): ConversionIssue[] {
+    return [...this.conversionIssues];
+  }
+
+  /**
+   * Check if there are any issues
+   */
+  public hasIssues(): boolean {
+    return this.conversionIssues.length > 0;
+  }
 
   /**
    * Converts TraderPlus v1 configs to TraderX format
    * @param content The content of the TraderPlus v1 config file
    */
   convertToTraderX(content: string): Observable<{ [key: string]: string }> {
+    // Clear previous conversion issues
+    this.clearIssues();
+
     try {
       // Parse the file content and determine which config it is
       const configObject = JSON.parse(content);
@@ -42,6 +91,11 @@ export class TraderPlusConverterService {
       } else if (this.isPriceConfig(configObject)) {
         this.priceConfig = configObject;
       } else {
+        this.addIssue(
+          'error',
+          'Unknown config file format',
+          'The uploaded file does not match any known TraderPlus v1 configuration format.'
+        );
         return throwError(() => new Error('Unknown config file format'));
       }
 
@@ -53,7 +107,11 @@ export class TraderPlusConverterService {
         return of({});
       }
     } catch (error) {
-      console.error('Error converting TraderPlus config:', error);
+      this.addIssue(
+        'error',
+        'Error parsing TraderPlus file',
+        `Failed to parse JSON content: ${error}`
+      );
       return throwError(
         () => new Error(`Error parsing TraderPlus file: ${error}`)
       );
@@ -123,7 +181,11 @@ export class TraderPlusConverterService {
 
       return of(resultFiles);
     } catch (error) {
-      console.error('Error generating TraderX files:', error);
+      this.addIssue(
+        'error',
+        'Error generating TraderX files',
+        `Failed to generate TraderX configuration files: ${error}`
+      );
       return throwError(
         () => new Error(`Error generating TraderX files: ${error}`)
       );
@@ -304,8 +366,10 @@ export class TraderPlusConverterService {
             );
 
             if (!category) {
-              console.warn(
-                `Category "${categoryName}" not found in price config`
+              this.addIssue(
+                'warning',
+                `Category "${categoryName}" not found`,
+                `Category "${categoryName}" from trader ${idConfig.Id} was not found in the price configuration.`
               );
               return;
             }

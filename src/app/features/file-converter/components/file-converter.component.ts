@@ -25,6 +25,7 @@ import {
   ExpansionConverterService,
   JonesConverterService,
 } from '../services';
+import { ConversionIssue } from '../services/traderPlus-converter.service';
 import { FileConverterStorageService } from '../services/file-converter-storage.service';
 
 // Components and utilities
@@ -149,6 +150,10 @@ export class FileConverterComponent implements OnInit, OnDestroy {
 
   // Add new property to control file explorer visibility
   showFileExplorer = false;
+
+  // Properties for conversion issues
+  conversionIssues: ConversionIssue[] = [];
+  showIssuesPanel = false;
 
   constructor(
     private fileConverterService: FileConverterService,
@@ -611,6 +616,13 @@ export class FileConverterComponent implements OnInit, OnDestroy {
 
                 // Set the appropriate conversion flag based on the converter type
                 this.updateConversionState(converterType);
+
+                // For TraderPlus, collect any conversion issues
+                if (converterType === 'traderplus') {
+                  this.conversionIssues =
+                    this.traderPlusConverterService.getIssues();
+                  this.showIssuesPanel = this.hasTraderPlusIssues();
+                }
 
                 // Save to localStorage
                 this.saveDataToStorage();
@@ -1288,5 +1300,28 @@ export class FileConverterComponent implements OnInit, OnDestroy {
       default:
         return false;
     }
+  }
+
+  /**
+   * Get conversion issues for TraderPlus
+   */
+  getTraderPlusIssues(): ConversionIssue[] {
+    return this.conversionIssues;
+  }
+
+  /**
+   * Check if there are TraderPlus conversion issues
+   */
+  hasTraderPlusIssues(): boolean {
+    return this.conversionIssues.length > 0;
+  }
+
+  /**
+   * Resolve all issues and hide the issues panel
+   */
+  resolveIssues(): void {
+    this.conversionIssues = [];
+    this.showIssuesPanel = false;
+    this.traderPlusConverterService.clearIssues();
   }
 }

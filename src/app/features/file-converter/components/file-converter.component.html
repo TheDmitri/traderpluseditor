@@ -55,6 +55,63 @@
   </header>
 
   <div class="main-content-area">
+    <!-- Issues Panel for TraderPlus conversion problems -->
+    <div
+      class="issues-panel data-card"
+      *ngIf="
+        activeTab === 'traderplus' && showIssuesPanel && hasTraderPlusIssues()
+      "
+    >
+      <div class="panel-header">
+        <div class="panel-title-area">
+          <h3 class="panel-title">
+            <mat-icon class="panel-icon">error</mat-icon>
+            Conversion Issues
+          </h3>
+          <p class="panel-subtitle">
+            Issues detected during the TraderPlus v1 to TraderX conversion.
+            Review and resolve them below.
+          </p>
+        </div>
+        <div class="panel-actions">
+          <mat-button
+            class="custom-stroked-button color-primary with-icon"
+            (click)="resolveIssues()"
+            matTooltip="Mark all issues as resolved and close this panel"
+          >
+            <mat-icon>check_circle</mat-icon>
+            <span>Issues Resolved</span>
+          </mat-button>
+        </div>
+      </div>
+
+      <div class="issues-content">
+        <div
+          class="issue-item"
+          *ngFor="let issue of getTraderPlusIssues(); let i = index"
+          [ngClass]="'issue-' + issue.type"
+        >
+          <div class="issue-header">
+            <mat-icon class="issue-icon" [ngClass]="'icon-' + issue.type">
+              {{
+                issue.type === "error"
+                  ? "error"
+                  : issue.type === "warning"
+                  ? "warning"
+                  : "info"
+              }}
+            </mat-icon>
+            <div class="issue-content-area">
+              <div class="issue-message">{{ issue.message }}</div>
+              <div class="issue-details" *ngIf="issue.details">
+                {{ issue.details }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Data Card with Tab Content -->
     <div class="data-card">
       <mat-card-content>
@@ -92,12 +149,10 @@
                     *ngIf="!traderPlusFiles.length; else traderPlusFilesList"
                   >
                     <mat-icon class="empty-state-icon">settings</mat-icon>
-                    <h2 class="empty-state-title">
-                      No TraderPlus Files Found
-                    </h2>
+                    <h2 class="empty-state-title">No TraderPlus Files Found</h2>
                     <p class="empty-state-message">
-                      Select TraderPlus configuration files to convert them
-                      to TraderX format
+                      Select TraderPlus configuration files to convert them to
+                      TraderX format
                     </p>
                     <p class="empty-state-files">
                       Allowed files:
@@ -234,8 +289,8 @@
                       No Dr.Jones Trader Files Found
                     </h2>
                     <p class="empty-state-message">
-                      Select Jones Trader config file to convert it to
-                      TraderX format
+                      Select Jones Trader config file to convert it to TraderX
+                      format
                     </p>
                     <p class="empty-state-files">
                       Allowed file:
