@@ -909,26 +909,11 @@ export class ProductModalComponent implements OnInit {
     // Always enable coefficient for submission
     this.productForm.get('coefficient')?.enable();
 
-    if (priceType === 'dynamic') {
-      this.productForm.get('sellPrice')?.enable();
-      // Temporarily enable to get values, but don't change checkbox state
-      if (!notBuyable) {
-        this.productForm.get('maxPrice')?.enable();
-      }
-      if (!notSellable) {
-        this.productForm.get('minPrice')?.enable();
-      }
-    } else {
-      this.productForm.get('minPrice')?.enable();
-      this.productForm.get('maxPrice')?.enable();
-      // Temporarily enable to get values, but don't change checkbox state
-      if (!notBuyable) {
-        this.productForm.get('buyPrice')?.enable();
-      }
-      if (!notSellable) {
-        this.productForm.get('sellPrice')?.enable();
-      }
-    }
+    // Temporarily enable all price controls for submission
+    this.productForm.get('buyPrice')?.enable();
+    this.productForm.get('sellPrice')?.enable();
+    this.productForm.get('minPrice')?.enable();
+    this.productForm.get('maxPrice')?.enable();
 
     // Ensure trade quantity value is calculated from the components
     this.updateTradeQuantityValue();
@@ -952,18 +937,16 @@ export class ProductModalComponent implements OnInit {
         variants: this.variantProducts.map((p) => p.productId),
       };
 
-      // Set price-related fields based on price type
+      // Set price-related fields based on price type and checkbox states
       if (priceType === 'dynamic') {
-        // For dynamic pricing, buyPrice is maxPrice
-        product.buyPrice = formValue.maxPrice;
-        // For consistency, sellPrice is minPrice
-        product.sellPrice = formValue.minPrice;
-        // Coefficient is calculated based on price difference
+        // For dynamic pricing, buyPrice is maxPrice, sellPrice is minPrice
+        product.buyPrice = notBuyable ? -1 : formValue.maxPrice;
+        product.sellPrice = notSellable ? -1 : formValue.minPrice;
         product.coefficient = formValue.coefficient;
       } else {
         // For static pricing, use direct values
-        product.buyPrice = formValue.buyPrice;
-        product.sellPrice = formValue.sellPrice;
+        product.buyPrice = notBuyable ? -1 : formValue.buyPrice;
+        product.sellPrice = notSellable ? -1 : formValue.sellPrice;
         // For infinite stock, coefficient should be 0
         product.coefficient =
           stockType === 'infinite' ? 0 : formValue.coefficient;

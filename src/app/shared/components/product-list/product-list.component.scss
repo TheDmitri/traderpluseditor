@@ -179,3 +179,10 @@
   color: var(--color-primary-medium);
   font-weight: 500;
 }
+
+/* Not available styling for -1 values */
+.not-available {
+  color: var(--brush-text-secondary) !important;
+  font-style: italic !important;
+  font-weight: normal !important;
+}

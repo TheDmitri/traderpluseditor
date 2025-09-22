@@ -107,7 +107,13 @@
           *matCellDef="let row; trackBy: trackByProductId"
           class="numeric-cell"
         >
-          <span class="buy-price-highlight">{{ row.buyPrice }}</span>
+          <span
+            class="buy-price-highlight"
+            [class.not-available]="row.buyPrice === -1"
+            [matTooltip]="row.buyPrice === -1 ? 'Product is not buyable' : null"
+          >
+            {{ row.buyPrice === -1 ? "Not buyable" : row.buyPrice }}
+          </span>
         </td>
       </ng-container>
 
@@ -119,7 +125,15 @@
           *matCellDef="let row; trackBy: trackByProductId"
           class="numeric-cell"
         >
-          <span class="cell-highlight">{{ row.sellPrice }}</span>
+          <span
+            class="cell-highlight"
+            [class.not-available]="row.sellPrice === -1"
+            [matTooltip]="
+              row.sellPrice === -1 ? 'Product is not sellable' : null
+            "
+          >
+            {{ row.sellPrice === -1 ? "Not sellable" : row.sellPrice }}
+          </span>
         </td>
       </ng-container>
 
