@@ -223,6 +223,7 @@ export class ProductModalComponent implements OnInit {
         // Set maxStock to -1 for infinite stock
         this.productForm.get('maxStock')?.setValue(-1);
         this.productForm.get('coefficient')?.setValue(0);
+        this.productForm.get('coefficient')?.disable();
 
         // Disable stock-specific controls
         this.productForm.get('destockCoefficient')?.disable();
@@ -237,10 +238,16 @@ export class ProductModalComponent implements OnInit {
         this.productForm.get('destockCoefficient')?.enable();
         this.productForm.get('behaviorAtRestart')?.enable();
         this.productForm.get('priceType')?.enable();
+        this.productForm.get('coefficient')?.enable();
 
         // Set maxStock to default value if currently -1
         if (this.productForm.get('maxStock')?.value === -1) {
           this.productForm.get('maxStock')?.setValue(100);
+        }
+
+        // Set coefficient to default value if currently 0
+        if (this.productForm.get('coefficient')?.value === 0) {
+          this.productForm.get('coefficient')?.setValue(1);
         }
 
         // Update stockSettings when re-enabling
@@ -697,6 +704,7 @@ export class ProductModalComponent implements OnInit {
         this.productForm.get('destockCoefficient')?.disable();
         this.productForm.get('behaviorAtRestart')?.disable();
         this.productForm.get('priceType')?.disable();
+        this.productForm.get('coefficient')?.disable();
       }
 
       if (priceType === 'dynamic') {
@@ -897,6 +905,9 @@ export class ProductModalComponent implements OnInit {
       this.productForm.get('destockCoefficient')?.enable();
       this.productForm.get('behaviorAtRestart')?.enable();
     }
+
+    // Always enable coefficient for submission
+    this.productForm.get('coefficient')?.enable();
 
     if (priceType === 'dynamic') {
       this.productForm.get('sellPrice')?.enable();

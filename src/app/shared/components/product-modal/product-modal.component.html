@@ -402,10 +402,7 @@
               </mat-form-field>
             </div>
 
-            <div
-              class="form-col"
-              *ngIf="productForm.get('stockType')?.value === 'defined'"
-            >
+            <div class="form-col">
               <!-- Empty checkbox wrapper to maintain alignment -->
               <div class="checkbox-wrapper-spacer"></div>
 
@@ -415,9 +412,18 @@
                   matInput
                   type="number"
                   formControlName="coefficient"
-                  required
+                  [required]="productForm.get('stockType')?.value === 'defined'"
                 />
-                <mat-hint>Price multiplier for this item</mat-hint>
+                <mat-hint
+                  *ngIf="productForm.get('stockType')?.value === 'infinite'"
+                >
+                  Always 0 for infinite stock
+                </mat-hint>
+                <mat-hint
+                  *ngIf="productForm.get('stockType')?.value === 'defined'"
+                >
+                  Price multiplier for this item
+                </mat-hint>
               </mat-form-field>
             </div>
           </div>
