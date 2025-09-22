@@ -353,28 +353,52 @@
             *ngIf="productForm.get('priceType')?.value === 'static'"
           >
             <div class="form-col">
+              <!-- Not Buyable Checkbox -->
+              <div class="checkbox-wrapper">
+                <mat-checkbox color="primary" formControlName="notBuyable">
+                  Not buyable
+                </mat-checkbox>
+              </div>
+
               <mat-form-field appearance="fill">
                 <mat-label>Buy Price</mat-label>
                 <input
                   matInput
                   type="number"
                   formControlName="buyPrice"
-                  required
+                  [required]="!productForm.get('notBuyable')?.value"
                 />
                 <mat-hint>Player purchase price</mat-hint>
+                <mat-error
+                  *ngIf="productForm.get('buyPrice')?.hasError('required')"
+                >
+                  Buy price is required when product is buyable
+                </mat-error>
               </mat-form-field>
             </div>
 
             <div class="form-col">
+              <!-- Not Sellable Checkbox -->
+              <div class="checkbox-wrapper">
+                <mat-checkbox color="primary" formControlName="notSellable">
+                  Not sellable
+                </mat-checkbox>
+              </div>
+
               <mat-form-field appearance="fill">
                 <mat-label>Sell Price</mat-label>
                 <input
                   matInput
                   type="number"
                   formControlName="sellPrice"
-                  required
+                  [required]="!productForm.get('notSellable')?.value"
                 />
                 <mat-hint>Player selling price</mat-hint>
+                <mat-error
+                  *ngIf="productForm.get('sellPrice')?.hasError('required')"
+                >
+                  Sell price is required when product is sellable
+                </mat-error>
               </mat-form-field>
             </div>
 
@@ -382,6 +406,9 @@
               class="form-col"
               *ngIf="productForm.get('stockType')?.value === 'defined'"
             >
+              <!-- Empty checkbox wrapper to maintain alignment -->
+              <div class="checkbox-wrapper-spacer"></div>
+
               <mat-form-field appearance="fill">
                 <mat-label>Coefficient</mat-label>
                 <input
@@ -401,32 +428,59 @@
             *ngIf="productForm.get('priceType')?.value === 'dynamic'"
           >
             <div class="form-col">
+              <!-- Not Sellable Checkbox -->
+              <div class="checkbox-wrapper">
+                <mat-checkbox color="primary" formControlName="notSellable">
+                  Not sellable
+                </mat-checkbox>
+              </div>
+
               <mat-form-field appearance="fill">
                 <mat-label>Min Price (High Stock)</mat-label>
                 <input
                   matInput
                   type="number"
                   formControlName="minPrice"
-                  required
+                  [required]="!productForm.get('notSellable')?.value"
                 />
                 <mat-hint>Price when stock is high</mat-hint>
+                <mat-error
+                  *ngIf="productForm.get('minPrice')?.hasError('required')"
+                >
+                  Min price is required when product is sellable
+                </mat-error>
               </mat-form-field>
             </div>
 
             <div class="form-col">
+              <!-- Not Buyable Checkbox -->
+              <div class="checkbox-wrapper">
+                <mat-checkbox color="primary" formControlName="notBuyable">
+                  Not buyable
+                </mat-checkbox>
+              </div>
+
               <mat-form-field appearance="fill">
                 <mat-label>Max Price (Low Stock)</mat-label>
                 <input
                   matInput
                   type="number"
                   formControlName="maxPrice"
-                  required
+                  [required]="!productForm.get('notBuyable')?.value"
                 />
                 <mat-hint>Price when stock is low</mat-hint>
+                <mat-error
+                  *ngIf="productForm.get('maxPrice')?.hasError('required')"
+                >
+                  Max price is required when product is buyable
+                </mat-error>
               </mat-form-field>
             </div>
 
             <div class="form-col">
+              <!-- Empty checkbox wrapper to maintain alignment -->
+              <div class="checkbox-wrapper-spacer"></div>
+
               <mat-form-field appearance="fill">
                 <mat-label>Calculated Coefficient</mat-label>
                 <input

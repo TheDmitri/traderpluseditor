@@ -100,6 +100,25 @@
           margin-right: 16px;
         }
       }
+
+      // Checkbox wrapper styling
+      .checkbox-wrapper {
+        margin-bottom: 8px;
+
+        mat-checkbox {
+          font-size: var(--font-size-sm);
+
+          .mat-checkbox-label {
+            color: var(--brush-text-secondary);
+          }
+        }
+      }
+
+      // Spacer to maintain alignment when no checkbox is present
+      .checkbox-wrapper-spacer {
+        height: 32px; // Same height as checkbox + margin
+        margin-bottom: 16px;
+      }
     }
 
     // Validation error messages
