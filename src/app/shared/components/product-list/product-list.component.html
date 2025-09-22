@@ -35,7 +35,7 @@
       <!-- ClassName Column -->
       <ng-container matColumnDef="className">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-        <td mat-cell *matCellDef="let row; trackBy: trackByProductId">
+        <td mat-cell *matCellDef="let row">
           {{ row.className }}
         </td>
       </ng-container>
@@ -45,7 +45,7 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Categories</th>
         <td
           mat-cell
-          *matCellDef="let row; trackBy: trackByProductId"
+          *matCellDef="let row"
           [matTooltip]="row.categories?.join(', ') || 'No categories'"
         >
           <span *ngIf="row.categories && row.categories.length > 0">
@@ -66,11 +66,7 @@
       <!-- Coefficient Column -->
       <ng-container matColumnDef="coefficient">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Coefficient</th>
-        <td
-          mat-cell
-          *matCellDef="let row; trackBy: trackByProductId"
-          class="numeric-cell"
-        >
+        <td mat-cell *matCellDef="let row" class="numeric-cell">
           {{ row.coefficient }}
         </td>
       </ng-container>
@@ -78,11 +74,7 @@
       <!-- MaxStock Column -->
       <ng-container matColumnDef="maxStock">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Max Stock</th>
-        <td
-          mat-cell
-          *matCellDef="let row; trackBy: trackByProductId"
-          class="numeric-cell"
-        >
+        <td mat-cell *matCellDef="let row" class="numeric-cell">
           {{ row.maxStock }}
         </td>
       </ng-container>
@@ -90,11 +82,7 @@
       <!-- TradeQuantity Column -->
       <ng-container matColumnDef="tradeQuantity">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Trade Qty</th>
-        <td
-          mat-cell
-          *matCellDef="let row; trackBy: trackByProductId"
-          class="numeric-cell"
-        >
+        <td mat-cell *matCellDef="let row" class="numeric-cell">
           {{ row.tradeQuantity }}
         </td>
       </ng-container>
@@ -102,31 +90,37 @@
       <!-- BuyPrice Column -->
       <ng-container matColumnDef="buyPrice">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Buy Price</th>
-        <td
-          mat-cell
-          *matCellDef="let row; trackBy: trackByProductId"
-          class="numeric-cell"
-        >
-          <span class="buy-price-highlight">{{ row.buyPrice }}</span>
+        <td mat-cell *matCellDef="let row" class="numeric-cell">
+          <span
+            class="buy-price-highlight"
+            [class.not-available]="row.buyPrice === -1"
+            [matTooltip]="row.buyPrice === -1 ? 'Product is not buyable' : null"
+          >
+            {{ row.buyPrice === -1 ? "Not buyable" : row.buyPrice }}
+          </span>
         </td>
       </ng-container>
 
       <!-- SellPrice Column -->
       <ng-container matColumnDef="sellPrice">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Sell Price</th>
-        <td
-          mat-cell
-          *matCellDef="let row; trackBy: trackByProductId"
-          class="numeric-cell"
-        >
-          <span class="cell-highlight">{{ row.sellPrice }}</span>
+        <td mat-cell *matCellDef="let row" class="numeric-cell">
+          <span
+            class="cell-highlight"
+            [class.not-available]="row.sellPrice === -1"
+            [matTooltip]="
+              row.sellPrice === -1 ? 'Product is not sellable' : null
+            "
+          >
+            {{ row.sellPrice === -1 ? "Not sellable" : row.sellPrice }}
+          </span>
         </td>
       </ng-container>
 
       <!-- StockSettings Column -->
       <ng-container matColumnDef="stockSettings">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Stock</th>
-        <td mat-cell *matCellDef="let row; trackBy: trackByProductId">
+        <td mat-cell *matCellDef="let row">
           {{ formatStockSettings(row.stockSettings) }}
         </td>
       </ng-container>
@@ -136,7 +130,7 @@
         <th mat-header-cell *matHeaderCellDef>Attachments</th>
         <td
           mat-cell
-          *matCellDef="let row; trackBy: trackByProductId"
+          *matCellDef="let row"
           [matTooltip]="row.attachments?.join(', ') || 'No attachments'"
           class="numeric-cell"
         >
@@ -149,7 +143,7 @@
         <th mat-header-cell *matHeaderCellDef>Variants</th>
         <td
           mat-cell
-          *matCellDef="let row; trackBy: trackByProductId"
+          *matCellDef="let row"
           [matTooltip]="row.variants?.join(', ') || 'No variants'"
           class="numeric-cell"
         >
@@ -162,11 +156,7 @@
         <th mat-header-cell *matHeaderCellDef class="actions-header">
           Actions
         </th>
-        <td
-          mat-cell
-          *matCellDef="let product; trackBy: trackByProductId"
-          class="actions-cell"
-        >
+        <td mat-cell *matCellDef="let product" class="actions-cell">
           <div class="action-buttons">
             <button
               class="custom-icon-btn icon-btn-primary"
@@ -201,11 +191,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr
         mat-row
-        *matRowDef="
-          let row;
-          columns: displayedColumns;
-          trackBy: trackByProductId
-        "
+        *matRowDef="let row; columns: displayedColumns"
         class="interactive-row"
       ></tr>
 

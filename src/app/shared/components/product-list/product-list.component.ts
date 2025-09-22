@@ -507,11 +507,4 @@ export class ProductListComponent implements OnInit, OnChanges, OnDestroy {
       return 'Invalid';
     }
   }
-
-  /**
-   * Track products for better performance with ngFor
-   */
-  trackByProductId(index: number, item: ProductWithCategories): string {
-    return item.productId;
-  }
 }

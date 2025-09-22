@@ -6,7 +6,8 @@ import {
   OnInit,
   ViewChild,
   ChangeDetectorRef,
-  ChangeDetectionStrategy, AfterViewInit,
+  ChangeDetectionStrategy,
+  AfterViewInit,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -88,7 +89,9 @@ import { CategoryModalComponent } from './category-modal/category-modal.componen
   styleUrls: ['./category-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CategoryEditorComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CategoryEditorComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   /** Subject for handling component destruction and preventing memory leaks */
   private destroy$ = new Subject<void>();
   private subscriptions: Subscription[] = [];
@@ -533,13 +536,6 @@ export class CategoryEditorComponent implements OnInit, OnDestroy, AfterViewInit
         );
       }, 800);
     }, 100);
-  }
-
-  /**
-   * Track categories for better performance with ngFor
-   */
-  trackByCategoryId(index: number, item: Category): string {
-    return item.categoryId;
   }
 
   /**
